@@ -5,7 +5,7 @@ My personal dotfiles
 
 requires:
   - zsh
-  
+
 ## 2. INSTALLATION
 
 Run these 3 commands:
@@ -13,7 +13,7 @@ Run these 3 commands:
 Clone dotfiles:
 
     git clone https://github.com/jlrickert/dotfiles ~/.dotfiles
-    
+
 Install prezto:
 
     git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
@@ -21,10 +21,12 @@ Install prezto:
 Symlinks files - you may want to check it out and back up stuff:
 
     cd ~/.dotfiles && sh install.sh
-    
+
 
 ## 3. Upgrading
 
 To upgrade prezto:
 
+    cd ~/.prezto
     git pull && git submodule update --init --recursive
+
