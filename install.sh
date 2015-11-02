@@ -2,7 +2,7 @@
 DOTFILES=$PWD
 
 CONFIG=$DOTFILES/config/*
-for f in $CONFIG 
+for f in $CONFIG
 do
   file=$(basename $f)
   ln -sf $f $HOME/.$file
@@ -16,3 +16,7 @@ ln -snf $i3_FILES ~/.config/i3
 
 BIN_PATH=$DOTFILES/bin
 ln -snf $BIN_PATH ~/bin
+
+mkdir -p ~/.config/termite
+ln -snf $DOTFILES/xdgconfig/termite/config ~/.config/termite/config
+
