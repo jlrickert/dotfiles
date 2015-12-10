@@ -8,4 +8,3 @@ if [ -s $ZSH_FILES ]; then
     source $f
   done
 fi
-

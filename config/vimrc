@@ -312,13 +312,6 @@ let g:nerdtree_tabs_focus_on_files = 1
 "------------------------------------------------------------------------------
 " Autocmd
 "------------------------------------------------------------------------------
-
-" ensure newline te end of file
-"autocmd BufWritePre *
-"     \ if match(getline('$'), '\S') != -1 |
-"     \     call append(line('$'), '') |
-"     \ endif
-
 " no whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
 
@@ -578,8 +571,8 @@ nmap <leader>fr :CtrlP<cr>
 nmap <leader>fm :CtrlPMixed<cr
 
 " tag
-noremap t <C-]>
-noremap T <C-t>
+noremap [ <C-]>
+noremap ] <C-t>
 
 nnoremap j gj
 nnoremap k gk
@@ -613,9 +606,6 @@ vnoremap <Leader>/ :TComment<CR>
 " w!! to write a file as sudo
 cmap w!! w !sudo tee % >/dev/null
 
-" }}}
-" Visual Mode */# from Scrooloose {{{
-
 function! s:VSetSearch()
   let temp = @@
   norm! gvy
@@ -627,7 +617,7 @@ endfunction
 com! JSONFormat %!python -m json.tool
 
 " clear search highlighting
-nmap <silent> <leader>/ :set invhlsearch<CR>
+nmap <silent> <leader>? :set invhlsearch<CR>
 
 " Code folding options
 nmap <leader>f0 :set foldlevel=0<CR>

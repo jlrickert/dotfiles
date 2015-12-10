@@ -5,6 +5,7 @@ alias -g N="| /dev/null"
 alias -g G="| grep -Ein"
 alias top="htop"
 alias free="free -h"
+alias clip="xclip -se -c"
 
 # Python
 alias py="python"
@@ -27,44 +28,31 @@ alias ll='ls -alGh --color=auto'
 alias la='ll -A'
 alias ls='ls -Gh --color=auto'
 
-# package managment
-compdef pac='yaourt'
-compdef paci='yaourt'
-compdef pacI='yaourt'
-compdef pacx='yaourt'
-compdef pacX='yaourt'
-compdef pacq='yaourt'
-compdef pacQ='yaourt'
-compdef pacs='yaourt'
-compdef pacS='yaourt'
-compdef pacu='yaourt'
-compdef pacU='yaourt'
-
 # Common Programming stuff
 alias ctags='ctags -R . --exclude=target --exclude=vendor --exclude=project'
 
 alias gdb="gdb --quiet"
 
 function eecho {
-  echo $@ 1>&2
+echo $@ 1>&2
 }
 
 function ff {
-  if [ $# = 0 ]; then
-    eecho "usage: ff <file>" 1>&2
-    return 1
-  fi
-  if [ -d "$1" ]; then
-    eecho "That's a directory, dumbass." 1>&2
-    return 1
-  elif [ "${1%/*}" = "$1" ]; then
-    firefox -new-tab "file://$(pwd)/$1"
-  else
-    "cd" "${1%/*}"
-    local dir="$(pwd)"
-    "cd" - >/dev/null
-    firefox -new-tab "file://$dir/${1##*/}"
-  fi
-  return 0
+if [ $# = 0 ]; then
+  eecho "usage: ff <file>" 1>&2
+  return 1
+fi
+if [ -d "$1" ]; then
+  eecho "That's a directory, dumbass." 1>&2
+  return 1
+elif [ "${1%/*}" = "$1" ]; then
+  firefox -new-tab "file://$(pwd)/$1"
+else
+  "cd" "${1%/*}"
+  local dir="$(pwd)"
+  "cd" - >/dev/null
+  firefox -new-tab "file://$dir/${1##*/}"
+fi
+return 0
 }
 
