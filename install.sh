@@ -5,7 +5,7 @@ CONFIG=$DOTFILES/config/*
 for f in $CONFIG
 do
   file=$(basename $f)
-  ln -sf $f $HOME/.$file
+  ln -sf $f ~/.$file
 done
 
 ZSH_FILES=$DOTFILES/zsh
