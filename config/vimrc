@@ -317,12 +317,6 @@ let g:nerdtree_tabs_focus_on_files = 1
 " Autocmd
 "------------------------------------------------------------------------------
 
-" ensure newline ate end of file
-autocmd BufWritePre *
-    \ if match(getline('$'), '\S') != -1 |
-    \     call append(line('$'), '') |
-    \ endif
-
 " no whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
 
