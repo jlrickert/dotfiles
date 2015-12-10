@@ -11,13 +11,13 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 
-Plugin 'scrooloose/syntastic.git'   " code linter
-Plugin 'sjl/gundo.vim'              " history diffs
-Plugin 'godlygeek/tabular'          " code aligner
+Plugin 'scrooloose/syntastic.git'      " code linter
+Plugin 'sjl/gundo.vim'                 " history diffs
+Plugin 'godlygeek/tabular'             " code aligner
 Plugin 'jamessan/vim-gnupg'
-Plugin 'tomtom/tcomment_vim'        " commenting addon
-Plugin 'Raimondi/delimitMate'       " matches closing charactors
-Plugin 'tpope/vim-fugitive'         " git
+Plugin 'tomtom/tcomment_vim'           " commenting addon
+Plugin 'Raimondi/delimitMate'          " matches closing charactors
+Plugin 'tpope/vim-fugitive'            " git
 Plugin 'tpope/vim-surround'
 Plugin 'VisIncr'
 Plugin 'kien/ctrlp.vim'
@@ -28,6 +28,7 @@ Plugin 'Shougo/neocomplete.vim'
 Plugin 'Shougo/neosnippet'
 Plugin 'jlrickert/neosnippet-snippets'
 Plugin 'Yggdroot/indentLine'
+Plugin 'rhysd/vim-clang-format'        "formatting
 
 " Visual Plugins
 Plugin 'altercation/vim-colors-solarized'
@@ -57,16 +58,12 @@ set clipboard=unnamed           "clipboard now defaults to system
 " http://items.sjbach.com/319/configuring-vim-right
 set hidden
 
-" Change leader to a comma because the backslash is too far away
-" That means all \x commands turn into ,x
-" The mapleader has to be set before vundle starts loading all
-" the plugins.
+" The mapleader has to be set before vundle starts loading all the plugins.
 let mapleader="\<Space>"
 
 "------------------------------------------------------------------------------
 " Turn Off Swap Files
 "------------------------------------------------------------------------------
-
 set noswapfile
 set nobackup
 set nowb
@@ -114,16 +111,15 @@ set linebreak    "Wrap lines at convenient points
 "------------------------------------------------------------------------------
 " Folds
 "------------------------------------------------------------------------------
-"
 set foldopen=block,insert,jump,mark,percent,quickfix,search,tag,undo
 set foldmethod=indent   "fold based on indent
 set foldnestmax=3       "deepest fold is 3 levels
-set foldenable          "dont fold by default
+set foldenable          "fold by default
+set foldlevel=99
 
 "------------------------------------------------------------------------------
 " Completion
 "------------------------------------------------------------------------------
-
 set wildmode=list:longest
 set wildmenu                "enable ctrl-n and ctrl-p to scroll thru matches
 set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
@@ -154,7 +150,6 @@ set completeopt=longest,menuone
 "------------------------------------------------------------------------------
 " Snippets
 "------------------------------------------------------------------------------
-
 " For snippet_complete marker.
 if has('conceal')
   set conceallevel=2 concealcursor=i
@@ -171,10 +166,10 @@ let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
 " Define dictionary.
 let g:neocomplete#sources#dictionary#dictionaries = {
-    \ 'default' : '',
-    \ 'vimshell' : $HOME.'/.vimshell_hist',
-    \ 'scheme' : $HOME.'/.gosh_completions'
-    \ }
+      \ 'default' : '',
+      \ 'vimshell' : $HOME.'/.vimshell_hist',
+      \ 'scheme' : $HOME.'/.gosh_completions'
+      \ }
 
 " overides other completion frameworks if present
 let g:neocomplete#force_overwrite_completefunc = 1
@@ -184,7 +179,7 @@ let g:neocomplete#max_list = 6
 
 " Define keyword.
 if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
+  let g:neocomplete#keyword_patterns = {}
 endif
 let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 
@@ -289,15 +284,16 @@ let g:ctrlp_custom_ignore .= '/project/target|/project/project'
 let g:ctrlp_custom_ignore .= '/resources/%(out)'
 let g:ctrlp_custom_ignore .= '/node_modules'
 let g:ctrlp_custom_ignore .= ')'
+let g:ctrlp_custom_ignore .= '\.%o'
 let g:ctrlp_open_new_file = 'r'
 let g:ctrlp_open_multiple_files = '1ri'
 let g:ctrlp_match_window = 'max:40'
 let g:ctrlp_prompt_mappings = {
-  \ 'PrtSelectMove("j")':   ['<c-n>'],
-  \ 'PrtSelectMove("k")':   ['<c-p>'],
-  \ 'PrtHistory(-1)':       ['<c-j>', '<down>'],
-  \ 'PrtHistory(1)':        ['<c-i>', '<up>']
-\ }
+      \ 'PrtSelectMove("j")':   ['<c-n>'],
+      \ 'PrtSelectMove("k")':   ['<c-p>'],
+      \ 'PrtHistory(-1)':       ['<c-j>', '<down>'],
+      \ 'PrtHistory(1)':        ['<c-i>', '<up>']
+      \ }
 
 "------------------------------------------------------------------------------
 " NerdTree
@@ -317,11 +313,11 @@ let g:nerdtree_tabs_focus_on_files = 1
 " Autocmd
 "------------------------------------------------------------------------------
 
-" ensure newline ate end of file
-autocmd BufWritePre *
-    \ if match(getline('$'), '\S') != -1 |
-    \     call append(line('$'), '') |
-    \ endif
+" ensure newline te end of file
+"autocmd BufWritePre *
+"     \ if match(getline('$'), '\S') != -1 |
+"     \     call append(line('$'), '') |
+"     \ endif
 
 " no whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
@@ -330,16 +326,16 @@ autocmd BufWritePre * :%s/\s\+$//e
 autocmd BufWritePre * :set fileformat=unix
 
 function! s:MkNonExDir(file, buf)
-    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-        let dir=fnamemodify(a:file, ':h')
-        if !isdirectory(dir)
-            call mkdir(dir, 'p')
-        endif
+  if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+    let dir=fnamemodify(a:file, ':h')
+    if !isdirectory(dir)
+      call mkdir(dir, 'p')
     endif
+  endif
 endfunction
 augroup BWCCreateDir
-    autocmd!
-    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+  autocmd!
+  autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
 augroup END
 
 au CursorHold * if exists("t:NerdTreeBufName") | call <SNR>15_refreshRoot() | endif
@@ -453,9 +449,9 @@ function! CtrlPMark()
 endfunction
 
 let g:ctrlp_status_func = {
-  \ 'main': 'CtrlPStatusFunc_1',
-  \ 'prog': 'CtrlPStatusFunc_2',
-  \ }
+      \ 'main': 'CtrlPStatusFunc_1',
+      \ 'prog': 'CtrlPStatusFunc_2',
+      \ }
 
 function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
   let g:lightline.ctrlp_regex = a:regex
@@ -472,7 +468,7 @@ endfunction
 let g:tagbar_status_func = 'TagbarStatusFunc'
 
 function! TagbarStatusFunc(current, sort, fname, ...) abort
-    let g:lightline.fname = a:fname
+  let g:lightline.fname = a:fname
   return lightline#statusline(0)
 endfunction
 
@@ -490,23 +486,23 @@ let g:vimfiler_force_overwrite_statusline = 0
 let g:vimshell_force_overwrite_statusline = 0
 
 let g:rbpt_colorpairs = [
-    \ ['brown',       'RoyalBlue3'],
-    \ ['Darkblue',    'SeaGreen3'],
-    \ ['darkgray',    'DarkOrchid3'],
-    \ ['darkgreen',   'firebrick3'],
-    \ ['darkcyan',    'RoyalBlue3'],
-    \ ['darkred',     'SeaGreen3'],
-    \ ['darkmagenta', 'DarkOrchid3'],
-    \ ['brown',       'firebrick3'],
-    \ ['gray',        'RoyalBlue3'],
-    \ ['black',       'SeaGreen3'],
-    \ ['darkmagenta', 'DarkOrchid3'],
-    \ ['Darkblue',    'firebrick3'],
-    \ ['darkgreen',   'RoyalBlue3'],
-    \ ['darkcyan',    'SeaGreen3'],
-    \ ['darkred',     'DarkOrchid3'],
-    \ ['red',         'firebrick3'],
-    \ ]
+      \ ['brown',       'RoyalBlue3'],
+      \ ['Darkblue',    'SeaGreen3'],
+      \ ['darkgray',    'DarkOrchid3'],
+      \ ['darkgreen',   'firebrick3'],
+      \ ['darkcyan',    'RoyalBlue3'],
+      \ ['darkred',     'SeaGreen3'],
+      \ ['darkmagenta', 'DarkOrchid3'],
+      \ ['brown',       'firebrick3'],
+      \ ['gray',        'RoyalBlue3'],
+      \ ['black',       'SeaGreen3'],
+      \ ['darkmagenta', 'DarkOrchid3'],
+      \ ['Darkblue',    'firebrick3'],
+      \ ['darkgreen',   'RoyalBlue3'],
+      \ ['darkcyan',    'SeaGreen3'],
+      \ ['darkred',     'DarkOrchid3'],
+      \ ['red',         'firebrick3'],
+      \ ]
 
 let g:rbpt_max = 16
 let g:rbpt_loadcmd_toggle = 0
@@ -610,8 +606,8 @@ nnoremap <leader>s :mksession<CR>
 nmap <leader>lt :TagbarToggle<CR>
 
 
-nnoremap <Leader>c :TComment<CR>
-vnoremap <Leader>c :TComment<CR>
+nnoremap <Leader>/ :TComment<CR>
+vnoremap <Leader>/ :TComment<CR>
 
 " ========== Steve Losh hacks ==========="
 " w!! to write a file as sudo
