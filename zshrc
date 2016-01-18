@@ -1,3 +1,17 @@
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+ZSH_FILES="$HOME/.config/zsh"
+if [ -s $ZSH_FILES ]; then
+  for f in $ZSH_FILES/*; do
+    source $f
+  done
+fi
+
+###############################################################################
+# Aliases
+###############################################################################
 # Common shell functions
 alias tf='tail -f'
 alias -g L="| less"
@@ -56,3 +70,23 @@ fi
 return 0
 }
 
+###############################################################################
+# Go settup
+###############################################################################
+export GOPATH=~/Development/gocode
+export PATH=$PATH:$GOPATH/bin
+
+###############################################################################
+# Haskell setup
+###############################################################################
+export PATH=$PATH:$HOME/.cabal/bin
+
+###############################################################################
+# Keymap
+###############################################################################
+bindkey '^n' down-history
+bindkey '^p' up-history
+bindkey '^r' history-incremental-search-backward
+bindkey -M vicmd "w" vi-backward-word
+bindkey -M vicmd "e" vi-forward-word-end
+export KEYTIMEOUT=1

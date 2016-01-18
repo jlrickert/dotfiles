@@ -1,32 +1,18 @@
 # dotfiles
 My personal dotfiles
 
-# 1. PREREQUISITES
+User preference and configuration files that I use to build my working
+environment.
 
-requires:
-  - zsh
+This repository includes [git](http://git-scm.com/) submodules. When cloning to
+a new machine, the submodules need to be initialized.
 
-## 2. INSTALLATION
+		$ git submodule update --init
 
-Run these 3 commands:
+Every submodule can be updated to the latest available version at once:
 
-Clone dotfiles:
+		$ git submodule foreach git pull origin master
 
-    git clone https://github.com/jlrickert/dotfiles ~/.dotfiles
+I Recemend using rcm for installation
 
-Install prezto:
-
-    git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-
-Symlinks files - you may want to check it out and back up stuff:
-
-    cd ~/.dotfiles && sh install.sh
-
-
-## 3. Upgrading
-
-To upgrade prezto:
-
-    cd ~/.prezto
-    git pull && git submodule update --init --recursive
-
+    $ rcup -x README.md

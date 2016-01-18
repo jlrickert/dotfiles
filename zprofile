@@ -17,6 +17,12 @@ if [[ "$OSTYPE" == linux-gnu ]]; then
 fi
 
 #
+# Terminal
+#
+
+export TERMINAL='termite
+
+#
 # Editors
 #
 
@@ -70,9 +76,10 @@ fi
 #
 
 if [[ ! -d "$TMPDIR" ]]; then
-  export TMPDIR="/tmp/$LOGNAME"
+  export TMPDIR="$HOMNE/$LOGNAME"
   mkdir -p -m 700 "$TMPDIR"
 fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
 
+export DOTFILES=$HOME/.dotfiles
