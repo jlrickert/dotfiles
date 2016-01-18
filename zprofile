@@ -77,7 +77,7 @@ fi
 #
 
 if [[ ! -d "$TMPDIR" ]]; then
-  export TMPDIR="$HOMNE/$LOGNAME"
+  export TMPDIR="$HOME/$LOGNAME"
   mkdir -p -m 700 "$TMPDIR"
 fi
 
