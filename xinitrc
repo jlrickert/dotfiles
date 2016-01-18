@@ -12,7 +12,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
 fi
 
 xmodmap ~/.Xmodmap
-feh --randomize --bg-fill $DOTFILES/backgrounds/*
+feh --randomize --bg-fill $HOME/Media/backgrounds/*
 
 # exec gnome-session
 # exec startkde
