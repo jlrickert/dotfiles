@@ -34,10 +34,6 @@ zstyle ':prezto:load' pmodule \
   'utility' \
   'completion' \
   'prompt' \
-  'python' \
-  'node' \
-  'perl' \
-  'haskell' \
   'dpkg' \
   'pacman' \
   'ssh' \
@@ -47,7 +43,11 @@ zstyle ':prezto:load' pmodule \
   'gpg' \
   'archive' \
   'history' \
+  'node' \
+  'perl' \
+  'haskell' \
   'rails' \
+  'python' \
   'ruby'
 
 #

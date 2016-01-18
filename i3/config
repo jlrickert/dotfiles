@@ -44,7 +44,7 @@ client.urgent           $baseB0 $yellow $baseB3 $orange
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 9
-font pango:Source Code Pro 10
+font pango:Source Code Pro 9
 
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -156,24 +156,20 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
 mode "resize" {
-# These bindings trigger as soon as you enter the resize mode
+    # These bindings trigger as soon as you enter the resize mode
 
-# Pressing left will shrink the window’s width.
-# Pressing right will grow the window’s width.
-# Pressing up will shrink the window’s height.
-# Pressing down will grow the window’s height.
     bindsym h resize shrink width 10 px or 10 ppt
     bindsym j resize grow height 10 px or 10 ppt
     bindsym k resize shrink height 10 px or 10 ppt
     bindsym l resize grow width 10 px or 10 ppt
 
-# same bindings, but for the arrow keys
+    # same bindings, but for the arrow keys
     bindsym Left resize shrink width 10 px or 10 ppt
     bindsym Down resize grow height 10 px or 10 ppt
     bindsym Up resize shrink height 10 px or 10 ppt
     bindsym Right resize grow width 10 px or 10 ppt
 
-# back to normal: Enter or Escape
+    # back to normal: Enter or Escape
     bindsym Return mode "default"
     bindsym Caps_Lock mode "default"
 }
@@ -188,18 +184,11 @@ mode "$mode_system" {
     bindsym r exec --no-startup-id ~/bin/i3exit reboot, mode "default"
     bindsym x exec --no-startup-id ~/bin/i3exit shutdown, mode "default"
 
-# mode "$mode_system" {
-#     bindsym l exec gnome-screensaver-command -l
-#     bindsym e exec --no-startup-id ~/.dotfiles/bin/i3exit logout, mode "default"
-#     bindsym s exec --no-startup-id ~/.dotfiles/bin/i3exit suspend, mode "default"
-#     bindsym h exec --no-startup-id ~/.dotfiles/bin/i3exit hibernate, mode "default"
-#     bindsym r exec gnome-session-quit --reboot
-#     bindsym x exec gnome-session-quit --power-off
-
-# back to normal: Enter or Escape
+    # back to normal: Enter or Escape
     bindsym Return mode "default"
-        bindsym Escape mode "default"
+    bindsym Escape mode "default"
 }
+
 # Sound
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+ -q unmute
 bindsym XF86AudioLowerVolume exec amixer -q set Master 5%- -q unmute
@@ -215,6 +204,20 @@ bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
+# Default workspaces
+workspace 1 output DVI-I-2
+workspace 2 output DVI-I-2
+workspace 3 output DVI-I-2
+workspace 4 output DVI-I-2
+workspace 5 output DVI-I-2
+workspace 6 output DVI-I-1
+workspace 7 output DVI-I-1
+workspace 8 output DVI-I-1
+workspace 9 output DVI-I-1
+workspace 10 output DVI-I-1
+
+# Program defaults
+exec --no-startup-id i3-msg 'workspace 10; exec firefox; workspace 10'
 ##################################################
 # Status Bar
 ##################################################
@@ -230,7 +233,7 @@ bar {
         active_workspace #fdf6e3 #6c71c4 #fdf6e3
         inactive_workspace #586e75 #93a1a1 #002b36
         urgent_workspace #d33682 #d33682 #fdf6e3
-    }
-    position top
-    status_command i3status -c ~/.config/i3/i3status | ~/bin/i3info
+  }
+  position bottom
+  status_command i3status -c ~/.config/i3status | ~/bin/i3info
 }

@@ -13,17 +13,48 @@ path="/dev/shm/measure-net-speed"
 #  find /sys/devices -name statistics
 # If you have more (or less) than two adapters, simply adjust the script here
 # and in the next block.
-eth0="`find /sys/devices/ -name enp0s17`/statistics"
-eth1="`find /sys/devices/ -name enp0s18`/statistics"
-read eth0_rx < "${eth0}/rx_bytes"
-read eth0_tx < "${eth0}/tx_bytes"
-read eth1_rx < "${eth1}/rx_bytes"
-read eth1_tx < "${eth1}/tx_bytes"
+eth0="`find /sys/devices/ -name wlp1s0`/statistics"
+eth1="`find /sys/devices/ -name enp2s0`/statistics"
+eth2="`find /sys/devices/ -name enp0s17`/statistics"
+eth3="`find /sys/devices/ -name enp0s18`/statistics"
+
+if [ -e "$eth0" ]
+then
+  read eth0_rx < "${eth0}/rx_bytes"
+  read eth0_tx < "${eth0}/tx_bytes"
+else
+  eth0_rx=0
+  eth0_tx=0
+fi
+if [ -e "$eth1" ]
+then
+  read eth1_rx < "${eth1}/rx_bytes"
+  read eth1_tx < "${eth1}/tx_bytes"
+else
+  eth1_rx=0
+  eth1_tx=0
+fi
+if [ -e "$eth2" ]
+then
+  read eth2_rx < "${eth2}/rx_bytes"
+  read eth2_tx < "${eth2}/tx_bytes"
+else
+  eth2_rx=0
+  eth2_tx=0
+fi
+if [ -e "$eth3" ]
+then
+  read eth3_rx < "${eth3}/rx_bytes"
+  read eth3_tx < "${eth3}/tx_bytes"
+else
+  eth3_rx=0
+  eth3_tx=0
+fi
 
 # get time and sum of rx/tx for combined display
 time=$(date +%s)
-rx=$(( $eth0_rx + $eth1_rx ))
-tx=$(( $eth0_tx + $eth1_tx ))
+rx=$(( $eth0_rx + $eth1_rx + $eth2_rx + $eth3_rx))
+tx=$(( $eth0_tx + $eth1_tx + $eth2_tx + $eth3_tx))
 
 # write current data if file does not exist. Do not exit, this will cause
 # problems if this file is sourced instead of executed as another process.
@@ -73,3 +104,4 @@ if [[ "${time_diff}" -gt 0 ]]; then
 else
   echo -n " ? "
 fi
+
