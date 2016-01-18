@@ -20,7 +20,8 @@ fi
 # Terminal
 #
 
-export TERMINAL='termite
+export TERM=vte
+export TERMINAL="termite"
 
 #
 # Editors
