@@ -1,0 +1,10 @@
+" I don't like beeps
+set visualbell
+" useful for command-line completion
+set autocomplete
+set wildmode=list:longest,full
+
+set hintchars=hjklasdfgyuiopqwertnmzxcvb
+
+map <silent> J :tabprevious<cr>
+map <silent> K :tabnext<cr>
