@@ -20,7 +20,7 @@ fi
 # Terminal
 #
 
-export TERM=vte
+export TERM=xterm
 export TERMINAL="termite"
 
 #

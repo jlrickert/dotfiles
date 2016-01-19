@@ -32,9 +32,9 @@ import json
 import subprocess
 
 def run_cmd(cmd):
-    return subprocess.Popen(cmd, 
-		    stdout=subprocess.PIPE, 
-		    stderr=subprocess.PIPE, 
+    return subprocess.Popen(cmd,
+		    stdout=subprocess.PIPE,
+		    stderr=subprocess.PIPE,
 		    stdin=subprocess.PIPE).communicate()
 def get_path(device):
     root_path = '/sys/devices/'
@@ -95,6 +95,6 @@ if __name__ == '__main__':
         j = json.loads(line)
         # insert information into the start of the json, but could be anywhere
         # CHANGE THIS LINE TO INSERT SOMETHING ELSE
-        j.insert(1, {"full_text": "{}".format(net_speed())})
+        j.insert(0, {"full_text": "{}".format(net_speed())})
         # and echo back new encoded json
         print_line(prefix + json.dumps(j))
