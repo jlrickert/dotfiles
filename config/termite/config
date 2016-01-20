@@ -15,7 +15,7 @@ scrollback_lines = 10000
 search_wrap = true
 #font = Monospace 11
 font = Source Code Pro 10
-# font = Inconsolata 12
+#font = Inconsolata 12
 browser=firefox
 
 # Solarized dark color scheme
@@ -48,3 +48,5 @@ color13 = #6c71c4
 color14 = #93a1a1
 color15 = #fdf6e3
 
+[hints]
+font = Source Code Pro 10
