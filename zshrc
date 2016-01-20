@@ -2,13 +2,6 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-ZSH_FILES="$HOME/.config/zsh"
-if [ -s $ZSH_FILES ]; then
-  for f in $ZSH_FILES/*; do
-    source $f
-  done
-fi
-
 ###############################################################################
 # Aliases
 ###############################################################################
@@ -47,6 +40,9 @@ alias ctags='ctags -R . --exclude=target --exclude=vendor --exclude=project'
 
 alias gdb="gdb --quiet"
 
+###############################################################################
+# Useful functions
+###############################################################################
 function eecho {
 echo $@ 1>&2
 }
@@ -70,15 +66,6 @@ fi
 return 0
 }
 
-
-###############################################################################
-# dir colors
-###############################################################################
-FILE=/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-if [ -f $FILE ]; then
-  source $FILE
-fi
-
 ###############################################################################
 # Go settup
 ###############################################################################
@@ -99,3 +86,14 @@ bindkey '^r' history-incremental-search-backward
 bindkey -M vicmd "w" vi-backward-word
 bindkey -M vicmd "e" vi-forward-word-end
 export KEYTIMEOUT=1
+
+###############################################################################
+# dir colors
+###############################################################################
+eval `dircolors $HOME/.dircolors`
+
+FILE=/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [ -f $FILE ]; then
+  source $FILE
+fi
+
