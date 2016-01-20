@@ -20,7 +20,7 @@ fi
 # Terminal
 #
 
-export TERM=xterm-256color
+# export TERM=xterm-256color
 export TERMINAL="termite"
 
 #
@@ -76,7 +76,7 @@ fi
 # Temporary Files
 #
 if [[ ! -d "$TMPDIR" ]]; then
-  export TMPDIR="$HOME/.tmp
+  export TMPDIR="$HOME/.tmp"
   mkdir -p -m 700 "$TMPDIR"
 fi
 
@@ -84,7 +84,7 @@ fi
 # Logging
 #
 if [[ ! -d "$TMPDIR" ]]; then
-  export TMPDIR="/tmp/$LOGNAME
+  export TMPDIR="/tmp/$LOGNAME"
   mkdir -p -m 700 "$TMPDIR"
 fi
 
