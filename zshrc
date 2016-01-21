@@ -97,3 +97,7 @@ if [ -f $FILE ]; then
   source $FILE
 fi
 
+# Nix
+if [ -e /home/raviko/.nix-profile/etc/profile.d/nix.sh ]; then
+  . /home/raviko/.nix-profile/etc/profile.d/nix.sh;
+fi # added by Nix installer
