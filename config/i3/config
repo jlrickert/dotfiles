@@ -238,5 +238,5 @@ bar {
         urgent_workspace #d33682 #d33682 #fdf6e3
   }
   position bottom
-  status_command i3status -c ~/.config/i3status/config | ~/bin/i3info
+  status_command i3status -c ~/.config/i3status/config | ~/.local/bin/i3info
 }

@@ -25,17 +25,18 @@
 # 2, as published by Sam Hocevar. See http://sam.zoy.org/wtfpl/COPYING for more
 # details.
 
-import os
-import pathlib
 import sys
 import json
 import subprocess
 
+
 def run_cmd(cmd):
     return subprocess.Popen(cmd,
-		    stdout=subprocess.PIPE,
-		    stderr=subprocess.PIPE,
-		    stdin=subprocess.PIPE).communicate()
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            stdin=subprocess.PIPE).communicate()
+
+
 def get_path(device):
     root_path = '/sys/devices/'
     cmd = 'find {} -name {}'.format(root_path, device)
@@ -43,13 +44,10 @@ def get_path(device):
     print(x)
     return x
 
+
 def net_speed():
     """ Get the current upload and download """
-    path = '/sys/devices/'
-    devices = ['enp0s17','enp0s18']
-    #print(run_cmd('echo Lulz'))
-    #paths = [get_path(dev) for dev in devices]
-    return subprocess.check_output(['/home/raviko/bin/net-speed']).decode('utf8')
+    return subprocess.check_output(['/home/raviko/.local/bin/net-speed']).decode('utf8')
 
 
 def get_governor():
@@ -62,7 +60,6 @@ def get_governor():
 def print_line(message):
     """ Non-buffered printing to stdout. """
     print(message)
-    #sys.stdout.write(message + '\n')
     sys.stdout.flush()
 
 
