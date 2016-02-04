@@ -180,12 +180,12 @@ mode "resize" {
 bindsym $mod+x mode "$mode_system"
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (x) shutdown
 mode "$mode_system" {
-    bindsym l exec --no-startup-id ~/bin/i3exit lock, mode "default"
-    bindsym e exec --no-startup-id ~/bin/i3exit logout, mode "default"
-    bindsym s exec --no-startup-id ~/bin/i3exit suspend, mode "default"
-    bindsym h exec --no-startup-id ~/bin/i3exit hibernate, mode "default"
-    bindsym r exec --no-startup-id ~/bin/i3exit reboot, mode "default"
-    bindsym x exec --no-startup-id ~/bin/i3exit shutdown, mode "default"
+    bindsym l exec --no-startup-id ~/.local/bin/i3exit lock, mode "default"
+    bindsym e exec --no-startup-id ~/.local/bin/i3exit logout, mode "default"
+    bindsym s exec --no-startup-id ~/.local/bin/i3exit suspend, mode "default"
+    bindsym h exec --no-startup-id ~/.local/bin/i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id ~/.local/bin/i3exit reboot, mode "default"
+    bindsym x exec --no-startup-id ~/.local/bin/i3exit shutdown, mode "default"
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
