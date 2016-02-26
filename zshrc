@@ -39,6 +39,60 @@ alias ls='ls -Gh --color=auto'
 alias ctags='ctags -R . --exclude=target --exclude=vendor --exclude=project'
 
 alias gdb="gdb --quiet"
+###############################################################################
+# Go settup
+###############################################################################
+export GOPATH=~/Development/gocode
+export PATH=$PATH:$GOPATH/bin
+
+###############################################################################
+# Haskell setup
+###############################################################################
+export PATH=$PATH:$HOME/.cabal/bin
+
+function cabal_sandbox_info() {
+    cabal_files=(*.cabal(N))
+    if [ $#cabal_files -gt 0 ]; then
+        if [ -f cabal.sandbox.config ]; then
+            echo "%{$fg[green]%}sandboxed%{$reset_color%}"
+        else
+            echo "%{$fg[red]%}not sandboxed%{$reset_color%}"
+        fi
+    fi
+}
+
+###############################################################################
+# Android
+###############################################################################
+export ANDROID_HOME=/opt/android-sdk
+
+###############################################################################
+# Nix
+###############################################################################
+if [ -e /home/raviko/.nix-profile/etc/profile.d/nix.sh ]; then
+  . /home/raviko/.nix-profile/etc/profile.d/nix.sh;
+fi # added by Nix installer
+
+RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
+###############################################################################
+# Keymap
+###############################################################################
+bindkey '^[n' down-history
+bindkey '^[p' up-history
+bindkey '^[r' history-incremental-search-backward
+bindkey -M vicmd "w" vi-backward-word
+bindkey -M vicmd "e" vi-forward-word-end
+export KEYTIMEOUT=1
+
+###############################################################################
+# dir colors
+###############################################################################
+eval `dircolors $HOME/.dircolors`
+
+FILE=/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [ -f $FILE ]; then
+  source $FILE
+fi
 
 ###############################################################################
 # Useful functions
@@ -65,51 +119,3 @@ else
 fi
 return 0
 }
-
-###############################################################################
-# Go settup
-###############################################################################
-export GOPATH=~/Development/gocode
-export PATH=$PATH:$GOPATH/bin
-
-###############################################################################
-# Haskell setup
-###############################################################################
-export PATH=$PATH:$HOME/.cabal/bin
-
-function cabal_sandbox_info() {
-    cabal_files=(*.cabal(N))
-    if [ $#cabal_files -gt 0 ]; then
-        if [ -f cabal.sandbox.config ]; then
-            echo "%{$fg[green]%}sandboxed%{$reset_color%}"
-        else
-            echo "%{$fg[red]%}not sandboxed%{$reset_color%}"
-        fi
-    fi
-}
-
-RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
-###############################################################################
-# Keymap
-###############################################################################
-bindkey '^n' down-history
-bindkey '^p' up-history
-bindkey '^r' history-incremental-search-backward
-bindkey -M vicmd "w" vi-backward-word
-bindkey -M vicmd "e" vi-forward-word-end
-export KEYTIMEOUT=1
-
-###############################################################################
-# dir colors
-###############################################################################
-eval `dircolors $HOME/.dircolors`
-
-FILE=/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-if [ -f $FILE ]; then
-  source $FILE
-fi
-
-# Nix
-if [ -e /home/raviko/.nix-profile/etc/profile.d/nix.sh ]; then
-  . /home/raviko/.nix-profile/etc/profile.d/nix.sh;
-fi # added by Nix installer
