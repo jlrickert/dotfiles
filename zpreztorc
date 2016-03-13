@@ -30,10 +30,10 @@ zstyle ':prezto:load' pmodule \
   'history' \
   'directory' \
   'spectrum' \
-  'gnu-utility' \
   'utility' \
   'completion' \
   'prompt' \
+  'gnu-utility' \
   'dpkg' \
   'pacman' \
   'ssh' \
@@ -46,8 +46,8 @@ zstyle ':prezto:load' pmodule \
   'node' \
   'perl' \
   'haskell' \
-  'rails' \
   'python' \
+  'rails' \
   'ruby'
 
 #
@@ -162,4 +162,3 @@ zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
 
 # Integrate with iTerm2.
 # zstyle ':prezto:module:tmux:iterm' integrate 'yes'
-

@@ -43,13 +43,14 @@ alias gdb="gdb --quiet"
 # Go settup
 ###############################################################################
 export GOPATH=~/Development/gocode
-export PATH=$PATH:$GOPATH/bin
+path=(
+    $path
+    $GOPATH/bin
+)
 
 ###############################################################################
 # Haskell setup
 ###############################################################################
-export PATH=$PATH:$HOME/.cabal/bin
-
 function cabal_sandbox_info() {
     cabal_files=(*.cabal(N))
     if [ $#cabal_files -gt 0 ]; then
@@ -73,7 +74,7 @@ if [ -e /home/raviko/.nix-profile/etc/profile.d/nix.sh ]; then
   . /home/raviko/.nix-profile/etc/profile.d/nix.sh;
 fi # added by Nix installer
 
-RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
+# RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
 ###############################################################################
 # Keymap
 ###############################################################################
@@ -119,3 +120,15 @@ else
 fi
 return 0
 }
+
+###############################################################################
+# Ruby stuff
+###############################################################################
+# Load RVM into a shell session *as a function*
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+# Add RVM to PATH for scripting
+path=(
+    $HOME/.rvm/bin # rvm needs to be first
+    $path
+)

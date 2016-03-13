@@ -21,16 +21,3 @@ if (( $+commands[fortune] )); then
     print
   fi
 fi
-
-# If Keychain is installed, run it.
-hash keychain 2> /dev/null
-if [ $? -eq 0 ]; then
-    keychain -q ~/.ssh/id_rsa_raviko --agents ssh
-    keychain -q ~/.ssh/hyperion --agents ssh
-    if [ -f ~/.keychain/$HOST-sh ]; then
-        source ~/.keychain/$HOST-sh
-    fi
-fi
-
-# Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
