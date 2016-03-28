@@ -129,6 +129,6 @@ return 0
 
 # Add RVM to PATH for scripting
 path=(
-    $HOME/.rvm/bin # rvm needs to be first
     $path
+    $HOME/.rvm/bin # rvm needs to be first
 )

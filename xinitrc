@@ -11,12 +11,21 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
   unset f
 fi
 
+# Map keys with xmodmap
 xmodmap ~/.Xmodmap
+
 feh --randomize --bg-fill $HOME/Media/backgrounds/*
 
-# exec gnome-session
-# exec startkde
-#exec startxfce4
+# NetworkManager for managing networks.
+nm-applet &
+
+# Hide the cursor when idle.
+unclutter &
+
+# Notifications with dunst
+dunst &
+
+# Numlock  on by default
+numlockx &
+
 exec i3
-#exec gnome-session
-# ...or the Window Manager of your choice
