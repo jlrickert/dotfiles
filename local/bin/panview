@@ -1,0 +1,12 @@
+#!/bin/sh
+
+PANDOC_HTML_OPTS="-s --mathjax"
+TMP_DIR="/tmp/$USER"
+
+if [ -x "$(command -v pandoc)" ]; then
+    for md_file in "$@"; do
+        html_file=`echo $md_file | sed -e 's/md$/html/'`
+        pandoc $PANDOC_HTML_OPTS -o $TMP_DIR/$html_file $md_file
+        firefox $TMP_DIR/$html_file
+    done
+fi
