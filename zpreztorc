@@ -46,7 +46,7 @@ zstyle ':prezto:load' pmodule \
   'node' \
   'perl' \
   'haskell' \
-  'python' \
+  # 'python' \ # This causes terminal to close for what ever reason
   'rails' \
   'ruby'
 
@@ -66,6 +66,7 @@ zstyle ':prezto:module:editor' dot-expansion 'yes'
 
 # Ignore submodules when they are 'dirty', 'untracked', 'all', or 'none'.
 zstyle ':prezto:module:git:status:ignore' submodules 'all'
+zstyle ':prezto:module:git:log:context' format 'oneline'
 
 #
 # GNU Utility
