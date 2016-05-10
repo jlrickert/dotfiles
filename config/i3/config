@@ -208,20 +208,20 @@ bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
 # Default workspaces
-workspace 1 output DVI-I-1
-workspace 2 output DVI-I-1
-workspace 3 output DVI-I-1
-workspace 4 output DVI-I-1
-workspace 5 output DVI-I-1
-workspace 6 output DVI-I-2
-workspace 7 output DVI-I-2
-workspace 8 output DVI-I-2
-workspace 9 output DVI-I-2
-workspace 10 output DVI-I-2
+workspace 1 output DVI-I-3
+workspace 2 output DVI-I-3
+workspace 3 output DVI-I-3
+workspace 4 output DVI-I-3
+workspace 5 output DVI-I-3
+workspace 6 output DVI-I-0
+workspace 7 output DVI-I-0
+workspace 8 output DVI-I-0
+workspace 9 output DVI-I-0
+workspace 10 output DVI-I-0
 
 # Program defaults
 exec --no-startup-id i3-msg 'workspace 1; exec firefox; workspace 1'
-exec --no-startup-id i3-msg 'workspace 1; exec emacs; workspace 10'
+exec --no-startup-id i3-msg 'workspace 10; exec emacs; workspace 10'
 ##################################################
 # Status Bar
 ##################################################
