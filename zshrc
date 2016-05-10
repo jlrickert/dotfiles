@@ -31,9 +31,9 @@ alias zz='fasd_cd -d -i' # cd with interactive selection
 # Show human friendly numbers and colors
 alias df='df -h'
 alias du='du -h -d 2'
-alias ll='ls -alGh --color=auto'
+alias ll='ls -alh --color=auto'
 alias la='ll -A'
-alias ls='ls -Gh --color=auto'
+alias ls='ls -h --color=auto'
 
 # Common Programming stuff
 alias ctags='ctags -R . --exclude=target --exclude=vendor --exclude=project'
@@ -44,22 +44,22 @@ alias gdb="gdb --quiet"
 ###############################################################################
 export GOPATH=~/Development/gocode
 path=(
-    $path
-    $GOPATH/bin
+$path
+$GOPATH/bin
 )
 
 ###############################################################################
 # Haskell setup
 ###############################################################################
 function cabal_sandbox_info() {
-    cabal_files=(*.cabal(N))
-    if [ $#cabal_files -gt 0 ]; then
-        if [ -f cabal.sandbox.config ]; then
-            echo "%{$fg[green]%}sandboxed%{$reset_color%}"
-        else
-            echo "%{$fg[red]%}not sandboxed%{$reset_color%}"
-        fi
+  cabal_files=(*.cabal(N))
+  if [ $#cabal_files -gt 0 ]; then
+    if [ -f cabal.sandbox.config ]; then
+      echo "%{$fg[green]%}sandboxed%{$reset_color%}"
+    else
+      echo "%{$fg[red]%}not sandboxed%{$reset_color%}"
     fi
+  fi
 }
 
 ###############################################################################
@@ -99,26 +99,26 @@ fi
 # Useful functions
 ###############################################################################
 function eecho {
-echo $@ 1>&2
+  echo $@ 1>&2
 }
 
 function ff {
-if [ $# = 0 ]; then
-  eecho "usage: ff <file>" 1>&2
-  return 1
-fi
-if [ -d "$1" ]; then
-  eecho "That's a directory, dumbass." 1>&2
-  return 1
-elif [ "${1%/*}" = "$1" ]; then
-  firefox -new-tab "file://$(pwd)/$1"
-else
-  "cd" "${1%/*}"
-  local dir="$(pwd)"
-  "cd" - >/dev/null
-  firefox -new-tab "file://$dir/${1##*/}"
-fi
-return 0
+  if [ $# = 0 ]; then
+    eecho "usage: ff <file>" 1>&2
+    return 1
+  fi
+  if [ -d "$1" ]; then
+    eecho "That's a directory, dumbass." 1>&2
+    return 1
+  elif [ "${1%/*}" = "$1" ]; then
+    firefox -new-tab "file://$(pwd)/$1"
+  else
+    "cd" "${1%/*}"
+    local dir="$(pwd)"
+    "cd" - >/dev/null
+    firefox -new-tab "file://$dir/${1##*/}"
+  fi
+  return 0
 }
 
 ###############################################################################
@@ -129,6 +129,6 @@ return 0
 
 # Add RVM to PATH for scripting
 path=(
-    $path
-    $HOME/.rvm/bin # rvm needs to be first
+$path
+$HOME/.rvm/bin # rvm needs to be first
 )
