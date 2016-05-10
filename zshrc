@@ -6,17 +6,16 @@ fi
 # Aliases
 ###############################################################################
 # Common shell functions
-alias tf='tail -f'
+alias -g G="| grep -Ein"
 alias -g L="| less"
 alias -g N="| /dev/null"
-alias -g G="| grep -Ein"
+alias -g H='| head'
+alias -g T='| tail'
+alias -g Y='| xclip && xclip -o | xclip -se c'
+
 alias top="htop"
 alias free="free -h"
 alias clip="xclip -se -c"
-
-# Python
-alias py="python"
-alias py2="python2"
 
 # jump to recently used items
 alias a='fasd -a'        # any
@@ -39,6 +38,14 @@ alias ls='ls -h --color=auto'
 alias ctags='ctags -R . --exclude=target --exclude=vendor --exclude=project'
 
 alias gdb="gdb --quiet"
+
+# View HTTP traffic
+alias sniff="sudo ngrep -d 'en0' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+
+# Gzip-enabled `curl`
+alias gurl="curl --compressed"
+
 ###############################################################################
 # Go settup
 ###############################################################################
@@ -132,3 +139,25 @@ path=(
 $path
 $HOME/.rvm/bin # rvm needs to be first
 )
+###############################################################################
+# Python
+###############################################################################
+# setup pyenv with those 2 commands
+#   git clone git://github.com/yyuu/pyenv.git ~/.pyenv
+#   git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+
+# pyenv root
+export PYENV_ROOT="$HOME/.pyenv"
+
+# Add pyenv root to PATH
+# and initialize pyenv
+if [[ -d $PYENV_ROOT ]];then
+  PATH="$PYENV_ROOT/bin:$PATH"
+  # initialize pyenv
+  eval "$(pyenv init -)"
+  # initialize pyenv virtualenv
+  eval "$(pyenv virtualenv-init -)"
+fi
+
+alias py="python"
+alias py2="python2"
