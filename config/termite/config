@@ -14,7 +14,7 @@ cursor_shape = block
 scrollback_lines = 10000
 search_wrap = true
 #font = Monospace 11
-font = Source Code Pro 10
+font = Source Code Pro 9
 #font = Inconsolata 12
 browser=firefox
 
@@ -49,4 +49,4 @@ color14 = #93a1a1
 color15 = #fdf6e3
 
 [hints]
-font = Source Code Pro 10
+font = Source Code Pro 9

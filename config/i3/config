@@ -31,7 +31,7 @@ set $custom #1c5766
 
 # $i3-background
 # exec_always --no-startup-id xsetroot -solid '$baseA2'
-exec --no-startup-id nm-applet
+# exec --no-startup-id nm-applet
 
 # clientclass           border  backgr. text    indicator
 client.focused          $baseB0 $green  $baseB3 $blue
@@ -44,8 +44,8 @@ client.urgent           $baseB0 $yellow $baseB3 $orange
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 9
-# font pango:Source Code Pro 9
-font pango:Terminus 11px
+font pango:Source Code Pro 8
+# font pango:Terminus 11px
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # The font above is very space-efficient, that is, it looks good, sharp and
