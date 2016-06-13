@@ -1,9 +1,3 @@
-[submodule "emacs.d"]
-	path = emacs.d
-	url = https://github.com/jlrickert/.emacs.d.git
-[submodule "zprezto"]
-	path = zprezto
-	url = https://github.com/sorin-ionescu/prezto.git
 [submodule "vim/bundle/Vundle.vim"]
 	path = vim/bundle/Vundle.vim
 	url = https://github.com/VundleVim/Vundle.vim.git
