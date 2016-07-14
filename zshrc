@@ -52,7 +52,7 @@ cb() {
 ###############################################################################
 # Go settup
 ###############################################################################
-export GOPATH=~/Development/gocode
+export GOPATH=~/Devel/gocode
 path=(
     $path
     $GOPATH/bin
@@ -85,6 +85,7 @@ if [ -e /home/raviko/.nix-profile/etc/profile.d/nix.sh ]; then
 fi # added by Nix installer
 
 # RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
+
 ###############################################################################
 # Keymap
 ###############################################################################
@@ -93,6 +94,10 @@ bindkey '^[p' up-history
 bindkey '^[r' history-incremental-search-backward
 bindkey -M vicmd "w" vi-backward-word
 bindkey -M vicmd "e" vi-forward-word-end
+bindkey -M vicmd '^[n' down-history
+bindkey -M vicmd '^[p' up-history
+bindkey -M vicmd 'k' up-line
+bindkey -M vicmd 'j' down-line
 export KEYTIMEOUT=1
 
 ###############################################################################
@@ -132,40 +137,10 @@ function ff {
 }
 
 ###############################################################################
-# Ruby stuff
-###############################################################################
-# Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-
-# Add RVM to PATH for scripting
-path=(
-    $path
-    $HOME/.rvm/bin # rvm needs to be first
-)
-###############################################################################
-# Python
-###############################################################################
-# setup pyenv with those 2 commands
-#   git clone git://github.com/yyuu/pyenv.git ~/.pyenv
-#   git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
-
-# pyenv root
-export PYENV_ROOT="$HOME/.pyenv"
-
-# Add pyenv root to PATH
-# and initialize pyenv
-if [[ -d $PYENV_ROOT ]];then
-    PATH="$PYENV_ROOT/bin:$PATH"
-    # initialize pyenv
-    eval "$(pyenv init -)"
-    # initialize pyenv virtualenv
-    eval "$(pyenv virtualenv-init -)"
-fi
-
-###############################################################################
 # Aliases
 ###############################################################################
 # Common shell functions
+alias -g em=emacsclient -n
 alias -g G="| grep -Ein"
 alias -g L="| less"
 alias -g N="| /dev/null"
@@ -201,7 +176,7 @@ alias ctags='ctags -R . --exclude=target --exclude=vendor --exclude=project'
 alias gdb="gdb --quiet"
 
 # View HTTP traffic
-alias sniff="sudo ngrep -d 'en0' -t '^(GET|POST) ' 'tcp and port 80'"
+alias websniff="sudo ngrep -d 'en0' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump="sudo tcpdump -i en0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
 # Gzip-enabled `curl`
@@ -213,3 +188,46 @@ alias py2="python2"
 
 # Copy contents of a file
 function cbf() { cat "$1" | cb; }
+
+###############################################################################
+# Python
+###############################################################################
+# setup pyenv with those 2 commands
+#   git clone git://github.com/yyuu/pyenv.git ~/.pyenv
+#   git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+
+# pyenv root
+export PYENV_ROOT="$HOME/.pyenv"
+
+# Add pyenv root to PATH
+# and initialize pyenv
+if [[ -d $PYENV_ROOT ]];then
+    PATH="$PYENV_ROOT/bin:$PATH"
+    # initialize pyenv
+    eval "$(pyenv init -)"
+    # initialize pyenv virtualenv
+    eval "$(pyenv virtualenv-init -)"
+fi
+
+###############################################################################
+# Rust stuff
+###############################################################################
+path=(
+$path
+$HOME/.cargo/bin
+)
+
+export CARGO_HOME=$HOME/.cargo
+export RUST_SRC_PATH=$HOME/.local/src/rust/src
+
+###############################################################################
+# Ruby stuff
+###############################################################################
+# Load RVM into a shell session *as a function*
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+# Add RVM to PATH for scripting
+path=(
+    $HOME/.rvm/bin # rvm needs to be first
+    $path
+)
