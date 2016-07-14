@@ -28,4 +28,11 @@ dunst &
 # Numlock  on by default
 numlockx &
 
+# keyboard repeate delay and rate
+xset r rate 250 40
+
+# SSH
+eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
+export SSH_AUTH_SOCK
+
 exec i3

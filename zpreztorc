@@ -36,19 +36,12 @@ zstyle ':prezto:load' pmodule \
   'gnu-utility' \
   'dpkg' \
   'pacman' \
-  'ssh' \
   'rsync' \
   'fasd' \
   'git' \
   'gpg' \
   'archive' \
   'history' \
-  'node' \
-  'perl' \
-  'haskell' \
-  # 'python' \ # This causes terminal to close for what ever reason
-  'rails' \
-  'ruby'
 
 #
 # Editor
