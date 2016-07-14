@@ -1,8 +1,8 @@
 typeset -U path
 
 path=(
-    /usr/local/{bin,sbin}
     $path[@]
+    /usr/local/{bin,sbin}
     $HOME/.local/bin
 )
 

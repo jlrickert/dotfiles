@@ -46,6 +46,12 @@ fi
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath
 
+# Set the list were completions are stored
+fpath=(
+    $fpath[@]
+    ~/.local/share/completions
+)
+
 # Set the the list of directories that cd searches.
 cdpath=(
     $cdpath
@@ -70,7 +76,7 @@ fi
 # make temp dir
 #
 if [[ ! -d "$TMPDIR" ]]; then
-    export TMPDIR="/tmp/$LOGNAME"
+    export TMPDIR="/tmp/$TMPDIR"
     mkdir -p -m 700 "$TMPDIR"
 fi
 
