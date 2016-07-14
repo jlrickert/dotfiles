@@ -1,41 +1,120 @@
 My personal dotfiles
 ====================
 
-User preference and configuration files that I use to build my working
-environment.
+My preferences and configuration for my current working environment.
 
 Installation
 ------------
 
-### Init submodules
-
-This repository includes [git](http://git-scm.com/) submodules. When cloning to
-a new machine, the submodules need to be initialized.
+### Downloading
 
 ```bash
-git submodule update --init
-```
-
-### Update submodules
-Every submodule can be updated to the latest available version at once:
-
-```bash
-git submodule foreach git pull origin master
+git clone https://github.com/pigmonkey/dotfiles.git ~/.dotfiles
 ```
 
 ### Symlink everthing
-I Recommend using [rcm](https://github.com/thoughtbot/rcm) for installation:
+
+I Recommend using [rcm](https://github.com/thoughtbot/rcm) for installation.
 
 ```bash
-rcup -x README.md`
+rcup -x README.md -x system`
 ```
 
 ### Install zprezto:
+
+Run the following and don't worry about what zprezto says in their readme.
 
 ```bash
 git clone --recursive https://github.com/sorin-ionescu/prezto.git $HOME/.zprezto
 chsh -s /bin/zsh
 ```
+
+---
+
+Pacman packages that I use.
+---------------------------
+
+## Core
+
+- abs
+- at
+- dmenu
+- dunst
+- emacs
+- feh
+- filezilla
+- firefox
+- firejail
+- git
+- gnome-keyring
+- htop
+- i3-wm
+- i3lock
+- i3status
+- mlocate
+- neovim
+- networkmanager
+- networkmanager-applet
+- networkmanager-openvpn
+- nm-connection-editor
+- nmap
+- numlockx
+- pandoc
+- powertop
+- pulseaudio
+- rlwrap
+- rsync
+- seahorse
+- tcpdump
+- teamspeak
+- termite
+- the_silver-searcher
+- tree
+- unclutter
+- xorg-xset
+- zsh
+- zsh-completions
+- zsh-syntax-highlighting
+
+## AUR
+
+- fasd
+- global
+- google-chrome
+- jdk
+- package-query
+- rcm
+- yaourt
+
+## Programing related
+
+### C/C++
+
+- clang
+- gdb
+
+### Python
+
+- autopep8
+- flake8
+- python-jedi
+- python-rope
+- yapf
+
+### Lisp
+
+- buildapp
+- clisp
+- sbcl
+
+### clojure
+
+- leiningen
+
+### Scala
+
+- scala
+- sbt
 
 ---
 
@@ -55,4 +134,34 @@ install pyenv with:
 
 ```bash
 git clone https://github.com/yyuu/pyenv.git ~/.pyenv
+git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
 ```
+
+## Setup emacs
+
+```bash
+git clone https://github.com/jlrickert/.emacs.d.git ~/.emacs.d
+```
+
+System setup checklist
+----------------------
+
+## Gnome-keyring
+
+[Gnome keyring setup](https://wiki.archlinux.org/index.php/GNOME/Keyring#Using_the_keyring_outside_GNOME)
+
+## at
+
+```bash
+systemctl enable atd
+```
+
+## networkmanager
+
+## sshd
+
+## ntp
+
+## locale setup
+
+## mkinitcpio
