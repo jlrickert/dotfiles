@@ -176,11 +176,14 @@ alias ctags='ctags -R . --exclude=target --exclude=vendor --exclude=project'
 alias gdb="gdb --quiet"
 
 # View HTTP traffic
-alias websniff="sudo ngrep -d 'en0' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+alias websniff="sudo ngrep -d 'wlp1s0' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i wlp1s0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
 # Gzip-enabled `curl`
 alias gurl="curl --compressed"
+
+# Disables capslock
+alias capy="xmodmap ~/.Xmodmap"
 
 # Python
 alias py="python"
