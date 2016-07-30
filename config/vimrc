@@ -28,7 +28,6 @@ Plugin 'Shougo/neocomplete.vim'
 Plugin 'Shougo/neosnippet'
 Plugin 'jlrickert/neosnippet-snippets'
 Plugin 'Yggdroot/indentLine'
-Plugin 'rhysd/vim-clang-format'        "formatting
 
 " Visual Plugins
 Plugin 'altercation/vim-colors-solarized'
@@ -93,9 +92,9 @@ endif
 set autoindent
 set smartindent
 set smarttab
-set shiftwidth=2
-set softtabstop=2
-set tabstop=2
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
 set expandtab
 set textwidth=0
 
@@ -220,7 +219,6 @@ set sidescroll=1
 "------------------------------------------------------------------------------
 " mouse
 "------------------------------------------------------------------------------
-
 set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
 set guioptions=acg
 set mousehide
@@ -310,7 +308,7 @@ let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:nerdtree_tabs_focus_on_files = 1
 
 "------------------------------------------------------------------------------
-" Autocmd
+" Autocmds
 "------------------------------------------------------------------------------
 " no whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
@@ -522,28 +520,6 @@ nnoremap <silent> ss <C-w>s
 nnoremap <leader>wp :tabprev<CR>
 nnoremap <leader>wn :tabnext<CR>
 nnoremap <leader>wc :tabe<CR>k
-
-" Map Control-# to switch tabs
-map  <C-0> 0gt
-imap <C-0> <Esc>0gt
-map  <C-1> 1gt
-imap <C-1> <Esc>1gt
-map  <C-2> 2gt
-imap <C-2> <Esc>2gt
-map  <C-3> 3gt
-imap <C-3> <Esc>3gt
-map  <C-4> 4gt
-imap <C-4> <Esc>4gt
-map  <C-5> 5gt
-imap <C-5> <Esc>5gt
-map  <C-6> 6gt
-imap <C-6> <Esc>6gt
-map  <C-7> 7gt
-imap <C-7> <Esc>7gt
-map  <C-8> 8gt
-imap <C-8> <Esc>8gt
-map  <C-9> 9gt
-imap <C-9> <Esc>9gt
 
 " navigation
 nnoremap w b
