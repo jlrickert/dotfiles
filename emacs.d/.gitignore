@@ -43,3 +43,6 @@ flycheck_*.el
 projectile-bookmarks.eld
 
 recentf
+
+# smex
+.smex-items
