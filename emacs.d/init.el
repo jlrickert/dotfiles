@@ -6,11 +6,12 @@
 ;; I have nothing substantial to say here.
 ;;
 ;;; Code:
-
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "lang" user-emacs-directory))
+
+(require 'init-benchmarking)
 
 ;; Also add all directories within "lisp"
 ;; I use this for packages I'm actively working on, mostly.
@@ -50,10 +51,14 @@
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 (setq-default left-fringe-width nil)
 (setq-default indent-tabs-mode nil)
+(setq-default ring-bell-function 'ignore)
+(setq-default scroll-preserve-screen-position 'always)
 (setq-default truncate-lines t)  ; disables line wrapping
 (setq-default truncate-partial-width-windows nil)
 (setq-default global-visual-line-mode t)  ; if it does wrap at least make it look nice
-(setq-default hscroll-step 1)  ; make horrizontal scrolling less jumpy
+(setq-default hscroll-step 5)  ; make horrizontal scrolling less jumpy
+(setq-default scroll-step 1)
+(setq-default scroll-conservatively 10000)
 (eval-after-load "vc" '(setq vc-handled-backends nil))
 (setq vc-follow-symlinks t)
 (setq large-file-warning-threshold nil)
@@ -635,8 +640,8 @@ is the buffer location at which the function was found."
 
 ;;; sRGB doesn't blend with Powerline's pixmap colors, but is only
 ;;; used in OS X. Disable sRGB before setting up Powerline.
-(when (memq window-system '(mac ns))
-  (setq ns-use-srgb-colorspace nil))
+;; (when (memq window-system '(mac ns))
+;;   (setq ns-use-srgb-colorspace nil))
 
 (set-face-attribute 'default nil
                     :family "Source Code Pro"
@@ -657,7 +662,19 @@ is the buffer location at which the function was found."
   (load-theme 'solarized-dark)
   )
 
-; (load-theme 'gruvbox)
+;; Allow access from emacsclient
+(require 'server)
+(unless (server-running-p)
+(server-start))
+
+;; Print out the load time
+(add-hook
+ 'after-init-hook
+ (lambda ()
+   (message "init completed in %.2fms"
+            (sanityinc/time-subtract-millis
+             after-init-time
+before-init-time))))
 
 (provide 'init)
 ;;; init.el ends here
