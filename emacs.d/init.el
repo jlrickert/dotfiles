@@ -662,6 +662,8 @@ is the buffer location at which the function was found."
   (load-theme 'solarized-dark)
   )
 
+(require 'init-python
+
 ;; Allow access from emacsclient
 (require 'server)
 (unless (server-running-p)
