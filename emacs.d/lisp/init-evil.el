@@ -70,14 +70,11 @@
   (dolist (mode '(ag-mode
                   flycheck-error-list-mode
                   git-rebase-mode
-                  term-mode))
+                  ))
     (add-to-list 'evil-emacs-state-modes mode))
 
-  (delete 'term-mode evil-insert-state-modes)
-
   ;; Use insert state in these additional modes.
-  (dolist (mode '(twittering-edit-mode
-                  magit-log-edit-mode))
+  (dolist (mode '(magit-log-edit-mode))
     (add-to-list 'evil-insert-state-modes mode))
 
   (add-to-list 'evil-buffer-regexps '("\\*Flycheck"))
@@ -106,13 +103,13 @@
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
   (define-key evil-normal-state-map (kbd "<down>") 'evil-next-visual-line)
   (define-key evil-normal-state-map (kbd "<up>") 'evil-previous-visual-line)
-  (define-key evil-normal-state-map (kbd "-") 'helm-find-files)
   (define-key evil-normal-state-map (kbd "C-]") 'gtags-find-tag-from-here)
-  (define-key evil-normal-state-map (kbd "g/") 'occur-last-search)
-  (define-key evil-normal-state-map (kbd "[i") 'show-first-occurrence)
   (define-key evil-normal-state-map (kbd "S-SPC") 'air-pop-to-org-agenda)
-  (define-key evil-insert-state-map (kbd "C-e") 'end-of-line) ;; I know...
-  (define-key evil-normal-state-map (kbd "b") 'evilmi-jump-item)
+  (define-key evil-normal-state-map (kbd "[i") 'show-first-occurrence)
+  (define-key evil-normal-state-map (kbd "b") 'evilmi-jump-items)
+  (define-key evil-normal-state-map (kbd "g/") 'occur-last-search)
+  (define-key evil-normal-state-map (kbd "q") 'evil-search-symbol-forward)
+  (define-key evil-normal-state-map (kbd "Q") 'evil-record-macro)
 
   (define-key evil-visual-state-map (kbd "b") 'evilmi-jump-items)
   (define-key evil-visual-state-map (kbd ":") 'exil-ex)
