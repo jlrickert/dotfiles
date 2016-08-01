@@ -209,6 +209,20 @@
   (projectile-global-mode)
   (setq projectile-enable-caching t))
 
+
+(use-package smartparens
+  :ensure t
+  :config
+  (require 'smartparens-config)
+  (add-hook 'prog-mode-hook #'smartparens-mode)
+  )
+
+(use-package evil-smartparens
+  :ensure t
+  :after evil
+  :config
+  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
+
 ;;; global completions and quick navigation
 (use-package ido
   :ensure t
@@ -606,11 +620,6 @@ is the buffer location at which the function was found."
                 nil)
               t)))
 (plist-put minibuffer-prompt-properties 'point 'minibuffer-avoid-prompt)
-
-;;; sRGB doesn't blend with Powerline's pixmap colors, but is only
-;;; used in OS X. Disable sRGB before setting up Powerline.
-;; (when (memq window-system '(mac ns))
-;;   (setq ns-use-srgb-colorspace nil))
 
 (set-face-attribute 'default nil
                     :family "Source Code Pro"
