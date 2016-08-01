@@ -15,18 +15,21 @@
     (font-lock-fontify-buffer)
     (redraw-display))
   (evil-leader/set-key
-    "/"  'evilnc-comment-or-uncomment-lines
-    ","  'open-shell
     "."  'switch-to-previous-buffer
+    "/"  'evilnc-comment-or-uncomment-lines
     ":"  'smex
     ";"  'smex
-    "aa" 'align-regexp
-    "a=" 'my-align-single-equals
-    "b"  'switch-to-buffer
     "B"  'magit-blame-toggle
+    "D"  'open-current-line-in-codebase-search
+    "R"  'reload-gui
+    "S"  'delete-trailing-whitespace
+    "T"  'gtags-find-tag
+    "`"  'open-shell
+    "a=" 'my-align-single-equals
+    "aa" 'align-regexp
+    "b"  'switch-to-buffer
     "c"  'comment-dwim
     "d"  'kill-this-buffer
-    "D"  'open-current-line-in-codebase-search
     "ff" 'quick-find-file
     "g"  'magit-status
     "h"  'fontify-and-browse    ;; HTML-ize the buffer and browse the result
@@ -34,12 +37,9 @@
     "nn" 'air-narrow-dwim       ;; Narrow to region and enter normal mode
     "nw" 'widen
     "o"  'make-frame
-    "s"  'ag-project            ;; Ag search from project's root
     "r"  'chrome-reload
-    "R"  'reload-gui
-    "S"  'delete-trailing-whitespace
+    "s"  'ag-project            ;; Ag search from project's root
     "t"  'gtags-reindex
-    "T"  'gtags-find-tag
     "w"  'save-buffer
     "x"  'smex
     "y"  'yank-to-x-clipboard)
