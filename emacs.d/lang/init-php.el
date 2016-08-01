@@ -1,6 +1,7 @@
 ;; init-php.el -- Configuration for PHP
 
-;;; Commentary:
+;;; Commentary:  This is taken from
+;; https://raw.githubusercontent.com/aaronbieber/dotfiles/master/configs/emacs.d/lisp/init-php.el
 
 ;;; Code:
 (defun my-php-lineup-arglist-intro (langelem)
