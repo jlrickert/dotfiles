@@ -103,7 +103,7 @@
 
 (i3-one-window-per-frame-mode-on)
 
-;; Utilities
+;; Elisp Utilities
 (use-package s :ensure t)
 (use-package dash :ensure t)
 
@@ -318,7 +318,7 @@
   :defer t
   :diminish ""
   :config
-  (setq-default highlight-symbol-idle-delay 1.5))
+  (setq-default highlight-symbol-idle-delay 1.0))
 
 (use-package indent-guide
   :ensure t
@@ -461,37 +461,6 @@
 (add-hook 'lisp-interaction-mode-hook
           (lambda ()
             (define-key lisp-interaction-mode-map (kbd "<C-return>") 'eval-last-sexp)))
-
-;;; Python mode:
-(use-package virtualenvwrapper
-  :ensure t
-  :config
-  (venv-initialize-interactive-shells)
-  (venv-initialize-eshell)
-  (setq venv-location
-        (expand-file-name "~/Projects/virtualenvs/")))
-
-(use-package elpy
-  :ensure t)
-
-(add-hook 'python-mode-hook
-          (lambda ()
-            ;; I'm rudely redefining this function to do a comparison of `point'
-            ;; to the end marker of the `comint-last-prompt' because the original
-            ;; method of using `looking-back' to match the prompt was never
-            ;; matching, which hangs the shell startup forever.
-            (defun python-shell-accept-process-output (process &optional timeout regexp)
-              "Redefined to actually work."
-              (let ((regexp (or regexp comint-prompt-regexp)))
-                (catch 'found
-                  (while t
-                    (when (not (accept-process-output process timeout))
-                      (throw 'found nil))
-                    (when (= (point) (cdr (python-util-comint-last-prompt)))
-                      (throw 'found t))))))
-
-            ;; Additional settings follow.
-            (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
 ;;; The Emacs Shell
 (defun company-eshell-history (command &optional arg &rest ignored)
@@ -662,12 +631,12 @@ is the buffer location at which the function was found."
   (load-theme 'solarized-dark)
   )
 
-(require 'init-python
+(require 'init-python)
 
 ;; Allow access from emacsclient
 (require 'server)
 (unless (server-running-p)
-(server-start))
+  (server-start))
 
 ;; Print out the load time
 (add-hook
