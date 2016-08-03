@@ -94,12 +94,17 @@
 (require 'init-evil)
 (require 'init-maps)
 (require 'init-w3m)
-(require 'init-php)
 (require 'init-powerline)
 (require 'init-flycheck)
 (require 'init-tmux)
 (require 'i3)
 (require 'i3-integration)
+(require 'init-org)
+
+;;; Load my programming languages
+(require 'init-python)
+(require 'init-lisp)
+(require 'init-php)
 
 (i3-one-window-per-frame-mode-on)
 
@@ -108,10 +113,7 @@
 (use-package dash :ensure t)
 
 ;; Org prerequisites
-(use-package visual-fill-column
-  :ensure t)
-
-(require 'init-org)
+(use-package visual-fill-column :ensure t)
 
 (use-package wgrep
   :ensure t
@@ -125,11 +127,11 @@
   (defadvice wgrep-finish-edit (after wgrep-set-motion-state)
     (if (fboundp 'evil-motion-state)
         (evil-motion-state)))
-  (ad-activate 'wgrep-finish-edit))
+  (ad-activate 'wgrep-finish-edit)
 
-(use-package wgrep-ag
-  :ensure t
-  :commands (wgrep-ag-setup))
+  (use-package wgrep-ag
+    :ensure t
+    :commands (wgrep-ag-setup)))
 
 (use-package ag
   :ensure t
@@ -640,9 +642,7 @@ is the buffer location at which the function was found."
   (load-theme 'solarized-dark)
   )
 
-(require 'init-python)
-
-;; Allow access from emacsclient
+;; Allow access to emacsclient
 (require 'server)
 (unless (server-running-p)
   (server-start))

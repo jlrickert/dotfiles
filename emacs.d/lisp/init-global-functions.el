@@ -189,7 +189,7 @@ Attempts to follow the Do What I Mean philosophy."
 
 ;;; From http://beatofthegeek.com/2014/02/my-setup-for-using-emacs-as-web-browser.html
 (defun wikipedia-search (search-term)
-  "Search for SEARCH-TERM on wikipedia"
+  "Search for SEARCH-TERM on wikipedia."
   (interactive
    (let ((term (if mark-active
                    (buffer-substring (region-beginning) (region-end))
@@ -200,13 +200,14 @@ Attempts to follow the Do What I Mean philosophy."
                search-term)))
 
 (defun quick-find-file ()
-  "Finds a file with either or ido depending on the context"
+  "Find a file with either or ido depending on the context."
   (interactive)
   (if (projectile-project-p)
       (projectile-find-file)
     (ido-find-file)))
 
 (defun indent-buffer ()
+  "Indent the current buffer."
   (interactive)
   (save-excursion
     (delete-trailing-whitespace)
@@ -215,19 +216,33 @@ Attempts to follow the Do What I Mean philosophy."
 
 (defun backward-symbol (&optional arg)
   "Move backward until encountering the beginning of a symbol.
-With argument, do this that many times."
+With ARG, do this that many times."
   (interactive "p")
-(forward-symbol (- (or arg 1))))
-
+  (forward-symbol (- (or arg 1))))
 
 (defun update-emacs-title ()
   "Update the Emacs title based on the current buffer.
-  If the current buffer is associated with a filename, that filename will be
-  used to tile the window. Otherwise, the window will be titled based upon the
-  name of the buffer."
+If the current buffer is associated with a filename, that filename will be
+used to tile the window.  Otherwise, the window will be titled based upon the
+name of the buffer."
   (if (buffer-file-name (current-buffer))
       (setq frame-title-format "Emacs - %f")
       (setq frame-title-format "Emacs - %b")))
+
+(defun is-line-empty ()
+  "Return t if current line is empty, else nil."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "[[:space:]]*$")))
+
+(defun electric-lisp-comment ()
+  "Autocomment things for Lisp."
+  (interactive)
+  (if (is-line-empty)
+      (insert ";; ")
+    (if (bound-and-true-p smartparens-mode)
+        (sp-comment)
+      (insert ";"))))
 
 (provide 'init-global-functions)
 ;;; init-global-functions.el ends here

@@ -15,7 +15,7 @@
     (font-lock-fontify-buffer)
     (redraw-display))
   (evil-leader/set-key
-    "."  'switch-to-previous-buffer
+    ","  'pop-tag-mark
     "/"  'evilnc-comment-or-uncomment-lines
     ":"  'smex
     ";"  'smex
