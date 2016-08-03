@@ -36,7 +36,7 @@ the current directory in Python's search path."
   (venv-initialize-interactive-shells)
   (venv-initialize-eshell)
   (setq venv-location (expand-file-name "~/Projects/virtualenvs/")
-        elpy-rpc-backend "rope"
+        elpy-rpc-backend "jedi"
         )
 
   (evil-leader/set-key-for-mode 'python-mode
