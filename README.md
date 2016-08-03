@@ -9,7 +9,7 @@ Installation
 ### Downloading
 
 ```bash
-git clone https://github.com/pigmonkey/dotfiles.git ~/.dotfiles
+git clone https://github.com/jlrickert/dotfiles.git ~/dotfiles
 ```
 
 ### Symlink everthing
