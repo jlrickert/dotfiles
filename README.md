@@ -12,15 +12,15 @@ Installation
 git clone https://github.com/jlrickert/dotfiles.git ~/dotfiles
 ```
 
-### Symlink everthing
 
-I Recommend using [rcm](https://github.com/thoughtbot/rcm) for installation.
+### Installation
 
+Running the install will create all the directories and symlink all files
 ```bash
-rcup -x README.md -x system`
+python install.py
 ```
 
-### Install zprezto:
+#### Installing prezto
 
 Run the following and don't worry about what zprezto says in their readme.
 
@@ -137,31 +137,15 @@ git clone https://github.com/yyuu/pyenv.git ~/.pyenv
 git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
 ```
 
-## Setup emacs
-
-```bash
-git clone https://github.com/jlrickert/.emacs.d.git ~/.emacs.d
-```
-
 System setup checklist
 ----------------------
 
 ## Gnome-keyring
 
-[Gnome keyring setup](https://wiki.archlinux.org/index.php/GNOME/Keyring#Using_the_keyring_outside_GNOME)
-
-## at
-
-```bash
-systemctl enable atd
-```
-
-## networkmanager
-
-## sshd
-
-## ntp
-
-## locale setup
-
-## mkinitcpio
+- [ ] [ Gnome keyring setup](https://wiki.archlinux.org/index.php/GNOME/Keyring#Using_the_keyring_outside_GNOME)
+- [ ] at `systemctl enable atd`
+- [ ] networkmanager
+- [ ] sshd
+- [ ] ntp
+- [ ] locale setup
+- [ ] mkinitcpio
