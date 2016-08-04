@@ -104,6 +104,7 @@
 ;;; Load my programming languages
 (require 'init-python)
 (require 'init-lisp)
+(require 'init-common-lisp)
 (require 'init-php)
 
 (i3-one-window-per-frame-mode-on)
