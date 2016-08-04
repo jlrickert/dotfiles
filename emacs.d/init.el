@@ -199,12 +199,6 @@
   (key-chord-define yas-keymap (kbd "jk") 'yas-next-field-or-maybe-expand)
   (define-key yas-minor-mode-map (kbd "<escape>") 'yas-exit-snippet))
 
-(use-package which-key
-  :ensure t
-  :diminish ""
-  :config
-  (which-key-mode t))
-
 (use-package projectile
   :ensure t
   :defer t
