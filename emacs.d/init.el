@@ -77,9 +77,18 @@
 (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
 (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
 
+;;; backups
 (defvar backup-dir "~/.emacs.d/backups/")
-(setq backup-directory-alist (list (cons "." backup-dir)))
-(setq make-backup-files nil)
+(setq backup-directory-alist (list (cons "." backup-dir))
+      backup-by-copying t
+      delete-old-versions t
+      make-backup-files t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
+
+;; autsave no longer puts it in my working directory
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 ;;; File type overrides.
 (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
