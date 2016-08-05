@@ -16,7 +16,7 @@
                 (evil-define-key 'normal flycheck-mode-map (kbd "]e") 'flycheck-next-error)
                 (evil-define-key 'normal flycheck-mode-map (kbd "[e") 'flycheck-previous-error))
               (when (maybe-require-package 'evil-leader)
-                (evil-leader/set-key (kbd "e") 'flycheck-list-errors))))
+                (evil-leader/set-key (kbd "ec") 'flycheck-list-errors))))
 
   ;; Override default flycheck triggers
   (setq flycheck-emacs-lisp-load-path 'inherit
