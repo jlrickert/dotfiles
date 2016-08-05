@@ -44,8 +44,7 @@
     (interactive "P")
     (if (and (mark) (use-region-p))
         (eval-region (min (point) (mark)) (max (point) (mark)))
-      (ipretty-last-sexp prefix)))
-  )
+      (eval-last-sexp prefix))))
 
 (use-package hl-sexp
   :ensure t

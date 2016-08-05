@@ -20,6 +20,7 @@
 
   (defun slime-eval-defun-or-region (prefix)
     "Evalutate region if highlighted, otherwise evaluate defun."
+    (interactive "P")
     (maybe-start-slime)
     (if (and (mark) (use-region-p))
         (slime-eval-region (min (point) (mark)) (max (point) (mark)))
@@ -59,7 +60,7 @@
       "," 'slime-pop-find-definition-stack
       "." 'slime-edit-definition
       "k" 'slime-documentation
-      "p" 'slime-eval-defun-or-region
+      "p" 'slime-eval-defun
       )
 
     (add-hook (derived-mode-hook-name mode) '(lambda () (message "running")(run-hooks 'my-lisp-modes-hook)))
