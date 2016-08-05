@@ -5,13 +5,13 @@
 (require 'derived)
 (require 'init-lisp)
 
+(defconst common-lisp-modes
+  '(lisp-mode slime-mode common-lisp-mode)
+  "Major modes related to common-lisp.")
+
 (use-package slime
   :ensure t
   :config
-  (defconst common-lisp-modes
-    '(lisp-mode slime-mode common-lisp-mode)
-    "Major modes related to common-lisp")
-
   (defun maybe-start-slime ()
     "Starts slime if there is no running repl."
     (interactive)
@@ -63,7 +63,7 @@
       "p" 'slime-eval-defun
       )
 
-    (add-hook (derived-mode-hook-name mode) '(lambda () (message "running")(run-hooks 'my-lisp-modes-hook)))
+    (add-hook (derived-mode-hook-name mode) '(lambda () (run-hooks 'my-lisp-modes-hook)))
     (eval
      `(evil-define-key 'insert ,(derived-mode-map-name mode)
         ";" 'electric-lisp-comment))))
