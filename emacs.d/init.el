@@ -115,6 +115,7 @@
 (require 'init-lisp)
 (require 'init-common-lisp)
 (require 'init-clojure)
+(require 'init-scheme)
 (require 'init-php)
 
 (i3-one-window-per-frame-mode-on)
@@ -196,6 +197,7 @@
   :ensure t
   :defer t
   :config
+  (yas-global-mode 1)
   (yas-reload-all)
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"
                            "~/.emacs.d/remote-snippets"))

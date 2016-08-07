@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: shebang
+# key: bang
+# --
+#!/bin/sh
+#| -*- scheme -*-
+exec csi -s $0 "$@"
+|#
+
+$0
