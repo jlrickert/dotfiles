@@ -1,7 +1,7 @@
 ;;; init-evil.el -- My evil mode configuration.
 ;;; Commentary:
 ;;; Code:
-(defun air--config-evil-leader ()
+(defun config-evil-leader ()
   "Configure evil leader mode."
   (evil-leader/set-leader "SPC")
   (setq evil-leader/in-all-states 1)
@@ -37,7 +37,6 @@
     "nn" 'air-narrow-dwim       ;; Narrow to region and enter normal mode
     "nw" 'widen
     "o"  'make-frame
-    "r"  'chrome-reload
     "s"  'ag-project            ;; Ag search from project's root
     "t"  'gtags-reindex
     "w"  'save-buffer
@@ -51,7 +50,7 @@
         (magit-blame-quit)
       (call-interactively 'magit-blame))))
 
-(defun air--config-evil ()
+(defun config-evil ()
   "Configure evil mode."
 
   (evil-define-motion evil-search-symbol-forward (count &optional symbol)
@@ -118,7 +117,7 @@
   (define-key evil-motion-state-map (kbd "b") 'evilmi-jump-items)
   (define-key evil-motion-state-map (kbd "j") 'evil-next-visual-line)
   (define-key evil-motion-state-map (kbd "k") 'evil-previous-visual-line)
-  (define-key evil-motion-state-map (kbd "e") 'evil-forward-word-begin)
+  (define-key evil-motion-state-map (kbd "e") 'forward-word)
   (define-key evil-motion-state-map (kbd "E") 'forward-symbol)
   (define-key evil-motion-state-map (kbd "w") 'backward-word)
   (define-key evil-motion-state-map (kbd "W") 'backward-symbol)
@@ -210,14 +209,14 @@ is not used."
 (use-package evil
   :ensure t
   :config
-  (add-hook 'evil-mode-hook 'air--config-evil)
+  (add-hook 'evil-mode-hook 'config-evil)
   (evil-mode 1)
 
   (use-package evil-leader
     :ensure t
     :config
     (global-evil-leader-mode)
-    (air--config-evil-leader))
+    (config-evil-leader))
 
   (use-package evil-surround
     :ensure t

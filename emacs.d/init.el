@@ -64,7 +64,10 @@
 (setq large-file-warning-threshold nil)
 (setq split-width-threshold nil)
 (setq custom-safe-themes t)
+(fset 'yes-or-no-p 'y-or-n-p)
+(add-hook 'text-mode-hook 'auto-fill-mode)
 (put 'narrow-to-region 'disabled nil)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (defun my-minibuffer-setup-hook ()
   "Increase GC cons threshold."
@@ -117,6 +120,7 @@
 (require 'init-clojure)
 (require 'init-scheme)
 (require 'init-php)
+(require 'init-haskell)
 
 (i3-one-window-per-frame-mode-on)
 
@@ -173,25 +177,29 @@
 
 (use-package company
   :ensure t
+  :diminish "CMP"
   :defer t
-  :init
-  (global-company-mode)
   :config
+  (global-company-mode)
+  (use-package company-quickhelp
+    :ensure t
+    :defer t
+    :config
+    (company-quickhelp-mode t)
+    (define-key company-quickhelp-mode-map (kbd "M-h") 'company-quickhelp-manual-begin))
+
+  (setq-default
+   company-backends '((company-capf company-dabbrev-code) company-dabbrev))
+
   (setq company-idle-delay 0.2)
   (setq completion-cycling 5)
   (setq company-selection-wrap-around t)
+  (setq company-tooltip-align-annotations t)
 
-  (define-key evil-insert-state-map (kbd "M-n") 'company-indent-or-complete-common)
+  (define-key evil-insert-state-map (kbd "M-n") 'company-complete-common)
   (define-key company-active-map (kbd "M-n") 'company-select-next)
   (define-key company-active-map (kbd "M-p") 'company-select-previous)
   )
-
-(use-package swiper
-  :ensure t
-  :commands swiper
-  :bind ("C-s" . swiper)
-  :config
-  (setq ivy-height 20))
 
 (use-package yasnippet
   :ensure t
@@ -205,11 +213,41 @@
   (setq yas-prompt-functions '(yas-completing-prompt
                                yas-ido-prompt
                                yas-dropdown-prompt))
+
+  ;; Add yasnippet support for all company backends
+  ;; https://github.com/syl20bnr/spacemacs/pull/179
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas)
+            (and (listp backend)
+                 (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+
+  (setq
+   company-backends
+   (mapcar #'company-mode/backend-with-yas company-backends))
+
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (key-chord-define-global (kbd "jk") 'yas-expand)
   (key-chord-define yas-keymap (kbd "jk") 'yas-next-field-or-maybe-expand)
   (define-key yas-minor-mode-map (kbd "<escape>") 'yas-exit-snippet))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+(use-package swiper
+  :ensure t
+  :commands swiper
+  :bind ("C-s" . swiper)
+  :config
+  (setq ivy-height 20))
 
 (use-package projectile
   :ensure t
@@ -343,13 +381,16 @@
   :config
   (setq-default highlight-symbol-idle-delay 1.0))
 
+;; Puts lines at the left most indent
 (use-package indent-guide
   :ensure t
+  :diminish ""
   :config
   (indent-guide-global-mode))
 
 (use-package guide-key
   :ensure t
+  :diminish ""
   :config
   (setq guide-key/guide-key-sequence '("C-x" "M-x" "SPC"))
   (setq guide-key/popup-window-position 'bottom)
@@ -359,7 +400,7 @@
 
 (use-package dictionary :ensure t)
 (use-package emmet-mode :ensure t)
-(use-package flycheck :ensure t)
+(use-package flycheck :ensure t :diminish "")
 (use-package yaml-mode :ensure t :defer t)
 (use-package php-extras :ensure t :defer t)
 

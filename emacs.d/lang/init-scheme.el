@@ -7,12 +7,6 @@
 (require 'cmuscheme)
 (require 'cl)
 
-
-
-
-
-
-
 (use-package geiser
   :ensure t
   :config
