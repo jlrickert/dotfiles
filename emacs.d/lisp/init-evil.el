@@ -28,7 +28,6 @@
     "a=" 'my-align-single-equals
     "aa" 'align-regexp
     "b"  'switch-to-buffer
-    "c"  'comment-dwim
     "d"  'kill-this-buffer
     "ff" 'quick-find-file
     "g"  'magit-status
