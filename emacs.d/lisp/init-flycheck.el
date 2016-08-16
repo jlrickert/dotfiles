@@ -25,6 +25,11 @@
         flycheck-disabled-checkers '(php-phpmd)
         flycheck-phpcs-standard "CSNStores")
 
+  ;; temporary solution for not being able to ergonomically close
+  ;; flycheck error messages if it opens in another buffer instead of
+  ;; the minibuffer
+  (setq max-mini-window-height 0.5)
+
   (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list))
 
 (provide 'init-flycheck)
