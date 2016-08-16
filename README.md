@@ -116,12 +116,14 @@ Pacman packages that I use.
 - scala
 - sbt
 
+### Haskell
+
+- stack
+
 ---
 
 Installation for other tools that I use.
 ----------------------------------------
-
-## rvm
 
 install rvm with:
 
@@ -135,6 +137,16 @@ install pyenv with:
 ```bash
 git clone https://github.com/yyuu/pyenv.git ~/.pyenv
 git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+```
+
+Setup Haskell
+-------------
+
+### Install development stuff
+
+```bash
+stack update
+stack install alex hasktags happy stylish-haskell present ghc-mod hlint hoogle hindent
 ```
 
 System setup checklist
