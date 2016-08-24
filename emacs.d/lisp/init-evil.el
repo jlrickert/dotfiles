@@ -27,8 +27,8 @@
     "`"  'open-shell
     "a=" 'my-align-single-equals
     "aa" 'align-regexp
-    "b"  'switch-to-buffer
-    "d"  'kill-this-buffer
+    "bb"  'switch-to-buffer
+    "bk"  'kill-this-buffer
     "ff" 'quick-find-file
     "g"  'magit-status
     "h"  'fontify-and-browse    ;; HTML-ize the buffer and browse the result
@@ -182,7 +182,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (defun previous-conflict-marker ()
     (interactive)
     (search-backward-regexp "\\(>>>>\\|====\\|<<<<\\)" (point-min) t)
-    (move-beginning-of-line nil)) 
+    (move-beginning-of-line nil))
   )
 
 (defmacro define-evil-or-global-key (key def &optional state)
