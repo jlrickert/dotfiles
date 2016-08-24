@@ -697,6 +697,8 @@ is the buffer location at which the function was found."
   (load-theme 'solarized-dark)
   )
 
+(set-language-environment "UTF-8")
+
 ;; Allow access to emacsclient
 (require 'server)
 (unless (server-running-p)
