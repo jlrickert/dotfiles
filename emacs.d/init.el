@@ -114,6 +114,7 @@
 (require 'init-org)
 
 ;;; Load my programming languages
+(require 'init-markdown)
 (require 'init-python)
 (require 'init-lisp)
 (require 'init-common-lisp)
@@ -448,31 +449,6 @@
       :back "^```$")))
   (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-cl)
   (mmm-add-mode-ext-class 'markdown-mode nil 'markdown-php))
-
-(use-package markdown-mode
-  :ensure t
-  :config
-  (setq markdown-command "pandoc --from markdown_github-hard_line_breaks --to html")
-  (define-key markdown-mode-map (kbd "C-\\")  'markdown-insert-list-item)
-  (define-key markdown-mode-map (kbd "C-c 1") 'markdown-insert-header-atx-1)
-  (define-key markdown-mode-map (kbd "C-c 2") 'markdown-insert-header-atx-2)
-  (define-key markdown-mode-map (kbd "C-c 3") 'markdown-insert-header-atx-3)
-  (define-key markdown-mode-map (kbd "C-c 4") 'markdown-insert-header-atx-4)
-  (define-key markdown-mode-map (kbd "C-c 5") 'markdown-insert-header-atx-5)
-  (define-key markdown-mode-map (kbd "C-c 6") 'markdown-insert-header-atx-6))
-
-(use-package markdown-preview-mode
-  :ensure t
-  :after (markdown-mode)
-  :config
-  (add-hook 'markdown-preview-mode-hook
-            (lambda ()
-              (setq markdown-preview-template
-                    (expand-file-name
-                      "~/.emacs.d/markdown-preview.html"
-                      user-emacs-directory))
-              (setq markdown-preview-style
-                    "http://aaronbieber.com/assets/styles/github-markdown.css"))))
 
 (use-package groovy-mode
   :ensure t
