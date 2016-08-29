@@ -33,10 +33,8 @@
     "g"  'magit-status
     "h"  'fontify-and-browse    ;; HTML-ize the buffer and browse the result
     "l"  'whitespace-mode       ;; Show invisible characters
-    "nn" 'air-narrow-dwim       ;; Narrow to region and enter normal mode
-    "nw" 'widen
     "o"  'make-frame
-    "s"  'ag-project            ;; Ag search from project's root
+    "ss"  'ag-project            ;; Ag search from project's root
     "t"  'gtags-reindex
     "w"  'save-buffer
     "x"  'smex
@@ -102,7 +100,6 @@
   (define-key evil-normal-state-map (kbd "<down>") 'evil-next-visual-line)
   (define-key evil-normal-state-map (kbd "<up>") 'evil-previous-visual-line)
   (define-key evil-normal-state-map (kbd "C-]") 'gtags-find-tag-from-here)
-  (define-key evil-normal-state-map (kbd "S-SPC") 'air-pop-to-org-agenda)
   (define-key evil-normal-state-map (kbd "[i") 'show-first-occurrence)
   (define-key evil-normal-state-map (kbd "b") 'evilmi-jump-items)
   (define-key evil-normal-state-map (kbd "g/") 'occur-last-search)
@@ -169,7 +166,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (evil-ex-define-cmd "q[uit]" 'evil-quit)
   (evil-ex-define-cmd "qa" 'evil-quit-all))
 
-(defun air--apply-evil-other-package-configs ()
+(defun apply-evil-other-package-configs ()
   "Apply evil-dependent settings specific to other packages."
 
   (defun next-conflict-marker ()
@@ -231,7 +228,7 @@ is not used."
     (global-evil-matchit-mode 1))
 
 
-  (air--apply-evil-other-package-configs))
+  (apply-evil-other-package-configs))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here
