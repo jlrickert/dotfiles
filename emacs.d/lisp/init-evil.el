@@ -19,6 +19,7 @@
     "/" 'evilnc-comment-or-uncomment-lines
     ":" 'smex
     ";" 'smex
+    "=" 'jlr/indent-buffer
     "B" 'magit-blame-toggle
     "D" 'open-current-line-in-codebase-search
     "R" 'reload-gui

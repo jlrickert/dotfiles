@@ -2,12 +2,9 @@
 ;;; Commentary:
 
 ;;; Code:
-(require 'company)
 (use-package haskell-mode
   :ensure t
   :init
-  (autoload 'ghc-init "ghc" nil t)
-  (autoload 'ghc-debug "ghc" nil t)
   (add-hook 'haskell-mode-hook 'ghc-init)
   (setq haskell-notify-p t
         haskell-tags-on-save t
@@ -15,20 +12,27 @@
         haskell-process-suggest-remove-import-lines t
         haskell-process-auto-import-loaded-modules t
         haskell-stylish-on-save t
+        haskell-process-log t
+        haskell-process-args-ghci "ghci"
+        haskell-process-path-ghci "stack"
+        haskell-process-type 'stack-ghci
         )
   :config
+
+  ;; c/c++ crap for haskell
   (use-package cmm-mode :ensure t :defer t)
 
   (use-package company-ghc
     :ensure t
-    :defer t
+    :after company
     :config
+    (setq company-ghc-show-info t
+          company-ghc-show-module t)
     (add-to-list 'company-backends '(company-ghc :with company-dabbrev-code))
     )
 
   (use-package company-cabal
     :ensure t
-    :defer t
     :config
     (add-to-list 'company-backends 'company-cabal))
 
@@ -54,7 +58,6 @@
 
   (use-package hindent
     :ensure t
-    :defer t
     :init
     (add-hook 'haskell-mode-hook 'hindent-mode)
     :config
@@ -65,21 +68,7 @@
     (interactive)
     (haskell-session-change))
 
-  ;; (haskell-stylish-on-save)
-  ;; (add-hook 'haskell-mode-hook
-  ;;           (lambda ()
-  ;;             (set (make-local-variable 'company-backends)
-  ;;                  (append '((company-capf company-dabbrev-code))
-  ;;                          company-backends))))
   (setq-default haskell-stylish-on-save t)
-  (custom-set-variables
-   '(haskell-tags-on-save t)
-   '(company-ghc-show-info t)
-   '(haskell-process-auto-import-loaded-modules t)
-   '(haskell-process-log t)
-   '(haskell-process-suggest-remove-import-lines t)
-   '(haskell-process-type 'cabal-repl)
-   )
 
   (evil-leader/set-key-for-mode 'haskell-mode
     "." 'haskell-mode-jump-to-def-or-tag
