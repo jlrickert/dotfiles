@@ -36,7 +36,7 @@
     "l" 'whitespace-mode       ;; Show invisible characters
     "o" 'make-frame
     "ss" 'ag-project            ;; Ag search from project's root
-    "t" 'gtags-reindex
+    "tt" 'gtags-reindex
     "w" 'save-buffer
     "x" 'smex
     "y" 'yank-to-x-clipboard)
@@ -48,7 +48,7 @@
         (magit-blame-quit)
       (call-interactively 'magit-blame))))
 
-(defun config-evil ()
+(defun my-evil-config ()
   "Configure evil mode."
 
   (evil-define-motion evil-search-symbol-forward (count &optional symbol)
@@ -183,30 +183,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (move-beginning-of-line nil))
   )
 
-(defmacro define-evil-or-global-key (key def &optional state)
-  "Define a key KEY with DEF in an Evil map, or in the global map.
-
-If the Evil map for STATE is defined (or `normal' if STATE is not
-provided) the key will be defined in that map.  Failing that, it will
-be defined globally.
-
-Note that STATE should be provided as an unquoted symbol.
-
-This macro provides a way to override Evil mappings in the appropriate
-Evil map in a manner that is compatible with environments where Evil
-is not used."
-  (let* ((evil-map-name (if state
-                            (concat "evil-" (symbol-name state) "-state-map")
-                          "evil-normal-state-map"))
-         (map (if (boundp (intern evil-map-name))
-                  (intern evil-map-name)
-                global-map)))
-    `(define-key ,map ,key ,def)))
-
 (use-package evil
   :ensure t
   :config
-  (add-hook 'evil-mode-hook 'config-evil)
+  (add-hook 'evil-mode-hook 'my-evil-config)
   (evil-mode 1)
 
   (use-package evil-leader
