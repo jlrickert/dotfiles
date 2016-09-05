@@ -111,18 +111,6 @@
 (require 'i3)
 (require 'i3-integration)
 
-;;; Load my programming languages
-(require 'init-org)
-(require 'init-markdown)
-(require 'init-python)
-(require 'init-lisp)
-(require 'init-common-lisp)
-(require 'init-clojure)
-(require 'init-scheme)
-(require 'init-rust)
-(require 'init-php)
-(require 'init-haskell)
-
 (i3-one-window-per-frame-mode-on)
 
 ;; Elisp Utilities
@@ -259,12 +247,11 @@
   :ensure t
   :config
   (require 'smartparens-config)
-  (add-hook 'prog-mode-hook #'smartparens-mode)
   )
 
 (use-package evil-smartparens
   :ensure t
-  :after evil
+  :after (smartparends evil)
   :config
   (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
 
@@ -659,7 +646,19 @@ is the buffer location at which the function was found."
    (message "init completed in %.2fms"
             (sanityinc/time-subtract-millis
              after-init-time
-before-init-time))))
+             before-init-time))))
+
+;;; Load my programming languages
+(require 'init-org)
+(require 'init-markdown)
+(require 'init-python)
+(require 'init-lisp)
+(require 'init-common-lisp)
+(require 'init-clojure)
+(require 'init-scheme)
+(require 'init-rust)
+(require 'init-php)
+(require 'init-haskell)
 
 (provide 'init)
 ;;; init.el ends here
