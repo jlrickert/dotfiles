@@ -119,6 +119,7 @@
 (require 'init-common-lisp)
 (require 'init-clojure)
 (require 'init-scheme)
+(require 'init-rust)
 (require 'init-php)
 (require 'init-haskell)
 
@@ -169,8 +170,8 @@
 
 (use-package exec-path-from-shell
   :ensure t
-  :defer t
   :config
+  (add-to-list 'exec-path "~/.local/bin")
   (exec-path-from-shell-initialize)
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize)))
@@ -178,7 +179,6 @@
 (use-package company
   :ensure t
   :diminish "CMP"
-  :defer t
   :config
   (global-company-mode)
   (use-package company-quickhelp

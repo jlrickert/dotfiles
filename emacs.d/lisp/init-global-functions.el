@@ -86,7 +86,7 @@ Repeated invocations toggle between the two most recently open buffers."
       (projectile-find-file)
     (ido-find-file)))
 
-(defun indent-buffer ()
+(defun jlr/indent-buffer ()
   "Indent the current buffer."
   (interactive)
   (save-excursion

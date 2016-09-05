@@ -15,30 +15,31 @@
     (font-lock-fontify-buffer)
     (redraw-display))
   (evil-leader/set-key
-    ","  'pop-tag-mark
-    "/"  'evilnc-comment-or-uncomment-lines
-    ":"  'smex
-    ";"  'smex
-    "B"  'magit-blame-toggle
-    "D"  'open-current-line-in-codebase-search
-    "R"  'reload-gui
-    "S"  'delete-trailing-whitespace
-    "T"  'gtags-find-tag
-    "`"  'open-shell
+    "," 'pop-tag-mark
+    "/" 'evilnc-comment-or-uncomment-lines
+    ":" 'smex
+    ";" 'smex
+    "=" 'jlr/indent-buffer
+    "B" 'magit-blame-toggle
+    "D" 'open-current-line-in-codebase-search
+    "R" 'reload-gui
+    "S" 'delete-trailing-whitespace
+    "T" 'gtags-find-tag
+    "`" 'open-shell
     "a=" 'my-align-single-equals
     "aa" 'align-regexp
-    "bb"  'switch-to-buffer
-    "bk"  'kill-this-buffer
+    "bb" 'switch-to-buffer
+    "bk" 'kill-this-buffer
     "ff" 'quick-find-file
-    "g"  'magit-status
-    "h"  'fontify-and-browse    ;; HTML-ize the buffer and browse the result
-    "l"  'whitespace-mode       ;; Show invisible characters
-    "o"  'make-frame
-    "ss"  'ag-project            ;; Ag search from project's root
-    "t"  'gtags-reindex
-    "w"  'save-buffer
-    "x"  'smex
-    "y"  'yank-to-x-clipboard)
+    "g" 'magit-status
+    "h" 'fontify-and-browse    ;; HTML-ize the buffer and browse the result
+    "l" 'whitespace-mode       ;; Show invisible characters
+    "o" 'make-frame
+    "ss" 'ag-project            ;; Ag search from project's root
+    "t" 'gtags-reindex
+    "w" 'save-buffer
+    "x" 'smex
+    "y" 'yank-to-x-clipboard)
 
   (defun magit-blame-toggle ()
     "Toggle magit-blame-mode on and off interactively."
