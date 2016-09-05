@@ -47,6 +47,7 @@ Pacman packages that I use.
 - firejail
 - git
 - gnome-keyring
+- gnuplot
 - htop
 - i3-wm
 - i3lock
@@ -78,12 +79,12 @@ Pacman packages that I use.
 
 ## AUR
 
+- chromedriver
 - fasd
 - global
 - google-chrome
 - jdk
 - package-query
-- rcm
 - yaourt
 
 ## Programing related
@@ -105,6 +106,7 @@ Pacman packages that I use.
 
 - buildapp
 - clisp
+- roswell
 - sbcl
 
 ### clojure
@@ -147,6 +149,14 @@ Setup Haskell
 ```bash
 stack update
 stack install alex hasktags happy stylish-haskell present ghc-mod hlint hoogle hindent
+```
+
+Setup rust
+----------
+```bash
+curl https://sh.rustup.rs -sSf | sh
+cargo install rust-fmt
+cargo install racer
 ```
 
 System setup checklist
