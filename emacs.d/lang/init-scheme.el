@@ -3,7 +3,6 @@
 
 ;;; Code:
 (require 'init-lisp)
-(require 'init-global-functions)
 (require 'cmuscheme)
 (require 'cl)
 

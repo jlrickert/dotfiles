@@ -3,7 +3,6 @@
 
 ;;; Code:
 (require 'derived)
-(require 'init-global-functions)
 
 (setq-default initial-scratch-message
               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
