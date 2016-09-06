@@ -467,8 +467,6 @@ This makes it nicer to use with i3
 (setq-default hscroll-step 5)  ; make horrizontal scrolling less jumpy
 (setq-default scroll-step 1)
 (setq-default scroll-conservatively 10000)
-;(setq-default left-fringe-width 0)
-;(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 #+END_SRC
 ** Emacs title
 #+BEGIN_SRC emacs-lisp
