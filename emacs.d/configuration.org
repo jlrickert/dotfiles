@@ -462,6 +462,17 @@ This makes it nicer to use with i3
 
 (global-set-key (kbd "M-x") 'smex))
 #+END_SRC
+*** =guide-key=
+#+BEGIN_SRC emacs-lisp
+(use-package guide-key
+  :ensure t
+  :config
+  (setq guide-key/guide-key-sequence '("C-x" "M-x" "SPC"))
+  (setq guide-key/popup-window-position 'bottom)
+  (setq guide-key/idle-delay .2)
+  (setq guide-key/recursive-key-sequence-flag t)
+  (guide-key-mode t))
+#+END_SRC
 ** Smartparens
 #+BEGIN_SRC emacs-lisp
 (show-paren-mode 1)
@@ -494,6 +505,16 @@ This makes it nicer to use with i3
 (setq-default hscroll-step 5)  ; make horrizontal scrolling less jumpy
 (setq-default scroll-step 1)
 (setq-default scroll-conservatively 10000)
+
+(use-package indent-guide
+  :config
+  (indent-guide-global-mode))
+
+(use-package highlight-symbol
+  :defer t
+  :diminish ""
+  :config
+  (setq-default highlight-symbol-idle-delay 1.0))
 #+END_SRC
 ** Emacs title
 #+BEGIN_SRC emacs-lisp
@@ -634,6 +655,8 @@ Load solarized theme
 
   (setq powerline-default-separator (if (display-graphic-p) 'arrow nil))
   (jlr/powerline-default-theme)
+
+(diminish 'undo-tree-mode)
 )
 #+END_SRC
 * Org mode setup
