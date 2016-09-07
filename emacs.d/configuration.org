@@ -175,7 +175,6 @@ This makes it nicer to use with i3
 ;; 80 charactor lines
 (setq fill-column 80)
 (set-default 'fill-column 80)
-
 #+END_SRC
 ** Performance
 #+BEGIN_SRC emacs-lisp
@@ -206,8 +205,16 @@ This makes it nicer to use with i3
 #+BEGIN_SRC emacs-lisp
 (message "Loading default editor settings")
 (global-linum-mode)
-(use-package nlinum :config (global-nlinum-mode))
-(show-paren-mode 1)
+(use-package nlinum
+  :config
+  (defun initialize-nlinum (&optional frame)
+    (require 'nlinum)
+    (add-hook 'prog-mode-hook 'nlinum-mode))
+  (when (daemonp)
+    (add-hook 'window-setup-hook 'initialize-nlinum)
+    (defadvice make-frame (around toggle-nlinum-mode compile activate)
+    (nlinum-mode -1) ad-do-it (nlinum-mode 1)))
+  )
 (setq-default truncate-lines t) ;; disables line wrapping
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+END_SRC
@@ -222,7 +229,7 @@ This makes it nicer to use with i3
 (set-default 'indicate-empty-lines t)
 
 ;; Keep cursor away from edges when scrolling up/down
-(use-package smooth-scrolling)
+(use-package smooth-scrolling :disabled t)
 
 ;; Allow recursive minibuffers
 (setq enable-recursive-minibuffers t)
@@ -457,6 +464,7 @@ This makes it nicer to use with i3
 #+END_SRC
 ** Smartparens
 #+BEGIN_SRC emacs-lisp
+(show-paren-mode 1)
 (use-package smartparens
   :ensure t
   :config
@@ -644,6 +652,7 @@ Load solarized theme
   (require 'org-indent)
   (use-package evil-org
     :ensure t
+    :after org
     :config
     (require 'evil-org))
   (require 'ox)
@@ -730,8 +739,8 @@ Load solarized theme
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
-(setq org-bullets-bullet-list '("◉" "○" "✸" "✿"))
-      org-todo-keywords '((sequence
+  (setq org-bullets-bullet-list '("◉" "○" "✸" "✿"))
+        org-todo-keywords '((sequence
                            "☛ TODO"
                            "○ IN-PROGRESS"
                            "⚑ WAITING"
@@ -744,6 +753,16 @@ Load solarized theme
               (1 font-lock-comment-face prepend)
               (2 font-lock-function-name-face)
               (3 font-lock-comment-face prepend))))
+#+END_SRC
+** Keybindings
+#+BEGIN_SRC emacs-lisp
+(after-load 'evil-org
+  (evil-define-key 'normal evil-org-mode-map
+    "O" 'evil-open-above
+    "o" 'evil-open-below)
+  (evil-leader/set-key-for-mode 'org-mode
+    "o" 'make-frame)
+)
 #+END_SRC
 * Initialize Programming Modes
 #+BEGIN_SRC emacs-lisp
@@ -810,11 +829,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     "h" 'fontify-and-browse    ;; HTML-ize the buffer and browse the result
     "l" 'whitespace-mode       ;; Show invisible characters
     "o" 'make-frame
-    "ss" 'ag-project            ;; Ag search from project's root
+    "ss" 'ag-project           ;; Ag search from project's root
     "tt" 'gtags-reindex
     "w" 'save-buffer
-    "x" 'smex
-    "y" 'yank-to-x-clipboard))
+    "x" 'smex))
 #+END_SRC
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
