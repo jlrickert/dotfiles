@@ -5,8 +5,7 @@
 (use-package elpy
   :ensure t
   :config
-  (use-package virtualenvwrapper :ensure t)
-  (use-package py-autopep8 :ensure t)
+  (use-package py-autopep8)
 
   (defun python-reinstate-current-project ()
     "When running Python, add the current directory ('') to the head of sys.path.
@@ -33,11 +32,9 @@ the current directory in Python's search path."
 
   (elpy-enable)
   (elpy-use-ipython)
-  (venv-initialize-interactive-shells)
-  (venv-initialize-eshell)
-  (setq venv-location (expand-file-name "~/Projects/virtualenvs/")
-        elpy-rpc-backend "jedi"
-        )
+  ;; (venv-initialize-interactive-shells)
+  ;; (venv-initialize-eshell)
+  (setq elpy-rpc-backend "jedi")
 
   (evil-leader/set-key-for-mode 'python-mode
     "," 'pop-tag-mark
