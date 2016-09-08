@@ -89,7 +89,20 @@
 
   (eval
    `(evil-define-key 'insert ,(derived-mode-map-name mode)
-      (kbd ";") 'electric-lisp-comment)))
+      (kbd ";") 'electric-lisp-comment))
+  (eval
+   `(evil-define-key 'normal ,(derived-mode-map-name mode)
+      (kbd "M-=") 'sp-indent-defun
+      (kbd "M-c") 'sp-convolute-sexp
+      (kbd "M-d") 'sp-splice-sexp
+      (kbd "M-h") 'sp-backward-slurp-sexp
+      (kbd "M-j") 'sp-join-sexp
+      (kbd "M-l") 'sp-backward-barf-sexp
+      (kbd "M-n") 'sp-forward-slurp-sexp
+      (kbd "M-p") 'sp-forward-barf-sexp
+      (kbd "M-s") 'sp-split-sexp
+      (kbd "M-t") 'sp-transpose-sexp
+      )))
 
 (provide 'init-lisp)
 ;;; init-lisp.el ends here

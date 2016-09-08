@@ -16,7 +16,7 @@ visiting a module's code will fail to find other modules in the
 same directory.
 Adding this function to `inferior-python-mode-hook' reinstates
 the current directory in Python's search path."
-    (python-send-string
+    (python-shell-internal-send-string
      (format "import sys; sys.path.insert(0, %s)" (project-root)))
     ;; (python-shell-internal-send-string "sys.path[0:0] = ['']")
     )
@@ -34,7 +34,9 @@ the current directory in Python's search path."
   (elpy-use-ipython)
   ;; (venv-initialize-interactive-shells)
   ;; (venv-initialize-eshell)
-  (setq elpy-rpc-backend "jedi")
+  (setq elpy-rpc-backend "jedi"
+        python-shell-interpreter "ipython"
+        python-shell-interpreter-args "--simple-prompt -i")
 
   (evil-leader/set-key-for-mode 'python-mode
     "," 'pop-tag-mark
