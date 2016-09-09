@@ -27,5 +27,10 @@
   :config
   (global-evil-surround-mode))
 
+(use-package key-chord
+  :config
+  (key-chord-mode t))
+
+
 (provide 'my-evil)
 ;;; my-evil.el ends here

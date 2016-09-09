@@ -63,7 +63,8 @@
       "p" 'slime-eval-defun
       )
 
-    (add-hook (derived-mode-hook-name mode) '(lambda () (run-hooks 'my-lisp-modes-hook)))
+    (add-hook (derived-mode-hook-name mode)
+              '(lambda () (run-hooks 'my-lisp-modes-hook)))
     (eval
      `(evil-define-key 'insert ,(derived-mode-map-name mode)
         ";" 'electric-lisp-comment))))

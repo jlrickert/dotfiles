@@ -32,6 +32,9 @@
 (setq fill-column 80)
 (set-default 'fill-column 80)
 
+(setq-default initial-scratch-message
+              (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Performace related things
@@ -147,6 +150,25 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Snippets
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package yasnippet
+  :defer t
+  :config
+  (yas-reload-all)
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  (setq tab-always-indent 'complete)
+  (setq yas-prompt-functions '(yas-completing-prompt
+                               yas-ido-prompt
+                               yas-dropdown-prompt))
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  (key-chord-define-global (kbd "jk") 'yas-expand)
+  (key-chord-define yas-keymap (kbd "jk") 'yas-next-field-or-maybe-expand)
+  (define-key yas-minor-mode-map (kbd "<escape>") 'yas-exit-snippet))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Syntax checking
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package flycheck
@@ -242,6 +264,15 @@
                                                   ".bzr"
                                                   ".svn"
                                                   "venv")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Highlighting
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package highlight-symbol
+  :diminish ""
+  :config
+  (setq-default highlight-symbol-idle-delay 1.0))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -346,14 +377,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;;; guide-key
 (use-package guide-key
-  :ensure t
+  :diminish ""
   :config
   (setq guide-key/guide-key-sequence '("C-x" "M-x" "SPC"))
   (setq guide-key/popup-window-position 'bottom)
   (setq guide-key/idle-delay .2)
   (setq guide-key/recursive-key-sequence-flag t)
   (guide-key-mode t))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Smartparens
