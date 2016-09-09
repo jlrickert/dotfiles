@@ -119,10 +119,11 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Autcomplete
+;;; Autocomplete
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package company
   :diminish "CMP"
+  :after evil
   :config
   (global-company-mode)
   (setq-default
@@ -134,18 +135,20 @@
   (setq company-tooltip-align-annotations t)
 
   (define-key evil-insert-state-map (kbd "M-n") 'company-complete-common)
-  (define-key company-active-map (kbd "M-n") 'company-select-next)
-  (define-key company-active-map (kbd "M-p") 'company-select-previous)
+  (evil-define-key 'hybrid company-active-map
+    (kbd "M-n") 'company-select-next
+    (kbd "M-p") 'company-select-previous
+    )
   )
 
 (use-package company-quickhelp
   :after company
+  :disabled t
   :config
-  (add-hook 'company-quickhelp-mode-hook
-            '(lambda ()
-               (define-key company-active-map (kbd "M-n") 'company-select-next)
-               (define-key company-active-map (kbd "M-p") 'company-select-previous)
-               ))
+  (evil-define-key 'hybrid company-quickhelp-mode-map
+    (kbd "M-n") 'company-select-next
+    (kbd "M-p") 'company-select-previous
+    )
   (company-quickhelp-mode t))
 
 
