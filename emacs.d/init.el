@@ -1,10 +1,11 @@
 ;;; init.el --- My emacs init files
 ;;; Commentary:
 
-;;; Code
+;;; Code:
+
 (add-to-list 'load-path (expand-file-name "config" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "lang" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "site-lisp" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "resources" user-emacs-directory))
 
 ;(message (format "init completed in %s" (emacs-init-time)))
