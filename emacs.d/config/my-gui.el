@@ -20,6 +20,7 @@
 (setq-default scroll-conservatively 10000)
 
 (use-package indent-guide
+  :diminish ""
   :config
   (indent-guide-global-mode))
 
@@ -46,6 +47,7 @@ name of the buffer."
                    change-major-mode-hook
                    find-file-hook))
   (add-hook hook 'update-emacs-title))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Theme
@@ -84,28 +86,80 @@ name of the buffer."
   (prettify-symbols-mode t)
   )
 
+(add-hook 'prog-mode-hook 'functional-prettification)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mode Line
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defface powerline-evil-base-face
+  '((t (:foreground "#fdf6e3" :inherit mode-line)))
+  "Base face for powerline evil faces."
+  :group 'powerline)
+
+(defface powerline-evil-normal-face
+  '((t (:background "#859900" :inherit powerline-evil-base-face)))
+  "Powerline face for evil NORMAL state."
+  :group 'powerline)
+
+(defface powerline-evil-insert-face
+  '((t (:background "#268bd2" :inherit powerline-evil-base-face)))
+  "Powerline face for evil INSERT state."
+  :group 'powerline)
+
+(defface powerline-evil-visual-face
+  '((t (:background "#cb4b16" :inherit powerline-evil-base-face)))
+  "Powerline face for evil VISUAL state."
+  :group 'powerline)
+
+(defface powerline-evil-operator-face
+  '((t (:background "#2aa198" :inherit powerline-evil-operator-face)))
+  "Powerline face for evil OPERATOR state."
+  :group 'powerline)
+
+(defface powerline-evil-replace-face
+  '((t (:background "#dc322f" :inherit powerline-evil-base-face)))
+  "Powerline face for evil REPLACE state."
+  :group 'powerline)
+
+(defface powerline-evil-motion-face
+  '((t (:background "#d33682" :inherit powerline-evil-base-face)))
+  "Powerline face for evil MOTION state."
+  :group 'powerline)
+
+(defface powerline-evil-emacs-face
+  '((t (:background "#6c71c4" :inherit powerline-evil-base-face)))
+  "Powerline face for evil EMACS state."
+  :group 'powerline)
+
 (defface my-pl-segment1-active
-  '((t (:foreground "#000000" :background "#E1B61A")))
-  "Powerline first segment active face.")
+  '((t (:foreground "#fdf6e3" :background "#586e75")))
+  "Powerline first segment active face."
+  :group 'powerline)
+
 (defface my-pl-segment1-inactive
-  '((t (:foreground "#CEBFF3" :background "#3A2E58")))
-  "Powerline first segment inactive face.")
+  '((t (:foreground "#839496" :background "#073642")))
+  "Powerline first segment inactive face."
+  :group 'powerline)
+
 (defface my-pl-segment2-active
-  '((t (:foreground "#F5E39F" :background "#8A7119")))
-  "Powerline second segment active face.")
+  '((t (:foreground "#839496" :background "#073642")))
+  "Powerline second segment active face."
+  :group 'powerline)
+
 (defface my-pl-segment2-inactive
-  '((t (:foreground "#CEBFF3" :background "#3A2E58")))
-  "Powerline second segment inactive face.")
+  '((t (:foreground "#839496" :background "#002b36")))
+  "Powerline second segment inactive face."
+  :group 'powerline)
+
 (defface my-pl-segment3-active
-  '((t (:foreground "#CEBFF3" :background "#3A2E58")))
-  "Powerline third segment active face.")
+  '((t (:foreground "#839496" :background "#002b36")))
+  "Powerline third segment active face."
+  :group 'powerline)
+
 (defface my-pl-segment3-inactive
-  '((t (:foreground "#CEBFF3" :background "#3A2E58")))
-  "Powerline third segment inactive face.")
+  '((t (:foreground "#839496" :background "#002b36")))
+  "Powerline third segment inactive face."
+  :group 'powerline)
 
 (defun jlr/powerline-default-theme ()
   "Set up my custom Powerline with Evil indicators."
@@ -123,29 +177,30 @@ name of the buffer."
                           (separator-right (intern (format "powerline-%s-%s"
                                                            (powerline-current-separator)
                                                            (cdr powerline-default-separator-dir))))
-                          (lhs (list (let ((evil-face (powerline-evil-face)))
-                                       (if evil-mode
-                                           (powerline-raw (powerline-evil-tag) evil-face)
-                                         ))
-                                     (if evil-mode
-                                         (funcall separator-left (powerline-evil-face) seg1))
-                                     (powerline-buffer-id seg1 'l)
-                                     (powerline-raw "[%*]" seg1 'l)
-                                     (when (and (boundp 'which-func-mode) which-func-mode)
-                                       (powerline-raw which-func-format seg1 'l))
-                                     (powerline-raw " " seg1)
-                                     (funcall separator-left seg1 seg2)
-                                     (when (boundp 'erc-modified-channels-object)
-                                       (powerline-raw erc-modified-channels-object seg2 'l))
-                                     (powerline-major-mode seg2 'l)
-                                     (powerline-process seg2)
-                                     (powerline-minor-modes seg2 'l)
-                                     (powerline-narrow seg2 'l)
-                                     (powerline-raw " " seg2)
-                                     (funcall separator-left seg2 seg3)
-                                     (powerline-vc seg3 'r)
-                                     (when (bound-and-true-p nyan-mode)
-                                       (powerline-raw (list (nyan-create)) seg3 'l))))
+                          (lhs (list
+                                (let ((evil-face (powerline-evil-face)))
+                                  (if evil-mode
+                                      (powerline-raw (powerline-evil-tag) evil-face)
+                                    ))
+                                (if evil-mode
+                                    (funcall separator-left (powerline-evil-face) seg1))
+                                (powerline-buffer-id seg1 'l)
+                                (powerline-raw "[%*]" seg1 'l)
+                                (when (and (boundp 'which-func-mode) which-func-mode)
+                                  (powerline-raw which-func-format seg1 'l))
+                                (powerline-raw " " seg1)
+                                (funcall separator-left seg1 seg2)
+                                (when (boundp 'erc-modified-channels-object)
+                                  (powerline-raw erc-modified-channels-object seg2 'l))
+                                (powerline-major-mode seg2 'l)
+                                (powerline-process seg2)
+                                (powerline-minor-modes seg2 'l)
+                                (powerline-narrow seg2 'l)
+                                (powerline-raw " " seg2)
+                                (funcall separator-left seg2 seg3)
+                                (powerline-vc seg3 'r)
+                                (when (bound-and-true-p nyan-mode)
+                                  (powerline-raw (list (nyan-create)) seg3 'l))))
                           (rhs (list (powerline-raw global-mode-string seg3 'r)
                                      (funcall separator-right seg3 seg2)
                                      (unless window-system
@@ -165,12 +220,10 @@ name of the buffer."
 (use-package powerline
   :config
   (use-package powerline-evil)
+  (setq powerline-default-separator (if (display-graphic-p) 'wave nil))
+  (jlr/powerline-default-theme))
 
-  (setq powerline-default-separator (if (display-graphic-p) 'arrow nil))
-  (jlr/powerline-default-theme)
-
-  (diminish 'undo-tree-mode)
-  )
+(diminish 'undo-tree-mode)
 
 (provide 'my-gui)
 ;;; my-gui.el ends here
