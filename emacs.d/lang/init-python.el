@@ -69,6 +69,7 @@ the current directory in Python's search path."
               (require 'project-root)
               (when (projectile-project-p)
                 (elpy-set-project-root (projectile-project-root)))
+              (elpy-mode t)
               ))
   )
 
