@@ -151,6 +151,13 @@ stack update
 stack install alex hasktags happy stylish-haskell present ghc-mod hlint hoogle hindent
 ```
 
+Setup elm
+---------
+
+```bash
+sudo npm install -g elm elm-oracle
+```
+
 Setup rust
 ----------
 ```bash

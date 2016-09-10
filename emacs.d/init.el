@@ -83,6 +83,7 @@
 ;; (require 'init-common-lisp)
 (require 'init-clojure)
 (require 'init-haskell)
+(require 'init-elm)
 (require 'init-markdown)
 (require 'init-rust)
 (require 'init-scheme)

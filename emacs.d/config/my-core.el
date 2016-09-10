@@ -248,24 +248,25 @@
         projectile-recentf-files (expand-file-name ".recentf" user-emacs-directory)
         projectile-completion-system 'ido
         projectile-switch-project-action 'projectile-dired
-        projectile-globally-ignored-directories '(".metadata"
+        projectile-globally-ignored-directories '(".bzr"
                                                   ".cabal-sandbox"
-                                                  ".stversions"
-                                                  ".stfolder"
-                                                  ".stignore"
-                                                  "dist"
-                                                  "elpa"
-                                                  "snippets"
-                                                  "node_modules"
-                                                  "build"
-                                                  "target"
-                                                  "out"
-                                                  "cache"
                                                   ".cache"
                                                   ".git"
                                                   ".hg"
-                                                  ".bzr"
+                                                  ".metadata"
+                                                  ".stfolder"
+                                                  ".stignore"
+                                                  ".stversions"
                                                   ".svn"
+                                                  "build"
+                                                  "cache"
+                                                  "dist"
+                                                  "elm-stuff"
+                                                  "elpa"
+                                                  "node_modules"
+                                                  "out"
+                                                  "snippets"
+                                                  "target"
                                                   "venv")))
 
 
@@ -387,6 +388,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq guide-key/idle-delay .2)
   (setq guide-key/recursive-key-sequence-flag t)
   (guide-key-mode t))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Smartparens
