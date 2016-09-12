@@ -41,5 +41,13 @@ With ARG, do this that many times."
       (projectile-find-file)
     (ido-find-file)))
 
+(defun jlr/indent-buffer ()
+  "Indent the current buffer."
+  (interactive)
+  (save-excursion
+    (delete-trailing-whitespace)
+    (indent-region (point-min) (point-max) nil)
+    (untabify (point-min) (point-max))))
+
 (provide 'my-defun)
 ;;; my-defun.el ends here

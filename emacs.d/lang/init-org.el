@@ -5,6 +5,7 @@
 
 (use-package evil-org
   :config
+  (require 'my-defun)
   (require 'evil-org)
   (after-load 'evil-org
     (evil-define-key 'normal evil-org-mode-map
@@ -19,6 +20,7 @@
   :mode ("\\.org$" . org-mode)
   :commands (org-capture org-clock-out org-occur-in-agenda-files org-agenda-files)
   :config
+  (require 'cl)
   (require 'org-indent)
   (require 'ox)
   (require 'ox-beamer)
@@ -27,6 +29,8 @@
   (use-package ox-rst)
 
   (setq org-ellipsis "⤵"
+        org-startup-indented t
+        org-startup-with-inline-images t
         ;; org-capture-templates '(("a" "My TODO task format."
         ;;                          entry
         ;;                          (file "todo.org")
@@ -40,9 +44,7 @@
         ;; org-clock-persist-file (expand-file-name "org-clock-save.el" user-emacs-directory)
         ;; org-id-locations-file (expand-file-name ".org-id-locations" user-emacs-directory)
         ;; org-log-done t
-        ;; org-startup-with-inline-images t
         ;; org-src-fontify-natively t
-        ;; org-startup-indented t
         ;; org-agenda-text-search-extra-files '(agenda-archives)
         ;; org-agenda-files '("~/Documents/org/")
         ;; org-blank-before-new-entry '((heading . t)
