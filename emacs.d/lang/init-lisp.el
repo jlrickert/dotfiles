@@ -72,7 +72,6 @@
       (add-hook 'eval-expression-minibuffer-setup-hook #'eldoc-mode)
     (eldoc-in-minibuffer-mode t)))
 
-(add-hook 'emacs-lisp-mode-hook 'smartparens-strict-mode)
 (add-hook 'emacs-lisp-mode-hook '(lambda () (run-hooks 'my-lisp-modes-hook)))
 (add-hook 'lisp-mode '(lambda () (run-hooks 'my-lisp-modes-hook)))
 

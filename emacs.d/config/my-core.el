@@ -395,13 +395,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (show-paren-mode 1)
 (use-package smartparens
-  :ensure t
   :config
   (require 'smartparens-config))
 
 (use-package evil-smartparens
-  :ensure t
-  :after (smartparends evil)
+  :after (smartparens evil)
   :config
   (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
 
