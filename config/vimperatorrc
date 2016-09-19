@@ -33,16 +33,5 @@ map <silent> K :tabnext<cr>
 
 noremap <F10> :vimperatortoggle<CR>
 
-" Press 'C-c' to copy, 'C-v' or 'S-Insert' to paste, or 'C-x' to cut
+" Press 'C-c' to copy, 'C-v' to paste, or 'C-x' to cut
 noremap <C-c> <C-v><C-c>
-noremap <C-v> <C-v><C-v>
-noremap <C-x> <C-v><C-x>
-cnoremap <C-c> <C-v><C-c>
-cnoremap <C-v> <C-v><C-v>
-cnoremap <S-Insert> <C-v><C-v>
-cnoremap <C-x> <C-v><C-x>
-inoremap <C-c> <C-v><C-c>
-inoremap <C-v> <C-v><C-v>
-inoremap <S-Insert> <C-v><C-v>
-inoremap <C-x> <C-v><C-x>
-
