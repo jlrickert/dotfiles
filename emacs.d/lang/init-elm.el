@@ -35,6 +35,7 @@ declaration."
     )
   (add-hook 'elm-mode-hook 'elm-oracle-setup-completion)
   (after-load 'company
+    (push "elm-stuff" projectile-globally-ignored-directories)
     (add-to-list 'company-backends 'company-elm))
   )
 

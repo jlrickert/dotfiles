@@ -52,6 +52,7 @@ Pacman packages that I use.
 - i3-wm
 - i3lock
 - i3status
+- inotify-tools
 - mlocate
 - neovim
 - networkmanager
@@ -69,7 +70,7 @@ Pacman packages that I use.
 - tcpdump
 - teamspeak
 - termite
-- the_silver-searcher
+- the_silver_searcher
 - tree
 - unclutter
 - xorg-xset
