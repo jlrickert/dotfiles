@@ -234,3 +234,11 @@ path=(
   $HOME/.rvm/bin # rvm needs to be first
   $path
 )
+
+
+###############################################################################
+# Read private variables
+################################################################################
+if [[ -s "${ZDOTDIR:-$HOME}/.zprivate" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprivate"
+fi
