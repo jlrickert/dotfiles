@@ -30,6 +30,9 @@ the current directory in Python's search path."
         (elpy-shell-send-current-statement))))
 
 
+  (after-load 'company
+    (push "__pycache__" projectile-globally-ignored-directories))
+
   (elpy-enable)
   (elpy-use-ipython)
   ;; (venv-initialize-interactive-shells)
@@ -66,6 +69,7 @@ the current directory in Python's search path."
               ;; Additional settings follow.
               (eldoc-mode)
               (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+              (smartparens-mode)
               (require 'project-root)
               (when (projectile-project-p)
                 (elpy-set-project-root (projectile-project-root)))

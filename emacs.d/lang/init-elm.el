@@ -33,6 +33,8 @@ declaration."
     "rr" 'elm-repl-push
     "t" 'elm-oracle-type-at-point
     )
+
+  (add-hook 'elm-mode-hook 'smartparens-mode)
   (add-hook 'elm-mode-hook 'elm-oracle-setup-completion)
   (after-load 'company
     (push "elm-stuff" projectile-globally-ignored-directories)
