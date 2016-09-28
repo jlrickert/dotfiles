@@ -401,7 +401,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (use-package evil-smartparens
   :after (smartparens evil)
   :config
-  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
+  ;; (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+  )
 
 
 (provide 'my-core)
