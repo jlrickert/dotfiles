@@ -1,4 +1,4 @@
-;;; init-org.el --- ${2:Package description}
+;;; init-org.el --- My configuration for org mode
 ;;; Commentary:
 
 ;;; Code:
