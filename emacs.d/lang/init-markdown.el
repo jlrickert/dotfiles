@@ -22,7 +22,7 @@
               (flyspell-mode t)
               (setq markdown-preview-template
                     (expand-file-name
-                     "~/.emacs.d/markdown-preview.html"
+                     "~/.emacs.d/markdown-preview-template.html"
                      user-emacs-directory))
               (setq markdown-preview-style
                     "http://aaronbieber.com/assets/styles/github-markdown.css"))))
