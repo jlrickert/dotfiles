@@ -87,10 +87,10 @@ def install_emacs(emacs_config, home, method=symlink):
 def install_oh_my_zsh(home_dir, dotfiles):
     """Installs oh my zsh and my custom modules for it.
     """
+    script = os.path.join(dotfiles, 'lib', 'install_oh_my_zsh.sh')
     oh_my_zsh_dir = os.path.join(home_dir, '.oh-my-zsh')
     if not os.path.exists(oh_my_zsh_dir):
-        call(['sh', '-c',
-              '"$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'])
+        call([script])
 
     my_theme = 'jlrickert.zsh-theme'
     my_theme_path = os.path.join(dotfiles, 'themes', my_theme)
