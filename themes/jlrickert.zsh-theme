@@ -1,15 +1,27 @@
 # oh-my-zsh Jlrickert Theme
 
-### Git [±master ▾●]
+### Git [⭠master ▾●]
 
-ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg_bold[green]%}±%{$reset_color%}%{$fg_bold[white]%}"
+local LC_ALL="" LC_CTYPE="en_US.UTF-8"
+
+CURRENT_BG='NONE'
+
+SEGMENT_SEPARATOR="\ue0b0"
+PLUSMINUS="\u00b1"
+BRANCH="\ue0a0"
+DETACHED="\u27a6"
+CROSS="\u2718"
+LIGHTNING="\u26a1"
+GEAR="\u2699"
+
+ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg_bold[green]%}${BRANCH}%{$reset_color%}%{$fg_bold[white]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}]"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}✓%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_AHEAD="%{$fg[cyan]%}▴%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_BEHIND="%{$fg[magenta]%}▾%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_STAGED="%{$fg_bold[green]%}●%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg_bold[yellow]%}●%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg_bold[red]%}●%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_STAGED="%{$fg_bold[green]%}${LIGHTNING}%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg_bold[yellow]%}${GEAR}%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg_bold[red]%}${CROSS}%{$reset_color%}"
 
 jlrickert_git_branch () {
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
@@ -71,7 +83,6 @@ jlrickert_git_prompt () {
   fi
   echo $_result
 }
-
 
 _PATH="%{$fg_bold[white]%}%~%{$reset_color%}"
 
