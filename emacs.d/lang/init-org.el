@@ -1,22 +1,22 @@
-;;; init-org.el --- ${2:Package description}
+;;; init-org.el --- My configuration for org mode
 ;;; Commentary:
 
 ;;; Code:
 
 (use-package evil-org
+  :diminish " ⓔ"
   :config
   (require 'my-defun)
   (require 'evil-org)
-  (after-load 'evil-org
-    (evil-define-key 'normal evil-org-mode-map
-      "O" 'evil-open-above
-      "o" 'evil-open-below)
-    (evil-leader/set-key-for-mode 'org-mode
-      "o" 'make-frame))
+  (evil-define-key 'normal evil-org-mode-map
+    "O" 'evil-open-above
+    "o" 'evil-open-below)
+  (evil-leader/set-key-for-mode 'org-mode
+    "o" 'make-frame)
   )
 
 (use-package org
-  :diminish " ⓔ"
+  :diminish ""
   :mode ("\\.org$" . org-mode)
   :commands (org-capture org-clock-out org-occur-in-agenda-files org-agenda-files)
   :config
@@ -62,7 +62,10 @@
 
   ;; (set-face-attribute 'org-upcoming-deadline nil :foreground "gold1")
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
-  (add-hook 'org-mode-hook 'evil-org-mode)
+  (add-hook 'org-mode-hook
+            '(lambda ()
+               (flyspell-mode t)
+               (evil-org-mode t)))
   )
 
 (use-package org-bullets

@@ -19,6 +19,7 @@
   :config
   (add-hook 'markdown-preview-mode-hook
             (lambda ()
+              (flyspell-mode t)
               (setq markdown-preview-template
                     (expand-file-name
                      "~/.emacs.d/markdown-preview.html"
