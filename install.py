@@ -1,13 +1,19 @@
 import os
 import stat
+import logging
+from subprocess import call
 from contextlib import contextmanager
 from os.path import realpath, dirname, expanduser
+
+logging.basicConfig()
+log = logging.getLogger('installer')
+log.setLevel(logging.INFO)
 
 
 @contextmanager
 def dry_run():
     """Disables and operations to the os"""
-    print('dry_run')
+    log.debug('Starting dry run')
     _makedirs = os.makedirs
     _symlink = os.symlink
     os.makedirs = lambda path: None
@@ -17,13 +23,17 @@ def dry_run():
     os.symlink = _symlink
 
 
-def symlink(src=None, dst=None):
+def symlink(src=None, dst=None, force=True):
     """Symlinks files"""
     assert src and dst
     ensure_available_path(dirname(dst))
     if not os.path.exists(dst):
         os.symlink(src, dst)
-        print("Linking '{}' -> '{}'".format(src, dst))
+        log.info("Linking '{}' -> '{}'".format(src, dst))
+    elif force is True:
+        os.remove(dst)
+        log.info("Removing {}".format(dst))
+        symlink(src=src, dst=dst)
 
 
 def mark_as_exec(bin_name):
@@ -35,7 +45,7 @@ def mark_as_exec(bin_name):
 def ensure_available_path(path):
     """Make sure that a directory exists"""
     if not os.path.exists(path):
-        print('Created directory {}'.format(path))
+        log.info('Created directory {}'.format(path))
         os.makedirs(path)
 
 
@@ -80,13 +90,29 @@ def install_emacs(emacs_config, home, method=symlink):
     method(emacs_config, dst)
 
 
-def main():
-    """Installs everything."""
-    dotfiles = dirname(realpath(__file__))
-    configs = os.path.join(dotfiles, 'config')
-    home = expanduser('~')
+def install_oh_my_zsh(home_dir, dotfiles, method=symlink):
+    """Installs oh my zsh and my custom modules for it.
+    """
+    script = os.path.join(dotfiles, 'lib', 'install_oh_my_zsh.sh')
+    oh_my_zsh_dir = os.path.join(home_dir, '.oh-my-zsh')
+    if not os.path.exists(oh_my_zsh_dir):
+        call([script])
 
-    install_configs(configs, home)
+    my_theme = 'jlrickert.zsh-theme'
+    my_theme_path = os.path.join(dotfiles, 'themes', my_theme)
+    themes_dir = os.path.join(oh_my_zsh_dir, 'themes')
+    theme_dst = os.path.join(themes_dir, my_theme)
+    if not os.path.exists(theme_dst):
+        method(my_theme_path, theme_dst)
+
+
+def main(dotfiles=dirname(realpath(__file__)),
+         home=expanduser('~')):
+    """Installs everything."""
+    config_dir = os.path.join(dotfiles, 'config')
+
+    install_oh_my_zsh(home, dotfiles)
+    install_configs(config_dir, home)
 
     bin_location = os.path.join(home, '.local', 'bin')
     install_bin(os.path.join(dotfiles, 'bin'), bin_location)
@@ -99,4 +125,6 @@ def main():
 
 if __name__ == '__main__':
     import sys
-    sys.exit(main())
+    home = expanduser('~')
+    dotfiles = dirname(realpath(__file__))
+    sys.exit(main(home=home, dotfiles=dotfiles))
