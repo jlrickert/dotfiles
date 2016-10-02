@@ -6,7 +6,6 @@ from contextlib import contextmanager
 from os.path import realpath, dirname, expanduser
 
 log = logging.getLogger(__name__)
-log = print
 
 
 @contextmanager
