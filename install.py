@@ -5,7 +5,9 @@ from subprocess import call
 from contextlib import contextmanager
 from os.path import realpath, dirname, expanduser
 
-log = logging.getLogger(__name__)
+logging.basicConfig()
+log = logging.getLogger('installer')
+log.setLevel(logging.INFO)
 
 
 @contextmanager
@@ -88,7 +90,7 @@ def install_emacs(emacs_config, home, method=symlink):
     method(emacs_config, dst)
 
 
-def install_oh_my_zsh(home_dir, dotfiles):
+def install_oh_my_zsh(home_dir, dotfiles, method=symlink):
     """Installs oh my zsh and my custom modules for it.
     """
     script = os.path.join(dotfiles, 'lib', 'install_oh_my_zsh.sh')
@@ -101,7 +103,7 @@ def install_oh_my_zsh(home_dir, dotfiles):
     themes_dir = os.path.join(oh_my_zsh_dir, 'themes')
     theme_dst = os.path.join(themes_dir, my_theme)
     if not os.path.exists(theme_dst):
-        symlink(my_theme_path, theme_dst)
+        method(my_theme_path, theme_dst)
 
 
 def main(dotfiles=dirname(realpath(__file__)),
