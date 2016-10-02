@@ -21,13 +21,17 @@ def dry_run():
     os.symlink = _symlink
 
 
-def symlink(src=None, dst=None):
+def symlink(src=None, dst=None, force=True):
     """Symlinks files"""
     assert src and dst
     ensure_available_path(dirname(dst))
     if not os.path.exists(dst):
         os.symlink(src, dst)
         log.info("Linking '{}' -> '{}'".format(src, dst))
+    elif force is True:
+        os.remove(dst)
+        log.info("Removing {}".format(dst))
+        symlink(src=src, dst=dst)
 
 
 def mark_as_exec(bin_name):
