@@ -5,6 +5,7 @@
 (message "Loading my-defun")
 
 (use-package cl)
+
 (if (fboundp 'with-eval-after-load)
     (defalias 'after-load 'with-eval-after-load)
   (defmacro after-load (feature &rest body)
@@ -48,6 +49,34 @@ With ARG, do this that many times."
     (delete-trailing-whitespace)
     (indent-region (point-min) (point-max) nil)
     (untabify (point-min) (point-max))))
+
+(defun jlr/foldr (fn x seq)
+  (if seq
+      (let* ((head (car seq))
+             (tail (cdr seq)))
+        (funcall fn x (fold fn head tail)))
+    x))
+
+(defun jlr/foldl (fn x seq)
+  (if seq
+      (let* ((head (car seq))
+             (tail (cdr seq)))
+        (funcall fn (fold fn head tail) x))
+    x))
+
+(defun jlr/reduce (fn seq &optional identity)
+  "Use FN to combine SEQ an option IDENTITY."
+  (if identity
+      (foldr fn identity seq)
+    (foldr fn (car seq) (cdr seq)))
+  )
+
+(defun jlr/path-join (&rest paths)
+  "Join PATHS together, inserting '/' as needed.
+An empty last part will result in a path that ends with a
+separator."
+  (let* ((sep (if (string= system-type "windows-nt") "\\" "/")))
+    (jlr/reduce (lambda (a b) (concat a sep b)) paths)))
 
 (provide 'my-defun)
 ;;; my-defun.el ends here
