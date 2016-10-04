@@ -6,10 +6,10 @@
   :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
+         ("\\.markdown\\'" . markdown-mode)
+         ("\\.md\\'" . markdown-mode))
   :config
-  (let (markdown-css "https://mirror.jlrickert.me/pandoc-md.css")
+  (let ((markdown-css "https://mirror.jlrickert.me/pandoc-md.css"))
     (setq markdown-command (format "pandoc -s --mathjax --to html --css=%s" markdown-css)))
   ;; (setq markdown-command "pandoc --from markdown_github-hard_line_breaks --to html")
   )
