@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+ARGV.each do |file|
+  regex = /(\s*-\s*|\s+)/
+  fixed_file = file.gsub(regex) { "_" }
+  FileUtils.mv(file, fixed_file)
+end

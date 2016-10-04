@@ -91,6 +91,9 @@
   (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
   (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
+  ;; Miscellaneous keybindings
+  (define-key evil-normal-state-map (kbd "M-d") 'sp-splice-sexp)
+
   ;; My own Ex commands.
   (evil-ex-define-cmd "q[uit]" 'evil-quit)
   (evil-ex-define-cmd "qa" 'evil-quit-all)
