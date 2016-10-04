@@ -1,14 +1,9 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Path to your oh-my-zsh installation.
 export ZSH=/home/raviko/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-# ZSH_THEME="robbyrussell"
-# ZSH_THEME="bureau"
 ZSH_THEME="jlrickert"
 
 # Uncomment the following line to use case-sensitive completion.
@@ -55,63 +50,110 @@ ZSH_THEME="jlrickert"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
     archlinux
-    battery
     cabal
     catimg
     common-aliases
     django
     docker
+    emacs
     encode64
     fasd
     gem
     git
     jsontools
     lein
-    pep8
     per-directory-history
     pip
     pyenv
     python
     rails
+    rake
+    rbenv
     ruby
-    rvm
+    rust
     systemd
     vi-mode
+    web-search
+    zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
+################################################################################
+#### User configuration
+################################################################################
 
-# export MANPATH="/usr/local/man:$MANPATH"
+export DOTFILES=$HOME/.dotfiles
+export GOPATH=$HOME/Development/gocode
+export ANDROID_HOME=/opt/android-sdk
+export PYENV_ROOT="$HOME/.pyenv"
+export CARGO_HOME=$HOME/.cargo
+export RUST_SRC_PATH=$HOME/.local/src/rust/src
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+### Environmental variables
+export LANG=en_US.UTF-8
+export BROWSER='firefox'
 
 # Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-fi
+# export EDITOR='vim'
+# export VISUAL='vim'
+# export PAGER='less'
 
 # Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+export ARCHFLAGS="-arch x86_64"
 
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
+# Set the default Less options.
+# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
+# Remove -X and -F (exit if the content fits on one screen) to enable it.
+export LESS='-F -g -i -M -R -S -w -X -z-4'
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# Make sure a tmp dir exists
+if [[ ! -d "$TMPDIR" ]]; then
+    export TMPDIR="/tmp/$USER"
+    mkdir -p -m 700 "$TMPDIR"
+fi
 
+TMPPREFIX="${TMPDIR%/}/zsh"
 
-###############################################################################
-# Keymap
-###############################################################################
+### Paths
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath
+
+# Set the list were completions are stored
+fpath=(
+    $fpath[@]
+    $HOME/.local/share/completions
+)
+
+# Set the the list of directories that cd searches.
+cdpath=(
+    $cdpath
+)
+
+### Paths
+typeset -U path
+path=(
+    $path[@]
+    /usr/local/{bin,sbin}
+    $HOME/.local/bin
+    $HOME/.cargo/bin
+    $GOPATH/bin
+)
+
+### Load my custom functions
+source ~/.local/share/zsh/functions.zsh
+
+### Aliass
+## Python
+alias py="python"
+alias py2="python2"
+
+## ruby
+alias rb="ruby"
+
+alias wo=fire_fox_open
+
+### Keymap
 bindkey '^[n' down-history
 bindkey '^[p' up-history
 bindkey '^[r' history-incremental-search-backward

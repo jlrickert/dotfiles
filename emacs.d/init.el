@@ -89,12 +89,12 @@
 (require 'init-markdown)
 (require 'init-rust)
 (require 'init-scheme)
+(require 'init-ruby)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Load my keybings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'my-keybindings)
-
 
 ;;; init.el ends here
