@@ -26,10 +26,10 @@ ZSH_THEME="jlrickert"
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -39,7 +39,7 @@ ZSH_THEME="jlrickert"
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
+HIST_STAMPS="mm/dd/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -50,6 +50,7 @@ ZSH_THEME="jlrickert"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
     archlinux
+    autopep8
     cabal
     catimg
     common-aliases
@@ -62,9 +63,11 @@ plugins=(
     git
     jsontools
     lein
+    pep8
     per-directory-history
     pip
     pyenv
+    pylint
     python
     rails
     rake
@@ -72,6 +75,7 @@ plugins=(
     ruby
     rust
     systemd
+    vagrant
     vi-mode
     web-search
     zsh-syntax-highlighting
@@ -82,22 +86,19 @@ source $ZSH/oh-my-zsh.sh
 ################################################################################
 #### User configuration
 ################################################################################
-
+### Environmental variables
+export DEFAULT_USER='whoami'
 export DOTFILES=$HOME/.dotfiles
 export GOPATH=$HOME/Development/gocode
 export ANDROID_HOME=/opt/android-sdk
 export PYENV_ROOT="$HOME/.pyenv"
 export CARGO_HOME=$HOME/.cargo
 export RUST_SRC_PATH=$HOME/.local/src/rust/src
-
-### Environmental variables
 export LANG=en_US.UTF-8
 export BROWSER='firefox'
-
-# Preferred editor for local and remote sessions
-# export EDITOR='vim'
-# export VISUAL='vim'
-# export PAGER='less'
+export EDITOR='vim'
+export VISUAL='vim'
+export PAGER='less'
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
@@ -107,7 +108,7 @@ export ARCHFLAGS="-arch x86_64"
 # Remove -X and -F (exit if the content fits on one screen) to enable it.
 export LESS='-F -g -i -M -R -S -w -X -z-4'
 
-# Make sure a tmp dir exists
+### Make sure a tmp dir exists
 if [[ ! -d "$TMPDIR" ]]; then
     export TMPDIR="/tmp/$USER"
     mkdir -p -m 700 "$TMPDIR"
@@ -136,6 +137,7 @@ path=(
     $path[@]
     /usr/local/{bin,sbin}
     $HOME/.local/bin
+    $PYENV_ROOT/bin
     $HOME/.cargo/bin
     $GOPATH/bin
 )
@@ -144,13 +146,9 @@ path=(
 source ~/.local/share/zsh/functions.zsh
 
 ### Aliass
-## Python
-alias py="python"
-alias py2="python2"
-
-## ruby
-alias rb="ruby"
-
+alias py=python
+alias py2=python2
+alias rb=ruby
 alias wo=fire_fox_open
 
 ### Keymap
