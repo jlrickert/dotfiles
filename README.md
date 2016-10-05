@@ -19,21 +19,12 @@ Running the install will create all the directories and symlink all files
 python install.py
 ```
 
-#### Installing prezto
-
-Run the following and don't worry about what zprezto says in their readme.
-
-```bash
-git clone --recursive https://github.com/sorin-ionescu/prezto.git $HOME/.zprezto
-chsh -s /bin/zsh
-```
-
 ---
 
 Pacman packages that I use.
 ---------------------------
 
-## Core
+### Core
 
 - abs
 - at
@@ -78,7 +69,7 @@ Pacman packages that I use.
 - zsh-completions
 - zsh-syntax-highlighting
 
-## AUR
+### AUR
 
 - chromedriver
 - fasd
@@ -88,7 +79,8 @@ Pacman packages that I use.
 - package-query
 - yaourt
 
-## Programing related
+Programing related
+------------------
 
 ### C/C++
 
@@ -128,33 +120,27 @@ Pacman packages that I use.
 Installation for other tools that I use.
 ----------------------------------------
 
-Setup Python
-------------
+### Setup Python
 
 ```bash
 git clone https://github.com/yyuu/pyenv.git ~/.pyenv
 git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
 ```
 
-Setup Haskell
--------------
-
-### Install development stuff
+### Setup Haskell
 
 ```bash
 stack update
 stack install alex hasktags happy stylish-haskell present ghc-mod hlint hoogle hindent
 ```
 
-Setup elm
----------
+### Setup elm
 
 ```bash
 sudo npm install -g elm elm-oracle
 ```
 
-Setup Ruby
----------
+### Setup Ruby
 
 ```bash
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
@@ -162,8 +148,8 @@ cd ~/.rbenv && src/configure && make -C src
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 ```
 
-Setup rust
-----------
+### Setup rust
+
 ```bash
 curl https://sh.rustup.rs -sSf | sh
 cargo install rust-fmt
@@ -173,7 +159,7 @@ cargo install racer
 System setup checklist
 ----------------------
 
-## Gnome-keyring
+### Gnome-keyring
 
 - [ ] [Gnome keyring setup](https://wiki.archlinux.org/index.php/GNOME/Keyring#Using_the_keyring_outside_GNOME)
 - [ ] at `systemctl enable atd`
