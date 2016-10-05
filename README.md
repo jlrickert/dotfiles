@@ -12,7 +12,6 @@ Installation
 git clone https://github.com/jlrickert/dotfiles.git ~/dotfiles
 ```
 
-
 ### Installation
 
 Running the install will create all the directories and symlink all files
@@ -73,6 +72,7 @@ Pacman packages that I use.
 - the_silver_searcher
 - tree
 - unclutter
+- wireshark
 - xorg-xset
 - zsh
 - zsh-completions
@@ -128,14 +128,8 @@ Pacman packages that I use.
 Installation for other tools that I use.
 ----------------------------------------
 
-install rvm with:
-
-```bash
-gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-curl -sSL https://get.rvm.io | bash -s stable
-```
-
-install pyenv with:
+Setup Python
+------------
 
 ```bash
 git clone https://github.com/yyuu/pyenv.git ~/.pyenv
@@ -159,6 +153,15 @@ Setup elm
 sudo npm install -g elm elm-oracle
 ```
 
+Setup Ruby
+---------
+
+```bash
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+cd ~/.rbenv && src/configure && make -C src
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+```
+
 Setup rust
 ----------
 ```bash
@@ -172,7 +175,7 @@ System setup checklist
 
 ## Gnome-keyring
 
-- [ ] [ Gnome keyring setup](https://wiki.archlinux.org/index.php/GNOME/Keyring#Using_the_keyring_outside_GNOME)
+- [ ] [Gnome keyring setup](https://wiki.archlinux.org/index.php/GNOME/Keyring#Using_the_keyring_outside_GNOME)
 - [ ] at `systemctl enable atd`
 - [ ] networkmanager
 - [ ] sshd

@@ -89,6 +89,24 @@ def install_vundle(home=HOME, dotfiles=DOTFILES):
     """Installs vundle for vim"""
 
 
+def install_pyenv(home=HOME, dotfiles=DOTFILES):
+    """Installs pyenv"""
+
+    script = os.path.join(dotfiles, "lib", "install_pyenv.sh")
+    pyenv_dir = os.path.join(home, ".pyenv")
+    if not os.path.exists(pyenv_dir):
+        run_script(script)
+
+
+def install_rbenv(home=HOME, dotfiles=DOTFILES):
+    """Installs rbenv"""
+
+    script = os.path.join(dotfiles, "lib", "install_rbenv.sh")
+    rbenv_dir = os.path.join(home, ".pyenv")
+    if not os.path.exists(rbenv_dir):
+        run_script(script)
+
+
 def install_everything(home=HOME, dotfiles=DOTFILES):
     """Installs everything."""
     install_oh_my_zsh(home, dotfiles)
@@ -97,6 +115,8 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     install_bin(home, dotfiles)
     install_emacs(home, dotfiles)
     install_vundle(home, dotfiles)
+    install_rbenv(home, dotfiles)
+    install_pyenv(home, dotfiles)
 
 
 if __name__ == '__main__':
