@@ -87,18 +87,20 @@ source $ZSH/oh-my-zsh.sh
 #### User configuration
 ################################################################################
 ### Environmental variables
-export DEFAULT_USER='whoami'
+export DEFAULT_USER=`whoami`
 export DOTFILES=$HOME/.dotfiles
 export GOPATH=$HOME/Development/gocode
 export ANDROID_HOME=/opt/android-sdk
-export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_ROOT=$HOME/.pyenv
 export CARGO_HOME=$HOME/.cargo
 export RUST_SRC_PATH=$HOME/.local/src/rust/src
 export LANG=en_US.UTF-8
-export BROWSER='firefox'
-export EDITOR='vim'
-export VISUAL='vim'
-export PAGER='less'
+export BROWSER=firefox
+export EDITOR=vim
+export VISUAL=vim
+export PAGER=less
+export RUBYLIB=$HOME/.local/lib/ruby
+export PYTHONPATH=$HOME/.local/lib/python
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
