@@ -55,6 +55,6 @@ def mkdir(path):
         os.makedirs(path)
 
 
-def run_script(file_path, *args):
+def run_script(exe, *args):
     """Calls a script with the given args."""
-    call([file_path] + args)
+    call([exe] + list(args))
