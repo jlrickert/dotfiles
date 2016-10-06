@@ -13,9 +13,11 @@
   :config
   (add-hook 'markdown-mode-hook
             '(lambda ()
+               (auto-fill-mode t)
                (flyspell-mode t))))
 
 (use-package markdown-preview-mode :after (markdown-mode))
+
 
 (provide 'init-markdown)
 ;;; init-markdown.el ends here

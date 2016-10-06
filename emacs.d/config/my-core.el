@@ -28,9 +28,9 @@
 (put 'transient-mark-mode 'permanent-local t)
 (setq-default transient-mark-mode t)
 
-;; 80 charactor lines
-(setq fill-column 80)
-(set-default 'fill-column 80)
+;; 45-65 optimal for human eyes
+(setq fill-column 60)
+(set-default 'fill-column 60)
 
 (setq-default initial-scratch-message
               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
