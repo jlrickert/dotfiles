@@ -156,10 +156,11 @@
 ;;; Snippets
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package yasnippet
-  :defer t
+  :diminish ""
   :config
   (yas-reload-all)
-  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  (yas-global-mode t)
+  (setq yas-snippet-dirs (jlr/path-join (getenv "HOME") ".emacs" "snippets"))
   (setq tab-always-indent 'complete)
   (setq yas-prompt-functions '(yas-completing-prompt
                                yas-ido-prompt

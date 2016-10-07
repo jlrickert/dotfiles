@@ -54,21 +54,21 @@ With ARG, do this that many times."
   (if seq
       (let* ((head (car seq))
              (tail (cdr seq)))
-        (funcall fn x (fold fn head tail)))
+        (funcall fn x (jlr/foldr fn head tail)))
     x))
 
 (defun jlr/foldl (fn x seq)
   (if seq
       (let* ((head (car seq))
              (tail (cdr seq)))
-        (funcall fn (fold fn head tail) x))
+        (funcall fn (jlr/foldl fn head tail) x))
     x))
 
 (defun jlr/reduce (fn seq &optional identity)
   "Use FN to combine SEQ an option IDENTITY."
   (if identity
-      (foldr fn identity seq)
-    (foldr fn (car seq) (cdr seq)))
+      (jlr/foldr fn identity seq)
+    (jlr/foldr fn (car seq) (cdr seq)))
   )
 
 (defun jlr/path-join (&rest paths)
