@@ -13,7 +13,7 @@
 
 ;; Move files to trash when deleting
 (setq delete-by-moving-to-trash t)
-(setq x-select-enable-clipboard t)
+(setq select-enable-clipboard t)
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
@@ -79,6 +79,7 @@
     (defadvice make-frame (around toggle-nlinum-mode compile activate)
       (nlinum-mode -1) ad-do-it (nlinum-mode 1)))
   )
+
 (setq-default truncate-lines t) ;; disables line wrapping
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -95,28 +96,24 @@
 ;; Keep cursor away from edges when scrolling up/down
 (use-package smooth-scrolling :disabled t)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Backups
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar backup-dir "~/.emacs.d/backups/")
 (setq backup-directory-alist
-      `(("." . ,(expand-file-name
-                 (concat user-emacs-directory "backups"))))
+      `(("." . ,(expand-file-name "backups" user-emacs-directory)))
       backup-by-copying t
       delete-old-versions t
       make-backup-files t
       kept-new-versions 6
       kept-old-versions 2
-      version-control t)
+      version-control t
 
-;; Make backups of files, even when they're in version control
-(setq vc-make-backup-files t)
+      ;; Make backups of files, even when they're in version control
+      vc-make-backup-files t
 
-
-;; autsave no longer puts it in my working directory
-(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
-
+      ;; autsave no longer puts it in my working directory
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+      )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Autocomplete
@@ -129,28 +126,18 @@
   (setq-default
    company-backends '((company-capf company-dabbrev-code) company-dabbrev))
 
-  (setq company-idle-delay 0.2)
-  (setq completion-cycling 5)
-  (setq company-selection-wrap-around t)
-  (setq company-tooltip-align-annotations t)
+  (setq
+   company-idle-delay 0.2
+   completion-cycling 5
+   company-selection-wrap-around t
+   company-tooltip-align-annotations t
+   company-auto-complete nil)
 
   (define-key evil-insert-state-map (kbd "M-n") 'company-complete-common)
   (evil-define-key 'hybrid company-active-map
+    (kbd "TAB") 'company-complete
     (kbd "M-n") 'company-select-next
-    (kbd "M-p") 'company-select-previous
-    )
-  )
-
-(use-package company-quickhelp
-  :after company
-  :disabled t
-  :config
-  (evil-define-key 'hybrid company-quickhelp-mode-map
-    (kbd "M-n") 'company-select-next
-    (kbd "M-p") 'company-select-previous
-    )
-  (company-quickhelp-mode t))
-
+    (kbd "M-p") 'company-select-previous))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Snippets
@@ -160,16 +147,31 @@
   :config
   (yas-reload-all)
   (yas-global-mode t)
-  (setq yas-snippet-dirs (jlr/path-join (getenv "HOME") ".emacs" "snippets"))
-  (setq tab-always-indent 'complete)
-  (setq yas-prompt-functions '(yas-completing-prompt
+  (setq yas-snippet-dirs (jlr/path-join (getenv "HOME") ".emacs" "snippets")
+
+        tab-always-indent 'complete
+
+        yas-prompt-functions '(yas-completing-prompt
                                yas-ido-prompt
                                yas-dropdown-prompt))
+
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (key-chord-define-global (kbd "jk") 'yas-expand)
   (key-chord-define yas-keymap (kbd "jk") 'yas-next-field-or-maybe-expand)
-  (define-key yas-minor-mode-map (kbd "<escape>") 'yas-exit-snippet))
+  (define-key yas-minor-mode-map (kbd "<escape>") 'yas-exit-snippet)
+
+  ;; Add yasnippet support for all company backends
+  ;; https://github.com/syl20bnr/spacemacs/pull/179
+  (defun company-mode/backend-with-yas (backend)
+    "Enable yas suggestions for the BACKEND."
+    (if (and (listp backend)
+             (member 'company-yasnippet backend))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
