@@ -9,7 +9,7 @@
          ("\\.md\\'" . markdown-mode))
   :init
   (let ((markdown-css "https://mirror.jlrickert.me/pandoc-md.css"))
-    (setq markdown-command (format "pandoc -s --mathjax --to html --css=%s" markdown-css)))
+    (setq markdown-command (format "pandoc -s --toc --mathjax --to html --css=%s" markdown-css)))
   :config
   (add-hook 'markdown-mode-hook
             '(lambda ()

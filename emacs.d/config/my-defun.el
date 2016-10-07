@@ -78,5 +78,16 @@ separator."
   (let* ((sep (if (string= system-type "windows-nt") "\\" "/")))
     (jlr/reduce (lambda (a b) (concat a sep b)) paths)))
 
+(defun jlr/ag (string)
+  "Search using ag n the current project for a given literal
+search STRING, with STRING defaulting to the symbol under point.
+
+If called with a prefix, prompts for flags to pass to ag. "
+  (interactive (list (ag/read-from-minibuffer "Search string")))
+  (if (projectile-project-p)
+      (ag/search string (cdr (project-current)))
+    (ag)
+    ))
+
 (provide 'my-defun)
 ;;; my-defun.el ends here
