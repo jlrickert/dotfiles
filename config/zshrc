@@ -145,13 +145,16 @@ path=(
 )
 
 ### Load my custom functions
-source ~/.local/lib/zsh/functions.zsh
+source ~/.local/lib/zsh/*.zsh
 
 ### Aliass
 alias py=python
 alias py2=python2
 alias rb=ruby
 alias wo=fire_fox_open
+
+alias emacs="$EMACS_PLUGIN_LAUNCHER --no-wait --create-frame"
+alias e="$EMACS_PLUGIN_LAUNCHER --no-wait"
 
 ### Keymap
 bindkey '^[n' down-history
