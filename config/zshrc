@@ -145,7 +145,7 @@ path=(
 )
 
 ### Load my custom functions
-source ~/.local/share/zsh/functions.zsh
+source ~/.local/lib/zsh/functions.zsh
 
 ### Aliass
 alias py=python
