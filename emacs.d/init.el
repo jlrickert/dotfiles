@@ -89,6 +89,7 @@
 (require 'init-markdown)
 (require 'init-rust)
 (require 'init-scheme)
+(require 'init-racket)
 (require 'init-ruby)
 
 
