@@ -68,6 +68,19 @@
       "k" 'cider-doc
       "p" 'cider-eval-defun-at-point)
     (add-hook (derived-mode-hook-name mode) '(lambda () (run-hooks 'my-lisp-modes-hook)))
+    (eval
+     `(evil-define-key 'normal ,(derived-mode-map-name mode)
+        (kbd "M-=") 'sp-indent-defun
+        (kbd "M-c") 'sp-convolute-sexp
+        (kbd "M-d") 'sp-splice-sexp
+        (kbd "M-h") 'sp-backward-slurp-sexp
+        (kbd "M-j") 'sp-join-sexp
+        (kbd "M-l") 'sp-backward-barf-sexp
+        (kbd "M-n") 'sp-forward-slurp-sexp
+        (kbd "M-p") 'sp-forward-barf-sexp
+        (kbd "M-s") 'sp-split-sexp
+        (kbd "M-t") 'sp-transpose-sexp
+        ))
     (eval `(evil-define-key 'insert ,(derived-mode-map-name mode)
              ";" 'electric-lisp-comment))))
 
