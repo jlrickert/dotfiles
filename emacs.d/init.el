@@ -95,6 +95,7 @@
 (require 'init-scheme)
 (require 'init-racket)
 (require 'init-ruby)
+(require 'init-js)
 (require 'init-go)
 
 

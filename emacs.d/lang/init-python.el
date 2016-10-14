@@ -70,7 +70,7 @@ the current directory in Python's search path."
               (elpy-mode t)
               (eldoc-mode)
               (add-to-list 'write-file-functions 'delete-trailing-whitespace)
-              (smartparens-mode)
+              (smartparens-mode t)
               (require 'project-root)
               (when (projectile-project-p)
                 (elpy-set-project-root (projectile-project-root)))
