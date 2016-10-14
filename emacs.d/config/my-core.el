@@ -147,7 +147,7 @@
   :config
   (yas-reload-all)
   (yas-global-mode t)
-  (setq yas-snippet-dirs (jlr/path-join (getenv "HOME") ".emacs" "snippets")
+  (setq yas-snippet-dirs (jlr/path-join (getenv "HOME") ".emacs.d" "snippets")
 
         tab-always-indent 'complete
 

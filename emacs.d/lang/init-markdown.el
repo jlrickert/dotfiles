@@ -14,7 +14,9 @@
   (add-hook 'markdown-mode-hook
             '(lambda ()
                (auto-fill-mode t)
-               (flyspell-mode t))))
+               (flyspell-mode t)))
+  (evil-define-key 'normal markdown-mode-map
+    (kbd "TAB") 'markdown-shifttab))
 
 (use-package markdown-preview-mode :after (markdown-mode))
 
