@@ -49,7 +49,6 @@ HIST_STAMPS="mm/dd/yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    archlinux
     autopep8
     cabal
     catimg
@@ -148,13 +147,37 @@ path=(
 source ~/.local/lib/zsh/*.zsh
 
 ### Aliass
-alias py=python
-alias py2=python2
-alias rb=ruby
-alias wo=fire_fox_open
+alias py='python'
+alias py2='python2'
+alias rb='ruby'
+alias wo='fire_fox_open'
 
-alias emacs="$EMACS_PLUGIN_LAUNCHER --no-wait --create-frame"
-alias e="$EMACS_PLUGIN_LAUNCHER --no-wait"
+alias emacs='$EMACS_PLUGIN_LAUNCHER --no-wait --create-frame'
+alias e='$EMACS_PLUGIN_LAUNCHER --no-wait'
+
+alias pac='pacman'
+alias paci='sudo pacman --sync'
+alias pacI='sudo pacman --upgrades'
+alias pacu='sudo pacman --sync --refresh && sudo abs'
+alias pacU='sudo pacman --sync --refresh --sysupgrade'
+alias pacx='sudo pacman --remove'
+alias pacX='sudo pacman --remove --nosave --recursive'
+alias pacq='pacman --query --info'
+alias pacQ='pacman --query --search'
+alias paclsorphans='sudo pacman -Qdt'
+alias pacxmorphans='sudo pacman -Rs $(pacman -Qtdq)'
+
+alias yac='pacman'
+alias yaci='sudo yaourt --sync'
+alias yacI='sudo yaourt --upgrades'
+alias yacu='sudo yaourt --sync --refresh && sudo abs'
+alias yacU='sudo yaourt --sync --refresh --sysupgrade --aur'
+alias yacx='sudo yaourt --remove'
+alias yacX='sudo yaourt --remove --nosave --recursive'
+alias yacq='yaourt --query --info'
+alias yacQ='yaourt --query --search'
+alias yaclsorphans='sudo yaourt -Qdt'
+alias yacxmorphans='sudo yaourt -Rs $(pacman -Qtdq)'
 
 ### Keymap
 bindkey '^[n' down-history
