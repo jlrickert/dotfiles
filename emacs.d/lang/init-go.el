@@ -10,7 +10,7 @@
                (smartparens-mode t)
                (setq tab-width 4
                      indent-tabs-mode 1)))
-  (evil-leader/set-key-for-mode go-mode
+  (evil-leader/set-key-for-mode 'go-mode
     "." 'godef-jump
     ))
 
