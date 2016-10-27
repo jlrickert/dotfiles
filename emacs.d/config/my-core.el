@@ -35,6 +35,18 @@
 (setq-default initial-scratch-message
               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 
+;; Adapted from
+;; <https://github.com/bling/dotemacs/blob/master/config/init-core.el>
+(defun my-do-not-kill-scratch-buffer ()
+  "Don't let the scratch buffer die."
+  (if (member (buffer-name (current-buffer)) '("*scratch*" "*Messages*"))
+      (progn
+        (bury-buffer)
+        nil)
+    t))
+
+(add-hook 'kill-buffer-query-functions 'my-do-not-kill-scratch-buffer)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Performace related things
@@ -68,16 +80,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Basic Editor config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-linum-mode)
+;; (global-linum-mode)
 (use-package nlinum
   :config
-  (defun initialize-nlinum (&optional frame)
-    (require 'nlinum)
-    (add-hook 'prog-mode-hook 'nlinum-mode))
-  (when (daemonp)
-    (add-hook 'window-setup-hook 'initialize-nlinum)
-    (defadvice make-frame (around toggle-nlinum-mode compile activate)
-      (nlinum-mode -1) ad-do-it (nlinum-mode 1)))
+  (add-hook 'prog-mode-hook 'nlinum-mode)
+  (add-hook 'text-mode-hook 'nlinum-mode)
   )
 
 (setq-default truncate-lines t) ;; disables line wrapping
@@ -128,6 +135,7 @@
 
   (setq
    company-idle-delay 0.2
+   company-echo-delay 0
    completion-cycling 5
    company-selection-wrap-around t
    company-tooltip-align-annotations t
@@ -172,7 +180,6 @@
               '(:with company-yasnippet))))
 
   (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Syntax checking
@@ -367,8 +374,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
               (if (string= " " (this-command-keys))
                   (insert ?-)
                 (funcall ,ido-cannot-complete-command)))))
-      ad-do-it))
-  )
+      ad-do-it)))
 
 
 ;;; smex
