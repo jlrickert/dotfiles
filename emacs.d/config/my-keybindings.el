@@ -34,7 +34,7 @@
     "aa" 'align-regexp
     "bb" 'switch-to-buffer
     "bk" 'kill-this-buffer
-    "ff" 'quick-find-file
+    "ff" 'jlr/quick-find-file
     "fa" 'jlr/ag
     "g" 'magit-status
     "h" 'fontify-and-browse    ;; HTML-ize the buffer and browse the result

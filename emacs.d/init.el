@@ -6,10 +6,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Add all load paths and such
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-to-list 'load-path (expand-file-name "config" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "lang" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "site-lisp" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "resources" user-emacs-directory))
+(eval-and-compile
+  (add-to-list 'load-path (expand-file-name "config" user-emacs-directory))
+  (add-to-list 'load-path (expand-file-name "lang" user-emacs-directory))
+  (let ((default-directory  (expand-file-name "site-lisp" user-emacs-directory)))
+    (setq load-path
+          (append
+           (let ((load-path  (copy-sequence load-path))) ;; Shadow
+             (append
+              (copy-sequence (normal-top-level-add-to-load-path '(".")))
+              (normal-top-level-add-subdirs-to-load-path)))
+           load-path)))
+  )
+
 ;; Don't litter my init file
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
@@ -39,18 +48,14 @@
 ;;; Setup package managment
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'package)
-
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
-;; (add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Pin some packages to specific repositories.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq package-pinned-packages '((gtags . "marmalade")))
-
 (package-initialize)
 
 (unless (package-installed-p 'use-package)

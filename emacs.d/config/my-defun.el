@@ -35,7 +35,7 @@ With ARG, do this that many times."
         (sp-comment)
       (insert ";"))))
 
-(defun quick-find-file ()
+(defun jlr/quick-find-file ()
   "Find a file with either projectile or ido depending on the context."
   (interactive)
   (if (projectile-project-p)
@@ -76,7 +76,17 @@ With ARG, do this that many times."
 An empty last part will result in a path that ends with a
 separator."
   (let* ((sep (if (string= system-type "windows-nt") "\\" "/")))
-    (jlr/reduce (lambda (a b) (concat a sep b)) paths)))
+    (jlr/reduce
+     (lambda (a b)
+       (if (or (string= (car (last (split-string a "" t))) sep)
+               (string= (first (split-string b "" t)) sep))
+           (concat a b)
+         (concat a sep b)
+         ))
+     paths)))
+
+(jlr/path-join user-emacs-directory "wassup" "site-lisp")
+
 
 (defun jlr/ag (string)
   "Search using ag n the current project for a given literal

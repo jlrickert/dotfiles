@@ -1,3 +1,3 @@
-[submodule "vim/bundle/Vundle.vim"]
-	path = vim/bundle/Vundle.vim
-	url = https://github.com/VundleVim/Vundle.vim.git
+[submodule "emacs.d/site-lisp/pylookup"]
+	path = emacs.d/site-lisp/pylookup
+	url = https://github.com/tsgates/pylookup
