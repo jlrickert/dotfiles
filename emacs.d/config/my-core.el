@@ -4,6 +4,16 @@
 ;;; Code:
 (require 'my-defun)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Global Constants
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defconst user-emacs-cache-dir
+  (jlr/path-join user-emacs-directory "cache")
+  "Cache directory located as a subdirectory of 'user-emacs-directory'.")
+
+(unless (file-exists-p user-emacs-directory)
+  (make-directory user-emacs-cache-dir))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; General
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -104,10 +114,10 @@
 (use-package smooth-scrolling :disabled t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Backups
+;;; Backups and auto save
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq backup-directory-alist
-      `(("." . ,(expand-file-name "backups" user-emacs-directory)))
+      `(("." . ,(jlr/path-join user-emacs-directory "backups")))
       backup-by-copying t
       delete-old-versions t
       make-backup-files t
@@ -118,8 +128,7 @@
       ;; Make backups of files, even when they're in version control
       vc-make-backup-files t
 
-      ;; autsave no longer puts it in my working directory
-      auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+      auto-save-default nil
       )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -253,9 +262,9 @@
                                         ;(setq projectile-enable-caching t)
   (setq projectile-indexing-method 'alien
         projectile-enable-caching t
-        projectile-cache-file (expand-file-name ".projectile" user-emacs-directory)
-        projectile-known-projects-file (expand-file-name ".projectile-bookmarks" user-emacs-directory)
-        projectile-recentf-files (expand-file-name ".recentf" user-emacs-directory)
+        projectile-cache-file (jlr/path-join user-emacs-cache-dir "projectile")
+        projectile-known-projects-file (jlr/path-join user-emacs-cache-dir "projectile-bookmarks")
+        projectile-recentf-files (jlr/path-join user-emacs-cache-dir "recentf")
         projectile-completion-system 'ido
         projectile-switch-project-action 'projectile-dired
         projectile-globally-ignored-directories '(".bzr"
@@ -268,6 +277,8 @@
                                                   ".stignore"
                                                   ".stversions"
                                                   ".svn"
+                                                  "anaconda-mode"
+                                                  "_build"
                                                   "build"
                                                   "cache"
                                                   "dist"
@@ -385,7 +396,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (when (boundp 'smex-cache)
       (smex-update)))
 
-  (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory))
+  (setq smex-save-file (jlr/path-join user-emacs-cache-dir "smex-items"))
   (smex-initialize)
 
   (add-hook 'after-load-functions 'smex-update-after-load)
