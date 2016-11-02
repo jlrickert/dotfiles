@@ -12,6 +12,7 @@
                      indent-tabs-mode 1)))
   (evil-leader/set-key-for-mode 'go-mode
     "." 'godef-jump
+    "k" 'godoc-at-point
     ))
 
 (use-package go-eldoc
@@ -26,7 +27,12 @@
 (use-package company-go
   :after go-mode
   :config
-  (setq company-go-show-annotation t))
+  (setq company-go-show-annotation t)
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends) '(company-go))
+              (company-mode)))
+  )
 
 (provide 'init-go)
 ;;; init-go.el ends here
