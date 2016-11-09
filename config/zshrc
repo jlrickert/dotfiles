@@ -95,9 +95,9 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 ################################################################################
-#### User configuration
+### User configuration
 ################################################################################
-### Environmental variables
+# Environmental variables
 export DEFAULT_USER=`whoami`
 export DOTFILES=$HOME/.dotfiles
 export GOPATH=$HOME/Development/gocode
@@ -129,9 +129,20 @@ fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
 
+################################################################################
 ### Paths
+################################################################################
 # Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath
+typeset -gU cdpath fpath mailpath path
+
+path=(
+    $path[@]
+    /usr/local/{bin,sbin}
+    $HOME/.local/bin
+    $PYENV_ROOT/bin
+    $HOME/.cargo/bin
+    $GOPATH/bin
+)
 
 # Set the list were completions are stored
 fpath=(
@@ -144,24 +155,15 @@ cdpath=(
     $cdpath
 )
 
-### Paths
-typeset -U path
-path=(
-    $path[@]
-    /usr/local/{bin,sbin}
-    $HOME/.local/bin
-    $PYENV_ROOT/bin
-    $HOME/.cargo/bin
-    $GOPATH/bin
-)
-
-### Load my custom functions
+# Load my custom functions
 
 for each in ~/.local/lib/zsh/*.zsh; do
     source $each
 done
 
+################################################################################
 ### Aliass
+################################################################################
 alias py='python'
 alias py2='python2'
 alias rb='ruby'
@@ -170,33 +172,40 @@ alias wo='fire_fox_open'
 alias emacs='$EMACS_PLUGIN_LAUNCHER --no-wait --create-frame'
 alias e='$EMACS_PLUGIN_LAUNCHER --no-wait'
 
-alias pac='pacman'
-alias paci='sudo pacman --sync'
-alias pacI='sudo pacman --upgrades'
-alias pacu='sudo pacman --sync --refresh && sudo abs'
-alias pacU='sudo pacman --sync --refresh --sysupgrade'
-alias pacx='sudo pacman --remove'
-alias pacX='sudo pacman --remove --nosave --recursive'
-alias pacs='pacman --sync --search'
-alias pacq='pacman --query --info'
-alias pacQ='pacman --query --search'
-alias paclsorphans='sudo pacman -Qdt'
-alias pacxmorphans='sudo pacman -Rs $(pacman -Qtdq)'
+alias pac='pacman --color auto'
+alias paci='sudo pacman --color auto --sync'
+alias pacI='sudo pacman --color auto --upgrades'
+alias pacu='sudo pacman --color auto --sync --refresh && sudo abs'
+alias pacU='sudo pacman --color auto --sync --refresh --sysupgrade'
+alias pacx='sudo pacman --color auto --remove'
+alias pacX='sudo pacman --color auto --remove --nosave --recursive'
+alias pacs='pacman --color auto --sync --search'
+alias pacq='pacman --color auto --query --info'
+alias pacQ='pacman --color auto --query --search'
+alias paclsorphans='sudo pacman --color auto  -Qdt'
+alias pacxmorphans='sudo pacman --color auto  -Rs $(pacman -Qtdq)'
 
-alias yac='pacman'
-alias yaci='yaourt --sync'
-alias yacI='yaourt --upgrades'
-alias yacu='yaourt --sync --refresh && sudo abs'
-alias yacU='yaourt --sync --refresh --sysupgrade --aur'
-alias yacx='yaourt --remove'
-alias yacX='yaourt --remove --nosave --recursive'
-alias yacs='yaourt --sync --search'
-alias yacq='yaourt --query --info'
-alias yacQ='yaourt --query --search'
-alias yaclsorphans='sudo yaourt -Qdt'
-alias yacxmorphans='sudo yaourt -Rs $(pacman -Qtdq)'
+alias yac='yaourt --color auto'
+alias yaci='yaourt --color auto --sync'
+alias yacI='yaourt --color auto --upgrades'
+alias yacu='yaourt --color auto --sync --refresh && sudo abs'
+alias yacU='yaourt --color auto --sync --refresh --sysupgrade --aur'
+alias yacx='yaourt --color auto --remove'
+alias yacX='yaourt --color auto --remove --nosave --recursive'
+alias yacs='yaourt --color auto --sync --search'
+alias yacq='yaourt --color auto --query --info'
+alias yacQ='yaourt --color auto --query --search'
+alias yaclsorphans='sudo yaourt --color auto -Qdt'
+alias yacxmorphans='sudo yaourt --color auto -Rs $(pacman -Qtdq)'
 
+#### miscilaneas
+alias screenshot="maim ~/Media/Screenshots/$(date +%F-%T).png"
+alias snapterm="maim -i $(xdotool getactivewindow) ~/Media/Screenshots/$(date +%F-%T).png"
+alias df="df -h"
+
+################################################################################
 ### Keymap
+################################################################################
 bindkey '^[n' down-history
 bindkey '^[p' up-history
 bindkey '^[r' history-incremental-search-backward

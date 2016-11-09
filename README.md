@@ -43,6 +43,7 @@ Pacman packages that I use.
 - i3lock
 - i3status
 - inotify-tools
+- maim
 - mlocate
 - neovim
 - networkmanager
@@ -57,6 +58,7 @@ Pacman packages that I use.
 - rlwrap
 - rsync
 - seahorse
+- slop
 - tcpdump
 - teamspeak
 - termite
@@ -64,6 +66,7 @@ Pacman packages that I use.
 - tree
 - unclutter
 - wireshark
+- xdotools
 - xorg-xset
 - zsh
 - zsh-completions
