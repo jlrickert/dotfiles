@@ -49,3 +49,7 @@ recentf
 # smex
 .smex-items
 smex-items
+
+anaconda-mode
+cache
+custom.el
