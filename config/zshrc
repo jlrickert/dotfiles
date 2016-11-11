@@ -112,6 +112,10 @@ export VISUAL=vim
 export PAGER=less
 export RUBYLIB=$HOME/.local/lib/ruby
 export PYTHONPATH=$HOME/.local/lib/python
+export PERL5LIB="/home/raviko/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"
+export PERL_LOCAL_LIB_ROOT="/home/raviko/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"
+export PERL_MB_OPT="--install_base \"/home/raviko/perl5\""
+export PERL_MM_OPT="INSTALL_BASE=/home/raviko/perl5"
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
@@ -136,8 +140,8 @@ TMPPREFIX="${TMPDIR%/}/zsh"
 typeset -gU cdpath fpath mailpath path
 
 path=(
+    $HOME/perl5/bin
     $path[@]
-    /usr/local/{bin,sbin}
     $HOME/.local/bin
     $PYENV_ROOT/bin
     $HOME/.cargo/bin

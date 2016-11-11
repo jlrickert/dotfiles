@@ -118,6 +118,10 @@ Programing related
 
 - stack
 
+### Perl
+
+- cpanminus
+
 ---
 
 Installation for other tools that I use.
