@@ -221,6 +221,7 @@ workspace 10 output DVI-I-0
 
 # Program defaults
 exec --no-startup-id i3-msg 'workspace 1; exec firefox; workspace 1'
+exec --no-startup-id i3-msg 'workspace 6; exec slack --startup; workspace 6'
 
 ##################################################
 # Status Bar
