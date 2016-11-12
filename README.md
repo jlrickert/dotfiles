@@ -45,6 +45,7 @@ Pacman packages that I use.
 - inotify-tools
 - maim
 - mlocate
+- namcap
 - neovim
 - networkmanager
 - networkmanager-applet
@@ -122,7 +123,12 @@ Programing related
 
 - cpanminus
 
----
+### Android
+
+- android-studio
+- android-tools
+- android-udev
+- android-file-transfer
 
 Installation for other tools that I use.
 ----------------------------------------
@@ -171,6 +177,20 @@ go get -u -v github.com/rogpeppe/godef
 go get -u -v golang.org/x/tools/cmd/oracle
 go get -u -v golang.org/x/tools/cmd/gorename
 go get -u -v golang.org/x/tools/cmd/goimports
+```
+
+### Setup Android
+
+```bash
+sudo groupadd sdkusers
+sudo gpasswd -a $USER sdkusers
+newgrp sdkusers
+
+sudo gpasswd -a $USER adbusers
+
+# after installing android sdk
+sudo chown -R :sdkusers /opt/android-sdk/
+sudo chmod -R g+w /opt/android-sdk/
 ```
 
 System setup checklist
