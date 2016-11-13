@@ -1,0 +1,11 @@
+[Unit]
+Description=Synergy Client Daemon
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/conf.d/synergyc.conf
+ExecStart=/usr/bin/synergyc --no-daemon --debug ${DEBUGLEVEL:-INFO} ${SERVERALIAS}
+User=%i
+
+[Install]
+WantedBy=multi-user.target
