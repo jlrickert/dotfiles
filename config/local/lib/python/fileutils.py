@@ -1,13 +1,14 @@
 import logging
 import os
 import random
+import shutil
 import stat
 import string
 from subprocess import call
 from os.path import dirname, basename
 
-_log = logging.getLogger('fileutils')
-_log.setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.NOTSET)
 
 
 def symlink(src=None, dst=None, force=True):
@@ -19,27 +20,27 @@ def symlink(src=None, dst=None, force=True):
             rm(dst)
             symlink(src=src, dst=dst)
     else:
-        _log.info("Linking '{}' -> '{}'".format(src, dst))
+        logger.info("Linking '{}' -> '{}'".format(src, dst))
         os.symlink(src, dst)
 
 
-def rm(file, backup=True):
+def rm(src, backup=True):
     """Removes a file and places it into a backup directory."""
-    if not os.path.exists(file):
+    if not os.path.exists(src):
         pass
-    elif os.path.islink(file):
-        os.remove(file)
-        _log.info('Removing symlink {}'.format(file))
+    elif os.path.islink(src):
+        os.remove(src)
+        logger.info('Removing symlink {}'.format(src))
     elif backup:
         tmp_dir = os.environ['TMPDIR']
         rand_id = ''.join(random.SystemRandom().choice(
             string.ascii_uppercase + string.digits) for _ in range(5))
-        backup_file = rand_id+basename(file)
-        os.rename(file, os.path.join(tmp_dir, backup_file))
-        _log.info('Backup up {} to {}'.format(file, backup_file))
+        backup_file = rand_id+"-"+basename(src)
+        shutil.move(src, os.path.join(tmp_dir, backup_file))
+        logger.info('Backup up {} to {}'.format(src, backup_file))
     else:
-        os.remove(file)
-        _log.info('Removing {}'.format(file))
+        os.remove(src)
+        logger.info('Removing {}'.format(src))
 
 
 def mark_as_exec(bin_name):
@@ -51,7 +52,7 @@ def mark_as_exec(bin_name):
 def mkdir(path):
     """Make sure that a directory exists"""
     if not os.path.exists(path):
-        _log.info('Created directory {}'.format(path))
+        logger.info('Created directory {}'.format(path))
         os.makedirs(path)
 
 

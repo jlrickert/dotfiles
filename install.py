@@ -14,6 +14,7 @@ from os.path import (
 # makes sure python can find my custom libraries
 sys.path.insert(0, os.path.join(dirname(realpath(__file__)),
                                 'config', 'local', 'lib', 'python'))
+import fileutils as fu
 from fileutils import (
     mark_as_exec,
     run_script,
@@ -23,9 +24,8 @@ from fileutils import (
 HOME = expanduser('~')
 DOTFILES = dirname(realpath(__file__))
 
-logging.basicConfig()
-_log = logging.getLogger('installer')
-_log.setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
+# logger.setLevel(logging.NOTSET)
 
 
 def install_oh_my_zsh(home=HOME, dotfiles=DOTFILES, method=symlink):
@@ -62,8 +62,38 @@ def install_configs(home=HOME, dotfiles=DOTFILES, method=symlink):
     _install(config_dir)
 
 
-def install_i3_configs(home=HOME, dotfiles=DOTFILES):
+def install_i3_configs(home=HOME, dotfiles=DOTFILES, method=symlink):
     """Installs the proper i3 config based on the environment"""
+    core_src = os.path.join(dotfiles, "i3", "config")
+    core_dst = os.path.join(home, ".config", "i3", "config")
+    method(core_src, core_dst)
+
+    msg = """
+Please input your device type number:
+1) desktop
+2) labtop
+3) server
+Number: """
+
+    dev_type = None
+    while dev_type is None:
+        try:
+            dev_type = int(input(msg))
+        except ValueError as e:
+            print(e)
+            print(msg)
+
+    bar_src = None
+    bar_dst = os.path.join(home, ".config", "i3status", "config")
+    if dev_type == 1:  # desktop
+        bar_src = os.path.join(dotfiles, "i3", "i3desktop-bar")
+    elif dev_type == 2:  # labtop
+        bar_src = os.path.join(dotfiles, "i3", "i3labtop-bar")
+    elif dev_type == 3:  # server
+        bar_src = None
+        method = lambda x, y: None
+
+    method(bar_src, bar_dst)
 
 
 def install_bin(home=HOME, dotfiles=DOTFILES, method=symlink):
@@ -91,7 +121,6 @@ def install_vundle(home=HOME, dotfiles=DOTFILES):
 
 def install_pyenv(home=HOME, dotfiles=DOTFILES):
     """Installs pyenv"""
-
     script = os.path.join(dotfiles, "lib", "install_pyenv.sh")
     pyenv_dir = os.path.join(home, ".pyenv")
     if not os.path.exists(pyenv_dir):
@@ -100,7 +129,6 @@ def install_pyenv(home=HOME, dotfiles=DOTFILES):
 
 def install_rbenv(home=HOME, dotfiles=DOTFILES):
     """Installs rbenv"""
-
     script = os.path.join(dotfiles, "lib", "install_rbenv.sh")
     rbenv_dir = os.path.join(home, ".pyenv")
     if not os.path.exists(rbenv_dir):
@@ -109,6 +137,23 @@ def install_rbenv(home=HOME, dotfiles=DOTFILES):
 
 def install_everything(home=HOME, dotfiles=DOTFILES):
     """Installs everything."""
+
+    try:
+        log_level = os.environ["LOGGING"]
+        if log_level == "CRITICAL":
+            log_level = logging.CRITICAL
+        elif log_level == "WARNING":
+            log_level = logging.WARNING
+        elif log_level == "DEBUG":
+            log_level = logging.DEBUG
+        elif log_level == "INFO":
+            log_level = logging.INFO
+        else:
+            log_level = logging.NOTSET
+        logging.basicConfig(level=log_level)
+    except KeyError:
+        pass
+
     install_oh_my_zsh(home, dotfiles)
     install_configs(home, dotfiles)
     install_i3_configs(home, dotfiles)
@@ -117,7 +162,6 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     install_vundle(home, dotfiles)
     install_rbenv(home, dotfiles)
     install_pyenv(home, dotfiles)
-
 
 if __name__ == '__main__':
     sys.exit(install_everything())
