@@ -1,3 +1,6 @@
+################################################################################
+### ZSH configuration
+################################################################################
 # Path to your oh-my-zsh installation.
 export ZSH=/home/raviko/.oh-my-zsh
 
@@ -133,9 +136,9 @@ fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
 
-################################################################################
+########################################
 ### Paths
-################################################################################
+########################################
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
 
@@ -165,9 +168,9 @@ for each in ~/.local/lib/zsh/*.zsh; do
     source $each
 done
 
-################################################################################
+########################################
 ### Aliass
-################################################################################
+########################################
 alias py='python'
 alias py2='python2'
 alias rb='ruby'
@@ -176,6 +179,9 @@ alias wo='fire_fox_open'
 alias emacs='$EMACS_PLUGIN_LAUNCHER --no-wait --create-frame'
 alias e='$EMACS_PLUGIN_LAUNCHER --no-wait'
 
+#
+# Pacman Aliases
+#
 alias pac='pacman --color auto '
 alias paci='sudo pacman --color auto --sync'
 alias pacI='sudo pacman --color auto --upgrades'
@@ -189,6 +195,9 @@ alias pacQ='pacman --color auto --query --search'
 alias paclsorphans='sudo pacman --color auto  -Qdt'
 alias pacxmorphans='sudo pacman --color auto  -Rs $(pacman -Qtdq)'
 
+#
+# Yaourt Aliases
+#
 alias yac='yaourt --color auto '
 alias yaci='yaourt --sync'
 alias yacI='yaourt --upgrades'
@@ -202,13 +211,51 @@ alias yacQ='yaourt --query --search'
 alias yaclsorphans='sudo yaourt -Qdt'
 alias yacxmorphans='sudo yaourt -Rs $(pacman -Qtdq)'
 
-#### miscilaneas
-alias screenshot="maim ~/Media/Screenshots/$(date +%F-%T).png"
+#
+# networking
+#
+alias ports='netstat -tulanp'
+
+alias ipt='sudo /sbin/iptables'
+alias iptlist='sudo /sbin/iptables -L -n -v --line-numbers'
+alias iptlistin='sudo /sbin/iptables -L INPUT -n -v --line-numbers'
+alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
+alias iptlistfw='sudo /sbin/iptables -L FORWARD -n -v --line-numbers'
+alias firewall=iptlist
+
+#
+# miscellaneous
+#
+alias screenshot='maim ~/Media/Screenshots/$(date +"%F-%T").png'
 alias snapterm="maim -i $(xdotool getactivewindow) ~/Media/Screenshots/$(date +%F-%T).png"
 alias df="df -h"
 
+alias meminfo='free -m -l -t -h'
+
+#
+# get top process eating memory
+#
+alias psmem='ps auxf | sort -nr -k 4'
+alias psmem10='ps auxf | sort -nr -k 4 | head -10'
+
+# get GPU ram on desktop / laptop##
+alias gpumeminfo='grep -i --color memory /var/log/Xorg.0.log'
+
+# Grabs the disk usage in the current directory
+alias usage='du -ch | grep total'
+
+# Gets the total disk usage on your machine
+alias totalusage='df -hl --total | grep total'
+
+# Shows the individual partition usages without the temporary memory values
+alias partusage='df -hlT --exclude-type=tmpfs --exclude-type=devtmpfs'
+
+# Gives you what is using the most space. Both directories and files. Varies on
+# current directory
+alias most='du -hsx * | sort -rh | head -10'
+
 ################################################################################
-### Keymap
+### Custom Keymaps
 ################################################################################
 bindkey '^[n' down-history
 bindkey '^[p' up-history
