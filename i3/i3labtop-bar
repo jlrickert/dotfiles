@@ -18,7 +18,8 @@ general {
 }
 
 order += "wireless wlp1s0"
-# order += "ethernet enp0s18"
+order += "ethernet enp2s0"
+order += "ethernet enp0s20u1"
 # order += "cpu_temperature 0"
 order += "load"
 order += "volume master"
@@ -27,17 +28,17 @@ order += "tztime local"
 
 wireless wlp1s0 {
         format_up = "W: %essid@%ip"
-        format_down = "W: down"
+        format_down = ""
 }
 
-ethernet enp0s17 {
+ethernet enp2s0 {
         format_up = "E: %ip"
-        format_down = "E: down"
+        format_down = ""
 }
 
-ethernet enp0s18 {
+ethernet enp0s20u1 {
         format_up = "E: %ip"
-        format_down = "E: down"
+        format_down = ""
 }
 
 battery 0 {
@@ -84,4 +85,3 @@ cpu_temperature 0 {
 disk "/" {
         format = "%avail"
 }
-
