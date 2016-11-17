@@ -227,7 +227,7 @@ alias firewall=iptlist
 # miscellaneous
 #
 alias screenshot='maim ~/Media/Screenshots/$(date +"%F-%T").png'
-alias snapterm="maim -i $(xdotool getactivewindow) ~/Media/Screenshots/$(date +%F-%T).png"
+alias snapterm='maim -i $(xdotool getactivewindow) ~/Media/Screenshots/$(date +"%F-%T").png'
 alias df="df -h"
 
 alias meminfo='free -m -l -t -h'
