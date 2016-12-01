@@ -91,7 +91,6 @@ plugins=(
     systemd
     vagrant
     vi-mode
-    web-search
     zsh-syntax-highlighting
 )
 
@@ -110,7 +109,7 @@ export CARGO_HOME=$HOME/.cargo
 export RUST_SRC_PATH=$HOME/.local/src/rust/src
 export LANG=en_US.UTF-8
 export BROWSER=firefox
-export EDITOR=vim
+export EDITOR="$EMACS_PLUGIN_LAUNCHER"
 export VISUAL=vim
 export PAGER=less
 export RUBYLIB=$HOME/.local/lib/ruby
@@ -182,7 +181,7 @@ alias e='$EMACS_PLUGIN_LAUNCHER --no-wait'
 #
 # Pacman Aliases
 #
-alias pac='pacman --color auto '
+alias pac='pacman --color auto'
 alias paci='sudo pacman --color auto --sync'
 alias pacI='sudo pacman --color auto --upgrades'
 alias pacu='sudo pacman --color auto --sync --refresh && sudo abs'
