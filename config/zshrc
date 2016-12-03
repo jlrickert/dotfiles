@@ -254,6 +254,8 @@ alias partusage='df -hlT --exclude-type=tmpfs --exclude-type=devtmpfs'
 # current directory
 alias most='du -hsx * | sort -rh | head -10'
 
+alias ctime="date '+%Y-%m-%d %H:%M:%S'"
+
 ################################################################################
 ### Custom Keymaps
 ################################################################################
