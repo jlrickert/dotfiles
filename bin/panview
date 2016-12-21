@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PANDOC_HTML_OPTS="-s --mathjax"
+PANDOC_HTML_OPTS="--standalone --mathjax --smart --css=https://mirror.jlrickert.me/pandoc-md.css"
 TMP_DIR="/tmp/$USER"
 
 if [ -x "$(command -v pandoc)" ]; then
