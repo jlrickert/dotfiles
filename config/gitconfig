@@ -1,3 +1,5 @@
 [user]
 	email = jaredrickert52@gmail.com
 	name = Jared Rickert
+[core]
+	editor = $EDITOR -t "$@"
