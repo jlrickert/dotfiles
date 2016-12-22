@@ -102,7 +102,7 @@ source $ZSH/oh-my-zsh.sh
 ################################################################################
 # Environmental variables
 export DEFAULT_USER=`whoami`
-export DOTFILES=$HOME/.dotfiles
+export DOTFILES=$HOME/dotfiles
 export GOPATH=$HOME/Development/gocode
 export ANDROID_HOME=/opt/android-sdk
 export PYENV_ROOT=$HOME/.pyenv
@@ -255,6 +255,11 @@ alias partusage='df -hlT --exclude-type=tmpfs --exclude-type=devtmpfs'
 alias most='du -hsx * | sort -rh | head -10'
 
 alias ctime="date '+%Y-%m-%d %H:%M:%S'"
+
+################################################################################
+### Completions
+################################################################################
+PROG=kram source $DOTFILES/config/local/share/completions/zsh_autocomplete
 
 ################################################################################
 ### Custom Keymaps

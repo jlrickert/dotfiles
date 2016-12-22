@@ -52,7 +52,7 @@ def mark_as_exec(bin_name):
 def mkdir(path):
     """Make sure that a directory exists"""
     if not os.path.exists(path):
-        logger.info('Created directory {}'.format(path))
+        logger.info('Creating directory {}'.format(path))
         os.makedirs(path)
 
 
