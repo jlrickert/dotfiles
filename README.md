@@ -6,7 +6,7 @@ Installation
 ------------
 ### Downloading
 ```bash
-git clone https://github.com/jlrickert/dotfiles.git ~/dotfiles
+git clone https://github.com/jlrickert/dotfiles.git ~/Dotfiles
 ```
 
 ### Installation
