@@ -63,8 +63,9 @@ run_watch VPN {
 }
 
 tztime local {
-        format = "%m-%d-%Y %l:%M:%S %p"
+        format = "%Y-%m-%d %l:%M:%S %p"
 }
+
 
 volume master {
         format = "♪: %volume"
@@ -86,4 +87,3 @@ cpu_temperature 0 {
 disk "/" {
         format = "%avail"
 }
-
