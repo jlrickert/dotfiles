@@ -25,7 +25,6 @@ HOME = expanduser('~')
 DOTFILES = dirname(realpath(__file__))
 
 logger = logging.getLogger(__name__)
-# logger.setLevel(logging.NOTSET)
 
 
 def install_oh_my_zsh(home=HOME, dotfiles=DOTFILES, method=symlink):
@@ -74,14 +73,23 @@ Please input your device type number:
 2) labtop
 3) server
 Number: """
+    dev_types = {
+        "desktop": 1,
+        "labtop": 2,
+        "server": 3,
+    }
 
-    dev_type = None
-    while dev_type is None:
-        try:
-            dev_type = int(input(msg))
-        except ValueError as e:
-            print(e)
-            print(msg)
+    args = sys.argv
+    if len(args) >= 2 and args[1] in dev_types:
+        dev_type = dev_types[args[1]]
+    else:
+        dev_type = None
+        while dev_type is None:
+            try:
+                dev_type = int(input(msg))
+            except ValueError as e:
+                print(e)
+                print(msg)
 
     bar_src = None
     bar_dst = os.path.join(home, ".config", "i3status", "config")
@@ -139,7 +147,7 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     """Installs everything."""
 
     try:
-        log_level = os.environ["LOGGING"]
+        log_level = os.environ["LOG_LEVEL"]
         if log_level == "CRITICAL":
             log_level = logging.CRITICAL
         elif log_level == "WARNING":
