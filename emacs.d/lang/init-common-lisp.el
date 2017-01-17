@@ -45,7 +45,9 @@
     (slime-description-fontify))
 
   (use-package slime-company :ensure t)
-  (load (expand-file-name "~/.roswell/lisp/quicklisp/slime-helper.el"))
+  (let ((slime-helper-file  "~/.roswell/lisp/quicklisp/slime-helper.el"))
+    (when (file-exists-p slime-helper-file)
+      (load (expand-file-name slime-helper-file))))
   (setq inferior-lisp-program (executable-find "sbcl")
         slime-contribs '(slime-fancy
                          slime-indentation

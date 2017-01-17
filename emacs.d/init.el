@@ -88,7 +88,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'init-python)
 (require 'init-lisp)
-; (require 'init-common-lisp)
+(require 'init-common-lisp)
+(require 'init-ansible)
 (require 'init-org)
 (require 'init-clojure)
 (require 'init-haskell)
