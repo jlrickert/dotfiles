@@ -26,7 +26,6 @@ Plugin 'jistr/vim-nerdtree-tabs.git'
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'Shougo/neocomplete.vim'
 Plugin 'Shougo/neosnippet'
-Plugin 'jlrickert/neosnippet-snippets'
 Plugin 'Yggdroot/indentLine'
 
 " Visual Plugins
