@@ -152,7 +152,7 @@ def _get_dev_type():
 Please input your device type number:
 1) desktop
 2) labtop
-3) server
+3) other
 Number: """
     dev_types = [
         "desktop",
@@ -165,14 +165,15 @@ Number: """
         if args[1] in dev_types:
             dev_type = input_dev
         else:
+            dev_type = input_dev
             raise ValueError("{} is not a valid device type".format(dev_type))
     else:
         dev_type = None
         while dev_type is None:
             try:
                 user_input = int(input(msg))
-                dev_type = dev_types[user_input]
-            except ValueError as e:
+                dev_type = dev_types[user_input - 1]
+            except IndexError as e:
                 print(e)
                 print(msg)
 
