@@ -95,6 +95,7 @@
 (require 'init-haskell)
 (require 'init-elm)
 (require 'init-elixir)
+(require 'init-typescript)
 (require 'init-markdown)
 (require 'init-rust)
 (require 'init-scheme)
