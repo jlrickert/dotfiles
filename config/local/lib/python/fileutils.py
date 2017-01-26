@@ -20,7 +20,7 @@ def symlink(src=None, dst=None, force=True):
             rm(dst)
             symlink(src=src, dst=dst)
     else:
-        logger.info("Linking '{}' -> '{}'".format(src, dst))
+        logger.debug("Linking '{}' -> '{}'".format(src, dst))
         os.symlink(src, dst)
 
 
@@ -30,17 +30,17 @@ def rm(src, backup=True):
         pass
     elif os.path.islink(src):
         os.remove(src)
-        logger.info('Removing symlink {}'.format(src))
+        logger.debug('Removing symlink {}'.format(src))
     elif backup:
         tmp_dir = os.environ['TMPDIR']
         rand_id = ''.join(random.SystemRandom().choice(
             string.ascii_uppercase + string.digits) for _ in range(5))
         backup_file = rand_id+"-"+basename(src)
         shutil.move(src, os.path.join(tmp_dir, backup_file))
-        logger.info('Backup up {} to {}'.format(src, backup_file))
+        logger.debug('Backup up {} to {}'.format(src, backup_file))
     else:
         os.remove(src)
-        logger.info('Removing {}'.format(src))
+        logger.debug('Removing {}'.format(src))
 
 
 def mark_as_exec(bin_name):
@@ -52,10 +52,11 @@ def mark_as_exec(bin_name):
 def mkdir(path):
     """Make sure that a directory exists"""
     if not os.path.exists(path):
-        logger.info('Creating directory {}'.format(path))
+        logger.debug('Creating directory {}'.format(path))
         os.makedirs(path)
 
 
 def run_script(exe, *args):
     """Calls a script with the given args."""
+    logger.debug("running {} {}".format(exe, " ".join(args)))
     call([exe] + list(args))

@@ -61,47 +61,23 @@ def install_configs(home=HOME, dotfiles=DOTFILES, method=symlink):
     _install(config_dir)
 
 
-def install_i3_configs(home=HOME, dotfiles=DOTFILES, method=symlink):
+def install_i3_configs(dev_type, home=HOME, dotfiles=DOTFILES, method=symlink):
     """Installs the proper i3 config based on the environment"""
     core_src = os.path.join(dotfiles, "i3", "config")
     core_dst = os.path.join(home, ".config", "i3", "config")
     method(core_src, core_dst)
 
-    msg = """
-Please input your device type number:
-1) desktop
-2) labtop
-3) server
-Number: """
-    dev_types = {
-        "desktop": 1,
-        "labtop": 2,
-        "server": 3,
-    }
-
-    args = sys.argv
-    if len(args) >= 2 and args[1] in dev_types:
-        dev_type = dev_types[args[1]]
-    else:
-        dev_type = None
-        while dev_type is None:
-            try:
-                dev_type = int(input(msg))
-            except ValueError as e:
-                print(e)
-                print(msg)
-
-    bar_src = None
+    status_bar_src = None
     bar_dst = os.path.join(home, ".config", "i3status", "config")
-    if dev_type == 1:  # desktop
-        bar_src = os.path.join(dotfiles, "i3", "i3desktop-bar")
-    elif dev_type == 2:  # labtop
-        bar_src = os.path.join(dotfiles, "i3", "i3labtop-bar")
-    elif dev_type == 3:  # server
-        bar_src = None
+    if dev_type == "desktop":
+        status_bar_src = os.path.join(dotfiles, "i3", "i3desktop-bar")
+    elif dev_type == "labtop":
+        status_bar_src = os.path.join(dotfiles, "i3", "i3labtop-bar")
+    else:
+        status_bar_src = None
         method = lambda x, y: None
 
-    method(bar_src, bar_dst)
+    method(status_bar_src, bar_dst)
 
 
 def install_bin(home=HOME, dotfiles=DOTFILES, method=symlink):
@@ -125,6 +101,12 @@ def install_emacs(home=HOME, dotfiles=DOTFILES, method=symlink):
 
 def install_vundle(home=HOME, dotfiles=DOTFILES):
     """Installs vundle for vim"""
+    script = os.path.join(dotfiles, 'lib', 'install_vundle.sh')
+    vundle_dir = os.path.join(home, ".vim", "bundle", "Vundle.vim")
+    if not os.path.exists(vundle_dir):
+        run_script(script)
+    else:
+        logger.debug("SKIPPING :: {} already exists".format(vundle_dir))
 
 
 def install_pyenv(home=HOME, dotfiles=DOTFILES):
@@ -133,6 +115,8 @@ def install_pyenv(home=HOME, dotfiles=DOTFILES):
     pyenv_dir = os.path.join(home, ".pyenv")
     if not os.path.exists(pyenv_dir):
         run_script(script)
+    else:
+        logger.debug("SKIPPING :: {} already exists".format(pyenv_dir))
 
 
 def install_rbenv(home=HOME, dotfiles=DOTFILES):
@@ -141,11 +125,11 @@ def install_rbenv(home=HOME, dotfiles=DOTFILES):
     rbenv_dir = os.path.join(home, ".pyenv")
     if not os.path.exists(rbenv_dir):
         run_script(script)
+    else:
+        logger.debug("SKIPPING :: {} already exists".format(rbenv_dir))
 
 
-def install_everything(home=HOME, dotfiles=DOTFILES):
-    """Installs everything."""
-
+def _set_logger():
     try:
         log_level = os.environ["LOG_LEVEL"]
         if log_level == "CRITICAL":
@@ -162,9 +146,47 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     except KeyError:
         pass
 
+
+def _get_dev_type():
+    msg = """
+Please input your device type number:
+1) desktop
+2) labtop
+3) server
+Number: """
+    dev_types = [
+        "desktop",
+        "labtop",
+    ]
+
+    args = sys.argv
+    if len(args) == 2:
+        input_dev = args[1]
+        if args[1] in dev_types:
+            dev_type = input_dev
+        else:
+            raise ValueError("{} is not a valid device type".format(dev_type))
+    else:
+        dev_type = None
+        while dev_type is None:
+            try:
+                user_input = int(input(msg))
+                dev_type = dev_types[user_input]
+            except ValueError as e:
+                print(e)
+                print(msg)
+
+
+def install_everything(home=HOME, dotfiles=DOTFILES):
+    """Installs everything."""
+
+    _set_logger()
+    dev_type = _get_dev_type()
+
+
     install_oh_my_zsh(home, dotfiles)
     install_configs(home, dotfiles)
-    install_i3_configs(home, dotfiles)
+    install_i3_configs(dev_type, home, dotfiles)
     install_bin(home, dotfiles)
     install_emacs(home, dotfiles)
     install_vundle(home, dotfiles)
