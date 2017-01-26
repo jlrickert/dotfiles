@@ -14,6 +14,8 @@
 
 (unless (file-exists-p user-emacs-directory)
   (make-directory user-emacs-cache-dir))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; General
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -113,6 +115,7 @@
 ;; Keep cursor away from edges when scrolling up/down
 (use-package smooth-scrolling :disabled t)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Backups and auto save
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -130,6 +133,7 @@
 
       auto-save-default nil
       )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Autocomplete
@@ -155,6 +159,7 @@
     (kbd "TAB") 'company-complete
     (kbd "M-n") 'company-select-next
     (kbd "M-p") 'company-select-previous))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Snippets
@@ -189,6 +194,7 @@
               '(:with company-yasnippet))))
 
   (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Syntax checking
@@ -261,10 +267,10 @@
   (projectile-global-mode)
                                         ;(setq projectile-enable-caching t)
   (setq projectile-indexing-method 'alien
-        projectile-enable-caching t
+        projectile-enable-caching nil
         projectile-cache-file (jlr/path-join user-emacs-cache-dir "projectile")
-        projectile-known-projects-file (jlr/path-join user-emacs-cache-dir "projectile-bookmarks")
-        projectile-recentf-files (jlr/path-join user-emacs-cache-dir "recentf")
+        projectile-known-projects-file (jlr/path-join user-emacs-cache-dir "projectile-bookmarks.eld")
+        ;; projectile-recentf-files (jlr/path-join user-emacs-cache-dir "recentf")
         projectile-completion-system 'ido
         projectile-switch-project-action 'projectile-dired
         projectile-globally-ignored-directories '(".bzr"
@@ -296,6 +302,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package ag)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Highlighting
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -320,6 +327,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (setq deactivate-mark  t)
     (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
     (abort-recursive-edit)))
+
 
 ;;; ido
 (use-package ido
@@ -376,7 +384,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                (define-key ido-common-completion-map (kbd "M-n") 'ido-next-match)
                (define-key ido-common-completion-map (kbd "M-p") 'ido-prev-match)
                (define-key ido-common-completion-map (kbd "M-y") 'ido-select-text)))
-
 
   (defadvice smex (around space-inserts-hyphen activate compile)
     (let ((ido-cannot-complete-command
