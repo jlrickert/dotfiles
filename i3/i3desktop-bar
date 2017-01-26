@@ -20,6 +20,7 @@ general {
 #order += "wireless wlp1s0"
 order += "ethernet enp0s17"
 order += "ethernet enp0s18"
+order += "ethernet enp0s31f6"
 # order += "cpu_temperature 0"
 order += "cpu_usage"
 order += "load"
@@ -39,6 +40,11 @@ ethernet enp0s17 {
 
 ethernet enp0s18 {
         format_up = "enp0s18: %ip"
+        format_down = ""
+}
+
+ethernet enp0s31f6 {
+        format_up = "eth: %ip"
         format_down = ""
 }
 
