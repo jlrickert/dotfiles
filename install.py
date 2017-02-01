@@ -86,7 +86,7 @@ def install_bin(home=HOME, dotfiles=DOTFILES, method=symlink):
         method(bin_file, dst)
 
 
-def install_emacs(home=HOME, dotfiles=DOTFILES, method=symlink):
+def install_spacemacs(home=HOME, dotfiles=DOTFILES, method=symlink):
     """Installs my emacs configurations"""
     script = os.path.join(dotfiles, 'lib', 'install_spacemacs.sh')
     emacs_dir = os.path.join(home, '.emacs.d')
@@ -185,7 +185,7 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     install_configs(home, dotfiles)
     install_i3_configs(dev_type, home, dotfiles)
     install_bin(home, dotfiles)
-    install_emacs(home, dotfiles)
+    install_spacemacs(home, dotfiles)
     install_vundle(home, dotfiles)
     install_rbenv(home, dotfiles)
     install_pyenv(home, dotfiles)
