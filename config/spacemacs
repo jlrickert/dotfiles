@@ -46,8 +46,7 @@ values."
      ;; optional
      gtags
      git
-     (typography :variables typography-enable-typographic-editing t)
-
+     typography
 
      ;; web and framework stuff
      react
