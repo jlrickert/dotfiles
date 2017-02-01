@@ -393,9 +393,20 @@ you should place your code here."
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (setq clojure-enable-fancify-symbols t)
 
-
   ;;; Custom Keybindings
-
+  (define-key evil-inner-text-objects-map (kbd "e") 'evil-inner-word)
+  (define-key evil-inner-text-objects-map (kbd "E") 'evil-inner-WORD)
+  (define-key evil-inner-text-objects-map (kbd "w") 'evil-inner-word)
+  (define-key evil-inner-text-objects-map (kbd "W") 'evil-inner-WORD)
+  (define-key evil-outer-text-objects-map (kbd "e") 'evil-a-word)
+  (define-key evil-outer-text-objects-map (kbd "E") 'evil-a-word)
+  (define-key evil-outer-text-objects-map (kbd "w") 'evil-a-word)
+  (define-key evil-outer-text-objects-map (kbd "W") 'evil-a-word)
+  (define-key evil-motion-state-map (kbd "e") 'forward-word)
+  (define-key evil-motion-state-map (kbd "E") 'forward-symbol)
+  (define-key evil-motion-state-map (kbd "w") 'backward-word)
+  (define-key evil-motion-state-map (kbd "W") 'backward-symbol)
+  (define-key evil-motion-state-map (kbd "b") 'evil-jump-item)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
