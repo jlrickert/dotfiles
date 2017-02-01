@@ -32,7 +32,11 @@ values."
    dotspacemacs-configuration-layers
    '(
      ;; core
-     auto-completion
+     (auto-completion
+      :variables
+      auto-completion-enable-help-tooltip t
+      auto-completion-enable-snippets-in-popup t
+      auto-completion-enable-sort-by-usage t)
      better-defaults
      helm
      spell-checking
@@ -42,7 +46,7 @@ values."
      ;; optional
      gtags
      git
-     typography
+     (typography :variables typography-enable-typographic-editing t)
 
 
      ;; web and framework stuff
@@ -57,22 +61,33 @@ values."
 
      ;; language modes
      asm
-     c-c++
+     (c-c++
+      :variables
+      c-c++-default-mode-for-headers 'c++-mode
+      c-c++-enable-clang-support t)
      clojure
      emacs-lisp
-     go
+     (go :variables go-tab-width 4)
      graphviz
      haskell
      javascript
      latex
      php
-     python
-     ruby
+     (python
+      :variables
+      python-test-runner 'pytest
+      python-enable-yapf-format-on-save t
+      python-sort-imports-on-save t)
+     (ruby
+      :variables
+      ruby-test-runner 'rspec)
      rust
      shaders
      shell-scripts
      sql
-     typescript
+     (typescript
+      :variables
+      typescript-fmt-on-save t)
      vimscript
 
      ;; tools
@@ -339,22 +354,14 @@ you should place your code here."
 
   (global-git-commit-mode t)
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Autocompletion stuff
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (global-company-mode)
-  (setq-default dotspacemacs-configuration-layers
-                '(typography :variables typography-enable-typographic-editing t))
 
-  ;; tooltips for autocomplete
-  (setq-default dotspacemacs-configuration-layers
-                '((auto-completion :variables
-                                   auto-completion-enable-help-tooltip t)))
-
-  ;; sorts completions by frequency
-  (setq-default dotspacemacs-configuration-layers
-                '((auto-completion :variables
-                                   auto-completion-enable-sort-by-usage t)))
-
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Web stuff
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (setq-default
    ;; js2-mode
    js2-basic-offset 2
@@ -371,16 +378,9 @@ you should place your code here."
     (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
     (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil)))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; C-C++ stuff
-  ;; c++ for header files
-  (setq-default dotspacemacs-configuration-layers
-                '((c-c++ :variables
-                         c-c++-default-mode-for-headers 'c++-mode)))
-
-  ;; clang support
-  (setq-default dotspacemacs-configuration-layers
-                '((c-c++ :variables c-c++-enable-clang-support t)))
-
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Bind clang-format-region to C-M-tab in all modes:
   (global-set-key [C-M-tab] 'clang-format-region)
   ;; Bind clang-format-buffer to tab on the c++-mode only:
@@ -388,31 +388,14 @@ you should place your code here."
   (defun clang-format-bindings ()
     (define-key c++-mode-map [tab] 'clang-format-buffer))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Clojure
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (setq clojure-enable-fancify-symbols t)
 
-  ;;; Golang
-  (go :variables go-tab-width 4)
 
-  ;;; Python
-  (setq-default dotspacemacs-configuration-layers '(
-                                                    (python :variables python-test-runner 'pytest)))
+  ;;; Custom Keybindings
 
-  (setq-default dotspacemacs-configuration-layers '(
-                                                    (python :variables python-enable-yapf-format-on-save t)))
-
-  ;;; Ruby
-  (defun dotspacemacs-configuration-layers ()
-    '((ruby :variables ruby-enable-enh-ruby-mode t)))
-
-  (defun dotspacemacs-configuration-layers ()
-    '((ruby :variables ruby-test-runner 'rspec)))
-
-  ;;; Typescript
-  (setq-default dotspacemacs-configuration-layers '(typescript))
-  (setq-default dotspacemacs-configuration-layers '(
-                                                    (typescript :variables
-                                                                typescript-fmt-on-save t)))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -425,7 +408,7 @@ you should place your code here."
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (graphviz-dot-mode yapfify x86-lookup web-mode web-beautify vimrc-mode vagrant-tramp vagrant toml-mode tide typescript-mode tagedit systemd sql-indent slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe restclient rbenv racer pyvenv pytest pyenv-mode py-isort pug-mode projectile-rails rake pony-mode pip-requirements phpunit phpcbf php-extras php-auto-yasnippets pandoc-mode ox-pandoc ht ob-http nginx-mode nasm-mode minitest livid-mode skewer-mode simple-httpd live-py-mode less-css-mode js2-refactor js2-mode js-doc jinja2-mode intero insert-shebang hy-mode hlint-refactor hindent helm-pydoc helm-hoogle helm-gtags helm-css-scss haskell-snippets haml-mode go-guru go-eldoc glsl-mode ggtags flycheck-rust flycheck-haskell fish-mode feature-mode emmet-mode drupal-mode php-mode dockerfile-mode docker json-mode tablist docker-tramp json-snatcher json-reformat disaster dactyl-mode cython-mode company-web web-completion-data company-tern dash-functional tern company-shell company-go go-mode company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda coffee-mode cmm-mode cmake-mode clojure-snippets clj-refactor inflections edn multiple-cursors paredit peg clang-format cider-eval-sexp-fu cider seq queue clojure-mode chruby cargo rust-mode bundler inf-ruby auctex-latexmk auctex ansible-doc ansible anaconda-mode pythonic xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help mmm-mode markdown-toc markdown-mode gh-md yaml-mode ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build spacemacs-theme))))
+    (helm-company helm-c-yasnippet company-statistics auto-yasnippet ac-ispell auto-complete company-quickhelp graphviz-dot-mode yapfify x86-lookup web-mode web-beautify vimrc-mode vagrant-tramp vagrant toml-mode tide typescript-mode tagedit systemd sql-indent slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe restclient rbenv racer pyvenv pytest pyenv-mode py-isort pug-mode projectile-rails rake pony-mode pip-requirements phpunit phpcbf php-extras php-auto-yasnippets pandoc-mode ox-pandoc ht ob-http nginx-mode nasm-mode minitest livid-mode skewer-mode simple-httpd live-py-mode less-css-mode js2-refactor js2-mode js-doc jinja2-mode intero insert-shebang hy-mode hlint-refactor hindent helm-pydoc helm-hoogle helm-gtags helm-css-scss haskell-snippets haml-mode go-guru go-eldoc glsl-mode ggtags flycheck-rust flycheck-haskell fish-mode feature-mode emmet-mode drupal-mode php-mode dockerfile-mode docker json-mode tablist docker-tramp json-snatcher json-reformat disaster dactyl-mode cython-mode company-web web-completion-data company-tern dash-functional tern company-shell company-go go-mode company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda coffee-mode cmm-mode cmake-mode clojure-snippets clj-refactor inflections edn multiple-cursors paredit peg clang-format cider-eval-sexp-fu cider seq queue clojure-mode chruby cargo rust-mode bundler inf-ruby auctex-latexmk auctex ansible-doc ansible anaconda-mode pythonic xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help mmm-mode markdown-toc markdown-mode gh-md yaml-mode ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build spacemacs-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
