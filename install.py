@@ -2,24 +2,18 @@
 
 Will move anything that insnt a symlink into your tmp dir
 """
-import sys
-import os
 import logging
-from os.path import (
-    realpath,
-    dirname,
-    expanduser
-)
+import os
+import sys
+from os.path import dirname, expanduser, realpath
+
+from fileutils import mark_as_exec, run_script, symlink
 
 # makes sure python can find my custom libraries
-sys.path.insert(0, os.path.join(dirname(realpath(__file__)),
-                                'config', 'local', 'lib', 'python'))
-import fileutils as fu
-from fileutils import (
-    mark_as_exec,
-    run_script,
-    symlink
-)
+sys.path.insert(0,
+                os.path.join(
+                    dirname(realpath(__file__)), 'config', 'local', 'lib',
+                    'python'))
 
 HOME = expanduser('~')
 DOTFILES = dirname(realpath(__file__))
@@ -94,9 +88,12 @@ def install_bin(home=HOME, dotfiles=DOTFILES, method=symlink):
 
 def install_emacs(home=HOME, dotfiles=DOTFILES, method=symlink):
     """Installs my emacs configurations"""
-    src = os.path.join(dotfiles, 'emacs.d')
-    dst = os.path.join(home, '.emacs.d')
-    method(src, dst)
+    script = os.path.join(dotfiles, 'lib', 'install_spacemacs.sh')
+    emacs_dir = os.path.join(home, '.emacs.d')
+    if not os.path.exists(emacs_dir):
+        run_script(script)
+    else:
+        logger.debug("SKIPPING :: {} already exists".format(emacs_dir))
 
 
 def install_vundle(home=HOME, dotfiles=DOTFILES):
@@ -122,14 +119,14 @@ def install_pyenv(home=HOME, dotfiles=DOTFILES):
 def install_rbenv(home=HOME, dotfiles=DOTFILES):
     """Installs rbenv"""
     script = os.path.join(dotfiles, "lib", "install_rbenv.sh")
-    rbenv_dir = os.path.join(home, ".pyenv")
+    rbenv_dir = os.path.join(home, ".rbenv")
     if not os.path.exists(rbenv_dir):
         run_script(script)
     else:
         logger.debug("SKIPPING :: {} already exists".format(rbenv_dir))
 
 
-def _set_logger():
+def _set_log_level():
     try:
         log_level = os.environ["LOG_LEVEL"]
         if log_level == "CRITICAL":
@@ -181,9 +178,8 @@ Number: """
 def install_everything(home=HOME, dotfiles=DOTFILES):
     """Installs everything."""
 
-    _set_logger()
+    _set_log_level()
     dev_type = _get_dev_type()
-
 
     install_oh_my_zsh(home, dotfiles)
     install_configs(home, dotfiles)
@@ -193,6 +189,7 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     install_vundle(home, dotfiles)
     install_rbenv(home, dotfiles)
     install_pyenv(home, dotfiles)
+
 
 if __name__ == '__main__':
     sys.exit(install_everything())
