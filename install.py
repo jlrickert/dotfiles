@@ -4,10 +4,13 @@ Will move anything that insnt a symlink into your tmp dir
 """
 import logging
 import os
+import random
+import shutil
+import stat
+import string
 import sys
-from os.path import dirname, expanduser, realpath
-
-from fileutils import mark_as_exec, run_script, symlink
+from os.path import basename, dirname, expanduser, realpath
+from subprocess import call
 
 # makes sure python can find my custom libraries
 sys.path.insert(0,
@@ -20,6 +23,56 @@ DOTFILES = dirname(realpath(__file__))
 
 logger = logging.getLogger(__name__)
 
+
+def symlink(src=None, dst=None, force=True):
+    """Symlinks files"""
+    assert src and dst
+    mkdir(dirname(dst))
+    if os.path.exists(dst):
+        if force:
+            rm(dst)
+            symlink(src=src, dst=dst)
+    else:
+        logger.debug("Linking '{}' -> '{}'".format(src, dst))
+        os.symlink(src, dst)
+
+
+def rm(src, backup=True):
+    """Removes a file and places it into a backup directory."""
+    if not os.path.exists(src):
+        pass
+    elif os.path.islink(src):
+        os.remove(src)
+        logger.debug('Removing symlink {}'.format(src))
+    elif backup:
+        tmp_dir = os.environ['TMPDIR']
+        rand_id = ''.join(random.SystemRandom().choice(
+            string.ascii_uppercase + string.digits) for _ in range(5))
+        backup_file = rand_id+"-"+basename(src)
+        shutil.move(src, os.path.join(tmp_dir, backup_file))
+        logger.debug('Backup up {} to {}'.format(src, backup_file))
+    else:
+        os.remove(src)
+        logger.debug('Removing {}'.format(src))
+
+
+def mark_as_exec(bin_name):
+    """Marks a file as an executable.  Same as chmod +x BIN_NAME"""
+    status = os.stat(bin_name)
+    os.chmod(bin_name, status.st_mode | stat.S_IEXEC)
+
+
+def mkdir(path):
+    """Make sure that a directory exists"""
+    if not os.path.exists(path):
+        logger.debug('Creating directory {}'.format(path))
+        os.makedirs(path)
+
+
+def run_script(exe, *args):
+    """Calls a script with the given args."""
+    logger.debug("running {} {}".format(exe, " ".join(args)))
+    call([exe] + list(args))
 
 def install_oh_my_zsh(home=HOME, dotfiles=DOTFILES, method=symlink):
     """Installs oh my zsh and my custom modules for it.
