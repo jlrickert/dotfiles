@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: latex
-# key: $
-# --
-$$
-$0
-$$

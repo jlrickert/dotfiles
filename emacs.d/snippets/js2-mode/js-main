@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: js-main
-# key: js-main
-# --
-(function(fn) {
-  fn(window.jQuery, window, document);
-}(function($, window, document) {
-  // code goes here
-}));

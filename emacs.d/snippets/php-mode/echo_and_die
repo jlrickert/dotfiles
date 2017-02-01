@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: echo_and_die
-# key: ed
-# binding: direct-keybinding
-# --
-echo "${1:Hello}"; die();

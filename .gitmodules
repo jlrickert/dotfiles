@@ -1,3 +1,0 @@
-[submodule "emacs.d/site-lisp/pylookup"]
-	path = emacs.d/site-lisp/pylookup
-	url = https://github.com/tsgates/pylookup
