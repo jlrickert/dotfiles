@@ -198,16 +198,17 @@ def _set_log_level():
 
 
 def _get_dev_type():
-    msg = """
-Please input your device type number:
-1) desktop
-2) labtop
-3) other
-Number: """
     dev_types = [
         "desktop",
         "labtop",
+        "other",
     ]
+    msg = """
+Please input your device type number:
+{}
+Number: """.format(
+        "\n".join(
+            ["{}) {}".format(i+1, dev) for i, dev in enumerate(dev_types)]))
 
     args = sys.argv
     if len(args) == 2:
