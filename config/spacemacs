@@ -393,6 +393,7 @@ you should place your code here."
   (setq clojure-enable-fancify-symbols t)
 
   ;;; Custom Keybindings
+  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
   (define-key evil-inner-text-objects-map (kbd "e") 'evil-inner-word)
   (define-key evil-inner-text-objects-map (kbd "E") 'evil-inner-WORD)
   (define-key evil-inner-text-objects-map (kbd "w") 'evil-inner-word)
@@ -406,6 +407,21 @@ you should place your code here."
   (define-key evil-motion-state-map (kbd "w") 'backward-word)
   (define-key evil-motion-state-map (kbd "W") 'backward-symbol)
   (define-key evil-motion-state-map (kbd "b") 'evil-jump-item)
+  (define-key evil-motion-state-map (kbd "M-h") 'evil-window-left)
+  (define-key evil-motion-state-map (kbd "M-l") 'evil-window-right)
+  (define-key evil-motion-state-map (kbd "M-k") 'evil-window-up)
+  (define-key evil-motion-state-map (kbd "M-j") 'evil-window-down)
+  (define-key evil-visual-state-map (kbd ";") 'exil-ex)
+  (spacemacs/set-leader-keys
+    "wh" 'evil-window-move-far-left
+    "wl" 'evil-window-move-far-right
+    "wj" 'evil-window-move-very-bottom
+    "wk" 'evil-window-move-very-top)
+  (define-key helm-find-files-map (kbd "C-n") 'next-history-element)
+  (define-key helm-find-files-map (kbd "C-p") 'previous-history-element)
+  (define-key helm-find-files-map (kbd "M-n") 'helm-next-line)
+  (define-key helm-find-files-map (kbd "M-p") 'helm-previous-line)
+  (define-key evil-normal-state-map (kbd "M-d") 'sp-splice-sexp)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
