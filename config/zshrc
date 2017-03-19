@@ -102,7 +102,7 @@ source $ZSH/oh-my-zsh.sh
 # Environmental variables
 export BROWSER=firefox
 export DEFAULT_USER=`whoami`
-export DOTFILES=$HOME/Dotfiles
+export DOTFILES=`dirname $(dirname "$(readlink -f "${(%):-%x}")")`
 export GOPATH=$HOME/Development/gocode
 export ANDROID_HOME=/opt/android-sdk
 export PYENV_ROOT=$HOME/.pyenv
