@@ -1,6 +1,8 @@
 #!/bin/sh
-
-PANDOC_HTML_OPTS="--standalone --toc --filter=pandoc-citeproc --csl=/home/raviko/Documents/csl/chicago-note-bibliography.csl --bibliography=/home/raviko/Documents/bibliography.bib --mathjax --smart --css=https://mirror.jlrickert.me/pandoc-md.css"
+CSS="https://jlrickert.me/mirror/css/tufte.css"
+CSL="/home/raviko/Documents/csl/chicago-note-bibliography.csl"
+BIB="/home/raviko/Documents/bibliography.bib"
+PANDOC_HTML_OPTS="--standalone --toc --filter=pandoc-citeproc --csl=$CSL --bibliography=$BIB --mathjax --smart --css=$CSS"
 TMP_DIR="/tmp/$USER"
 
 if [ -x "$(command -v pandoc)" ]; then
