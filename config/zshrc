@@ -36,7 +36,7 @@ ZSH_THEME="jlrickert"
 
 # Uncomment the following line to enable command
 # auto-correction.
-ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="false"
 
 # Uncomment the following line to display red dots whilst
 # waiting for completion.
@@ -174,7 +174,7 @@ done
 alias py='python'
 alias py2='python2'
 alias rb='ruby'
-alias wo='fire_fox_open'
+alias wo='firefox_open'
 
 alias emacs='$EMACS_PLUGIN_LAUNCHER --no-wait --create-frame'
 alias e='$EMACS_PLUGIN_LAUNCHER --no-wait'

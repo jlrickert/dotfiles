@@ -61,7 +61,7 @@ function eecho {
     echo $@ 1>&2
 }
 
-function fire_fox_open {
+function firefox_open {
     if [ $# = 0 ]; then
         eecho "usage: ff <file>" 1>&2
         return 1
