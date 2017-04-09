@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     yaml
      ;; core
      (auto-completion
       :variables
@@ -64,7 +65,9 @@ values."
       :variables
       c-c++-default-mode-for-headers 'c++-mode
       c-c++-enable-clang-support t)
-     clojure
+     (clojure
+      :variables
+      clojure-enable-fancify-symbols t)
      emacs-lisp
      (go
       :variables
@@ -73,7 +76,12 @@ values."
      graphviz
      (haskell
      :variables
-     haskell-enable-hindent-style "johan-tibell")
+     haskell-enable-ghc-mod-support nil
+     ;; haskell-enable-ghci-ng-support t
+     haskell-process-type 'stack-ghci
+     haskell-process-args-stack-ghci '("--ghc-options=-ferror-spans" "--with-ghc=intero")
+     hindent-style "johan-tibell"
+     haskell-stylish-on-save t)
      (scala
      :variables
      scala-use-unicode-arrows t
@@ -101,17 +109,16 @@ values."
      ;; tools
      ansible
      docker
-     nginx
-     pandoc
-     restclient
-     systemd
-     vagrant
+     ngin
+
+     ;; Custom layers
+     i3wm
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(intero company-ghci)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -367,6 +374,7 @@ you should place your code here."
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (global-company-mode)
 
+
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Web stuff
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -398,9 +406,65 @@ you should place your code here."
     (define-key c++-mode-map [tab] 'clang-format-buffer))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;; Haskell
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (add-hook 'haskell-mode-hook
+            (lambda ()
+              (message "haskell-mode-hook")
+              (intero-mode)
+              (push '(company-ghci :with company-yasnippet :with company-dabbrev) company-backends-haskell-mode)
+              (interactive-haskell-mode)
+              (turn-on-haskell-indentation)
+              (hindent-mode)
+              (setq haskell-stylish-on-save t) ;; override haskell layer
+              ))
+
+  (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
+    "ht" 'haskell-process-do-type
+    "l"  'hayoo
+    "t"  'intero-type-at "T"  'spacemacs/haskell-process-do-type-on-prev-line
+    "r"  'haskell-process-load-file
+    "i"  'intero-info
+    "I"  'haskell-do-info
+    "g"  'intero-goto-definition
+    )
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Clojure
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (setq clojure-enable-fancify-symbols t)
+  ;; (defconst clojure-modes
+  ;;   '(clojure-mode
+  ;;     clojurec-mode
+  ;;     clojurescript-mode
+  ;;     clojurex-mode
+  ;;     cider-repl-mode
+  ;;     cider-clojure-interaction-mode)
+  ;;   "Major modes related to clojure")
+
+  ;; (setq nrepl-popup-stacktraces nil
+  ;;       cider-repl-use-pretty-printing t
+  ;;       cider-repl-use-clojure-font-lock t
+  ;;       cider-repl-result-prefix ";; => "
+  ;;       cider-repl-wrap-history t
+  ;;       cider-repl-history-size 3000
+  ;;       cider-prompt-for-symbol nil
+  ;;       cider-show-error-buffer nil
+  ;;       cider-stacktrace-default-filters '(tooling dup)
+  ;;       cider-repl-pop-to-buffer-on-connect nil
+  ;;       cider-prompt-save-file-on-load nil
+  ;;       cider-prompt-for-symbol nil)
+
+  ;; (evilified-state-evilify clojure-modes
+  ;;   )
+
+  ;; (dolist (m clojure-modes)
+  ;;   (mapc (lambda (x) (spacemacs/declare-prefix-for-mode
+  ;;                      m (car x) (cdr x)))
+  ;;         cider--key-binding-prefixes)
+
+  ;;   (spacemacs/set-leader-keys-for-major-mode m
+  ;;     ""
+  ;;     ))
 
   ;;; Custom Keybindings
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
@@ -419,25 +483,24 @@ you should place your code here."
   (define-key evil-motion-state-map (kbd "w") 'backward-word)
   (define-key evil-motion-state-map (kbd "W") 'backward-symbol)
   (define-key evil-motion-state-map (kbd "b") 'evil-jump-item)
-  (define-key evil-motion-state-map (kbd "M-h") 'evil-window-left)
-  (define-key evil-motion-state-map (kbd "M-l") 'evil-window-right)
-  (define-key evil-motion-state-map (kbd "M-k") 'evil-window-up)
-  (define-key evil-motion-state-map (kbd "M-j") 'evil-window-down)
+  (define-key evil-motion-state-map (kbd "C-h") 'evil-window-left)
+  (define-key evil-motion-state-map (kbd "C-l") 'evil-window-right)
+  (define-key evil-motion-state-map (kbd "C-k") 'evil-window-up)
+  (define-key evil-motion-state-map (kbd "C-j") 'evil-window-down)
   (define-key evil-visual-state-map (kbd ";") 'exil-ex)
   (spacemacs/set-leader-keys
-    "wh" 'evil-window-move-far-left
-    "wl" 'evil-window-move-far-right
-    "wj" 'evil-window-move-very-bottom
-    "wk" 'evil-window-move-very-top)
+    "w" 'make-frame)
   (define-key helm-map (kbd "C-n") 'next-history-element)
   (define-key helm-map (kbd "C-p") 'previous-history-element)
   (define-key helm-map (kbd "M-n") 'helm-next-line)
   (define-key helm-map (kbd "M-p") 'helm-previous-line)
+  (define-key helm-find-files-map (kbd "C-n") 'next-history-element)
+  (define-key helm-find-files-map (kbd "C-p") 'previous-history-element)
+  (define-key helm-find-files-map (kbd "M-n") 'helm-next-line)
+  (define-key helm-find-files-map (kbd "M-p") 'helm-previous-line)
   (define-key evil-normal-state-map (kbd "M-d") 'sp-splice-sexp)
   )
 
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -446,11 +509,10 @@ you should place your code here."
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (vbasense noflet ensime sbt-mode scala-mode flycheck-gometalinter helm-company helm-c-yasnippet company-statistics auto-yasnippet ac-ispell auto-complete company-quickhelp graphviz-dot-mode yapfify x86-lookup web-mode web-beautify vimrc-mode vagrant-tramp vagrant toml-mode tide typescript-mode tagedit systemd sql-indent slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe restclient rbenv racer pyvenv pytest pyenv-mode py-isort pug-mode projectile-rails rake pony-mode pip-requirements phpunit phpcbf php-extras php-auto-yasnippets pandoc-mode ox-pandoc ht ob-http nginx-mode nasm-mode minitest livid-mode skewer-mode simple-httpd live-py-mode less-css-mode js2-refactor js2-mode js-doc jinja2-mode intero insert-shebang hy-mode hlint-refactor hindent helm-pydoc helm-hoogle helm-gtags helm-css-scss haskell-snippets haml-mode go-guru go-eldoc glsl-mode ggtags flycheck-rust flycheck-haskell fish-mode feature-mode emmet-mode drupal-mode php-mode dockerfile-mode docker json-mode tablist docker-tramp json-snatcher json-reformat disaster dactyl-mode cython-mode company-web web-completion-data company-tern dash-functional tern company-shell company-go go-mode company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda coffee-mode cmm-mode cmake-mode clojure-snippets clj-refactor inflections edn multiple-cursors paredit peg clang-format cider-eval-sexp-fu cider seq queue clojure-mode chruby cargo rust-mode bundler inf-ruby auctex-latexmk auctex ansible-doc ansible anaconda-mode pythonic xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help mmm-mode markdown-toc markdown-mode gh-md yaml-mode ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build spacemacs-theme))))
+    (i3wm yapfify yaml-mode x86-lookup ws-butler window-numbering which-key web-mode web-beautify volatile-highlights vimrc-mode vi-tilde-fringe vagrant-tramp vagrant uuidgen use-package typo toml-mode toc-org tide tagedit systemd sql-indent spacemacs-theme spaceline solarized-theme smeargle slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe restclient restart-emacs rbenv rainbow-delimiters racer quelpa pyvenv pytest pyenv-mode py-isort pug-mode projectile-rails popwin pony-mode pip-requirements phpunit phpcbf php-extras php-auto-yasnippets persp-mode paradox pandoc-mode ox-pandoc orgit org-projectile org-present org-pomodoro org-plus-contrib org-download org-bullets open-junk-file ob-http noflet nginx-mode neotree nasm-mode mwim move-text mmm-mode minitest markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode js2-refactor js-doc jinja2-mode intero insert-shebang info+ indent-guide ido-vertical-mode hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets graphviz-dot-mode google-translate golden-ratio go-guru go-eldoc gnuplot glsl-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-haskell flycheck-gometalinter flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu ensime emmet-mode elisp-slime-nav dumb-jump drupal-mode dockerfile-mode docker disaster diff-hl define-word dactyl-mode cython-mode company-web company-tern company-statistics company-shell company-quickhelp company-go company-ghci company-ghc company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode coffee-mode cmm-mode cmake-mode clojure-snippets clj-refactor clean-aindent-mode clang-format cider-eval-sexp-fu chruby cargo bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk ansible-doc ansible aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+ )

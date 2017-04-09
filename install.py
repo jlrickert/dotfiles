@@ -74,6 +74,7 @@ def run_script(exe, *args):
     logger.debug("running {} {}".format(exe, " ".join(args)))
     call([exe] + list(args))
 
+
 def install_oh_my_zsh(home=HOME, dotfiles=DOTFILES, method=symlink):
     """Installs oh my zsh and my custom modules for it.
     """
@@ -236,13 +237,13 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     dev_type = _get_dev_type()
 
     install_oh_my_zsh(home, dotfiles)
-    install_configs(home, dotfiles)
     install_i3_configs(dev_type, home, dotfiles)
     install_bin(home, dotfiles)
     install_spacemacs(home, dotfiles)
     install_vundle(home, dotfiles)
     install_rbenv(home, dotfiles)
     install_pyenv(home, dotfiles)
+    install_configs(home, dotfiles)  # this must be last
 
 
 if __name__ == '__main__':
