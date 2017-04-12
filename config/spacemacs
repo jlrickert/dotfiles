@@ -109,7 +109,7 @@ values."
      ;; tools
      ansible
      docker
-     ngin
+     nginx
 
      ;; Custom layers
      i3wm
@@ -191,8 +191,10 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(solarized-dark
-                         spacemacs-dark
-                         spacemacs-light)
+                         solarized-light
+                         ;; spacemacs-dark
+                         ;; spacemacs-light
+                         )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -364,6 +366,8 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  (require 'derived)
+
   (setq user-full-name "Jared Rickert")
   (setq user-mail-address "jaredrickert52@gmail.com")
 
@@ -373,7 +377,6 @@ you should place your code here."
   ;;; Autocompletion stuff
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (global-company-mode)
-
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Web stuff
@@ -430,41 +433,57 @@ you should place your code here."
     )
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;;; Clojure
+  ;;; Lisp
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; (defconst clojure-modes
-  ;;   '(clojure-mode
-  ;;     clojurec-mode
-  ;;     clojurescript-mode
-  ;;     clojurex-mode
-  ;;     cider-repl-mode
-  ;;     cider-clojure-interaction-mode)
-  ;;   "Major modes related to clojure")
+  (defconst my-lisp-modes
+    '(clojure-mode
+      clojurec-mode
+      clojurescript-mode
+      clojurex-mode
+      cider-repl-mode
+      cider-clojure-interaction-mode
 
-  ;; (setq nrepl-popup-stacktraces nil
-  ;;       cider-repl-use-pretty-printing t
-  ;;       cider-repl-use-clojure-font-lock t
-  ;;       cider-repl-result-prefix ";; => "
-  ;;       cider-repl-wrap-history t
-  ;;       cider-repl-history-size 3000
-  ;;       cider-prompt-for-symbol nil
-  ;;       cider-show-error-buffer nil
-  ;;       cider-stacktrace-default-filters '(tooling dup)
-  ;;       cider-repl-pop-to-buffer-on-connect nil
-  ;;       cider-prompt-save-file-on-load nil
-  ;;       cider-prompt-for-symbol nil)
+      elisp-mode
+      ielm-mode
+      slim-mode
+      emacs-lisp-mode
+      lisp-mode)
+      "Modes that that are considered lispy"
+      )
 
-  ;; (evilified-state-evilify clojure-modes
-  ;;   )
+  (defconst my-lisp-modes-hook
+    '(smartparens-strict-mode)
+    "Hook run after entering any `lisp-mode'.")
 
-  ;; (dolist (m clojure-modes)
-  ;;   (mapc (lambda (x) (spacemacs/declare-prefix-for-mode
-  ;;                      m (car x) (cdr x)))
-  ;;         cider--key-binding-prefixes)
+  (evilified-state-evilify my-lisp-modes
+    (kbd "M-c") 'sp-convolute-sexp
+    (kbd "M-d") 'sp-splice-sexp
+    (kbd "M-h") 'sp-backward-slurp-sexp
+    (kbd "M-j") 'sp-join-sexp
+    (kbd "M-l") 'sp-backward-barf-sexp
+    (kbd "M-n") 'sp-forward-slurp-sexp
+    (kbd "M-p") 'sp-forward-barf-sexp
+    (kbd "M-s") 'sp-split-sexp
+    (kbd "M-t") 'sp-transpose-sexp
+    )
 
-  ;;   (spacemacs/set-leader-keys-for-major-mode m
-  ;;     ""
-  ;;     ))
+  (dolist (mode my-lisp-modes)
+    (add-hook (derived-mode-hook-name mode)
+              '(lambda ()
+                 (run-hooks 'my-lisp-modes-hook)))
+    (eval
+     `(evil-define-key 'normal ,(derived-mode-map-name mode)
+        (kbd "M-=") 'sp-indent-defun
+        (kbd "M-c") 'sp-convolute-sexp
+        (kbd "M-d") 'sp-splice-sexp
+        (kbd "M-h") 'sp-backward-slurp-sexp
+        (kbd "M-j") 'sp-join-sexp
+        (kbd "M-l") 'sp-backward-barf-sexp
+        (kbd "M-n") 'sp-forward-slurp-sexp
+        (kbd "M-p") 'sp-forward-barf-sexp
+        (kbd "M-s") 'sp-split-sexp
+        (kbd "M-t") 'sp-transpose-sexp
+        )))
 
   ;;; Custom Keybindings
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
@@ -500,19 +519,3 @@ you should place your code here."
   (define-key helm-find-files-map (kbd "M-p") 'helm-previous-line)
   (define-key evil-normal-state-map (kbd "M-d") 'sp-splice-sexp)
   )
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(evil-want-Y-yank-to-eol nil)
- '(package-selected-packages
-   (quote
-    (i3wm yapfify yaml-mode x86-lookup ws-butler window-numbering which-key web-mode web-beautify volatile-highlights vimrc-mode vi-tilde-fringe vagrant-tramp vagrant uuidgen use-package typo toml-mode toc-org tide tagedit systemd sql-indent spacemacs-theme spaceline solarized-theme smeargle slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe restclient restart-emacs rbenv rainbow-delimiters racer quelpa pyvenv pytest pyenv-mode py-isort pug-mode projectile-rails popwin pony-mode pip-requirements phpunit phpcbf php-extras php-auto-yasnippets persp-mode paradox pandoc-mode ox-pandoc orgit org-projectile org-present org-pomodoro org-plus-contrib org-download org-bullets open-junk-file ob-http noflet nginx-mode neotree nasm-mode mwim move-text mmm-mode minitest markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode js2-refactor js-doc jinja2-mode intero insert-shebang info+ indent-guide ido-vertical-mode hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets graphviz-dot-mode google-translate golden-ratio go-guru go-eldoc gnuplot glsl-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-haskell flycheck-gometalinter flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu ensime emmet-mode elisp-slime-nav dumb-jump drupal-mode dockerfile-mode docker disaster diff-hl define-word dactyl-mode cython-mode company-web company-tern company-statistics company-shell company-quickhelp company-go company-ghci company-ghc company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode coffee-mode cmm-mode cmake-mode clojure-snippets clj-refactor clean-aindent-mode clang-format cider-eval-sexp-fu chruby cargo bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk ansible-doc ansible aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
