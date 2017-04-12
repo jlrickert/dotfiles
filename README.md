@@ -1,24 +1,33 @@
 My personal dotfiles
 ====================
+
 My preferences and configuration for my current working environment.
 
 Installation
 ------------
+
 ### Downloading
+
 ```bash
 git clone https://github.com/jlrickert/dotfiles.git ~/dotfiles
 ```
 
 ### Installation
-Running the install will create all the directories and symlink all files
-```bash
-python install.py
+
+Running the install will create all the directories and symlink all files.
+**WARNING**: this will remove pre-existing config files.
+
+```
+bash python install.py
 ```
 
 ---
+
 Pacman packages that I use.
 ---------------------------
+
 ### Core
+
 - abs
 - at
 - dmenu
@@ -47,12 +56,14 @@ Pacman packages that I use.
 - nmap
 - numlockx
 - pandoc
+- pkgfile
 - powertop
 - pulseaudio
 - rlwrap
 - rsync
 - seahorse
 - slop
+- sshfs
 - tcpdump
 - teamspeak
 - termite
@@ -67,22 +78,28 @@ Pacman packages that I use.
 - zsh-syntax-highlighting
 
 ### AUR
+
+- apache-tools
 - chromedriver
 - fasd
+- gitflow-avh
 - global
 - google-chrome
 - jdk
 - package-query
-- yaourt
 - reflector-timer
+- slack-desktop
+- yaourt
 
 Programing related
 ------------------
+
 ### C/C++
 - clang
 - gdb
 
 ### Python
+
 - autopep8
 - flake8
 - python-jedi
@@ -90,25 +107,31 @@ Programing related
 - yapf
 
 ### Lisp
+
 - buildapp
 - clisp
 - roswell
 - sbcl
 
 ### clojure
+
 - leiningen
 
 ### Scala
+
 - scala
 - sbt
 
 ### Haskell
+
 - stack
 
 ### Perl
+
 - cpanminus
 
 ### Android
+
 - android-studio
 - android-tools
 - android-udev
@@ -116,24 +139,29 @@ Programing related
 
 Installation for other tools that I use.
 ----------------------------------------
+
 ### Setup Python
+
 ```bash
 git clone https://github.com/yyuu/pyenv.git ~/.pyenv
 git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
 ```
 
 ### Setup Haskell
+
 ```bash
 stack update
 stack install alex hasktags happy stylish-haskell present ghc-mod hlint hoogle hindent
 ```
 
 ### Setup elm
+
 ```bash
 sudo npm install -g elm elm-oracle
 ```
 
 ### Setup Ruby
+
 ```bash
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 cd ~/.rbenv && src/configure && make -C src
@@ -141,6 +169,7 @@ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 ```
 
 ### Setup rust
+
 ```bash
 curl https://sh.rustup.rs -sSf | sh
 cargo install rust-fmt
@@ -148,6 +177,7 @@ cargo install racer
 ```
 
 ### Setup go
+
 ```bash
 go get -u -v github.com/nsf/gocode
 go get -u -v github.com/rogpeppe/godef
@@ -157,6 +187,7 @@ go get -u -v golang.org/x/tools/cmd/goimports
 ```
 
 ### Setup Android
+
 ```bash
 sudo groupadd sdkusers
 sudo gpasswd -a $USER sdkusers
@@ -171,7 +202,10 @@ sudo chmod -R g+w /opt/android-sdk/
 
 System setup checklist
 ----------------------
+
 ### Gnome-keyring
+
+- [ ] [base install example](https://gist.github.com/binaerbaum/535884a7f5b8a8697557)
 - [ ] [Gnome keyring setup](https://wiki.archlinux.org/index.php/GNOME/Keyring#Using_the_keyring_outside_GNOME)
 - [ ] at `sudo systemctl enable atd`
 - [ ] networkmanager
