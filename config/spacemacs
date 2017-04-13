@@ -27,7 +27,7 @@ values."
    ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path '("~/.layers")
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
@@ -43,6 +43,7 @@ values."
      spell-checking
      syntax-checking
      version-control
+     nlinum
 
      ;; optional
      gtags
@@ -112,13 +113,17 @@ values."
      nginx
 
      ;; Custom layers
-     i3wm
+     (i3wm
+      :variables
+      i3wm-one-window-per-frame t
+      i3wm-one-project-per-workspace t)
+     evil-smartparens
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(intero company-ghci)
+   dotspacemacs-additional-packages '()
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -234,7 +239,7 @@ values."
    dotspacemacs-retain-visual-state-on-shift t
    ;; If non-nil, J and K move lines up and down when in visual mode.
    ;; (default nil)
-   dotspacemacs-visual-line-move-text nil
+   dotspacemacs-visual-line-move-text t
    ;; If non nil, inverse the meaning of `g' in `:substitute' Evil ex-command.
    ;; (default nil)
    dotspacemacs-ex-substitute-global nil
@@ -316,7 +321,7 @@ values."
    ;; If non nil line numbers are turned on in all `prog-mode' and `text-mode'
    ;; derivatives. If set to `relative', also turns on relative line numbers.
    ;; (default nil)
-   dotspacemacs-line-numbers `prog-mode
+   dotspacemacs-line-numbers t
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -347,7 +352,7 @@ values."
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup 'changed
+   dotspacemacs-whitespace-cleanup 'all
    ))
 
 (defun dotspacemacs/user-init ()
@@ -435,7 +440,7 @@ you should place your code here."
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Lisp
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (defconst my-lisp-modes
+  (defconst evil-lisp-modes
     '(clojure-mode
       clojurec-mode
       clojurescript-mode
@@ -448,42 +453,31 @@ you should place your code here."
       slim-mode
       emacs-lisp-mode
       lisp-mode)
-      "Modes that that are considered lispy"
+      "Modes for things that are considered a lisp"
       )
 
-  (defconst my-lisp-modes-hook
+  (defconst evil-lisp-hooks
     '(smartparens-strict-mode)
     "Hook run after entering any `lisp-mode'.")
 
-  (evilified-state-evilify my-lisp-modes
-    (kbd "M-c") 'sp-convolute-sexp
-    (kbd "M-d") 'sp-splice-sexp
-    (kbd "M-h") 'sp-backward-slurp-sexp
-    (kbd "M-j") 'sp-join-sexp
-    (kbd "M-l") 'sp-backward-barf-sexp
-    (kbd "M-n") 'sp-forward-slurp-sexp
-    (kbd "M-p") 'sp-forward-barf-sexp
-    (kbd "M-s") 'sp-split-sexp
-    (kbd "M-t") 'sp-transpose-sexp
-    )
-
-  (dolist (mode my-lisp-modes)
+  (dolist (mode evil-lisp-modes)
     (add-hook (derived-mode-hook-name mode)
               '(lambda ()
-                 (run-hooks 'my-lisp-modes-hook)))
-    (eval
-     `(evil-define-key 'normal ,(derived-mode-map-name mode)
-        (kbd "M-=") 'sp-indent-defun
-        (kbd "M-c") 'sp-convolute-sexp
-        (kbd "M-d") 'sp-splice-sexp
-        (kbd "M-h") 'sp-backward-slurp-sexp
-        (kbd "M-j") 'sp-join-sexp
-        (kbd "M-l") 'sp-backward-barf-sexp
-        (kbd "M-n") 'sp-forward-slurp-sexp
-        (kbd "M-p") 'sp-forward-barf-sexp
-        (kbd "M-s") 'sp-split-sexp
-        (kbd "M-t") 'sp-transpose-sexp
-        )))
+                 (run-hooks 'evil-lisp-hooks)))
+    ;; (eval
+    ;;  `(evil-define-key 'normal ,(derived-mode-map-name mode)
+    ;;     (kbd "M-=") 'sp-indent-defun
+    ;;     (kbd "M-c") 'sp-convolute-sexp
+    ;;     (kbd "M-d") 'sp-splice-sexp
+    ;;     (kbd "M-h") 'sp-backward-slurp-sexp
+    ;;     (kbd "M-j") 'sp-join-sexp
+    ;;     (kbd "M-l") 'sp-backward-barf-sexp
+    ;;     (kbd "M-n") 'sp-forward-slurp-sexp
+    ;;     (kbd "M-p") 'sp-forward-barf-sexp
+    ;;     (kbd "M-s") 'sp-split-sexp
+    ;;     (kbd "M-t") 'sp-transpose-sexp
+    ;;     )
+     )
 
   ;;; Custom Keybindings
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
@@ -509,13 +503,14 @@ you should place your code here."
   (define-key evil-visual-state-map (kbd ";") 'exil-ex)
   (spacemacs/set-leader-keys
     "w" 'make-frame)
-  (define-key helm-map (kbd "C-n") 'next-history-element)
-  (define-key helm-map (kbd "C-p") 'previous-history-element)
-  (define-key helm-map (kbd "M-n") 'helm-next-line)
-  (define-key helm-map (kbd "M-p") 'helm-previous-line)
-  (define-key helm-find-files-map (kbd "C-n") 'next-history-element)
-  (define-key helm-find-files-map (kbd "C-p") 'previous-history-element)
-  (define-key helm-find-files-map (kbd "M-n") 'helm-next-line)
-  (define-key helm-find-files-map (kbd "M-p") 'helm-previous-line)
-  (define-key evil-normal-state-map (kbd "M-d") 'sp-splice-sexp)
+  (with-eval-after-load 'helm
+    (define-key helm-find-files-map (kbd "C-n") 'next-history-element)
+    (define-key helm-find-files-map (kbd "C-p") 'previous-history-element)
+    (define-key helm-find-files-map (kbd "M-n") 'helm-next-line)
+    (define-key helm-find-files-map (kbd "M-p") 'helm-previous-line)
+    (define-key evil-normal-state-map (kbd "M-d") 'sp-splice-sexp)
+    (define-key helm-map (kbd "C-n") 'next-history-element)
+    (define-key helm-map (kbd "C-p") 'previous-history-element)
+    (define-key helm-map (kbd "M-n") 'helm-next-line)
+    (define-key helm-map (kbd "M-p") 'helm-previous-line))
   )

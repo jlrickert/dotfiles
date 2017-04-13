@@ -1,6 +1,6 @@
-;;; packages.el --- i3wm layer packages file for Spacemacs.
+;;; packages.el --- evil-smartparens layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
 ;;
 ;; Author: Jared Rickert <jaredrickert52@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -18,22 +18,20 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `i3wm-packages'. Then, for each package PACKAGE:
+;; added to `evil-smartparens-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `i3wm/init-PACKAGE' to load and initialize the package.
+;;   function `evil-smartparens/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `i3wm/pre-init-PACKAGE' and/or
-;;   `i3wm/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `evil-smartparens/pre-init-PACKAGE' and/or
+;;   `evil-smartparens/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
-(defconst i3wm-packages
-  '(
-    i3wm
-    )
-  "The list of Lisp packages required by the test layer.
+(defconst evil-smartparens-packages
+  '((evil-smartparens :location local))
+  "The list of Lisp packages required by the evil-smartparens layer.
 
 Each entry is either:
 
@@ -60,8 +58,10 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun i3wm/init-i3wm ()
-  (use-package i3wm
-    :defer t))
+(defun evil-smartparens/init-evil-smartparens ()
+  (use-package evil-smartparens
+    :pin manual
+    :config
+    (add-hook 'smartparens-strict-mode-hook 'evil-smartparens-mode)))
 
 ;;; packages.el ends here
