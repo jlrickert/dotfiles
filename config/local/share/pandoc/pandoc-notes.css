@@ -1,5 +1,5 @@
 /*******************************************************************************
-Color scheme
+Light Color Scheme
 
 SOLARIZED HEX     Notes
 --------- ------- -------
@@ -20,97 +20,251 @@ blue      #268bd2
 cyan      #2aa198
 green     #859900
 ******************************************************************************/
-html {
+#mainDoc[theme='light'] {
+  color: #657b83;
   background-color: #fdf6e3;
 }
 
-h1 {
+#mainDoc[theme='light'] h1 {
   color: #cb4b16;
 }
 
-h2,
-h3,
-h4,
-h5,
-h6 {
+#mainDoc[theme='light'] h2,
+#mainDoc[theme='light'] h3,
+#mainDoc[theme='light'] h4,
+#mainDoc[theme='light'] h5,
+#mainDoc[theme='light'] h6,
+#mainDoc[theme='light'] a{
   color: #b58900;
 }
 
-p,
-dl,
-li,
-dd {
+#mainDoc[theme='light'] p,
+#mainDoc[theme='light'] dl,
+#mainDoc[theme='light'] li,
+#mainDoc[theme='light'] dd {
   color: #657b83;
 }
 
-a {
-  color: #b58900;
-}
-
-a:hover {
+#mainDoc[theme='light'] a:hover {
   background-color: #eee8d5;
 }
 
-
-pre {
+#mainDoc[theme='light'] pre {
   color: #586e75;
   background-color: #eee8d5;
 }
 
-blockquote {
-  border-left: 2px solid #eee8d5;
-  padding: 0 15px;
+#mainDoc[theme='light'] blockquote {
+  border-left: 1.5px solid #eee8d5;
 }
 
-blockquote > p {
-  color: #586e75
+#mainDoc[theme='light'] blockquote p {
+  color: #586e75;
 }
 
-mark {
+#mainDoc[theme='light'] mark {
   color: #657b83;
-  background-color: #eee8d5;
+  background-color: #073642;
 }
 
-header {
+#mainDoc[theme='light'] header {
   border-bottom: 1px solid #eee8d5;
 }
 
-nav#TOC {
+#mainDoc[theme='light'] table {
+  color: #657b83;
+}
+
+#mainDoc[theme='light'] thead {
+  background-color: #93a1a1;
+  color: #586e75;
+}
+
+#mainDoc[theme='light'] tbody tr.odd {
+  background-color: #eee8d5;
+}
+
+#mainDoc[theme='light'] nav#TOC {
+}
+
+#mainDoc[theme='light'] #gotoTopBtn {
+  border-right: 15px solid #eee8d5;
+  border-bottom: 15px solid #eee8d5;
+  background-color: #fdf6e3;
+}
+
+#mainDoc[theme='light'] #gotoTopBtn:hover {
+  background-color: #fdf6e3;
+  border-right: 15px solid #859900;
+  border-bottom: 15px solid #859900;
+}
+
+#mainDoc[theme='light'] #swapThemeBtn {
+  color: #839496;
+  background-color: #eee8d5;
+}
+
+#mainDoc[theme='light'] #swapThemeBtn:hover {
+  color: #073642;
+  background-color: #859900;
+}
+
+/*******************************************************************************
+Dark Color Scheme
+
+SOLARIZED HEX     Notes
+--------- ------- -------
+base3     #fdf6e3
+base2     #eee8d5
+base1     #93a1a1 optional emphasized content
+base0     #839496 body text/ default code /primary content
+base00    #657b83
+base01    #586e75 comments/ secondary content
+base02    #073642 background highlights
+base03    #002b36 background
+yellow    #b58900
+orange    #cb4b16
+red       #dc322f
+magenta   #d33682
+violet    #6c71c4
+blue      #268bd2
+cyan      #2aa198
+green     #859900
+******************************************************************************/
+#mainDoc[theme='dark'] {
+  color: #839496;
+  background-color: #002b36;
+}
+
+#mainDoc[theme='dark'] h1 {
+  color: #cb4b16;
+}
+
+#mainDoc[theme='dark'] h2,
+#mainDoc[theme='dark'] h3,
+#mainDoc[theme='dark'] h4,
+#mainDoc[theme='dark'] h5,
+#mainDoc[theme='dark'] h6,
+#mainDoc[theme='dark'] a {
+  color: #b58900;
+}
+
+#mainDoc[theme='dark'] p,
+#mainDoc[theme='dark'] dl,
+#mainDoc[theme='dark'] li,
+#mainDoc[theme='dark'] dd {
+  color: #839496;
+}
+
+#mainDoc[theme='dark'] a:hover {
+  background-color: #073642;
+}
+
+
+#mainDoc[theme='dark'] pre {
+  color: #93a1a1;
+  background-color: #073642;
+}
+
+#mainDoc[theme='dark'] blockquote {
+  border-left: 1.5px solid #073642;
+}
+
+#mainDoc[theme='dark'] blockquote p {
+  color: #586e75;
+}
+
+#mainDoc[theme='dark'] mark {
+  color: #839496;
+  background-color: #eee8d5;
+}
+
+#mainDoc[theme='dark'] header {
+  border-bottom: 1px solid #073642;
+}
+
+#mainDoc[theme='dark'] table {
+  color: #839496;
+}
+
+#mainDoc[theme='dark'] thead {
+  background-color: #586e75;
+  color: #93a1a1;
+}
+
+#mainDoc[theme='dark'] tbody tr.odd {
+  background-color: #073642;
+}
+
+#mainDoc[theme='dark'] nav#TOC {
+}
+
+#mainDoc[theme='dark'] #gotoTopBtn {
+  background-color: #002b36;
+  border-right: 15px solid #073642;
+  border-bottom: 15px solid #073642;
+}
+
+#mainDoc[theme='dark'] #gotoTopBtn:hover {
+  border-right: 15px solid #859900;
+  border-bottom: 15px solid #859900;
+}
+
+#mainDoc[theme='dark'] #swapThemeBtn {
+  color: #657b83;
+  background-color: #073642;
+}
+
+#mainDoc[theme='dark'] #swapThemeBtn:hover {
+  color: #eee8d5;
+  background-color: #859900;
 }
 
 /*******************************************************************************
  Structure
  ******************************************************************************/
-* {
+body {
+  padding: 0;
+  padding-top: 0;
+  margin: 0;
+  top: 0;
+  left: 0;
+  font-size: 12px;
 }
 
-body {
+#mainDoc {
   font-family: "ff-din-web-pro-1", "ff-din-web-pro-2", sans-serif;
   vertical-align: baseline;
-  padding: 1em;
-  min-width: 20em;
-  max-width: 50em;
-  margin: auto;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
 
 h1 {
   font-weight: bold;
-  border-bottom: 1px solid #eee8d5;
+  text-align: center;
+  font-size: 16px;
+}
+
+h2 {
+  border-bottom: 1px solid;
+  font-size: 14px;
 }
 
 div,
 section {
-  margin-left: 2em;
+  /* margin-left: 2em; */
+}
+
+p {
+  margin: 1em;
 }
 
 header {
-  margin-bottom: 0.5em;
-}
-
-.title,
-.author,
-.date {
-  border: none;
+  padding: 1em;
 }
 
 pre {
@@ -124,40 +278,73 @@ pre {
   width: 90%;
 }
 
-/*******************************************************************************
- * Table of Contents section
- ******************************************************************************/
+mark {
+  border-radius: 5px;
+}
+
+
+.title,
+.author,
+.date {
+  border: none;
+}
+
 .content {
+  align-items: center;
   margin: auto;
+  min-width: 20em;
+  max-width: 50em;
 }
 
 .center {
-  text-align: center;
+  display: flex;
+  width: 50%;
+  margin: 0 auto;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
+/*******************************************************************************
+ * Table of Contents section
+ ******************************************************************************/
 #TOC {
   margin: auto;
-  border-bottom: 1px solid #002b36;
+  border-bottom: 1px solid;
   margin-bottom: 0.5em;
   font-family: monospace;
 }
 
+/*******************************************************************************
+ * Widgets
+ ******************************************************************************/
 #gotoTopBtn {
   display: none;
   position: fixed;
-  bottom: 2em;
-  right: 2em;
+  bottom: 1em;
+  margin-right: 1em;
+  margin-bottom: 1em;
+  right: 1em;
   z-index: 99;
   border: none;
   outline: none;
-  background-color: #eee8d5;
-  color: #839496;
+  cursor: pointer;
+  padding: 1em;
+  width: 3em;
+  height: 3em;
+  transform: rotate(-135deg);
+}
+
+#swapThemeBtn {
+  position: fixed;
+  left: 1em;
+  top: 4em;
+  z-index: 99;
+  border: none;
+  outline: none;
   cursor: pointer;
   padding: 1em;
   border-radius: 10px;
-}
-
-#gotoTopBtn:hover {
-  color: #073642;
-  background-color: #859900;
+  transform: rotate(-45deg);
 }
