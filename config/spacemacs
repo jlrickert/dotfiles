@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     elm
      yaml
      ;; core
      (auto-completion
@@ -70,6 +71,11 @@ values."
       :variables
       clojure-enable-fancify-symbols t)
      emacs-lisp
+     (elm
+      :variables
+      elm-reacot-port "3000"
+      elm-reactor-address "0.0.0.0"
+      elm-sort-imports-on-save t)
      (go
       :variables
       go-tab-width 4
