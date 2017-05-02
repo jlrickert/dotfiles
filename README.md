@@ -172,7 +172,7 @@ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 
 ```bash
 curl https://sh.rustup.rs -sSf | sh
-cargo install rust-fmt
+cargo install rustfmt
 cargo install racer
 ```
 

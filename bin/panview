@@ -1,8 +1,9 @@
 #!/bin/sh
-CSS="https://jlrickert.me/mirror/css/tufte.css"
+CSS="home/raviko/.local/share/pandoc/pandoc-notes.css"
 CSL="/home/raviko/Documents/csl/chicago-note-bibliography.csl"
 BIB="/home/raviko/Documents/bibliography.bib"
 PANDOC_HTML_OPTS="--standalone --toc --filter=pandoc-citeproc --csl=$CSL --bibliography=$BIB --mathjax --smart --css=$CSS"
+# PANDOC_HTML_OPTS="--standalone --toc --filter=pandoc-citeproc --csl=$CSL --mathjax --smart --css=$CSS"
 TMP_DIR="/tmp/$USER"
 
 if [ -x "$(command -v pandoc)" ]; then

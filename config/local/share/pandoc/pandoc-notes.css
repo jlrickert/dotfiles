@@ -1,0 +1,163 @@
+/*******************************************************************************
+Color scheme
+
+SOLARIZED HEX     Notes
+--------- ------- -------
+base03    #002b36
+base02    #073642
+base01    #586e75 optional empasized content
+base00    #657b83 body text /default code /primary content
+base0     #839496
+base1     #93a1a1 comments secondary content
+base2     #eee8d5 background highlights
+base3     #fdf6e3 background
+yellow    #b58900
+orange    #cb4b16
+red       #dc322f
+magenta   #d33682
+violet    #6c71c4
+blue      #268bd2
+cyan      #2aa198
+green     #859900
+******************************************************************************/
+html {
+  background-color: #fdf6e3;
+}
+
+h1 {
+  color: #cb4b16;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #b58900;
+}
+
+p,
+dl,
+li,
+dd {
+  color: #657b83;
+}
+
+a {
+  color: #b58900;
+}
+
+a:hover {
+  background-color: #eee8d5;
+}
+
+
+pre {
+  color: #586e75;
+  background-color: #eee8d5;
+}
+
+blockquote {
+  border-left: 2px solid #eee8d5;
+  padding: 0 15px;
+}
+
+blockquote > p {
+  color: #586e75
+}
+
+mark {
+  color: #657b83;
+  background-color: #eee8d5;
+}
+
+header {
+  border-bottom: 1px solid #eee8d5;
+}
+
+nav#TOC {
+}
+
+/*******************************************************************************
+ Structure
+ ******************************************************************************/
+* {
+}
+
+body {
+  font-family: "ff-din-web-pro-1", "ff-din-web-pro-2", sans-serif;
+  vertical-align: baseline;
+  padding: 1em;
+  min-width: 20em;
+  max-width: 50em;
+  margin: auto;
+}
+
+h1 {
+  font-weight: bold;
+  border-bottom: 1px solid #eee8d5;
+}
+
+div,
+section {
+  margin-left: 2em;
+}
+
+header {
+  margin-bottom: 0.5em;
+}
+
+.title,
+.author,
+.date {
+  border: none;
+}
+
+pre {
+  padding: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom: 1em;
+  padding-top: 1em;
+  margin-bottom: 1em;
+  white-space: pre;
+  width: 90%;
+}
+
+/*******************************************************************************
+ * Table of Contents section
+ ******************************************************************************/
+.content {
+  margin: auto;
+}
+
+.center {
+  text-align: center;
+}
+
+#TOC {
+  margin: auto;
+  border-bottom: 1px solid #002b36;
+  margin-bottom: 0.5em;
+  font-family: monospace;
+}
+
+#gotoTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 2em;
+  right: 2em;
+  z-index: 99;
+  border: none;
+  outline: none;
+  background-color: #eee8d5;
+  color: #839496;
+  cursor: pointer;
+  padding: 1em;
+  border-radius: 10px;
+}
+
+#gotoTopBtn:hover {
+  color: #073642;
+  background-color: #859900;
+}
