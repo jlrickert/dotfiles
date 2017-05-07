@@ -87,7 +87,6 @@ endif
 "------------------------------------------------------------------------------
 " Indentation
 "------------------------------------------------------------------------------
-
 set autoindent
 set smartindent
 set smarttab
@@ -200,7 +199,6 @@ let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\
 "------------------------------------------------------------------------------
 " Search Settings
 "------------------------------------------------------------------------------
-
 set incsearch       " Find the next match as we type the search
 set hlsearch        " Hilight searches by default
 set viminfo='100,f1 " Save up to 100 marks, enable capital marks
@@ -210,7 +208,6 @@ set smartcase       " ...unless we type a capital
 "------------------------------------------------------------------------------
 " Scrolling
 "------------------------------------------------------------------------------
-
 set scrolloff=8         "Start scrolling when we're 8 lines away from margins
 set sidescrolloff=15
 set sidescroll=1
@@ -244,7 +241,6 @@ let g:syntastic_cpp_compiler_options = '-std=c++11'
 "------------------------------------------------------------------------------
 " Delimate
 "------------------------------------------------------------------------------
-
 " prevent delimate from eating the space bar when pressed
 let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 1
@@ -254,7 +250,6 @@ imap <expr> <CR> pumvisible() ? "\<c-y>" : "<Plug>delimitMateCR"
 "------------------------------------------------------------------------------
 " CtrlP Settings
 "------------------------------------------------------------------------------
-
 if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
@@ -333,7 +328,6 @@ au CursorHold * if exists("t:NerdTreeBufName") | call <SNR>15_refreshRoot() | en
 "------------------------------------------------------------------------------
 " Eye candy
 "------------------------------------------------------------------------------
-
 "turn on syntax highlighting
 syntax on
 
@@ -573,7 +567,6 @@ nnoremap <leader>ls :setlocal spell! spell?<CR>
 nnoremap <leader>s :mksession<CR>
 nmap <leader>lt :TagbarToggle<CR>
 
-
 nnoremap <Leader>/ :TComment<CR>
 vnoremap <Leader>/ :TComment<CR>
 
@@ -627,3 +620,9 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 " Close popup by <Space>.
 inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() . "\<Space>" : "\<Space>"
 
+" Alt completions cycle
+inoremap <expr><Esc>n "\<C-n>"
+inoremap <expr><Esc>p "\<C-p>"
+
+nnoremap <expr><Esc>n "\<C-n>"
+nnoremap <expr><Esc>p "\<C-p>"
