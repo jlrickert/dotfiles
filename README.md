@@ -17,8 +17,8 @@ git clone https://github.com/jlrickert/dotfiles.git ~/dotfiles
 Running the install will create all the directories and symlink all files.
 **WARNING**: this will remove pre-existing config files.
 
-```
-bash python install.py
+```bash
+python install.py
 ```
 
 ---
@@ -64,6 +64,8 @@ Pacman packages that I use.
 - seahorse
 - slop
 - sshfs
+- syncthing
+- syncthing-inotify
 - tcpdump
 - teamspeak
 - termite
@@ -129,6 +131,10 @@ Programing related
 ### Perl
 
 - cpanminus
+
+### elixer
+
+- elixer
 
 ### Android
 
@@ -198,6 +204,28 @@ sudo gpasswd -a $USER adbusers
 # after installing android sdk
 sudo chown -R :sdkusers /opt/android-sdk/
 sudo chmod -R g+w /opt/android-sdk/
+```
+
+### Setup Elixir
+
+bunt - depedency for credo
+
+```bash
+git clone https://github.com/rrrene/bunt
+cd bunt
+mix deps.get
+mix archive.build
+mix archive.install
+```
+
+credo - static analysis
+
+```bash
+git clone https://github.com/rrrene/credo
+cd credo
+mix deps.get
+mix archive.build
+mix archive.install
 ```
 
 System setup checklist

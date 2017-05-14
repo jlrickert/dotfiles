@@ -31,8 +31,6 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     elm
-     yaml
      ;; core
      (auto-completion
       :variables
@@ -50,6 +48,7 @@ values."
      gtags
      git
      typography
+     graphviz
 
      ;; web and framework stuff
      react
@@ -80,7 +79,11 @@ values."
       :variables
       go-tab-width 4
       go-use-gometalinter t)
-     graphviz
+     erlang
+     (elixir
+      :variables
+      elixir-enable-compilation-checking t)
+     elm
      (haskell
      :variables
      haskell-enable-ghc-mod-support nil
@@ -426,7 +429,10 @@ you should place your code here."
             (lambda ()
               (message "haskell-mode-hook")
               (intero-mode)
-              (push '(company-ghci :with company-yasnippet :with company-dabbrev) company-backends-haskell-mode)
+              (push '(company-ghci
+                      :with company-yasnippet
+                      :with company-dabbrev)
+                    company-backends-haskell-mode)
               (interactive-haskell-mode)
               (turn-on-haskell-indentation)
               (hindent-mode)
@@ -470,19 +476,6 @@ you should place your code here."
     (add-hook (derived-mode-hook-name mode)
               '(lambda ()
                  (run-hooks 'evil-lisp-hooks)))
-    ;; (eval
-    ;;  `(evil-define-key 'normal ,(derived-mode-map-name mode)
-    ;;     (kbd "M-=") 'sp-indent-defun
-    ;;     (kbd "M-c") 'sp-convolute-sexp
-    ;;     (kbd "M-d") 'sp-splice-sexp
-    ;;     (kbd "M-h") 'sp-backward-slurp-sexp
-    ;;     (kbd "M-j") 'sp-join-sexp
-    ;;     (kbd "M-l") 'sp-backward-barf-sexp
-    ;;     (kbd "M-n") 'sp-forward-slurp-sexp
-    ;;     (kbd "M-p") 'sp-forward-barf-sexp
-    ;;     (kbd "M-s") 'sp-split-sexp
-    ;;     (kbd "M-t") 'sp-transpose-sexp
-    ;;     )
      )
 
   ;;; Custom Keybindings
