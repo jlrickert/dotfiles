@@ -337,7 +337,7 @@ mark {
 }
 
 #swapThemeBtn {
-  position: fixed;
+  position: absolute;
   left: 1em;
   top: 4em;
   z-index: 99;
