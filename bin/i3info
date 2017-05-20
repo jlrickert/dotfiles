@@ -28,7 +28,8 @@
 import sys
 import json
 import subprocess
-
+import os.path
+from os.path import expanduser
 
 def run_cmd(cmd):
     return subprocess.Popen(cmd,
@@ -47,7 +48,8 @@ def get_path(device):
 
 def net_speed():
     """ Get the current upload and download """
-    return subprocess.check_output(['/home/raviko/.local/bin/net-speed']).decode('utf8')
+    bin = os.path.join(expanduser("~"), ".local", "bin", "net-speed")
+    return subprocess.check_output([bin]).decode('utf8')
 
 
 def get_governor():

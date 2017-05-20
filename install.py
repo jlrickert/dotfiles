@@ -211,20 +211,23 @@ Number: """.format(
         "\n".join(
             ["{}) {}".format(i+1, dev) for i, dev in enumerate(dev_types)]))
 
+    # Get from device type if supplied on the cmdline
     args = sys.argv
     if len(args) == 2:
         input_dev = args[1]
         if args[1] in dev_types:
-            dev_type = input_dev
+            return input_dev
         else:
             dev_type = input_dev
             raise ValueError("{} is not a valid device type".format(dev_type))
     else:
+
+        # Interactively get user input
         dev_type = None
         while dev_type is None:
             try:
                 user_input = int(input(msg))
-                dev_type = dev_types[user_input - 1]
+                return dev_types[user_input - 1]
             except IndexError as e:
                 print(e)
                 print(msg)
