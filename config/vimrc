@@ -11,22 +11,23 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 
-Plugin 'scrooloose/syntastic.git'      " code linter
-Plugin 'sjl/gundo.vim'                 " history diffs
-Plugin 'godlygeek/tabular'             " code aligner
-Plugin 'jamessan/vim-gnupg'
-Plugin 'tomtom/tcomment_vim'           " commenting addon
 Plugin 'Raimondi/delimitMate'          " matches closing charactors
-Plugin 'tpope/vim-fugitive'            " git
-Plugin 'tpope/vim-surround'
-Plugin 'VisIncr'
-Plugin 'kien/ctrlp.vim'
-Plugin 'scrooloose/nerdtree.git'
-Plugin 'jistr/vim-nerdtree-tabs.git'
-Plugin 'Lokaltog/vim-easymotion'
 Plugin 'Shougo/neocomplete.vim'
 Plugin 'Shougo/neosnippet'
+Plugin 'VisIncr'
 Plugin 'Yggdroot/indentLine'
+Plugin 'godlygeek/tabular'             " code aligner
+Plugin 'jamessan/vim-gnupg'
+Plugin 'jistr/vim-nerdtree-tabs.git'
+Plugin 'kien/ctrlp.vim'
+Plugin 'scrooloose/nerdtree.git'
+Plugin 'scrooloose/syntastic.git'      " code linter
+Plugin 'sjl/gundo.vim'                 " history diffs
+Plugin 'tomtom/tcomment_vim'           " commenting addon
+Plugin 'tpope/vim-fugitive'            " git
+Plugin 'tpope/vim-surround'
+" Plugin 'vim-pandoc/vim-pandoc'
+Plugin 'vim-pandoc/vim-pandoc-syntax'
 
 " Visual Plugins
 Plugin 'altercation/vim-colors-solarized'
@@ -223,7 +224,6 @@ set mousehide
 "------------------------------------------------------------------------------
 " Syntastic
 "------------------------------------------------------------------------------
-
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
@@ -290,7 +290,6 @@ let g:ctrlp_prompt_mappings = {
 "------------------------------------------------------------------------------
 " NerdTree
 "------------------------------------------------------------------------------
-
 " Make nerdtree look nice
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
@@ -318,6 +317,7 @@ function! s:MkNonExDir(file, buf)
     endif
   endif
 endfunction
+
 augroup BWCCreateDir
   autocmd!
   autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
@@ -325,6 +325,11 @@ augroup END
 
 au CursorHold * if exists("t:NerdTreeBufName") | call <SNR>15_refreshRoot() | endif
 
+" goto old cursor position on file open
+augroup resCur
+  autocmd!
+  autocmd BufReadPost * call setpos(".", getpos("'\""))
+augroup END
 "------------------------------------------------------------------------------
 " Eye candy
 "------------------------------------------------------------------------------
@@ -502,18 +507,6 @@ set laststatus=2 "always show the statusline
 "===============================================================================
 " Keymap
 "===============================================================================
-" easy window splits
-set splitbelow
-set splitright
-
-nnoremap <silent> vv <C-w>v
-nnoremap <silent> ss <C-w>s
-
-" tabs
-nnoremap <leader>wp :tabprev<CR>
-nnoremap <leader>wn :tabnext<CR>
-nnoremap <leader>wc :tabe<CR>k
-
 " navigation
 nnoremap w b
 nnoremap W B
@@ -527,14 +520,10 @@ vnoremap W B
 vnoremap e w
 vnoremap E W
 
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
 " CtrlP
 nmap <leader>fb :CtrlPBuffer<cr>
 nmap <leader>ff :CtrlP .<cr>
+nmap <leader>pf :CtrlP .<cr>
 nmap <leader>fF :execute ":CtrlP " . expand('%:p:h')<cr>
 nmap <leader>fr :CtrlP<cr>
 nmap <leader>fm :CtrlPMixed<cr
@@ -552,6 +541,9 @@ nnoremap ,. '.
 " command fast mode
 nore ; :
 
+nmap <leader>x :
+nmap <leader><space> :
+
 " toggle paste mode
 nmap <silent> <leader>p :set invpaste<CR>:set paste?<CR>
 
@@ -567,8 +559,8 @@ nnoremap <leader>ls :setlocal spell! spell?<CR>
 nnoremap <leader>s :mksession<CR>
 nmap <leader>lt :TagbarToggle<CR>
 
-nnoremap <Leader>/ :TComment<CR>
-vnoremap <Leader>/ :TComment<CR>
+nnoremap <Leader>; :TComment<CR>
+vnoremap <Leader>; :TComment<CR>
 
 " ========== Steve Losh hacks ==========="
 " w!! to write a file as sudo
@@ -617,12 +609,18 @@ endfunction
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 " <C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-" Close popup by <Space>.
+
+" Close popup with <Space> and add a space.
 inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() . "\<Space>" : "\<Space>"
 
-" Alt completions cycle
-inoremap <expr><Esc>n "\<C-n>"
-inoremap <expr><Esc>p "\<C-p>"
+" set timeoutlen=1000 ttimeoutlen=0
 
-nnoremap <expr><Esc>n "\<C-n>"
-nnoremap <expr><Esc>p "\<C-p>"
+" Alt completions cycle
+" inoremap <expr><Esc>n "\<C-n>"
+" inoremap <expr><Esc>p "\<C-p>"
+
+" nnoremap <expr><Esc>n "\<C-n>"
+
+" ==============================================================================
+" Pandoc markdown
+" ==============================================================================
