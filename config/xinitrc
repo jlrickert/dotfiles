@@ -14,7 +14,7 @@ fi
 # Map keys with xmodmap
 xmodmap ~/.Xmodmap
 
-feh --randomize --bg-fill $HOME/Media/backgrounds/*
+feh --randomize --bg-fill $HOME/media/backgrounds/*
 
 # NetworkManager for managing networks.
 nm-applet &
