@@ -122,10 +122,10 @@ values."
      nginx
 
      ;; Custom layers
-     (i3wm
-      :variables
-      i3wm-one-window-per-frame t
-      i3wm-one-project-per-workspace t)
+     ;(i3wm
+     ; :variables
+     ; i3wm-one-window-per-frame t
+     ; i3wm-one-project-per-workspace t)
      evil-smartparens
      )
    ;; List of additional packages that will be installed without being
@@ -500,8 +500,8 @@ you should place your code here."
   (define-key evil-motion-state-map (kbd "C-k") 'evil-window-up)
   (define-key evil-motion-state-map (kbd "C-j") 'evil-window-down)
   (define-key evil-visual-state-map (kbd ";") 'exil-ex)
-  (spacemacs/set-leader-keys
-    "w" 'make-frame)
+  ;(spacemacs/set-leader-keys
+  ;  "w" 'make-frame)
   (with-eval-after-load 'helm
     (define-key helm-find-files-map (kbd "C-n") 'next-history-element)
     (define-key helm-find-files-map (kbd "C-p") 'previous-history-element)
