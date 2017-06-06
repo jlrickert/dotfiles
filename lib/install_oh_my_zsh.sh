@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/bash
 main() {
   # Use colors, but only if connected to a terminal, and that terminal
   # supports them.

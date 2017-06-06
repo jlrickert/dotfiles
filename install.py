@@ -33,7 +33,7 @@ def symlink(src=None, dst=None, force=True):
             rm(dst)
             symlink(src=src, dst=dst)
     else:
-        logger.debug("Linking '{}' -> '{}'".format(src, dst))
+        logger.info("Linking '{}' -> '{}'".format(src, dst))
         os.symlink(src, dst)
 
 
@@ -46,9 +46,10 @@ def rm(src, backup=True):
         logger.debug('Removing symlink {}'.format(src))
     elif backup:
         tmp_dir = os.environ['TMPDIR']
-        rand_id = ''.join(random.SystemRandom().choice(
-            string.ascii_uppercase + string.digits) for _ in range(5))
-        backup_file = rand_id+"-"+basename(src)
+        rand_id = ''.join(random.SystemRandom().choice(string.ascii_uppercase +
+                                                       string.digits)
+                          for _ in range(5))
+        backup_file = rand_id + "-" + basename(src)
         shutil.move(src, os.path.join(tmp_dir, backup_file))
         logger.debug('Backup up {} to {}'.format(src, backup_file))
     else:
@@ -181,21 +182,7 @@ def install_rbenv(home=HOME, dotfiles=DOTFILES):
 
 
 def _set_log_level():
-    try:
-        log_level = os.environ["LOG_LEVEL"]
-        if log_level == "CRITICAL":
-            log_level = logging.CRITICAL
-        elif log_level == "WARNING":
-            log_level = logging.WARNING
-        elif log_level == "DEBUG":
-            log_level = logging.DEBUG
-        elif log_level == "INFO":
-            log_level = logging.INFO
-        else:
-            log_level = logging.NOTSET
-        logging.basicConfig(level=log_level)
-    except KeyError:
-        pass
+    logging.basicConfig(level=logging.INFO)
 
 
 def _get_dev_type():
@@ -207,9 +194,8 @@ def _get_dev_type():
     msg = """
 Please input your device type number:
 {}
-Number: """.format(
-        "\n".join(
-            ["{}) {}".format(i+1, dev) for i, dev in enumerate(dev_types)]))
+Number: """.format("\n".join(
+        ["{}) {}".format(i + 1, dev) for i, dev in enumerate(dev_types)]))
 
     # Get from device type if supplied on the cmdline
     args = sys.argv
@@ -236,7 +222,6 @@ Number: """.format(
 def install_everything(home=HOME, dotfiles=DOTFILES):
     """Installs everything."""
 
-    _set_log_level()
     dev_type = _get_dev_type()
 
     install_oh_my_zsh(home, dotfiles)
@@ -249,5 +234,10 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     install_configs(home, dotfiles)  # this must be last
 
 
+def main():
+    _set_log_level()
+    install_everything()
+
+
 if __name__ == '__main__':
-    sys.exit(install_everything())
+    sys.exit(main())
