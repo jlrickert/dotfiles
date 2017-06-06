@@ -1,45 +1,9 @@
 ################################################################################
 ### ZSH configuration
 ################################################################################
-# Path to your oh-my-zsh installation.
 export ZSH=/home/$USER/.oh-my-zsh
-
-# Set name of the theme to load. Optionally, if you set this
-# to "random" it'll load a random theme each time that
-# oh-my-zsh is loaded.  See
-# https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="jlrickert"
-
-# Uncomment the following line to use case-sensitive
-# completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive
-# completion. Case sensitive completion must be off. _ and -
-# will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly
-# auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to
-# auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting
-# terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command
-# auto-correction.
 ENABLE_CORRECTION="false"
-
-# Uncomment the following line to display red dots whilst
-# waiting for completion.
 COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable
@@ -48,28 +12,13 @@ COMPLETION_WAITING_DOTS="true"
 # faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Uncomment the following line if you want to change the
-# command execution time stamp shown in the history command
-# output.  The optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than
-# $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be
-# found in ~/.oh-my-zsh/plugins/*) Custom plugins may be
-# added to ~/.oh-my-zsh/custom/plugins/ Example format:
-# plugins=(rails git textmate ruby lighthouse) Add wisely,
-# as too many plugins slow down shell startup.
+HIST_STAMPS="yyyy-mm-dd"
 plugins=(
     autopep8
     cabal
     common-aliases
     django
     docker
-    emacs
     encode64
     fasd
     gem
@@ -108,7 +57,7 @@ export CARGO_HOME=$HOME/.cargo
 export RUST_SRC_PATH=~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src
 export LANG=en_US.UTF-8
 export BROWSER=firefox
-export EDITOR="$EMACS_PLUGIN_LAUNCHER"
+export EDITOR=vim
 export VISUAL=vim
 export PAGER=less
 export RUBYLIB=$HOME/.local/lib/ruby
@@ -159,12 +108,158 @@ fpath=(
 cdpath=(
     $cdpath
 )
+################################################################################
+### Custom Keymaps
+################################################################################
+bindkey '^[n' down-history
+bindkey '^[p' up-history
+bindkey '^[r' history-incremental-search-backward
+bindkey -M vicmd "w" vi-backward-word
+bindkey -M vicmd "e" vi-forward-word-end
+bindkey -M vicmd '^[n' down-history
+bindkey -M vicmd '^[p' up-history
+bindkey -M vicmd 'k' up-line
+bindkey -M vicmd 'j' down-line
+export KEYTIMEOUT=1
 
-# Load my custom functions
 
-for each in ~/.local/lib/zsh/*.zsh; do
-    source $each
-done
+################################################################################
+### Custom Functions
+################################################################################
+
+###
+# Util
+###
+
+function eecho {
+    echo $@ 1>&2
+}
+
+###
+# Arch Linux
+###
+paclist() {
+  # Source: https://bbs.archlinux.org/viewtopic.php?id=93683
+  LC_ALL=C pacman -Qei $(pacman -Qu | cut -d " " -f 1) | \
+    awk 'BEGIN {FS=":"} /^Name/{printf("\033[1;36m%s\033[1;37m", $2)} /^Description/{print $2}'
+}
+
+pacdisowned() {
+  emulate -L zsh
+
+  tmp=${TMPDIR-/tmp}/pacman-disowned-$UID-$$
+  db=$tmp/db
+  fs=$tmp/fs
+
+  mkdir "$tmp"
+  trap  'rm -rf "$tmp"' EXIT
+
+  pacman -Qlq | sort -u > "$db"
+
+  find /bin /etc /lib /sbin /usr ! -name lost+found \
+    \( -type d -printf '%p/\n' -o -print \) | sort > "$fs"
+
+  comm -23 "$fs" "$db"
+}
+
+pacmanallkeys() {
+  emulate -L zsh
+  curl -s https://www.archlinux.org/people/{developers,trustedusers}/ | \
+    awk -F\" '(/pgp.mit.edu/) { sub(/.*search=0x/,""); print $1}' | \
+    xargs sudo pacman-key --recv-keys
+}
+
+pacmansignkeys() {
+  emulate -L zsh
+  for key in $*; do
+    sudo pacman-key --recv-keys $key
+    sudo pacman-key --lsign-key $key
+    printf 'trust\n3\n' | sudo gpg --homedir /etc/pacman.d/gnupg \
+      --no-permission-warning --command-fd 0 --edit-key $key
+  done
+}
+
+###
+# clipboard
+###
+
+# stolen from http://madebynathan.com/2011/10/04/a-nicer-way-to-use-xclip/
+cb() {
+    local _scs_col='\e[0;32m'
+    local _wrn_col='\e[1;31m'
+    local _trn_col='\e[0;33m'
+
+    # Check that xclip is installed.
+    if ! type xclip > /dev/null 2>&1;
+    then
+        echo -e "$_wrn_col""You must have the 'xclip' program installed.\e[0m"
+        # Check user is not root (root doesn't have access to user xorg server)
+    elif [[ "$USER" == "root" ]]; then
+        echo -e "$_wrn_col""Must be regular user (not root) to copy a file to the clipboard.\e[0m"
+    else
+        # If no tty, data should be available on stdin
+        if ! [[ "$( tty )" == /dev/* ]];
+        then
+            input="$(< /dev/stdin)"
+            # Else, fetch input from params
+        else
+            input="$*"
+        fi
+
+        # If no input, print usage message.
+        if [ -z "$input" ];
+        then
+            echo "Copies a string to the clipboard."
+            echo "Usage: cb <string>"
+            echo "       echo <string> | cb"
+        else
+            # Copy input to clipboard
+            echo -n "$input" | xclip -selection c
+            # Truncate text for status
+            if [ ${#input} -gt 80 ];
+            then
+                # echo -n "$input"
+                input="$(echo "[master]" | cut -c1-80)$_trn_col...\e[0m";
+            fi
+            # Print status.
+            echo -e "$_scs_col""Copied to clipboard:\e[0m $input"
+        fi
+    fi
+}
+
+function cbf() { cat "$1" | cb; }
+
+## Haskell
+function cabal_sandbox_info() {
+    cabal_files=(*.cabal(N))
+    if [ $#cabal_files -gt 0 ]; then
+        if [ -f cabal.sandbox.config ]; then
+            echo "%{$fg[green]%}sandboxed%{$reset_color%}"
+        else
+            echo "%{$fg[red]%}not sandboxed%{$reset_color%}"
+        fi
+    fi
+}
+
+###
+# browser
+###
+
+function firefox_open {
+    if [ $# = 0 ]; then
+        eecho "usage: ff <file>" 1>&2
+        return 1
+    fi
+    if [ "${1%/*}" = "$1" ]; then
+        firefox -new-tab "file://$(pwd)/$1"
+    else
+        "cd" "${1%/*}"
+        local dir="$(pwd)"
+        "cd" - >/dev/null
+        firefox -new-tab "file://$dir/${1##*/}"
+    fi
+    return 0
+}
 
 ########################################
 ### Aliass
@@ -172,10 +267,7 @@ done
 alias py='python'
 alias py2='python2'
 alias rb='ruby'
-alias wo='firefox_open'
-
-alias emacs='$EMACS_PLUGIN_LAUNCHER --no-wait --create-frame'
-alias e='$EMACS_PLUGIN_LAUNCHER --no-wait'
+alias wopen='firefox_open'
 
 #
 # Pacman Aliases
@@ -254,22 +346,3 @@ alias most='du -hsx * | sort -rh | head -10'
 
 alias ctime="date '+%Y-%m-%d %H:%M:%S'"
 alias cdate="date '+%Y-%m-%d'"
-
-################################################################################
-### Completions
-################################################################################
-PROG=kram source $DOTFILES/config/local/share/completions/zsh_autocomplete
-
-################################################################################
-### Custom Keymaps
-################################################################################
-bindkey '^[n' down-history
-bindkey '^[p' up-history
-bindkey '^[r' history-incremental-search-backward
-bindkey -M vicmd "w" vi-backward-word
-bindkey -M vicmd "e" vi-forward-word-end
-bindkey -M vicmd '^[n' down-history
-bindkey -M vicmd '^[p' up-history
-bindkey -M vicmd 'k' up-line
-bindkey -M vicmd 'j' down-line
-export KEYTIMEOUT=1
