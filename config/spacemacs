@@ -36,6 +36,12 @@ values."
       :variables
       auto-completion-enable-help-tooltip t
       auto-completion-enable-snippets-in-popup t
+      auto-completion-return-key-behavior 'nil
+      auto-completion-tab-key-behavior 'complete
+      company-mode-completion-cancel-keywords
+      ;; (concatenate 'list
+      ;;              company-mode-completion-cancel-keywords "{")
+      auto-completion-complete-with-key-sequence "jk"
       auto-completion-enable-sort-by-usage t
       (haskell :variables haskell-completion-backend 'intero))
      better-defaults
@@ -79,12 +85,14 @@ values."
      (go
       :variables
       go-tab-width 4
-      go-use-gometalinter t)
+      ;; go-use-gometalinter t
+      gofmt-command "goimports")
      erlang
      (elixir
       :variables
       elixir-enable-compilation-checking t)
      elm
+     purescript
      (haskell
      :variables
      haskell-enable-ghc-mod-support nil
@@ -103,8 +111,7 @@ values."
      (python
       :variables
       python-test-runner 'pytest
-      python-enable-yapf-format-on-save t
-      python-sort-imports-on-save t)
+      python-sort-imports-on-save f)
      (ruby
       :variables
       ruby-test-runner 'rspec)
@@ -133,7 +140,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(solidity-mode)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -451,6 +458,17 @@ you should place your code here."
     )
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;; Purescript
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (add-hook 'purescript-mode-hook
+            (lambda ()
+              ))
+
+  ;; (spacemacs/set-leader-keys-for-major-mode 'purescript-mode
+  ;;   "t" 'pure)
+
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Lisp
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (defconst evil-lisp-modes
@@ -466,8 +484,7 @@ you should place your code here."
       slim-mode
       emacs-lisp-mode
       lisp-mode)
-      "Modes for things that are considered a lisp"
-      )
+    "Modes for things that are considered a lisp")
 
   (defconst evil-lisp-hooks
     '(smartparens-strict-mode)
@@ -476,10 +493,16 @@ you should place your code here."
   (dolist (mode evil-lisp-modes)
     (add-hook (derived-mode-hook-name mode)
               '(lambda ()
-                 (run-hooks 'evil-lisp-hooks)))
-     )
+                 (run-hooks 'evil-lisp-hooks))))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;; Golang
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; (setq flycheck-gometalinter-deadline "10s")
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Custom Keybindings
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
   (define-key evil-inner-text-objects-map (kbd "e") 'evil-inner-word)
   (define-key evil-inner-text-objects-map (kbd "E") 'evil-inner-WORD)
@@ -501,6 +524,8 @@ you should place your code here."
   (define-key evil-motion-state-map (kbd "C-k") 'evil-window-up)
   (define-key evil-motion-state-map (kbd "C-j") 'evil-window-down)
   (define-key evil-visual-state-map (kbd ";") 'exil-ex)
+
+  ;; (define-key evil-normal-state-map (kbd "C-n") 'helmn)
   ;(spacemacs/set-leader-keys
   ;  "w" 'make-frame)
   (with-eval-after-load 'helm
@@ -509,6 +534,7 @@ you should place your code here."
     (define-key helm-find-files-map (kbd "M-n") 'helm-next-line)
     (define-key helm-find-files-map (kbd "M-p") 'helm-previous-line)
     (define-key evil-normal-state-map (kbd "M-d") 'sp-splice-sexp)
+
     (define-key helm-map (kbd "C-n") 'next-history-element)
     (define-key helm-map (kbd "C-p") 'previous-history-element)
     (define-key helm-map (kbd "M-n") 'helm-next-line)
