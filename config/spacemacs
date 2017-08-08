@@ -38,7 +38,7 @@ values."
       auto-completion-enable-snippets-in-popup t
       auto-completion-return-key-behavior 'nil
       auto-completion-tab-key-behavior 'complete
-      company-mode-completion-cancel-keywords
+      ;; company-mode-completion-cancel-keywords
       ;; (concatenate 'list
       ;;              company-mode-completion-cancel-keywords "{")
       auto-completion-complete-with-key-sequence "jk"
@@ -111,7 +111,7 @@ values."
      (python
       :variables
       python-test-runner 'pytest
-      python-sort-imports-on-save f)
+      python-sort-imports-on-save nil)
      (ruby
       :variables
       ruby-test-runner 'rspec)
