@@ -9,7 +9,7 @@ import shutil
 import stat
 import string
 import sys
-from os.path import basename, dirname, expanduser, realpath
+from os.path import (basename, dirname, expanduser, realpath)
 from subprocess import call
 
 # makes sure python can find my custom libraries
@@ -181,6 +181,12 @@ def install_rbenv(home=HOME, dotfiles=DOTFILES):
         logger.debug("SKIPPING :: {} already exists".format(rbenv_dir))
 
 
+def install_vscode_extensions(home=HOME, dotfiles=DOTFILES):
+    """Installs visual studio code extensions"""
+    script = os.path.join(dotfiles, "lib", "vscode_extensions.sh")
+    run_script(script)
+
+
 def _set_log_level():
     logging.basicConfig(level=logging.INFO)
 
@@ -231,6 +237,7 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     install_vundle(home, dotfiles)
     install_rbenv(home, dotfiles)
     install_pyenv(home, dotfiles)
+    install_vscode_extensions(home, dotfiles)
     install_configs(home, dotfiles)  # this must be last
 
 

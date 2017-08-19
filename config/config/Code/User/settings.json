@@ -1,16 +1,113 @@
 {
-    "keyboard.dispatch": "keyCode",
-    "vim.disableAnnoyingNeovimMessage": true,
-    "vim.useSystemClipboard": true,
-    "vim.leader": "<space>",
-    "editor.fontSize": 12,
-    "editor.tabSize": 2,
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true
-      },
-
+  "editor.fontSize": 12,
+  "editor.tabSize": 2,
+  "editor.cursorBlinking": "phase",
+  "workbench.colorTheme": "Solarized Dark",
+  "workbench.tips.enabled": false,
+  "workbench.startupEditor": "newUntitledFile",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/__pycache__": true
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**__pycache__/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true
+  },
+  "search.useIgnoreFilesByDefault": true,
+  "telemetry.enableTelemetry": false,
+  "telemetry.enableCrashReporter": false,
+  "keyboard.dispatch": "keyCode",
+  "vim.disableAnnoyingNeovimMessage": true,
+  "vim.useSystemClipboard": true,
+  "vim.leader": "<space>",
+  "vim.otherModesKeyBindings": [{
+      "before": ["<Leader>", "f"],
+      "after": [],
+      "commands": [{
+        "command": "workbench.action.quickOpen"
+      }]
+    },
+    {
+      "before": [
+        "<Leader>",
+        "="
+      ],
+      "commands": [{
+        "command": "editor.action.formatDocument"
+      }]
+    },
+    {
+      "before": [
+        "<Leader>",
+        "<Leader>"
+      ],
+      "after": [],
+      "commands": [{
+        "command": "workbench.action.showCommands"
+      }]
+    },
+    {
+      "before": ["<Leader>", "/"],
+      "after": ["g", "c"]
+    },
+    {
+      "before": ["b"],
+      "after": ["%"]
+    },
+    {
+      "before": ["c", "b"],
+      "after": ["c", "%"]
+    },
+    {
+      "before": ["w"],
+      "after": ["b"]
+    },
+    {
+      "before": ["c", "w"],
+      "after": ["c", "b"]
+    },
+    {
+      "before": ["W"],
+      "after": ["B"]
+    },
+    {
+      "before": ["c", "W"],
+      "after": ["c", "B"]
+    },
+    {
+      "before": ["<Leader>", "w", "h"],
+      "after": ["<C-w>", "h"]
+    },
+    {
+      "before": ["<Leader>", "w", "j"],
+      "after": ["<C-w>", "j"]
+    },
+    {
+      "before": ["<Leader>", "w", "k"],
+      "after": ["<C-w>", "k"]
+    },
+    {
+      "before": ["<Leader>", "w", "l"],
+      "after": ["<C-w>", "l"]
+    },
+    {
+      "before": ["<Leader>", "w", "v"],
+      "after": [],
+      "commands": [{
+        "command": "workbench.action.splitEditor"
+      }]
+    }
+  }
 }
