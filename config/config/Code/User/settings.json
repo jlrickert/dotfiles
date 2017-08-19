@@ -1,0 +1,16 @@
+{
+    "keyboard.dispatch": "keyCode",
+    "vim.disableAnnoyingNeovimMessage": true,
+    "vim.useSystemClipboard": true,
+    "vim.leader": "<space>",
+    "editor.fontSize": 12,
+    "editor.tabSize": 2,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true
+      },
+
+}
