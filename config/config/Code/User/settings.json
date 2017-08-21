@@ -13,7 +13,8 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/__pycache__": true
+    "**/__pycache__": true,
+    "**/package-lock.json": true
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
@@ -109,5 +110,5 @@
         "command": "workbench.action.splitEditor"
       }]
     }
-  }
+  ]
 }

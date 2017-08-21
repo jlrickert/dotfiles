@@ -9,7 +9,12 @@ import shutil
 import stat
 import string
 import sys
-from os.path import (basename, dirname, expanduser, realpath)
+from os.path import (
+    basename,
+    dirname,
+    expanduser,
+    realpath
+)
 from subprocess import call
 
 # makes sure python can find my custom libraries
@@ -124,7 +129,8 @@ def install_i3_configs(dev_type, home=HOME, dotfiles=DOTFILES, method=symlink):
         status_bar_src = os.path.join(dotfiles, "i3", "i3labtop-bar")
     else:
         status_bar_src = None
-        method = lambda x, y: None
+
+        def method(x, y): return None
 
     method(status_bar_src, bar_dst)
 
@@ -237,7 +243,7 @@ def install_everything(home=HOME, dotfiles=DOTFILES):
     install_vundle(home, dotfiles)
     install_rbenv(home, dotfiles)
     install_pyenv(home, dotfiles)
-    install_vscode_extensions(home, dotfiles)
+    # install_vscode_extensions(home, dotfiles)
     install_configs(home, dotfiles)  # this must be last
 
 
