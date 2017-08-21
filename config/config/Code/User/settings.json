@@ -2,6 +2,7 @@
   "editor.fontSize": 12,
   "editor.tabSize": 2,
   "editor.cursorBlinking": "phase",
+  "editor.minimap.enabled": false,
   "workbench.colorTheme": "Solarized Dark",
   "workbench.tips.enabled": false,
   "workbench.startupEditor": "newUntitledFile",
