@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     csv
      ;; core
      (auto-completion
       :variables
@@ -105,6 +106,7 @@ values."
      :variables
      scala-use-unicode-arrows t
      scala-auto-start-ensime t)
+     java
      javascript
      latex
      php
@@ -467,6 +469,11 @@ you should place your code here."
   ;; (spacemacs/set-leader-keys-for-major-mode 'purescript-mode
   ;;   "t" 'pure)
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;; Java
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (setq eclim-eclipse-dirs '("/usr/lib/eclipse")
+        eclim-executable "/usr/lib/eclipse/eclim")
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; Lisp
