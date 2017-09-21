@@ -16,7 +16,7 @@ search_wrap = true
 #font = Monospace 11
 font = Source Code Pro 9
 #font = Inconsolata 12
-browser=firefox
+browser=google-chrome-stable
 
 # Solarized dark color scheme
 

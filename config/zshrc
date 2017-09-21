@@ -47,7 +47,7 @@ source $ZSH/oh-my-zsh.sh
 ### User configuration
 ################################################################################
 # Environmental variables
-export BROWSER=firefox
+export BROWSER=google-chrome-stable
 export DEFAULT_USER=`whoami`
 export DOTFILES=`dirname $(dirname "$(readlink -f "${(%):-%x}")")`
 export GOPATH=$HOME/code/gocode
@@ -56,16 +56,16 @@ export PYENV_ROOT=$HOME/.pyenv
 export CARGO_HOME=$HOME/.cargo
 export RUST_SRC_PATH=~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src
 export LANG=en_US.UTF-8
-export BROWSER=firefox
 export EDITOR=vim
 export VISUAL=vim
 export PAGER=less
-export RUBYLIB=$HOME/.local/lib/ruby
-export PYTHONPATH=$HOME/.local/lib/python
+export RUBYLIB=~/.local/lib/ruby
+export PYTHONPATH=~/.local/lib/python
 export PERL5LIB="/home/raviko/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"
 export PERL_LOCAL_LIB_ROOT="/home/raviko/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"
 export PERL_MB_OPT="--install_base \"/home/raviko/perl5\""
 export PERL_MM_OPT="INSTALL_BASE=/home/raviko/perl5"
+export NOTES=~/notes/
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
@@ -96,6 +96,9 @@ path=(
     $PYENV_ROOT/bin
     $HOME/.cargo/bin
     $GOPATH/bin
+    /opt/mssql/bin
+    /opt/mssql-tools/bin
+    $HOME/.npm-global/bin
 )
 
 # Set the list were completions are stored
@@ -108,6 +111,7 @@ fpath=(
 cdpath=(
     $cdpath
 )
+
 ################################################################################
 ### Custom Keymaps
 ################################################################################
