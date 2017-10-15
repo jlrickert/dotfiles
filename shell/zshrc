@@ -1,0 +1,62 @@
+########################################
+### Environmental variables
+########################################
+export BROWSER=firefox-nightly
+export DEFAULT_USER=`whoami`
+export DOTFILES=`dirname $(dirname "$(readlink -f "${(%):-%x}")")`
+export EDITOR=vim
+export LANG=en_US.UTF-8
+export PAGER=less
+export VISUAL=vim
+export ZSH=$HOME/.oh-my-zsh
+export NOTES=~/notes/
+
+
+########################################
+### Paths
+########################################
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
+
+path=(
+    $DOTFILES/bin
+    $HOME/.local/bin
+    $path[@]
+)
+
+# Set the list were completions are stored
+fpath=(
+    $DOTFILES/shell/completions
+    $fpath[@]
+)
+
+# Set the the list of directories that cd searches.
+cdpath=(
+    $cdpath
+)
+
+
+################################################################################
+### OH MY ZSH configuration
+################################################################################
+ZSH_THEME="jlrickert"
+ENABLE_CORRECTION="false"
+COMPLETION_WAITING_DOTS="true"
+HIST_STAMPS="yyyy-mm-dd"
+plugins=(
+    common-aliases
+    fasd
+    git
+    heroku
+    jsontools
+    vi-mode
+)
+
+source $DOTFILES/shell/init.zsh
+
+################################################################################
+### Custom configuration
+################################################################################
+for src in $DOTFILES/shell/plugins/*; do
+    source $src
+done
