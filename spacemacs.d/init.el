@@ -40,7 +40,7 @@
 (defvar dotspacemacs/layers/local
   '((macros :location local)     ; All local layers inherit these macros
     (config :location local)     ; Org, Avy, Evil, Misc... config
-    ;; (display :location local)    ; Pretty code/outlines... pkgs
+    (display :location local)    ; Pretty code/outlines... pkgs
     ;; (langs :location local)      ; Language config
     ;; (personal :location local)   ; Personal pkgs
     )
@@ -137,7 +137,7 @@
    dotspacemacs-smartparens-strict-mode nil
    dotspacemacs-smart-closing-parenthesis nil
    dotspacemacs-highlight-delimiters 'all
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t
    dotspacemacs-whitespace-cleanup 'trailing
    ))
 

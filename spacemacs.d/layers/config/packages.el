@@ -32,13 +32,11 @@
   (evil-global-set-key 'motion (kbd "C-j") 'evil-window-down)
 
   (evil-global-set-key 'normal (kbd "M-d") 'sp-splice-sexp)
-  (message "hello world x")
   )
 
 ;;;; Helm
 
 (defun config/post-init-helm ()
-  (message "hello world b")
   (with-eval-after-load 'helm
     (define-key helm-find-files-map (kbd "C-n") 'next-history-element)
     (define-key helm-find-files-map (kbd "C-p") 'previous-history-element)
@@ -53,6 +51,5 @@
 ;;;; Projectile
 
 (defun config/post-init-projectile ()
-  (message "hello world n")
   (setq projectile-indexing-method 'native)
   (setq projectile-completion-system 'helm))
