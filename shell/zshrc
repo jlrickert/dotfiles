@@ -50,6 +50,8 @@ plugins=(
     heroku
     jsontools
     vi-mode
+
+    pip
 )
 
 source $DOTFILES/shell/init.zsh
