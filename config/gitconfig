@@ -4,3 +4,4 @@
 	signingkey = jaredrickert52@gmail.com
 [core]
 	editor = vim
+	excludesfile = ~/.gitignore
