@@ -32,6 +32,7 @@
   (setq custom-file "./.custom-settings.el"))
 
 (defun dotspacemacs/user-config ()
+  (dotspacemacs/user-config/toggles)
   "Configuration that cannot be delegate to layers")
 
 ;;; Spacemacs/Layers
@@ -150,7 +151,7 @@
                          )
 
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 12
+                               :size 14
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -244,3 +245,14 @@
    ))
 
 ;;; Spacemacs/User-Config
+
+(defun dotspacemacs/user-config/toggles ()
+  "Spacemacs toggles not intended to be put into layers."
+  (spacemacs/toggle-highlight-long-lines-globally-on)
+  (spacemacs/toggle-mode-line-minor-modes-off)
+  ;; (spacemacs/toggle-aggressive-indent-globally-on)
+  (global-highlight-parentheses-mode 1)
+  (rainbow-delimiters-mode-enable)
+
+  ;; (fringe-mode '(0 . 8))  ; space between line number and first character
+  )
