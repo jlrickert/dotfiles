@@ -27,7 +27,7 @@
 
     ;; Other
     (:tuple       "⨂")
-    (:pipe        "")
+    (:pipe        "  ")
     ))
   "Options plist for `pretty-code-get-pairs'.")
 

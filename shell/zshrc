@@ -1,5 +1,5 @@
 ########################################
-### Environmental variables
+## Environmental variables
 ########################################
 export BROWSER=firefox-nightly
 export DEFAULT_USER=`whoami`
@@ -13,7 +13,7 @@ export NOTES=~/notes/
 
 
 ########################################
-### Paths
+## Paths
 ########################################
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
@@ -35,10 +35,9 @@ cdpath=(
     $cdpath
 )
 
-
-################################################################################
-### OH MY ZSH configuration
-################################################################################
+########################################
+## OH MY ZSH configuration
+########################################
 ZSH_THEME="jlrickert"
 ENABLE_CORRECTION="false"
 COMPLETION_WAITING_DOTS="true"
@@ -56,9 +55,9 @@ plugins=(
 
 source $DOTFILES/shell/init.zsh
 
-################################################################################
-### Custom configuration
-################################################################################
+########################################
+## Custom configuration
+########################################
 for src in $DOTFILES/shell/plugins/*; do
     source $src
 done
