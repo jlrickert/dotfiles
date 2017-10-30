@@ -33,6 +33,7 @@ Pacman packages that I use.
 - dmenu
 - dunst
 - emacs
+- fasd
 - feh
 - filezilla
 - firefox
@@ -82,18 +83,19 @@ Pacman packages that I use.
 ### AUR
 
 - apache-tools
-- chromedriver
-- fasd
+- discord
 - gitflow-avh
 - global
 - google-chrome
 - jdk
 - package-query
-- reflector-timer
 - slack-desktop
+- texlive-localmanager-git
+- ttf-fira-code
+- wemux-git
 - yaourt
 
-Programing related
+Programming related
 ------------------
 
 ### C/C++
@@ -101,7 +103,6 @@ Programing related
 - gdb
 
 ### Python
-
 - autopep8
 - flake8
 - python-jedi
@@ -109,31 +110,25 @@ Programing related
 - yapf
 
 ### Lisp
-
 - buildapp
 - clisp
 - roswell
 - sbcl
 
 ### clojure
-
 - leiningen
 
 ### Scala
-
 - scala
 - sbt
 
 ### Haskell
-
 - stack
 
 ### Perl
-
 - cpanminus
 
-### elixer
-
+### Elixer
 - elixer
 
 ### Android
@@ -149,8 +144,8 @@ Installation for other tools that I use.
 ### Setup Python
 
 ```bash
-git clone https://github.com/yyuu/pyenv.git ~/.pyenv
-git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+pacman -S python python-pip python-pipenv
+pip install --user pipsi
 ```
 
 ### Setup Haskell
@@ -177,7 +172,9 @@ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 ### Setup rust
 
 ```bash
-curl https://sh.rustup.rs -sSf | sh
+pacman -S rustup
+rustup install stable
+rustup component add-src # needed by racer
 cargo install rustfmt
 cargo install racer
 ```
@@ -185,6 +182,7 @@ cargo install racer
 ### Setup go
 
 ```bash
+pacman -S go go-tools
 go get -u -v github.com/nsf/gocode
 go get -u -v github.com/rogpeppe/godef
 go get -u -v golang.org/x/tools/cmd/oracle
@@ -230,8 +228,6 @@ mix archive.install
 
 System setup checklist
 ----------------------
-
-### Gnome-keyring
 
 - [ ] [base install example](https://gist.github.com/binaerbaum/535884a7f5b8a8697557)
 - [ ] [Gnome keyring setup](https://wiki.archlinux.org/index.php/GNOME/Keyring#Using_the_keyring_outside_GNOME)
