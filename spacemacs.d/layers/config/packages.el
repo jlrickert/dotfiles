@@ -51,5 +51,25 @@
 ;;;; Projectile
 
 (defun config/post-init-projectile ()
-  (setq projectile-indexing-method 'native)
-  (setq projectile-completion-system 'helm))
+  (setq projectile-indexing-method 'alien)
+  ;; (setq projectile-indexing-method 'native)
+  (setq projectile-enable-caching t)
+  (setq projectile-completion-system 'helm)
+  (setq projectile-globally-ignored-directories
+        (-distinct (append
+                    '("**/node_modules/"
+                      "**/__pycache__/"
+                      "**/dist/"
+                      "**/target/"
+                      )
+                    projectile-globally-ignored-directories)))
+  (setq projectile-globally-ignored-files
+        (-distinct (append
+                    '("*.pyc"
+                      "*.tar.gz"
+                      "*.tgz"
+                      "*.zip"
+                      "*.jar"
+                      "*.class"
+                      )
+                    projectile-globally-ignored-files))))

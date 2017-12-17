@@ -41,7 +41,7 @@
 (defvar dotspacemacs/layers/local
   '((macros :location local)     ; All local layers inherit these macros
     (config :location local)     ; Org, Avy, Evil, Misc... config
-    (display :location local)    ; Pretty code/outlines... pkgs
+    ;; (display :location local)    ; Pretty code/outlines... pkgs
     ;; (langs :location local)      ; Language config
     ;; (personal :location local)   ; Personal pkgs
     )
@@ -52,7 +52,7 @@
 (defvar dotspacemacs/layers/core
   '((auto-completion :variables
                      auto-completion-enable-help-tooltip t
-                     auto-completion-enable-snippets-in-popup t
+                     auto-completion-enable-snippets-in-popup 'nil
                      auto-completion-return-key-behavior 'nil
                      auto-completion-tab-key-behavior 'complete
                      ;; company-mode-completion-cancel-keywords
@@ -74,12 +74,14 @@
     )
   "Layers I consider core to Spacemacs")
 
-;;;; Langs
+;;; Programming Languages
 
 (defvar dotspacemacs/layers/langs
   '(
     asm
-    c-c++
+    (c-c++ :variables
+          c-c++-default-mode-for-headers 'c++-mode
+          c-c++-enable-clang-support t)
     (clojure :variables clojure-enable-fancify-symbols t)
     (elm :variables elm-reacot-port "3000" elm-reactor-address "0.0.0.0" elm-sort-imports-on-save t)
     emacs-lisp
