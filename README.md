@@ -174,9 +174,9 @@ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 ```bash
 pacman -S rustup
 rustup install stable
-rustup component add-src # needed by racer
 cargo install rustfmt
 cargo install racer
+rustup component add rust-src # needed by racer
 ```
 
 ### Setup go

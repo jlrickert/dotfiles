@@ -1,0 +1,209 @@
+;; -*- mode: emacs-lisp -*-
+
+(defun dotspacemacs/layers ()
+  "Layer configuration: This function should only modify
+configuration layer settings."
+  (setq-default
+   dotspacemacs-distribution 'spacemacs
+   dotspacemacs-enable-lazy-installation 'unused
+   dotspacemacs-ask-for-lazy-installation t
+   dotspacemacs-configuration-layer-path '()
+
+   ;; List of configuration layers to load.
+   dotspacemacs-configuration-layers
+   '(html
+     helm
+     (auto-completion :variables
+                      auto-completion-enable-help-tooltop t
+                      auto-completion-enable-snippets-in-popup 'nil
+                      auto-completion-return-key-behavior 'nil
+                      auto-completion-tab-key-behavior 'complete
+                      ;; company-mode-completion-cancel-keywords
+                      ;; (concatenate 'list
+                      ;;              company-mode-completion-cancel-keywords "{")
+                      ;; auto-completion-complete-with-key-sequence "jk"
+                      auto-completion-enable-sort-by-usage t
+                      )
+     better-defaults
+     git
+     syntax-checking
+     (spell-checking :variables spell-checking-enable-by-default nil)
+     (version-control :variables
+                      version-control-global-margin t
+                      version-control-diff-tool 'git-gutter+)
+
+     ;; Languages
+     (clojure
+      :variables
+      clojure-enable-fancify-symbols t)
+     csv
+     elm
+     emacs-lisp
+     (go
+      :variables
+      go-tab-width 4)
+     haskell
+     html
+     (javascript
+      :variables
+      js2-basic-offset 2
+      js-indent-level 2)
+     latex
+     markdown
+     python
+     react
+     rust
+     scala
+     shell-scripts
+     (sql
+      :variables
+      sql-capitalize-keywords t
+      sql-capitalize-keywords-blacklist '("name"))
+     (typescript
+      :variables
+      typescript-indent-level 2
+      typescript-fmt-on-save t)
+     yaml
+     )
+
+   dotspacemacs-additional-packages '()
+   dotspacemacs-frozen-packages '()
+   dotspacemacs-excluded-packages '()
+   dotspacemacs-install-packages 'used-only))
+
+(defun dotspacemacs/init ()
+  "Initialization:
+This function is called at the very beginning of Spacemacs startup,
+before layer configuration.
+It should only modify the values of Spacemacs settings."
+  (setq-default
+   dotspacemacs-elpa-https t
+   dotspacemacs-elpa-timeout 5
+   dotspacemacs-use-spacelpa nil
+   dotspacemacs-verify-spacelpa-archives t
+   dotspacemacs-check-for-update nil
+   dotspacemacs-elpa-subdirectory 'emacs-version
+   dotspacemacs-editing-style 'vim
+   dotspacemacs-verbose-loading nil
+   dotspacemacs-startup-banner 'official
+   dotspacemacs-startup-lists '((recents . 5)
+                                (projects . 7))
+   dotspacemacs-startup-buffer-responsive t
+   dotspacemacs-scratch-mode 'text-mode
+   dotspacemacs-initial-scratch-message nil
+   dotspacemacs-themes '(sanityinc-solarized-light
+                         sanityinc-solarized-dark)
+   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   dotspacemacs-colorize-cursor-according-to-state t
+   dotspacemacs-default-font '("Source Code Pro"
+                               :size 13
+                               :weight normal
+                               :width normal)
+   dotspacemacs-leader-key "SPC"
+   dotspacemacs-emacs-command-key "SPC"
+   dotspacemacs-ex-command-key ":"
+   dotspacemacs-emacs-leader-key "M-m"
+   dotspacemacs-major-mode-leader-key ","
+   dotspacemacs-major-mode-emacs-leader-key "C-M-m"
+   dotspacemacs-distinguish-gui-tab nil
+   dotspacemacs-remap-Y-to-y$ t
+   dotspacemacs-retain-visual-state-on-shift t
+   dotspacemacs-visual-line-move-text nil
+   dotspacemacs-ex-substitute-global nil
+   dotspacemacs-default-layout-name "Default"
+   dotspacemacs-display-default-layout nil
+   dotspacemacs-auto-resume-layouts nil
+   dotspacemacs-auto-generate-layout-names nil
+   dotspacemacs-large-file-size 1
+   dotspacemacs-auto-save-file-location 'cache
+   dotspacemacs-max-rollback-slots 5
+   dotspacemacs-helm-resize nil
+   dotspacemacs-helm-no-header nil
+   dotspacemacs-helm-position 'bottom
+   dotspacemacs-helm-use-fuzzy 'always
+   dotspacemacs-enable-paste-transient-state t
+   dotspacemacs-which-key-delay 0.4
+   dotspacemacs-which-key-position 'bottom
+   dotspacemacs-switch-to-buffer-prefers-purpose nil
+   dotspacemacs-loading-progress-bar t
+   dotspacemacs-fullscreen-at-startup nil
+   dotspacemacs-fullscreen-use-non-native nil
+   dotspacemacs-maximized-at-startup nil
+   dotspacemacs-active-transparency 90
+   dotspacemacs-inactive-transparency 90
+   dotspacemacs-show-transient-state-title t
+   dotspacemacs-show-transient-state-color-guide t
+   dotspacemacs-mode-line-unicode-symbols t
+   dotspacemacs-smooth-scrolling t
+   dotspacemacs-line-numbers '(:relative nil
+                               :disabled-for-modes pdf-view-mode
+                               :size-limit-kb 2000)
+   dotspacemacs-folding-method 'evil
+   dotspacemacs-smartparens-strict-mode nil
+   dotspacemacs-smart-closing-parenthesis nil
+   dotspacemacs-highlight-delimiters 'all
+   dotspacemacs-persistent-server nil
+   dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
+   dotspacemacs-default-package-repository nil
+   dotspacemacs-frame-title-format "%I@%S %t"
+   dotspacemacs-icon-title-format nil
+   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-zone-out-when-idle nil
+   dotspacemacs-pretty-docs nil))
+
+(defun dotspacemacs/user-init ()
+  "Initialization for user code: This function is called
+immediately after `dotspacemacs/init', before layer
+configuration. It is mostly for variables that should be set
+before packages are loaded. If you are unsure, try setting them
+in `dotspacemacs/user-config' first."
+  (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer-elpa-archives)
+  (push '(ensime . "melpa-stable") package-pinned-packages))
+
+(defun dotspacemacs/user-config ()
+  "Configuration for user code: This function is called at the
+very end of Spacemacs startup, after layer configuration. Put
+your configuration code here, except for variables that should be
+set before packages are loaded."
+  (evil-global-set-key 'normal ";" 'evil-ex)
+  (evil-global-set-key 'visual ";" 'evil-ex)
+  (evil-global-set-key 'motion "w" 'evil-backward-word-begin)
+  (evil-global-set-key 'motion "W" 'evil-backward-WORD-begin)
+  (evil-global-set-key 'motion "b" 'evil-jump-item)
+
+  (evil-global-set-key 'normal (kbd "M-d") 'sp-splice-sexp)
+
+  (with-eval-after-load 'helm
+    (define-key helm-find-files-map (kbd "C-n") 'next-history-element)
+    (define-key helm-find-files-map (kbd "C-p") 'previous-history-element)
+    (define-key helm-find-files-map (kbd "M-n") 'helm-next-line)
+    (define-key helm-find-files-map (kbd "M-p") 'helm-previous-line)
+
+    (define-key helm-map (kbd "C-n") 'next-history-element)
+    (define-key helm-map (kbd "C-p") 'previous-history-element)
+    (define-key helm-map (kbd "M-n") 'helm-next-line)
+    (define-key helm-map (kbd "M-p") 'helm-previous-line))
+  )
+
+;; Do not write anything past this comment. This is where Emacs will
+;; auto-generate custom variable definitions.
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (color-theme-sanityinc-solarized yasnippet-snippets yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toml-mode toc-org tide tagedit symon string-inflection sqlup-mode sql-indent spaceline-all-the-icons smeargle slim-mode scss-mode sayid sass-mode restart-emacs rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort pug-mode popwin pippel pip-requirements persp-mode pcre2el password-generator paradox overseer org-plus-contrib org-bullets open-junk-file noflet neotree nameless mwim mvn move-text mmm-mode meghanada maven-test-mode markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hy-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-guru go-eldoc gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-pos-tip flycheck-haskell flycheck-elm flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu ensime emmet-mode elm-mode elisp-slime-nav editorconfig dumb-jump diminish diff-hl define-word dante cython-mode csv-mode counsel-projectile company-web company-tern company-statistics company-shell company-go company-ghci company-ghc company-emacs-eclim company-cabal company-auctex company-anaconda column-enforce-mode coffee-mode cmm-mode clojure-snippets clojure-cheatsheet clj-refactor clean-aindent-mode cider-eval-sexp-fu cargo browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)

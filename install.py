@@ -3,21 +3,16 @@
 Will move anything that is not a symlink into a tmp dir
 
 """
-import argparse
+from os.path import basename, dirname, expanduser, realpath
+from subprocess import call
 import logging
 import os
 import random
 import shutil
+import socket  # this is for getting the hostname of the device
 import stat
 import string
 import sys
-from os.path import (
-    basename,
-    dirname,
-    expanduser,
-    realpath,
-)
-from subprocess import call
 
 HOME = expanduser('~')
 DOTFILES = dirname(realpath(__file__))
@@ -46,7 +41,7 @@ def rm(src, backup=True):
         os.remove(src)
         logger.debug('Removing symlink {}'.format(src))
     elif backup:
-        tmp_dir = os.environ['TMPDIR']
+        tmp_dir = os.environ.get('TMPDIR', '/tmp')
         rand_id = ''.join(random.SystemRandom().choice(
             string.ascii_uppercase + string.digits) for _ in range(5))
         backup_file = rand_id + "-" + basename(src)
@@ -74,19 +69,6 @@ def run_script(exe, *args):
     """Calls a script with the given args."""
     logger.debug("running {} {}".format(exe, " ".join(args)))
     call([exe] + list(args))
-
-
-def get_opts():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--dev",
-        help="Install additional things related to the device type",
-        type=str,
-    )
-    args = parser.parse_args()
-    return {
-        "dev": args.dev,
-    }
 
 
 def setup_shell(home=HOME, dotfiles=DOTFILES, method=symlink):
@@ -141,17 +123,18 @@ def setup_config(home=HOME, dotfiles=DOTFILES, method=symlink):
     _install(config_dir)
 
 
-def setup_i3_configs(dev_type, home=HOME, dotfiles=DOTFILES, method=symlink):
+def setup_i3_configs(home=HOME, dotfiles=DOTFILES, method=symlink):
     """Installs the proper i3 config based on the environment"""
     core_src = os.path.join(dotfiles, "i3", "config")
     core_dst = os.path.join(home, ".config", "i3", "config")
     method(core_src, core_dst)
+    hostname = socket.gethostname()
 
     status_bar_src = None
     bar_dst = os.path.join(home, ".config", "i3status", "config")
-    if dev_type == "desktop":
+    if hostname == "myelin":
         status_bar_src = os.path.join(dotfiles, "i3", "i3desktop-bar")
-    elif dev_type == "labtop":
+    elif hostname == "cortex":
         status_bar_src = os.path.join(dotfiles, "i3", "i3labtop-bar")
     else:
         status_bar_src = None
@@ -170,17 +153,11 @@ def setup_vscode_extensions(home=HOME, dotfiles=DOTFILES):
 
 def setup_everything(home=HOME, dotfiles=DOTFILES):
     """Installs everything."""
-
-    dev = get_opts()
-
     setup_shell(home, dotfiles)
     setup_vundle(home, dotfiles)
     setup_spacemacs(home, dotfiles)
     setup_config(home, dotfiles)
-    if (dev == "desktop"):
-        setup_i3_configs("desktop", home, dotfiles)
-    elif (dev == "labtop"):
-        setup_i3_configs("labtop", home, dotfiles)
+    setup_i3_configs(home, dotfiles)
 
 
 def _set_log_level():
