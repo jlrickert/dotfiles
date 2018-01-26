@@ -17,6 +17,11 @@ format_swap = "{SUp}%"
 cliackable = true
 
 [[block]]
+block = "temperature"
+collapsed = false
+interval = 10
+
+[[block]]
 block = "cpu"
 interval = 1
 
@@ -25,15 +30,10 @@ block = "load"
 interval = 1
 format = "{1m} {5m} {15m}"
 
-[[block]]
-block = "temperature"
-collapsed = false
-interval = 10
-
-[[block]]
-block = "weather"
-format = "{weather} ({location}) {temp}°, {wind} m/s"
-service = { name = "openweathermap", api_key = "c82b5541caf34c79489a258d03c90130", city_id = "5034970", units = "imperial" }
+# [[block]]
+# block = "weather"
+# format = "{weather} ({location}) {temp}°, {wind} m/s"
+# service = { name = "openweathermap", api_key = "c82b5541caf34c79489a258d03c90130", city_id = "5034970", units = "imperial" }
 
 [[block]]
 block = "sound"

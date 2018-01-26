@@ -19,14 +19,14 @@ set $cyan    #2aa198
 set $green   #859900
 
 # solarized dark
-set $baseA3 #002b36
-set $baseA2 #073642
-set $baseA1 #586e75
-set $baseA0 #657b83
-set $baseB0 #839496
-set $baseB1 #93a1a1
-set $baseB2 #eee8d5
-set $baseB3 #fdf6e3
+set $base3 #fdf6e3
+set $base2 #eee8d5
+set $base1 #93a1a1
+set $base0 #839496
+set $base00 #657b83
+set $base01 #586e75
+set $base02 #073642
+set $base03 #002b36
 set $custom #1c5766
 
 # $i3-background
@@ -34,17 +34,18 @@ set $custom #1c5766
 # exec --no-startup-id nm-applet
 
 # clientclass           border  backgr. text    indicator
-client.focused          $baseB0 $green  $baseB3 $blue
-client.focused_inactive $baseB0 $cyan   $baseB2 $violet
-client.unfocused        $baseB0 $baseA2 $baseB1 $baseA1
-client.urgent           $baseB0 $yellow $baseB3 $orange
+client.focused          $base03 $green  $base03 $blue
+client.focused_inactive $base03 $cyan   $base03 $violet
+client.unfocused        $base03 $base02 $base01 $base01
+client.urgent           $base03 $yellow $base03 $orange
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 9
-font pango:Source Code Pro 8
+#font pango:Source Code Pro 8
+font pango:DejaVu Sans Mono, FontAwesome 8
 # font pango:Terminus 11px
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -210,39 +211,17 @@ bindsym XF86AudioPrev exec playerctl previous
 ##################################################
 # Status Bar
 ##################################################
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-# bar {
-#     colors {
-#         separator #dc322f
-#         background #002b36
-#         statusline #268bd2
-#         focused_workspace #fdf6e3 #859900 #fdf6e3
-#         active_workspace #fdf6e3 #6c71c4 #fdf6e3
-#         inactive_workspace #586e75 #93a1a1 #002b36
-#         urgent_workspace #d33682 #d33682 #fdf6e3
-#   }
-#   position bottom
-#   status_command i3status -c ~/.config/i3status/config | ~/.local/bin/i3info
-# }
 bar {
       font pango:DejaVu Sans Mono, FontAwesome 8
       position bottom
       status_command i3status-rs ~/.config/i3status/config.toml
+      tray_output primary
       colors {
-             # separator #dc322f
-             # background #002b36
-             # statusline #268bd2
-             # focused_workspace #fdf6e3 #859900 #fdf6e3
-             # active_workspace #fdf6e3 #6c71c4 #fdf6e3
-             # inactive_workspace #586e75 #93a1a1 #002b36
-             # urgent_workspace #d33682 #d33682 #fdf6e3
+             background $base02
+             focused_workspace  $base02 $green  $base03
+             active_workspace   $base02 $cyan   $base03
+             inactive_workspace $base02 $base02 $base01
+             urgent_workspace   $base02 $yellow $base03
              separator #666666
-             background #222222
-             statusline #dddddd
-             focused_workspace #0088CC #0088CC #ffffff
-             active_workspace #333333 #333333 #ffffff
-             inactive_workspace #333333 #333333 #888888
-             urgent_workspace #2f343a #900000 #ffffff
       }
 }
