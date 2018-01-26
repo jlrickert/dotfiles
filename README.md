@@ -82,16 +82,16 @@ Pacman packages that I use.
 
 ### AUR
 
-- apache-tools
 - discord
 - gitflow-avh
 - global
 - google-chrome
+- i3status-rust-git
 - jdk
 - package-query
 - slack-desktop
 - texlive-localmanager-git
-- ttf-fira-code
+- ttf-font-awesome-4
 - wemux-git
 - yaourt
 
@@ -99,10 +99,12 @@ Programming related
 ------------------
 
 ### C/C++
+
 - clang
 - gdb
 
 ### Python
+
 - autopep8
 - flake8
 - python-jedi
@@ -110,25 +112,31 @@ Programming related
 - yapf
 
 ### Lisp
+
 - buildapp
 - clisp
 - roswell
 - sbcl
 
 ### clojure
+
 - leiningen
 
 ### Scala
+
 - scala
 - sbt
 
 ### Haskell
+
 - stack
 
 ### Perl
+
 - cpanminus
 
 ### Elixer
+
 - elixer
 
 ### Android

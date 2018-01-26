@@ -131,11 +131,11 @@ def setup_i3_configs(home=HOME, dotfiles=DOTFILES, method=symlink):
     hostname = socket.gethostname()
 
     status_bar_src = None
-    bar_dst = os.path.join(home, ".config", "i3status", "config")
+    bar_dst = os.path.join(home, ".config", "i3status", "config.toml")
     if hostname == "myelin":
-        status_bar_src = os.path.join(dotfiles, "i3", "i3desktop-bar")
+        status_bar_src = os.path.join(dotfiles, "i3", "i3desktop-bar.toml")
     elif hostname == "cortex":
-        status_bar_src = os.path.join(dotfiles, "i3", "i3labtop-bar")
+        status_bar_src = os.path.join(dotfiles, "i3", "i3labtop-bar.toml")
     else:
         status_bar_src = None
 

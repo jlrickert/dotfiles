@@ -193,8 +193,8 @@ mode "$mode_system" {
 }
 
 # Sound
-bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+ -q unmute
-bindsym XF86AudioLowerVolume exec amixer -q set Master 5%- -q unmute
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 10%+ -q unmute
+bindsym XF86AudioLowerVolume exec amixer -q set Master 10%- -q unmute
 bindsym XF86AudioMute exec amixer -q set Master toggle
 
 # Brightness
@@ -207,33 +207,42 @@ bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
-# Default workspaces
-workspace 1 output DVI-I-3
-workspace 2 output DVI-I-3
-workspace 3 output DVI-I-3
-workspace 4 output DVI-I-3
-workspace 5 output DVI-I-3
-workspace 6 output DVI-I-0
-workspace 7 output DVI-I-0
-workspace 8 output DVI-I-0
-workspace 9 output DVI-I-0
-workspace 10 output DVI-I-0
-
 ##################################################
 # Status Bar
 ##################################################
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
+# bar {
+#     colors {
+#         separator #dc322f
+#         background #002b36
+#         statusline #268bd2
+#         focused_workspace #fdf6e3 #859900 #fdf6e3
+#         active_workspace #fdf6e3 #6c71c4 #fdf6e3
+#         inactive_workspace #586e75 #93a1a1 #002b36
+#         urgent_workspace #d33682 #d33682 #fdf6e3
+#   }
+#   position bottom
+#   status_command i3status -c ~/.config/i3status/config | ~/.local/bin/i3info
+# }
 bar {
-    colors {
-        separator #dc322f
-        background #002b36
-        statusline #268bd2
-        focused_workspace #fdf6e3 #859900 #fdf6e3
-        active_workspace #fdf6e3 #6c71c4 #fdf6e3
-        inactive_workspace #586e75 #93a1a1 #002b36
-        urgent_workspace #d33682 #d33682 #fdf6e3
-  }
-  position bottom
-  status_command i3status -c ~/.config/i3status/config | ~/.local/bin/i3info
+      font pango:DejaVu Sans Mono, FontAwesome 8
+      position bottom
+      status_command i3status-rs ~/.config/i3status/config.toml
+      colors {
+             # separator #dc322f
+             # background #002b36
+             # statusline #268bd2
+             # focused_workspace #fdf6e3 #859900 #fdf6e3
+             # active_workspace #fdf6e3 #6c71c4 #fdf6e3
+             # inactive_workspace #586e75 #93a1a1 #002b36
+             # urgent_workspace #d33682 #d33682 #fdf6e3
+             separator #666666
+             background #222222
+             statusline #dddddd
+             focused_workspace #0088CC #0088CC #ffffff
+             active_workspace #333333 #333333 #ffffff
+             inactive_workspace #333333 #333333 #888888
+             urgent_workspace #2f343a #900000 #ffffff
+      }
 }
