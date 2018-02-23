@@ -167,7 +167,6 @@ set before packages are loaded."
   (custom-keybindings)
   (custom-web-config)
   (custom-lisp-config)
-  (custom-misc-config)
   )
 
 (defun custom-keybindings ()
@@ -192,21 +191,10 @@ set before packages are loaded."
     (define-key helm-map (kbd "M-p") 'helm-previous-line))
   )
 
-(defun custom-misc-config ()
-  "miscellaneous config"
-  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
-  )
-
-(defun custom-lisp-config ()
-  "Lisp customization"
-  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
-  (spacemacs/add-to-hooks 'smartparens-strict-mode '(elisp-mode clojure-mode))
-  )
-
 (defun custom-web-config ()
   "Typescript customization"
-  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . rjsx-mode))
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-jsx-mode))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-jsx-mode))
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
   (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
 
@@ -222,6 +210,14 @@ set before packages are loaded."
             (lambda ()
               (prettier-js-mode)
               )))
+
+(defun custom-lisp-config ()
+  "Lisp customization"
+  (spacemacs/add-to-hooks '(lambda ()
+                             (smartparens-strict-mode)
+                             (evil-smartparens-mode))
+                          '(emacs-lisp-mode-hook clojure-mode-hook))
+  )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
