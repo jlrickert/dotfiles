@@ -3,7 +3,7 @@ icons = "awesome"
 
 [[block]]
 block = "net"
-device = "wlp1s0"
+device = "wlp5s0"
 speed_up = true
 speed_down = true
 ip = true
@@ -41,8 +41,8 @@ block = "sound"
 [[block]]
 block = "battery"
 interval = 10
-device = "BAT1"
-show = "percentage"
+device = "BAT0"
+show = "both"
 
 [[block]]
 block = "time"
