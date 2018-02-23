@@ -13,6 +13,7 @@ import socket  # this is for getting the hostname of the device
 import stat
 import string
 import sys
+import errno
 
 HOME = expanduser('~')
 DOTFILES = dirname(realpath(__file__))
@@ -20,17 +21,16 @@ DOTFILES = dirname(realpath(__file__))
 logger = logging.getLogger(__name__)
 
 
-def symlink(src=None, dst=None, force=True):
+def symlink(src=None, dst=None):
     """Symlinks files"""
-    assert src and dst
     mkdir(dirname(dst))
-    if os.path.exists(dst):
-        if force:
-            rm(dst)
-            symlink(src=src, dst=dst)
-    else:
-        logger.info("Linking '{}' -> '{}'".format(src, dst))
+    logger.info("Linking '{}' -> '{}'".format(src, dst))
+    try:
         os.symlink(src, dst)
+    except OSError as e: 
+        if e.errno == errno.EEXIST:
+            os.remove(dst)
+            os.symlink(src, dst)
 
 
 def rm(src, backup=True):
