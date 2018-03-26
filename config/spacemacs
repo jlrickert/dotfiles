@@ -42,7 +42,7 @@ configuration layer settings."
      (go
       :variables
       go-tab-width 4)
-     haskell
+     (haskell :variables haskell-completion-backend 'intero)
      html
      (javascript
       :variables
@@ -195,10 +195,10 @@ set before packages are loaded."
 
 (defun custom-web-config ()
   "Typescript customization"
-  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . typescript-mode))
   (add-to-list 'auto-mode-alist '("\\.js\\'" . typescript-mode))
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . typescript-tsx-mode))
   (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
 
   (setq-default js-indent-level 2)
   (setq-default js2-basic-offset 2)
@@ -208,7 +208,16 @@ set before packages are loaded."
 
   (spacemacs/set-leader-keys-for-major-mode 'typescript-mode
     "=" 'prettier-js)
+
+  (spacemacs/set-leader-keys-for-major-mode 'typescript-tsx-mode
+    "=" 'prettier-js)
+
   (add-hook 'typescript-mode-hook
+            (lambda ()
+              (prettier-js-mode)
+              ))
+
+  (add-hook 'typescript-tsx-mode-hook
             (lambda ()
               (prettier-js-mode)
               )))
