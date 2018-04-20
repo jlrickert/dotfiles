@@ -5,7 +5,7 @@ lock() {
 
 case "$1" in
     lock)
-        i3lock
+        lock
         ;;
     logout)
         i3-msg exit
