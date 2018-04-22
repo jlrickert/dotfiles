@@ -50,7 +50,7 @@ set visualbell                  "No sounds
 set autoread                    "Reload files changed outside vim
 set fileformats=unix,dos,mac    "Prefer Unix over Windows over OS 9 formats
 set ambiwidth=double            "make all charactors the same width
-set clipboard=unnamed           "clipboard now defaults to system
+set clipboard=unnamedplus       "clipboard now defaults to system
 
 " This makes vim act like all other editors, buffers can
 " exist in the background without being in a window.
@@ -58,7 +58,7 @@ set clipboard=unnamed           "clipboard now defaults to system
 set hidden
 
 " The mapleader has to be set before vundle starts loading all the plugins.
-let mapleader="\<Space>"
+let mapleader=","
 
 "------------------------------------------------------------------------------
 " Turn Off Swap Files
