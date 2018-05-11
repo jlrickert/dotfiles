@@ -14,9 +14,9 @@ cursor_shape = block
 scrollback_lines = 100000
 search_wrap = true
 #font = Monospace 10
-font = Source Code Pro 10
+font = Source Code Pro 12
 #font = Inconsolata 12
-browser=firefox
+browser=google-chrome-stable
 
 # Solarized dark color scheme
 

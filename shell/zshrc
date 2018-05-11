@@ -1,7 +1,7 @@
 ########################################
 ## Environmental variables
 ########################################
-export BROWSER=firefox-nightly
+export BROWSER=google-chrome-stable
 export DEFAULT_USER=`whoami`
 export DOTFILES=`dirname $(dirname "$(readlink -f "${(%):-%x}")")`
 export EDITOR=vim
@@ -61,3 +61,4 @@ source $DOTFILES/shell/init.zsh
 for src in $DOTFILES/shell/plugins/*; do
     source $src
 done
+
