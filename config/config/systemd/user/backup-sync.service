@@ -1,0 +1,6 @@
+[Unit]
+Description=Backup Sync folder
+
+[Service]
+Type=oneshot
+ExecStart=/home/jlrickert/Sync/dotfiles/bin/backup-sync

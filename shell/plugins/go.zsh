@@ -1,4 +1,4 @@
-export GOPATH=$HOME/code/gocode
+export GOPATH=$HOME/Sync
 
 path=(
     $GOPATH/bin

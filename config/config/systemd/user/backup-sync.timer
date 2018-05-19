@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily backup of Sync folder
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target
