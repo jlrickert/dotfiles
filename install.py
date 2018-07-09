@@ -68,7 +68,7 @@ def mkdir(path):
 def run_script(exe, *args):
     """Calls a script with the given args."""
     logger.debug("running {} {}".format(exe, " ".join(args)))
-    call([exe] + list(args))
+    call(["sh", exe] + list(args))
 
 
 def setup_shell(home=HOME, dotfiles=DOTFILES, method=symlink):
