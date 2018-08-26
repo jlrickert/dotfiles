@@ -198,8 +198,8 @@ mode "$mode_system" {
 }
 
 # Sound
-bindsym XF86AudioRaiseVolume exec amixer -q set Master 10%+ -q unmute
-bindsym XF86AudioLowerVolume exec amixer -q set Master 10%- -q unmute
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 1%+ -q unmute
+bindsym XF86AudioLowerVolume exec amixer -q set Master 1%- -q unmute
 bindsym XF86AudioMute exec amixer -q set Master toggle
 
 # Brightness
