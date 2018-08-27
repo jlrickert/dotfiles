@@ -1,0 +1,6 @@
+---
+- include: packages.yml
+- include: user.yml
+- include: ssh.yml
+  when: ssh
+- include: misc.yml

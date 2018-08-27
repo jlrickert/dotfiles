@@ -1,0 +1,29 @@
+---
+- hosts: headless
+  become: True
+  strategy: free
+  roles:
+    - { role: common
+      , ssh: True
+      , user: jlrickert
+      }
+
+- hosts: workstation
+  become: True
+  strategy: free
+  roles:
+    - { role: common
+      , ssh: True
+      , user: jlrickert
+      , desktop: True
+      }
+
+- hosts: laptop
+  become: True
+  strategy: free
+  roles:
+    - { role: common
+      , ssh: True
+      , user: jlrickert
+      , desktop: True
+      }

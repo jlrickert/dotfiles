@@ -1,0 +1,27 @@
+---
+- name: Install universal packages
+  pacman:
+    name: "{{ arch_packages }}"
+    state: present
+  when: ansible_os_family == "Archlinux"
+
+- name: Create build directory
+  file:
+    path: "/home/{{ user }}/build"
+    state: directory
+    owner: "{{ user }}"
+    group: users
+
+- name: Install universal aur packages
+  aur:
+    name: "{{ item }}"
+    user: "{{ user }}"
+    dir: "/home/{{ user }}/build"
+  loop: "{{ arch_aur_packages }}"
+  when: ansible_os_family == "Archlinux"
+
+- name: Install desktop packages
+  pacman:
+    name: "{{ arch_display_packages }}"
+    state: present
+  when: ansible_os_family == "Archlinux" and desktop
