@@ -6,3 +6,4 @@
 - include: avahi.yml
 - include: adblock.yml
   when: adblock_enabled
+- include: docker.yml

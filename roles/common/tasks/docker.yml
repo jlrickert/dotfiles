@@ -1,0 +1,19 @@
+---
+- name: Install docker
+  pacman:
+    name: docker
+    state: present
+  when: ansible_os_family == "Archlinux"
+
+- name: Enable and start Docker
+  service:
+    name: docker.service
+    enabled: yes
+    state: started
+
+- name: Add user to docker grouo
+  user:
+    name: "{{ user }}"
+    groups: docker
+    append: yes
+
