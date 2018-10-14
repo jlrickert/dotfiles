@@ -21,6 +21,10 @@ Running the install will create all the directories and symlink all files.
 python install.py
 ```
 
+### Installation through ansible (EXPERIMENTAL)
+
+ansible-playbook site.yml --private-key ~/.ssh/id_rsa
+
 ---
 
 Pacman packages that I use.

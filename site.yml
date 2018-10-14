@@ -1,7 +1,6 @@
 ---
 - hosts: headless
   become: True
-  strategy: free
   roles:
     - { role: common
       , ssh: True
@@ -10,20 +9,20 @@
 
 - hosts: workstation
   become: True
-  strategy: free
   roles:
     - { role: common
       , ssh: True
       , user: jlrickert
-      , desktop: True
+      , desktop_enabled: True
+      , adblock_enabled: True
       }
 
 - hosts: laptop
   become: True
-  strategy: free
   roles:
     - { role: common
       , ssh: True
       , user: jlrickert
-      , desktop: True
+      , desktop_enabled: True
+      , adblock_enabled: True
       }

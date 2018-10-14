@@ -3,3 +3,13 @@
   service:
     name: sshd.service
     state: restarted
+
+- name: restart unbound
+  service:
+    name: unbound.service
+    state: restarted
+
+- name: restart avahi
+  service:
+    name: avahi-daemon.service
+    state: restarted

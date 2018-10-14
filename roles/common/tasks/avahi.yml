@@ -1,0 +1,22 @@
+---
+- name: Install avahi and friends
+  pacman:
+    name: ["avahi", "python-dbus", "nss-mdns"]
+    state: present
+  with_items:
+    - avahi
+    - python-dbus
+    - nss-mdns
+  when: ansible_os_family == "Archlinux"
+
+- name: Enable and start avahi
+  service:
+    name: avahi-daemon.service
+    enabled: yes
+    state: started
+
+- name: Copy nsswitch.conf
+  template:
+    src: nsswitch.conf.j2
+    dest: /etc/nsswitch.conf
+  notify: restart avahi

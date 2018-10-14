@@ -1,7 +1,8 @@
 ---
 ssh: True
 user: jlrickert
-desktop: False
+desktop_enabled: False
+adblock_enabled: False
 arch_packages:
 - ansible
 - at
@@ -48,7 +49,6 @@ arch_display_packages:
 - unclutter
 - wireshark-gtk
 - xorg-xset
-
 
 arch_aur_display_packages:
 - i3status-rust-git

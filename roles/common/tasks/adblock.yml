@@ -1,0 +1,19 @@
+---
+- name: Install unbound
+  pacman:
+    name: unbound
+    state: present
+  when: ansible_os_family == "Archlinux"
+
+- name: Copy unbound config
+  template:
+    src: unbound.conf.j2
+    dest: /etc/unbound/unbound.conf
+  notify: restart unbound
+
+- name: Enable and start unbound
+  service:
+    name: unbound.service
+    enabled: yes
+    state: started
+

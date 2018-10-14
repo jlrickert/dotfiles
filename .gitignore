@@ -4,3 +4,4 @@ config/zprivate
 __pycache__/
 *.py[cod]
 *$py.class
+*.retry

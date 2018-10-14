@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+server:
+  use-syslog: yes
+  do-daemonize: no
+  username: "unbound"
+  directory: "/etc/unbound"
+  trust-anchor-file: trusted-key.key
+  unblock-lan-zones: yes
+

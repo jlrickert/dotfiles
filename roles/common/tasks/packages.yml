@@ -24,4 +24,4 @@
   pacman:
     name: "{{ arch_display_packages }}"
     state: present
-  when: ansible_os_family == "Archlinux" and desktop
+  when: ansible_os_family == "Archlinux" and desktop_enabled

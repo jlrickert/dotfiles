@@ -3,4 +3,6 @@
 - include: user.yml
 - include: ssh.yml
   when: ssh
-- include: misc.yml
+- include: avahi.yml
+- include: adblock.yml
+  when: adblock_enabled
