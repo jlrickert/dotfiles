@@ -1,0 +1,12 @@
+---
+- name: Install wireshark
+  pacman:
+    name: wireshark-gtk
+    state: present
+  when: ansible_os_family == "Archlinux"
+
+- name: Add {{ username }} to wireshark group
+  user:
+    name: "{{ username }}"
+    groups: wireshark
+    append: yes

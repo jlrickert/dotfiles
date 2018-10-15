@@ -1,9 +1,9 @@
 ---
-- include: packages.yml
 - include: user.yml
+- include: packages.yml
+- include: firewall.yml
 - include: ssh.yml
-  when: ssh
 - include: avahi.yml
-- include: adblock.yml
-  when: adblock_enabled
 - include: docker.yml
+- include: syncthing.yml
+- include: misc.yml

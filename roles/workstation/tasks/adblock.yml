@@ -16,4 +16,3 @@
     name: unbound.service
     enabled: yes
     state: started
-

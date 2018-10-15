@@ -1,10 +1,11 @@
 ---
-- name: "Create {{ user }} user"
+- name: "Create {{ username }} user"
   user:
-    name: "{{ user }}"
+    name: "{{ username }}"
     shell: /bin/zsh
     state: present
     groups:
       - storage
       - wheel
       - power
+    append: true

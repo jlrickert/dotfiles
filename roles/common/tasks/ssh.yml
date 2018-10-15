@@ -7,15 +7,15 @@
 
 - name: Make SSH directory for user
   file:
-    path: "/home/{{ user }}/.ssh"
+    path: "/home/{{ username }}/.ssh"
     state: directory
     mode: 0700
-    owner: "{{ user }}"
+    owner: "{{ username }}"
     group: users
 
 - name: Set authorization key for {{ user }}
   authorized_key:
-    user: "{{ user }}"
+    user: "{{ username }}"
     state: present
     key: https://github.com/jlrickert.keys
 
@@ -35,3 +35,11 @@
     name: sshd.service
     enabled: yes
     state: started
+  when: ssh_enabled
+
+- name: Disable and stop SSH Daemon
+  service:
+    name: sshd.service
+    enabled: no
+    state: stopped
+  when: not ssh_enabled

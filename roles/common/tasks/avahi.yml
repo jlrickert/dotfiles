@@ -20,3 +20,8 @@
     src: nsswitch.conf.j2
     dest: /etc/nsswitch.conf
   notify: restart avahi
+
+- name: Add firewall policy for avahi
+  ufw:
+    name: bonjour
+    rule: allow

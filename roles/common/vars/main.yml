@@ -1,8 +1,7 @@
 ---
-ssh: True
-user: jlrickert
-desktop_enabled: False
-adblock_enabled: False
+username: jlrickert
+ssh_enabled: True
+firewall_enabled: True
 arch_packages:
 - ansible
 - at
@@ -27,30 +26,6 @@ arch_packages:
 - vim
 - wget
 - zsh
-
 arch_aur_packages:
 - yay
 - jdk
-
-arch_display_packages:
-- arandr
-- dmenu
-- dunst
-- feh
-- gnome-keyring
-- gufw
-- gvim
-- i3
-- network-manager-applet
-- networkmanager
-- numlockx
-- pavucontrol
-- pulseaudio
-- unclutter
-- wireshark-gtk
-- xorg-xset
-
-arch_aur_display_packages:
-- i3status-rust-git
-- google-chrome
-- slack-desktop

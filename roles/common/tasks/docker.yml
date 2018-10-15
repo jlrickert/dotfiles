@@ -11,9 +11,9 @@
     enabled: yes
     state: started
 
-- name: Add user to docker grouo
+- name: Add user to docker group
   user:
-    name: "{{ user }}"
+    name: "{{ username }}"
     groups: docker
     append: yes
 

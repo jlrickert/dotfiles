@@ -1,28 +1,18 @@
 ---
-- hosts: headless
+- hosts: server
   become: True
   roles:
     - { role: common
-      , ssh: True
-      , user: jlrickert
+      , ssh_enabled: True
+      , firewall_enabled: True
       }
+    - { role: server }
 
 - hosts: workstation
   become: True
   roles:
     - { role: common
-      , ssh: True
-      , user: jlrickert
-      , desktop_enabled: True
-      , adblock_enabled: True
+      , ssh_enabled: True
+      , firewall_enabled: True
       }
-
-- hosts: laptop
-  become: True
-  roles:
-    - { role: common
-      , ssh: True
-      , user: jlrickert
-      , desktop_enabled: True
-      , adblock_enabled: True
-      }
+    - { role: workstation }
