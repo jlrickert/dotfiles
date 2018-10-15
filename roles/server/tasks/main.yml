@@ -1,2 +1,2 @@
 ---
-# tasks file for openvpn
+- include: nginx.yml

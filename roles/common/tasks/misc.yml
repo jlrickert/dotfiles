@@ -1,5 +1,5 @@
 ---
-- name: Allow synergy through the firewall
+- name: Allow mosh through the firewall
   ufw:
-    name: synergy
+    name: mosh
     rule: allow

@@ -21,7 +21,7 @@
     dest: /etc/nsswitch.conf
   notify: restart avahi
 
-- name: Add firewall policy for avahi
+- name: Allow avahi through the firewall
   ufw:
     name: bonjour
     rule: allow

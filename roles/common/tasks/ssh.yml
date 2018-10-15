@@ -13,7 +13,7 @@
     owner: "{{ username }}"
     group: users
 
-- name: Set authorization key for {{ user }}
+- name: Set authorization key for {{ username }}
   authorized_key:
     user: "{{ username }}"
     state: present

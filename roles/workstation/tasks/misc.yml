@@ -1,0 +1,5 @@
+---
+- name: Allow synergy through the firewall
+  ufw:
+    name: synergy
+    rule: allow

@@ -17,11 +17,10 @@
     enabled: yes
     state: started
 
-- name: Allow incoming SSH
+- name: Allow SSH through the firewall
   ufw:
     name: ssh
-    direction: in
-    rule: limit
+    rule: allow
 
 - name: Reject all incoming traffic by default
   ufw:
@@ -45,5 +44,5 @@
 - name: Turn off ufw
   service:
     name: ufw.service
-    state: disabled
+    state: stopped
   when: not firewall_enabled

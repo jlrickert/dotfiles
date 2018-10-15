@@ -6,4 +6,5 @@
 - include: avahi.yml
 - include: docker.yml
 - include: syncthing.yml
+- include: dotfiles.yml
 - include: misc.yml

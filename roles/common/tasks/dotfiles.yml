@@ -1,0 +1,17 @@
+---
+- name: Synchronize all config files
+  synchronize:
+    src: dotfiles/
+    dest: "/home/{{ username }}/"
+    archive: yes
+    
+- name: Install oh-my-zsh
+  git:
+    repo: "https://github.com/robbyrussell/oh-my-zsh.git"
+    dest: "/home/{{ username }}/.oh-my-zsh"
+
+- name: Install spacemacs
+  git:
+    repo: "https://github.com/syl20bnr/spacemacs.git"
+    dest: "/home/{{ username }}/.emacs.d"
+    version: develop

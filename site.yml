@@ -3,6 +3,7 @@
   become: True
   roles:
     - { role: common
+      , username: jlrickert
       , ssh_enabled: True
       , firewall_enabled: True
       }
@@ -12,6 +13,7 @@
   become: True
   roles:
     - { role: common
+      , username: jlrickert
       , ssh_enabled: True
       , firewall_enabled: True
       }
