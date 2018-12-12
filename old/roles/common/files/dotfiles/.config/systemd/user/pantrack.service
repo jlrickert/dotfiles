@@ -1,0 +1,11 @@
+[Unit]
+Description=Pantrack - Continuous pandoc markdown compilation and http service
+Documentation=man:pantrack(1)
+After=local-fs.target network.target
+
+[Service]
+ExecStart=/usr/bin/node /home/raviko/Development/personal/pantrack/pantrack.js /tmp/raviko
+ExecStop=
+
+[Install]
+WantedBy=multi-user.target

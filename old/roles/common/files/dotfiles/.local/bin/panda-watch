@@ -1,0 +1,140 @@
+#!/bin/bash
+
+# Defaults
+CSS_FILE="$HOME/.local/share/pandoc/pandoc-notes.css"
+CSL="$HOME/.local/share/pandoc/csl/chicago-note-bibliography.csl"
+BIB="$HOME/.local/share/pandoc/bibliography.bib"
+TEMPLATE="$HOME/.local/share/pandoc/notes.html5"
+INPUT_DIR=`pwd`
+OUTPUT_DIR=/tmp/$USER/panda_watch
+
+IP=127.0.0.1
+PORT=8000
+SERVE=false
+STANDALONE=false
+
+BIN="$(command -v pandoc)"
+
+for i in "$@"
+do
+    case $i in
+        -o=*|--output=*)
+            OUTPUT_DIR="${i#*=}"
+            shift
+            ;;
+        --css=*)
+            CSS_FILE="${i#*=}"
+            shift
+            ;;
+        --csl=*)
+            CSL="${i#*=}"
+            shift
+            ;;
+        --bib=*)
+            BIB="${i#*=}"
+            shift
+            ;;
+        --standalone)
+            STANDALONE=true
+            shift
+            ;;
+        --serve)
+            SERVE=true
+            shift
+            ;;
+        *)
+            INPUT_DIR=`readlink -f $i`
+            ;;
+    esac
+done
+
+if [ ! "$BIN" ]; then
+    echo "pandoc not found.  Please install!"
+    exit -1
+fi
+
+if [ "$STANDALONE" = true ]; then
+    CSS="$OUTPUT_DIR/$(basename $CSS_FILE)"
+else
+    CSS="http://$IP:$PORT/"$(basename $CSS_FILE)
+fi
+
+PANDOC_HTML_OPTS="\
+--standalone \
+--toc \
+--smart \
+--mathjax \
+--filter=pandoc-citeproc \
+--csl=$CSL \
+--bibliography=$BIB \
+--css=$CSS \
+--template=$TEMPLATE"
+
+function compile_md_to_html {
+    input=`readlink -f $1`
+    md_file="${input/"$INPUT_DIR"\//}"
+    output="$OUTPUT_DIR/${md_file/\.md/\.html}"
+
+    echo "Compiling \`$md_file\` to \`$output\`."
+
+    $BIN $PANDOC_HTML_OPTS -o $output $input
+}
+
+delete() {
+    echo "rm -r $1"
+}
+
+function watch {
+    while res=$(inotifywait \
+        -qre create,close_write,delete,moved_to \
+        --format="%e;%w%f" \
+        $INPUT_DIR); do
+        event="$(cut -d';' -f1 <<< "$res")"
+        md_file="$(cut -d';' -f2 <<< "$res")"
+        if [[ "$md_file" =~ [^@#:].*\.md$ ]]; then
+            case $event in
+                *CREATE*|*CLOSE_WRITE*|*MOVED_TO*)
+                    compile_md_to_html $md_file
+                    shift
+                    ;;
+                DELETE)
+                    delete $md_file
+                    shift
+                    ;;
+                *)
+                    ;;
+            esac
+        fi
+    done
+}
+
+function setup {
+    if [ ! -d "$OUTPUT_DIR" ]; then
+        echo "Creating Directory $OUTPUT_DIR"
+        mkdir -p "$OUTPUT_DIR"
+    fi
+    css_output="$OUTPUT_DIR/$(basename $CSS_FILE)"
+    echo "Copying $CSS_FILE to $css_output"
+    cp "$CSS_FILE" "$css_output"
+}
+
+function pre_build() {
+    for i in $(ls **/*.md *.md); do
+        dir="$(dirname $i)"
+        mkdir -p "$OUTPUT_DIR/$dir"
+        compile_md_to_html "$i" &
+    done
+}
+
+serve() {
+    cd $OUTPUT_DIR
+    python -m http.server --bind $IP $PORT
+}
+
+setup
+pre_build &
+watch &
+if [ "$SERVE" = true ]; then
+    serve &
+fi
+wait

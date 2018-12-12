@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Translate text using google. Don't abuse.
+# Requires curl, awk, iconv, html2text
+# Language are:
+# af ar az be bn bg bs ca cub zh-CN zh-TW cs cy da de en en_us en_gb en_au
+# el es et eu fa fi fr ga gl gu ht hi hmn hr hu hy is id it iw ja jw ka km
+# kn ko la lv lt mk mr ms mt no nl pl pt ro ru sr sk sl sq sw sv ta te th tl
+# tr uk ur vi yi
+
+result=$(curl -s -i --user-agent "" -d "sl=es" -d "tl=en" --data-urlencode "text=$1" https://translate.google.com)
+encoding=$(awk '/Content-Type: .* charset=/ {sub(/^.*charset=["'\'']?/,""); sub(/[ "'\''].*$/,""); print}' <<<"$result")
+
+iconv -f $encoding <<<"$result" |  awk 'BEGIN {RS="</div>"};/<span[^>]* id=["'\'']?result_box["'\'']?/' | html2text
+exit

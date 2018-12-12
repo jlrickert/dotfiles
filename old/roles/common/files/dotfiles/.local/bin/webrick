@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require 'webrick'
+
+include WEBrick
+
+puts "Starting server: http://#{Socket.gethostname}:#{3000}"
+server = HTTPServer.new(:Port=>3000,:DocumentRoot=>Dir::pwd )
+trap("INT"){ server.shutdown }
+server.start

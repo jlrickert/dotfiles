@@ -1,0 +1,183 @@
+{
+    "editor.fontSize": 12,
+    "editor.minimap.enabled": false,
+    "editor.renderWhitespace": "boundary",
+    "editor.tabSize": 2,
+    "files.exclude": {
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/.hg": true,
+        "**/.svn": true,
+        "**/CVS": true,
+        "target/": true
+    },
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "files.useExperimentalFileWatcher": true,
+    "keyboard.dispatch": "keyCode",
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
+    "vim.easymotion": true,
+    "vim.easymotionMarkerHeight": 12,
+    "vim.leader": "<space>",
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "after": [],
+            "before": [
+                "<Leader>",
+                "f"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.quickOpen"
+                }
+            ]
+        },
+        {
+            "before": [
+                "<Leader>",
+                "="
+            ],
+            "commands": [
+                {
+                    "command": "editor.action.formatDocument"
+                }
+            ]
+        },
+        {
+            "after": [],
+            "before": [
+                "<Leader>",
+                "<Leader>"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.showCommands"
+                }
+            ]
+        },
+        {
+            "after": [
+                "g",
+                "c"
+            ],
+            "before": [
+                "<Leader>",
+                "/"
+            ]
+        },
+        {
+            "after": [
+                "%"
+            ],
+            "before": [
+                "b"
+            ]
+        },
+        {
+            "after": [
+                "c",
+                "%"
+            ],
+            "before": [
+                "c",
+                "b"
+            ]
+        },
+        {
+            "after": [
+                "b"
+            ],
+            "before": [
+                "w"
+            ]
+        },
+        {
+            "after": [
+                "c",
+                "b"
+            ],
+            "before": [
+                "c",
+                "w"
+            ]
+        },
+        {
+            "after": [
+                "B"
+            ],
+            "before": [
+                "W"
+            ]
+        },
+        {
+            "after": [
+                "c",
+                "B"
+            ],
+            "before": [
+                "c",
+                "W"
+            ]
+        },
+        {
+            "after": [
+                "<C-w>",
+                "h"
+            ],
+            "before": [
+                "<Leader>",
+                "w",
+                "h"
+            ]
+        },
+        {
+            "after": [
+                "<C-w>",
+                "j"
+            ],
+            "before": [
+                "<Leader>",
+                "w",
+                "j"
+            ]
+        },
+        {
+            "after": [
+                "<C-w>",
+                "k"
+            ],
+            "before": [
+                "<Leader>",
+                "w",
+                "k"
+            ]
+        },
+        {
+            "after": [
+                "<C-w>",
+                "l"
+            ],
+            "before": [
+                "<Leader>",
+                "w",
+                "l"
+            ]
+        },
+        {
+            "after": [],
+            "before": [
+                "<Leader>",
+                "w",
+                "v"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.splitEditor"
+                }
+            ]
+        }
+    ],
+    "vim.useSystemClipboard": true,
+    "workbench.colorTheme": "Solarized Dark"
+}
