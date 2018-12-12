@@ -1,5 +1,0 @@
----
-- name: Allow mosh through the firewall
-  ufw:
-    name: mosh
-    rule: allow

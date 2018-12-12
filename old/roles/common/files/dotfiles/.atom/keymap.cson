@@ -1,6 +1,0 @@
-'atom-text-editor.vim-mode-plus:not(.insert-mode)':
-  'e': 'vim-mode-plus:move-to-next-word'
-  'E': 'vim-mode-plus:move-to-next-whole-word'
-
-  'w': 'vim-mode-plus:move-to-previous-word'
-  'W': 'vim-mode-plus:move-to-previous-whole-word'

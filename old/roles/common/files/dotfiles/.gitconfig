@@ -1,7 +1,0 @@
-[user]
-	email = jaredrickert52@gmail.com
-	name = Jared Rickert
-	signingkey = jaredrickert52@gmail.com
-[core]
-	editor = vim
-	excludesfile = ~/.gitignore

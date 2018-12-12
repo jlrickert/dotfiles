@@ -1,5 +1,0 @@
----
-- name: Allow HTTP and HTTPS through the firewall
-  ufw:
-    name: WWW Full
-    rule: allow

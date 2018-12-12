@@ -1,2 +1,0 @@
-export CLIENT_ID="9mgnlrbu9xwgqrghfintt5i5gm77qa"
-export TWITCHY_TOKEN="743qg5s1jam3ect4q0xh4ac6ks67lf"

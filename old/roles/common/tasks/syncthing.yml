@@ -1,5 +1,0 @@
----
-- name: Allow syncthing through the firewall
-  ufw:
-    name: syncthing
-    rule: allow
