@@ -1,0 +1,39 @@
+icons = "awesome"
+theme = "solarized-dark"
+
+[[block]]
+block = "net"
+device = "enp0s31f6"
+speed_up = true
+speed_down = true
+ip = true
+interval = 1
+
+[[block]]
+block = "memory"
+display_type = "memory"
+format_mem = "{Mup}%"
+format_swap = "{SUp}%"
+cliackable = true
+
+[[block]]
+block = "temperature"
+collapsed = false
+interval = 10
+
+[[block]]
+block = "cpu"
+interval = 1
+
+[[block]]
+block = "load"
+interval = 1
+format = "{1m} {5m} {15m}"
+
+[[block]]
+block = "sound"
+
+[[block]]
+block = "time"
+interval = 1
+format = "%a %d/%m %r"

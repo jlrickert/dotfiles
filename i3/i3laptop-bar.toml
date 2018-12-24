@@ -1,0 +1,50 @@
+theme = "solarized-dark"
+icons = "awesome"
+
+[[block]]
+block = "net"
+device = "wlp5s0"
+speed_up = true
+speed_down = true
+ip = true
+interval = 1
+
+[[block]]
+block = "memory"
+display_type = "memory"
+format_mem = "{Mup}%"
+format_swap = "{SUp}%"
+cliackable = true
+
+[[block]]
+block = "temperature"
+collapsed = false
+interval = 10
+
+[[block]]
+block = "cpu"
+interval = 1
+
+[[block]]
+block = "load"
+interval = 1
+format = "{1m} {5m} {15m}"
+
+# [[block]]
+# block = "weather"
+# format = "{weather} ({location}) {temp}°, {wind} m/s"
+# service = { name = "openweathermap", api_key = "c82b5541caf34c79489a258d03c90130", city_id = "5034970", units = "imperial" }
+
+[[block]]
+block = "sound"
+
+[[block]]
+block = "battery"
+interval = 10
+device = "BAT0"
+show = "both"
+
+[[block]]
+block = "time"
+interval = 1
+format = "%a %d/%m %r"
