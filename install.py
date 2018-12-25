@@ -35,7 +35,7 @@ def symlink(src: FilePath, dst: FilePath, force=True):
     if force and path.exists(dst):
         os.remove(dst)
     print("Symlinking", src, "to", dst)
-    os.symlink(src, dst)
+    os.link(src, dst)
 
 
 def mkdir(dp: FilePath):
