@@ -3,21 +3,18 @@
 import os
 from os import path
 from os.path import (realpath, dirname, expanduser)
-from typing import List, Tuple
-
-FilePath = str
 
 
-def _split_directories(fp: FilePath) -> List[FilePath]:
+def _split_directories(fp):
     return [part for part in fp.split(path.sep) if part]
 
 
 def _find_dotfiles_links(
-        home: FilePath,
-        dotfiles_dir: FilePath,
-        _path: FilePath = "",
-) -> List[Tuple[FilePath, FilePath]]:
-    files: List[Tuple[FilePath, FilePath]] = []
+        home,
+        dotfiles_dir,
+        _path="",
+):
+    files = []
     for fp in os.listdir(path.join(dotfiles_dir, _path)):
         fp = path.join(_path, fp)
         if path.isdir(realpath(os.path.join(dotfiles_dir, fp))):
@@ -30,7 +27,7 @@ def _find_dotfiles_links(
     return files
 
 
-def symlink(src: FilePath, dst: FilePath, force=True):
+def symlink(src, dst, force=True):
     mkdir(dirname(dst))
     if force and path.exists(dst):
         os.remove(dst)
@@ -38,7 +35,7 @@ def symlink(src: FilePath, dst: FilePath, force=True):
     os.link(src, dst)
 
 
-def mkdir(dp: FilePath):
+def mkdir(dp):
     _path = path.sep
     for parts in _split_directories(dp):
         _path = path.join(_path, parts)
@@ -46,9 +43,7 @@ def mkdir(dp: FilePath):
             os.mkdir(_path)
 
 
-def install_dotfiles(home_dir: FilePath,
-                     dotfiles_dir: FilePath,
-                     method=symlink):
+def install_dotfiles(home_dir, dotfiles_dir, method=symlink):
     for (src, dst) in _find_dotfiles_links(home_dir, dotfiles_dir):
         method(src, dst)
 
