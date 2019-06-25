@@ -8,20 +8,21 @@ This function should only modify configuration layer settings."
    dotspacemacs-ask-for-lazy-installation t
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   '(vimscript
-     markdown
+   '(
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ;; auto-completion
-     ;; better-defaults
-     emacs-lisp
-     ;; git
+     (auto-completion :variables
+                      auto-completion-enable-snippets-in-popup 'nil
+                      auto-completion-return-key-behavior 'nil
+                      auto-completion-tab-key-behavior 'complete
+                      )
+     syntax-checking
+     ;; (syntax-checking :variables syntax-checking-use-original-bitmaps t)
      helm
-     ;; markdown
-     multiple-cursors
+     ;; multiple-cursors
      ;; org
      ;; (shell :variables
      ;;        shell-default-height 30
@@ -31,8 +32,24 @@ This function should only modify configuration layer settings."
      treemacs
      git
      version-control
+     lsp
 
-     ;; (python :variables)
+     ansible
+     cmake
+     docker
+     emacs-lisp
+     (go :variables
+         go-tab-width 4
+         gofmt-command "goimports"
+         godoc-at-point-function 'godoc-gogetdoc
+         go-backend 'lsp)
+     markdown
+     python
+     (typescript
+      :variables
+      typescript-indent-level 2)
+     vimscript
+     yaml
      )
 
    dotspacemacs-additional-packages '(unfill)
