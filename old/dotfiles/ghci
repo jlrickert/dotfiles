@@ -1,7 +1,0 @@
-:set prompt "λ> "
-:set -fno-warn-type-defaults
-:def hoogle \x -> return $ ":!hoogle search \"" ++ x ++ "\""
-:def doc \x -> return $ ":!hoogle search -i \"" ++ x ++ "\""
-:def browser \u -> return $ ":! open " ++ u
-:def package \m -> return $ ":! stack exec -- ghc-pkg --simple-output find-module " ++ m
-:def source readFile

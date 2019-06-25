@@ -1,3 +1,10 @@
 [user]
-  name = "{{ .git.name }}"
-	email = "{{ .git.email }}"
+  user = "{{ .git.user }}"
+  email = "{{ .git.email }}"
+
+[github]
+  user = "{{ .github.user }}"
+  email = "{{ .github.email }}"
+
+[url "https://github.com/"]
+  insteadOf = gh:

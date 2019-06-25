@@ -9,6 +9,5 @@ path=(
 
 # Set the list were completions are stored
 fpath=(
-  $MY_ZSH/completion.d
   $fpath[@]
 )

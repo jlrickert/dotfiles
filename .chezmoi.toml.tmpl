@@ -1,6 +1,11 @@
-{{- $git_email := promptString "Git Email" -}}
+{{- $git_email := promptString "Git email" -}}
 {{- $git_user:= promptString "Git user" -}}
+{{- $github_user:= promptString "Github user" -}}
+{{- $github_email := promptString "Github email" -}}
 [data]
-  [git]
-    user = "{{ $git_username }}"
+  [data.git]
+    user = "{{ $git_user }}"
     email = "{{ $git_email }}"
+  [data.github]
+    user = "{{ $github_user }}"
+    email = "{{ $github_email }}"

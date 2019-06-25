@@ -58,6 +58,7 @@ plugins=(
     # adb
     command-not-found
     cp
+    chezmoi
     debian
     dotenv
     fasd
@@ -76,5 +77,4 @@ plugins=(
     yarn
 )
 
-autoload -U compinit && compinit
 source $ZSH/oh-my-zsh.sh
