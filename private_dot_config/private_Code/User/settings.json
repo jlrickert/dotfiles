@@ -1,0 +1,54 @@
+{
+    "breadcrumbs.enabled": true,
+    "editor.minimap.enabled": false,
+    "editor.renderControlCharacters": false,
+    "editor.fontSize": 12,
+    "editor.fontLigatures": true,
+    "workbench.colorTheme": "Monokai",
+    "workbench.view.alwaysShowHeaderActions": true,
+    "keyboard.dispatch": "keyCode",
+    "python.jediEnabled": false,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.confirmDelete": false,
+    "go.useLanguageServer": false,
+    "go.autocompleteUnimportedPackages": true,
+    "go.docsTool": "gogetdoc",
+    "go.lintTool": "gometalinter",
+    "go.testOnSave": true, // formatting only supports LF line endings
+    "[go]":  {
+        "editor.formatOnSave": true,
+        "editor.snippetSuggestions": "none",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+    },
+    "gopls": {
+        "usePlaceholders": true // add parameter placeholders when completing a function
+    },
+    "files.eol": "\n",
+    "editor.renderWhitespace": "boundary",
+    "editor.cursorStyle": "block",
+    "editor.renderLineHighlight": "all",
+    "editor.cursorBlinking": "solid",
+    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.scrollback": 10000,
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
+    "vim.camelCaseMotion.enable": true,
+    "vim.foldfix": true,
+    "vim.highlightedyank.enable": true,
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+          "before": ["w"],
+          "after": ["b"]
+        },
+        {
+          "before": ["W"],
+          "after": ["B"]
+        },
+        {
+            "before": ["b"],
+            "after": ["%"]
+        }
+      ]
+}
