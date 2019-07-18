@@ -13,7 +13,6 @@
     "go.useLanguageServer": false,
     "go.autocompleteUnimportedPackages": true,
     "go.docsTool": "gogetdoc",
-    "go.lintTool": "gometalinter",
     "go.testOnSave": true, // formatting only supports LF line endings
     "[go]":  {
         "editor.formatOnSave": true,
@@ -50,5 +49,7 @@
             "before": ["b"],
             "after": ["%"]
         }
-      ]
+      ],
+      "workbench.tree.indent": 16,
+      "workbench.tree.renderIndentGuides": "always"
 }
