@@ -3,57 +3,62 @@
     {
         "key": "space p",
         "command": "workbench.action.quickOpen",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space k",
         "command": "workbench.action.focusAboveGroup",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space j",
         "command": "workbench.action.focusBelowGroup",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space h",
         "command": "workbench.action.focusLeftGroup",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space l",
         "command": "workbench.action.focusRightGroup",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space t",
         "command": "workbench.action.focusSideBar",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space shift+l",
         "command": "workbench.action.moveEditorToRightGroup",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space shift+h",
         "command": "workbench.action.moveEditorToLeftGroup",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space shift+k",
         "command": "workbench.action.moveEditorToAboveGroup",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space shift+j",
         "command": "workbench.action.moveEditorToBelowGroup",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "space space",
         "command": "workbench.action.showCommands",
-        "when": "vim.active && vim.mode != 'Insert'"
+        "when": "editorFocus && vim.active && vim.mode != 'Insert'"
+    },
+    {
+        "key": "space space",
+        "command": "workbench.action.showCommands",
+        "when": "sideBarFocus && vim.active && vim.mode != 'Insert'"
     },
     {
         "key": "alt+p",
@@ -77,7 +82,7 @@
     },
     {
         "key": "ctrl+e",
-        "command": "-workbench.action.quickOpenNavigateNextInFilePicker",
+        "command": "workbench.action.quickOpenNavigateNextInFilePicker",
         "when": "inFilesPicker && inQuickOpen"
     },
     {
