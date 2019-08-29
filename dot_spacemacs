@@ -43,8 +43,14 @@ This function should only modify configuration layer settings."
          gofmt-command "goimports"
          godoc-at-point-function 'godoc-gogetdoc
          go-backend 'lsp)
+     (html :variables
+           css-enable-lsp 't
+           less-enabled-lsp 't
+           scss-enable-lsp 't)
      markdown
      python
+     ruby
+     (rust :variables rust-backend 'lsp)
      (typescript
       :variables
       typescript-indent-level 2)
