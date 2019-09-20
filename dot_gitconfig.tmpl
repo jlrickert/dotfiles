@@ -1,10 +1,14 @@
-[user]
-  user = "{{ .git.user }}"
-  email = "{{ .git.email }}"
+[core]
+  editor = vim
 
-[github]
-  user = "{{ .github.user }}"
-  email = "{{ .github.email }}"
+[user]
+  name = "{{ .git.name }}"
+  email = "{{ .git.email }}"
+  signingKey = "{{ .git.signing_key }}"
+
+[commit]
+  gpgsign = true
 
 [url "https://github.com/"]
   insteadOf = gh:
+
