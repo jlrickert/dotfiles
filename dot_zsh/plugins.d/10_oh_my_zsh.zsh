@@ -56,9 +56,10 @@ HIST_STAMPS="yyyy-mm-dd"
 
 plugins=(
     # adb
+    ant
+    chezmoi
     command-not-found
     cp
-    chezmoi
     debian
     dotenv
     fasd
@@ -68,6 +69,7 @@ plugins=(
     kitchen
     knife
     knife_ssh
+    mvn
     pip
     pipenv
     python
