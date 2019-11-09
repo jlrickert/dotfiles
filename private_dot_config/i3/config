@@ -35,6 +35,8 @@ set $custom #1c5766
 # exec_always --no-startup-id xsetroot -solid '$baseA2'
 exec_always --no-startup-id nm-applet
 exec_always setxkbmap -layout us -option caps:swapescape
+exec_always redshift
+exec_always numlockx
 
 # clientclass           border  backgr. text    indicator
 client.focused          $base03 $green  $base03 $blue
