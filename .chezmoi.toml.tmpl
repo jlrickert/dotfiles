@@ -2,8 +2,10 @@
 {{- $gitEmail := promptString "Git email" -}}
 {{- $gitSigningKey := promptString "Git gpg signing key" -}}
 [data]
-  [data.git]
-    name = "{{ $gitUser }}"
-    email = "{{ $gitEmail }}"
-    signing_key = "{{ $gitSigningKey }}"
+  git_name = "{{ $gitUser }}"
+  git_email = "{{ $gitEmail }}"
+  git_signing_key = "{{ $gitSigningKey }}"
+
+  i3_ethernet_interfaces = []
+  i3_wireless_interfaces = []
 
