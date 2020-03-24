@@ -1,9 +1,0 @@
-{{- $gitUser:= promptString "Git user" -}}
-{{- $gitEmail := promptString "Git email" -}}
-{{- $gitSigningKey := promptString "Git gpg signing key" -}}
-[data]
-  [data.git]
-    name = "{{ $gitUser }}"
-    email = "{{ $gitEmail }}"
-    signing_key = "{{ $gitSigningKey }}"
-
