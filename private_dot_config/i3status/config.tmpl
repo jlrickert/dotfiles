@@ -17,23 +17,31 @@ general {
         interval = 1
 }
 
-order += "wireless wlp5s0"
-order += "ethernet enp3s0"
-# order += "cpu_temperature 0"
+{{range .i3_wireless_interfaces -}}
+order += "wireless {{.}}"
+{{end -}}
+{{range .i3_ethernet_interfaces -}}
+order += "ethernet {{.}}"
+{{end -}}
+order += "disk /"
 order += "load"
 order += "volume master"
 order += "battery 0"
 order += "tztime local"
 
-wireless wlp5s0 {
+{{range .i3_wireless_interfaces}}
+wireless {{.}} {
         format_up = "W: %essid@%ip"
         format_down = ""
 }
+{{end -}}
 
-ethernet enp3s0 {
+{{range .i3_ethernet_interfaces}}
+ethernet {{.}} {
         format_up = "E: %ip"
         format_down = ""
 }
+{{end -}}
 
 battery 0 {
         path = "/sys/class/power_supply/BAT0/uevent"
