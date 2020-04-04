@@ -4,7 +4,7 @@
 [user]
   name = "Jared Rickert"
   email = "jaredrickert52@gmail.com"
-  signingKey = "4AFA345DE57133F261C2780FA895D72DD1ED47C4"
+  signingKey = "B845F209887A49CB266A46296537E53CD3972610"
 
 [commit]
   gpgsign = true
