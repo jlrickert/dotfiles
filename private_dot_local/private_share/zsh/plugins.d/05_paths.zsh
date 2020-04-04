@@ -2,7 +2,6 @@
 typeset -gU cdpath fpath mailpath path
 
 path=(
-  $HOME/bin
   $HOME/.local/bin
   $path[@]
 )
