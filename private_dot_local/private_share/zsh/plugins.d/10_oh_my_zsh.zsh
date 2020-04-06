@@ -69,7 +69,10 @@ plugins=(
     kitchen
     knife
     knife_ssh
-    mvn
+    mvn  # maven
+    node # adds node documentation script
+    npx  # `npm package executor` completions
+    nvm  # `node version manager` completions
     pip
     pipenv
     python
