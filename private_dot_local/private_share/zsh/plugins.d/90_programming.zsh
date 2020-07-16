@@ -2,6 +2,7 @@
 # Golang config
 ############################################################
 export GOPATH=$HOME/golang
+export GO111MODULE=on 
 
 path=(
     $GOPATH/bin
