@@ -1,7 +1,7 @@
 ############################################################
 # Golang config
 ############################################################
-export GOPATH=$HOME/golang
+export GOPATH=$HOME/.local/share/golang
 export GO111MODULE=on 
 
 path=(
