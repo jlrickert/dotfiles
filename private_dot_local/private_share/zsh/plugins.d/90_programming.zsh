@@ -1,7 +1,7 @@
 ############################################################
 # Golang config
 ############################################################
-export GOPATH=$HOME/golang
+export GOPATH=$XDG_DATA_HOME/go
 export GO111MODULE=on 
 
 path=(
