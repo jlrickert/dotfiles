@@ -45,3 +45,8 @@ path=(
   $HOME/.gem/ruby/2.5.0/bin
   $path[@]
 )
+
+############################################################
+# Ansible config
+############################################################
+export ANSIBLE_ROLES_PATH=$XDG_DATA_HOME/ansible/roles
