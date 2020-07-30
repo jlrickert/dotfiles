@@ -1,26 +1,28 @@
 ---
 - name: Create required directories
+  become: yes
+  become_user: "{{ dotfiles_user }}"
   file:
-    path: "{{ data_dir }}"
+    path: "{{ item }}"
     state: directory
-    owner: "{{ dotfiles_user }}"
-    group: "{{ dotfiles_group }}"
   loop:
     - "{{ data_dir }}"
     - "~/.local/bin"
     - "{{ config_dir }}"
 
 - name: Install useful scripts
+  become: yes
+  become_user: "{{ dotfiles_user }}"
   copy:
     src: dot_local/bin/
     dest: ~/.local/bin/
-    owner: "{{ dotfiles_user }}"
-    group: "{{ dotfiles_group }}"
     mode: +x
   tags:
     - scripts
 
 - name: "Install misc dotfiles"
+  become: yes
+  become_user: "{{ dotfiles_user }}"
   copy:
     src: "dot_{{ item }}"
     dest: "~/.{{ item }}"
