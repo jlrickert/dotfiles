@@ -1,2 +1,44 @@
 ---
-# tasks file for dotfiles
+- name: Create required directories
+  file:
+    path: "{{ data_dir }}"
+    state: directory
+    owner: "{{ dotfiles_user }}"
+    group: "{{ dotfiles_group }}"
+  loop:
+    - "{{ data_dir }}"
+    - "~/.local/bin"
+    - "{{ config_dir }}"
+
+- name: Install useful scripts
+  copy:
+    src: dot_local/bin/
+    dest: ~/.local/bin/
+    owner: "{{ dotfiles_user }}"
+    group: "{{ dotfiles_group }}"
+    mode: +x
+  tags:
+    - scripts
+
+- name: "Install misc dotfiles"
+  copy:
+    src: "dot_{{ item }}"
+    dest: "~/.{{ item }}"
+  loop:
+    - gitconfig
+    - Xdefaults
+
+- import_tasks: zsh.yml
+  when: install_zsh
+  tags:
+    - zsh
+
+- import_tasks: nvim.yml
+  when: install_nvim
+  tags:
+    - nvim
+
+- import_tasks: emacs.yml
+  when: install_emacs
+  tags:
+    - emacs
