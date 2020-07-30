@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  connection: local
+  become_user: ansible_user_id
+  tasks:
+    - name: Load dotfiles Role
+      vars:
+        # data_dir: "{{ lookup('env', 'XDG_DATA_HOME')|default('/home/' + dotfiles_user+ '/.local/share') }}"
+        # config_dir: "{{ lookup('env', 'XDG_CONFIG_HOME')|default('home/' + dotfiles_user' + '/.config') }}"
+        # dotfiles_user: "{{ ansible_user_id }}"
+        # dotfiles_group: "{{ ansible_user_id }}"
+        install_zsh: yes
+        install_emacs: yes
+        install_nvim: yes
+      import_role:
+        name: .

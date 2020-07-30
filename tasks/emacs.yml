@@ -1,0 +1,16 @@
+---
+- name: Install and/or upgrade spacemacs
+  become: yes
+  become_user: "{{ dotfiles_user }}"
+  git:
+    repo: https://github.com/syl20bnr/spacemacs.git
+    dest: '~/.emacs'
+    version: 'develop'
+    update: yes
+
+- name: Install emacs dotfiles
+  copy:
+    src: dot_spacemacs
+    dest: "~/.spacemacs"
+    owner: "{{ dotfiles_user }}"
+    group: "{{ dotfiles_group }}"

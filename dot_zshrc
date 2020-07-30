@@ -1,3 +1,0 @@
-for src in $HOME/.local/share/zsh/plugins.d/*.zsh; do
-  source $src
-done
