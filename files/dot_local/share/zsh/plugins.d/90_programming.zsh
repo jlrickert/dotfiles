@@ -49,4 +49,4 @@ path=(
 ############################################################
 # Ansible config
 ############################################################
-export ANSIBLE_ROLES_PATH=$XDG_DATA_HOME/ansible/roles
+#export ANSIBLE_ROLES_PATH=$XDG_DATA_HOME/ansible/roles  # this breaks roles in current directory

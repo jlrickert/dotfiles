@@ -9,8 +9,8 @@
     update: yes
 
 - name: Install emacs dotfiles
+  become: yes
+  become_user: "{{ dotfiles_user }}"
   copy:
     src: dot_spacemacs
     dest: "~/.spacemacs"
-    owner: "{{ dotfiles_user }}"
-    group: "{{ dotfiles_group }}"

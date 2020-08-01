@@ -35,6 +35,11 @@
   tags:
     - zsh
 
+- import_tasks: vim.yml
+  when: install_vim
+  tags:
+    - vim
+
 - import_tasks: nvim.yml
   when: install_nvim
   tags:

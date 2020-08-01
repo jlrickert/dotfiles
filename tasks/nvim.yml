@@ -1,17 +1,17 @@
 ---
 - name: Create nvim config directory
+  become: yes
+  become_user: "{{ dotfiles_user }}"
   file:
     path: "{{ config_dir }}/nvim"
     state: directory
-    owner: "{{ dotfiles_user }}"
-    group: "{{ dotfiles_group }}"
 
 - name: Install nvim dotfiles
+  become: yes
+  become_user: "{{ dotfiles_user }}"
   copy:
     src: dot_config/nvim/init.vim
     dest: "{{ config_dir }}/nvim/init.vim"
-    owner: "{{ dotfiles_user }}"
-    group: "{{ dotfiles_group }}"
 
 - name: Install and/or upgrade vundle
   become: yes
@@ -21,13 +21,15 @@
     dest: "{{ config_dir }}/nvim/bundle/Vundle.vim"
     update: yes
 
-- name: Check if nvim ins installed
+- name: Check if nvim is installed
   command: which nvim
   register: nvim_bin
   changed_when: false
 
 - name: Install nvim plugins
-  command: 
+  become: yes
+  become_user: "{{ dotfiles_user }}"
+  command:
     cmd: "nvim +PluginInstall +qall"
   changed_when: false  # FIXME: changed when vim actually updates/install packages; not worth the effort
   when: nvim_bin.rc == 0
