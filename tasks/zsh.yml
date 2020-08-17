@@ -1,15 +1,11 @@
 ---
 - name: Install and/or upgrade Oh My ZSH
-  become: yes
-  become_user: "{{ dotfiles_user }}"
   git:
       repo: "https://github.com/robbyrussell/oh-my-zsh.git"
       dest: "{{ data_dir }}/oh-my-zsh"
       update: yes
 
 - name: Install zshrc
-  become: yes
-  become_user: "{{ dotfiles_user }}"
   template:
       src: "dot_zshrc.j2"
       dest: "~/.zshrc"
@@ -17,8 +13,6 @@
       group: "{{ dotfiles_group }}"
 
 - name: Install zsh files
-  become: yes
-  become_user: "{{ dotfiles_user }}"
   copy:
       src: dot_local/share/zsh
       dest: "{{ data_dir }}"

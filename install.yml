@@ -1,7 +1,6 @@
 ---
 - hosts: localhost
   connection: local
-  become_user: ansible_user_id
   tasks:
       - name: Load dotfiles Role
         vars:

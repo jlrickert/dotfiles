@@ -1,7 +1,5 @@
 ---
 - name: Create required directories
-  become: yes
-  become_user: "{{ dotfiles_user }}"
   file:
       path: "{{ item }}"
       state: directory
@@ -11,8 +9,6 @@
       - "{{ config_dir }}"
 
 - name: Install useful scripts
-  become: yes
-  become_user: "{{ dotfiles_user }}"
   copy:
       src: dot_local/bin/
       dest: ~/.local/bin/
@@ -21,8 +17,6 @@
       - scripts
 
 - name: "Install misc dotfiles"
-  become: yes
-  become_user: "{{ dotfiles_user }}"
   copy:
       src: "dot_{{ item }}"
       dest: "~/.{{ item }}"

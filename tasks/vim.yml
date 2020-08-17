@@ -1,14 +1,10 @@
 ---
 - name: Install vim dotfiles
-  become: yes
-  become_user: "{{ dotfiles_user }}"
   copy:
       src: dot_vimrc
       dest: "~/.vimrc"
 
 - name: Install and/or upgrade vundle
-  become: yes
-  become_user: "{{ dotfiles_user }}"
   git:
       repo: "https://github.com/VundleVim/Vundle.vim.git"
       dest: "~/.vim/bundle/Vundle.vim"
@@ -20,8 +16,6 @@
   changed_when: false
 
 - name: Install vim plugins
-  become: yes
-  become_user: "{{ dotfiles_user }}"
   command:
       cmd: "vim +PluginInstall +qall"
   changed_when: false # FIXME: changed when vim actually updates/install packages; not worth the effort
