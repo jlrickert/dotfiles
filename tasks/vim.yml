@@ -3,16 +3,16 @@
   become: yes
   become_user: "{{ dotfiles_user }}"
   copy:
-    src: dot_vimrc
-    dest: "~/.vimrc"
+      src: dot_vimrc
+      dest: "~/.vimrc"
 
 - name: Install and/or upgrade vundle
   become: yes
   become_user: "{{ dotfiles_user }}"
   git:
-    repo: "https://github.com/VundleVim/Vundle.vim.git"
-    dest: "~/.vim/bundle/Vundle.vim"
-    update: yes
+      repo: "https://github.com/VundleVim/Vundle.vim.git"
+      dest: "~/.vim/bundle/Vundle.vim"
+      update: yes
 
 - name: Check if vim is installed
   command: which vim
@@ -23,6 +23,6 @@
   become: yes
   become_user: "{{ dotfiles_user }}"
   command:
-    cmd: "vim +PluginInstall +qall"
-  changed_when: false  # FIXME: changed when vim actually updates/install packages; not worth the effort
+      cmd: "vim +PluginInstall +qall"
+  changed_when: false # FIXME: changed when vim actually updates/install packages; not worth the effort
   when: vim_bin.rc == 0

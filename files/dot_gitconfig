@@ -1,14 +1,14 @@
 [core]
-  editor = vim
+	editor = vim
 
 [user]
-  name = "Jared Rickert"
-  email = "jaredrickert52@gmail.com"
-  signingKey = "B845F209887A49CB266A46296537E53CD3972610"
+	name = "Jared Rickert"
+	email = "jaredrickert52@gmail.com"
+	signingKey = "B845F209887A49CB266A46296537E53CD3972610"
 
 [commit]
-  gpgsign = true
+	gpgsign = true
 
 [url "https://github.com/"]
-  insteadOf = gh:
+	insteadOf = gh:
 

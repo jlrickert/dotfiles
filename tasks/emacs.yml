@@ -3,14 +3,14 @@
   become: yes
   become_user: "{{ dotfiles_user }}"
   git:
-    repo: https://github.com/syl20bnr/spacemacs.git
-    dest: '~/.emacs'
-    version: 'develop'
-    update: yes
+      repo: https://github.com/syl20bnr/spacemacs.git
+      dest: "~/.emacs"
+      version: "develop"
+      update: yes
 
 - name: Install emacs dotfiles
   become: yes
   become_user: "{{ dotfiles_user }}"
   copy:
-    src: dot_spacemacs
-    dest: "~/.spacemacs"
+      src: dot_spacemacs
+      dest: "~/.spacemacs"

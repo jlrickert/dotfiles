@@ -2,7 +2,7 @@ set nocompatible              " be iMproved, required
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.config/nvim/bundle/Vundle.vim
+set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
@@ -46,16 +46,18 @@ set clipboard=unnamedplus       "clipboard now defaults to system
 set nowrap                      "Don't wrap lines
 set showmatch                   "highlight matching brace
 set textwidth=100               "Line wrap (number of cols)
-set showbreak=+++               "Wrap-broken line prefix
+"set showbreak=+++               "Wrap-broken line prefix
 set wrapscan
 set ruler                       "Show row and column ruler information
 
-set autoindent    "Auto-indent new lines
-set expandtab     "Use spaces instead of tabs
-set shiftwidth=2  "Number of auto-indent spaces
-set smartindent   "Enable smart-indent
-set smarttab      " Enable smart-tabs
-set softtabstop=0 " Number of spaces per Tab
+set encoding=utf-8
+set fileencoding=utf-8
+set encoding=utf-8
+set list
+set showbreak=↪\ 
+set listchars=trail:␣,tab:»\ ,eol:⏎
+
+set autoindent noexpandtab tabstop=4 shiftwidth=4
 
 let mapleader=","
 

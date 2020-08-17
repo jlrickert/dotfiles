@@ -3,23 +3,23 @@
   become: yes
   become_user: "{{ dotfiles_user }}"
   file:
-    path: "{{ config_dir }}/nvim"
-    state: directory
+      path: "{{ config_dir }}/nvim"
+      state: directory
 
 - name: Install nvim dotfiles
   become: yes
   become_user: "{{ dotfiles_user }}"
   copy:
-    src: dot_config/nvim/init.vim
-    dest: "{{ config_dir }}/nvim/init.vim"
+      src: dot_config/nvim/init.vim
+      dest: "{{ config_dir }}/nvim/init.vim"
 
 - name: Install and/or upgrade vundle
   become: yes
   become_user: "{{ dotfiles_user }}"
   git:
-    repo: "https://github.com/VundleVim/Vundle.vim.git"
-    dest: "{{ config_dir }}/nvim/bundle/Vundle.vim"
-    update: yes
+      repo: "https://github.com/VundleVim/Vundle.vim.git"
+      dest: "{{ config_dir }}/nvim/bundle/Vundle.vim"
+      update: yes
 
 - name: Check if nvim is installed
   command: which nvim
@@ -30,6 +30,6 @@
   become: yes
   become_user: "{{ dotfiles_user }}"
   command:
-    cmd: "nvim +PluginInstall +qall"
-  changed_when: false  # FIXME: changed when vim actually updates/install packages; not worth the effort
+      cmd: "nvim +PluginInstall +qall"
+  changed_when: false # FIXME: changed when vim actually updates/install packages; not worth the effort
   when: nvim_bin.rc == 0

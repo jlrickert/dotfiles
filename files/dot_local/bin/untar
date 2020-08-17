@@ -33,77 +33,77 @@ verbose=false
 action=extract
 
 while [ $# -gt 0 ]; do
-    case "$1" in
-        -v | --verbose)
-            verbose=true;;
-        -l | -t | --list)
-            action=list;;
-        -x | --extract)
-            action=extract;;
-        --)
-            shift; break;;
-        *)
-            break;
-    esac
-    shift
+	case "$1" in
+		-v | --verbose)
+			verbose=true;;
+		-l | -t | --list)
+			action=list;;
+		-x | --extract)
+			action=extract;;
+		--)
+			shift; break;;
+		*)
+			break;
+	esac
+	shift
 done
 
 
 function file_type {
-    if [ ! -e $1 ]; then
-        echo "missing"; return 1;
-    fi
+	if [ ! -e $1 ]; then
+		echo "missing"; return 1;
+	fi
 
-    case $(file --brief --dereference --mime --uncompress $1) in
-        application/x-tar*application/x-gzip*)
-            echo "tar.gz";;
-        application/x-tar*application/x-bzip2*)
-            echo "tar.bz2";;
-        application/x-tar*application/x-xz*)
-            echo "tar.xz";;
-        application/x-tar*)
-            echo "tar";;
-        *)
-            echo "unknown"; return 1;;
-    esac
+	case $(file --brief --dereference --mime --uncompress $1) in
+		application/x-tar*application/x-gzip*)
+			echo "tar.gz";;
+		application/x-tar*application/x-bzip2*)
+			echo "tar.bz2";;
+		application/x-tar*application/x-xz*)
+			echo "tar.xz";;
+		application/x-tar*)
+			echo "tar";;
+		*)
+			echo "unknown"; return 1;;
+	esac
 }
 
 
 function handle_file {
-    target=`eval echo $1`  # strip 'quotes' that getopt made
+	target=`eval echo $1`  # strip 'quotes' that getopt made
 
-    tarflags=
+	tarflags=
 
-    if [ true = $verbose ]; then
-        tarflags="-v $flags"
-    fi
+	if [ true = $verbose ]; then
+		tarflags="-v $flags"
+	fi
 
-    case $action in
-        extract)
-            tarflags="$tarflags -x";;
-        list)
-            tarflags="$tarflags -t";;
-    esac
+	case $action in
+		extract)
+			tarflags="$tarflags -x";;
+		list)
+			tarflags="$tarflags -t";;
+	esac
 
-    case $(file_type $target) in
-        *) ;;
-        missing)
-            echo "$script: $target: No such file"
-            return 1;;
-        tar.gz)
-            tarflags="$tarflags -z";;
-        tar.bz2)
-            tarflags="$tarflags -j";;
-        tar.xz)
-            tarflags="$tarflags -J";;
-        tar)
-            ;;
-        *)
-            echo "$script: $target: That's not a tarball, silly"
-            return 1;;
-    esac
+	case $(file_type $target) in
+		*) ;;
+		missing)
+			echo "$script: $target: No such file"
+			return 1;;
+		tar.gz)
+			tarflags="$tarflags -z";;
+		tar.bz2)
+			tarflags="$tarflags -j";;
+		tar.xz)
+			tarflags="$tarflags -J";;
+		tar)
+			;;
+		*)
+			echo "$script: $target: That's not a tarball, silly"
+			return 1;;
+	esac
 
-    tar $tarflags -f $target;
+	tar $tarflags -f $target;
 }
 
 

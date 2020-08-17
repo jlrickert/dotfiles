@@ -55,31 +55,31 @@ COMPLETION_WAITING_DOTS="true"
 HIST_STAMPS="yyyy-mm-dd"
 
 plugins=(
-    # adb
-    ant
-    chezmoi
-    command-not-found
-    cp
-    debian
-    dotenv
-    fasd
-    git
-    golang
-    httpie
-    kitchen
-    knife
-    knife_ssh
-    mvn  # maven
-    node # adds node documentation script
-    npx  # `npm package executor` completions
-    nvm  # `node version manager` completions
-    pip
-    pipenv
-    python
-    terraform
-    vagrant
-    vi-mode
-    yarn
+	# adb
+	ant
+	chezmoi
+	command-not-found
+	cp
+	debian
+	dotenv
+	fasd
+	git
+	golang
+	httpie
+	kitchen
+	knife
+	knife_ssh
+	mvn  # maven
+	node # adds node documentation script
+	npx  # `npm package executor` completions
+	nvm  # `node version manager` completions
+	pip
+	pipenv
+	python
+	terraform
+	vagrant
+	vi-mode
+	yarn
 )
 
 source $ZSH/oh-my-zsh.sh

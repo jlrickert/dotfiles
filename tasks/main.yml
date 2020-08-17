@@ -3,49 +3,49 @@
   become: yes
   become_user: "{{ dotfiles_user }}"
   file:
-    path: "{{ item }}"
-    state: directory
+      path: "{{ item }}"
+      state: directory
   loop:
-    - "{{ data_dir }}"
-    - "~/.local/bin"
-    - "{{ config_dir }}"
+      - "{{ data_dir }}"
+      - "~/.local/bin"
+      - "{{ config_dir }}"
 
 - name: Install useful scripts
   become: yes
   become_user: "{{ dotfiles_user }}"
   copy:
-    src: dot_local/bin/
-    dest: ~/.local/bin/
-    mode: +x
+      src: dot_local/bin/
+      dest: ~/.local/bin/
+      mode: +x
   tags:
-    - scripts
+      - scripts
 
 - name: "Install misc dotfiles"
   become: yes
   become_user: "{{ dotfiles_user }}"
   copy:
-    src: "dot_{{ item }}"
-    dest: "~/.{{ item }}"
+      src: "dot_{{ item }}"
+      dest: "~/.{{ item }}"
   loop:
-    - gitconfig
-    - Xdefaults
+      - gitconfig
+      - Xdefaults
 
 - import_tasks: zsh.yml
   when: install_zsh
   tags:
-    - zsh
+      - zsh
 
 - import_tasks: vim.yml
   when: install_vim
   tags:
-    - vim
+      - vim
 
 - import_tasks: nvim.yml
   when: install_nvim
   tags:
-    - nvim
+      - nvim
 
 - import_tasks: emacs.yml
   when: install_emacs
   tags:
-    - emacs
+      - emacs

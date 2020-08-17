@@ -17,5 +17,5 @@ export ZSH="$XDG_DATA_HOME/oh-my-zsh"
 export ZSH_CUSTOM="$MY_ZSH/custom"
 
 for src in {{ data_dir }}/zsh/plugins.d/*.zsh; do
-  source $src
+	source $src
 done
