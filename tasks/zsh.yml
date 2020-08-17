@@ -9,8 +9,6 @@
   template:
       src: "dot_zshrc.j2"
       dest: "~/.zshrc"
-      owner: "{{ dotfiles_user }}"
-      group: "{{ dotfiles_group }}"
 
 - name: Install zsh files
   copy:
