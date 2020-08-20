@@ -6,14 +6,19 @@
 
 - name: Install nvim dotfiles
   copy:
-      src: dot_config/nvim/init.vim
+      src: dot_vimrc
       dest: "{{ config_dir }}/nvim/init.vim"
 
-- name: Install and/or upgrade vundle
+- name: Install and/or update vundle
   git:
       repo: "https://github.com/VundleVim/Vundle.vim.git"
       dest: "{{ config_dir }}/nvim/bundle/Vundle.vim"
       update: yes
+
+- name: Install and/or update srcery-vim
+  git:
+      repo: https://github.com/srcery-colors/srcery-vim
+      dest: "{{ config_dir }}/nvim/plug/default/opt"
 
 - name: Check if nvim is installed
   command: which nvim

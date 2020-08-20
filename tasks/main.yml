@@ -34,11 +34,6 @@
   tags:
       - vim
 
-- import_tasks: nvim.yml
-  when: install_nvim
-  tags:
-      - nvim
-
 - import_tasks: emacs.yml
   when: install_emacs
   tags:

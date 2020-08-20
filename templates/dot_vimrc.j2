@@ -1,34 +1,17 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+if empty(glob('{{ item.vim_config_dir }}/autoload/plug.vim'))
+  silent !curl -fLo {{ item.vim_config_dir }}/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'Raimondi/delimitMate'          " matches closing charactors
-Plugin 'Shougo/neocomplete.vim'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-surround'
-Plugin 'nicwest/rainbow_parentheses.vim'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
+call plug#begin('{{ item.vim_config_dir }}/plugged')
+Plug 'Raimondi/delimitMate' " matches closing characters
+Plug 'Shougo/neocomplete.vim'
+Plug 'tpop/vim-fugitive'
+Plug 'tpop/vim-surround'
+Plug 'nicwest/rainbow_parantheses.vim'
+Plug 'srcery-colors/srcery-vim'
+call plug#end()
 
 set number                      "Line numbers are good
 set linebreak	                  " Break lines at word (requires Wrap lines)
@@ -49,6 +32,8 @@ set textwidth=100               "Line wrap (number of cols)
 "set showbreak=+++               "Wrap-broken line prefix
 set wrapscan
 set ruler                       "Show row and column ruler information
+
+colorscheme srcery
 
 set encoding=utf-8
 set fileencoding=utf-8

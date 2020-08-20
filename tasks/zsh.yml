@@ -1,16 +1,24 @@
 ---
+- name: Install zshenv
+  template:
+      src: "dot_zshenv.j2"
+      dest: "~/.zshenv"
+      mode: "644"
+
+- name: Install zshrc
+  template:
+      src: "dot_zshrc.j2"
+      dest: "~/.zshrc"
+      mode: "644"
+
 - name: Install and/or upgrade Oh My ZSH
   git:
       repo: "https://github.com/robbyrussell/oh-my-zsh.git"
       dest: "{{ data_dir }}/oh-my-zsh"
       update: yes
 
-- name: Install zshrc
-  template:
-      src: "dot_zshrc.j2"
-      dest: "~/.zshrc"
-
 - name: Install zsh files
   copy:
       src: dot_local/share/zsh
       dest: "{{ data_dir }}"
+      mode: "644"

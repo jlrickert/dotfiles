@@ -1,21 +1,3 @@
-export XDG_CONFIG_HOME="{{ config_dir }}"
-export XDG_DATA_HOME="{{ data_dir }}"
-export XDG_CACHE_HOME="{{ cache_dir }}"
-
-export REALUSER="Jared Rickert"
-export ARCHFLAGS="-arch x86_64"
-export BROWSER="firefox"
-export EDITOR="vim"
-export PAGER="less"
-export VISUAL="vim"
-
-export SYNC="$HOME/Sync"
-export SECRETS="$SYNC/secrets"
-
-export MY_ZSH="$XDG_DATA_HOME/zsh"
-export ZSH="$XDG_DATA_HOME/oh-my-zsh"
-export ZSH_CUSTOM="$MY_ZSH/custom"
-
-for src in {{ data_dir }}/zsh/plugins.d/*.zsh; do
+for src in $MY_ZSH/plugins.d/*.zsh; do
 	source $src
 done

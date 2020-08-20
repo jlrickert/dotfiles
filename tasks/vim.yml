@@ -1,22 +1,28 @@
 ---
-- name: Install vim dotfiles
-  copy:
-      src: dot_vimrc
-      dest: "~/.vimrc"
+- name: "Install vimrc dotfiles vim and neovim"
+  template:
+      src: dot_vimrc.j2
+      dest: "{{ item.vim_dotfile }}"
+      mode: "644"
+  with_items:
+      - vim_dotfile: "~/.vimrc"
+        vim_config_dir: "~/.vim"
+      - vim_dotfile: "{{ config_dir }}/nvim/init.vim"
+        vim_config_dir: "{{ config_dir }}/nvim"
 
-- name: Install and/or upgrade vundle
-  git:
-      repo: "https://github.com/VundleVim/Vundle.vim.git"
-      dest: "~/.vim/bundle/Vundle.vim"
-      update: yes
+- name: Create plugin directories
+  file:
+      path: "{{ item }}"
+      state: directory
+  loop:
+      - "~/.vim/autoload"
+      - "{{ config_dir }}/nvim/autoload"
 
-- name: Check if vim is installed
-  command: which vim
-  register: vim_bin
-  changed_when: false
-
-- name: Install vim plugins
-  command:
-      cmd: "vim +PluginInstall +qall"
-  changed_when: false # FIXME: changed when vim actually updates/install packages; not worth the effort
-  when: vim_bin.rc == 0
+- name: Download vim-plug for vim and neovim
+  get_url:
+      url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+      dest: "{{ item }}/autoload/plug.vim"
+      mode: "644"
+  loop:
+      - "~/.vim"
+      - "{{ config_dir }}/nvim"
