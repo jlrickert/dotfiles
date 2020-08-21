@@ -7,6 +7,7 @@
       update: yes
 
 - name: Install emacs dotfiles
-  copy:
-      src: dot_spacemacs
+  template:
+      src: dot_spacemacs.j2
       dest: "~/.spacemacs"
+      mode: "644"

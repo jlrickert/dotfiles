@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 export XDG_CONFIG_HOME="{{ config_dir|regex_replace('^~', '$HOME') }}"
 export XDG_DATA_HOME="{{ data_dir|regex_replace('^~', '$HOME') }}"
 export XDG_CACHE_HOME="{{ cache_dir|regex_replace('^~', '$HOME') }}"

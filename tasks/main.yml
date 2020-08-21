@@ -7,6 +7,7 @@
       - "{{ data_dir }}"
       - "~/.local/bin"
       - "{{ config_dir }}"
+      - "{{ config_dir }}/alacritty"
 
 - name: Install useful scripts
   copy:
@@ -17,12 +18,17 @@
       - scripts
 
 - name: "Install misc dotfiles"
-  copy:
-      src: "dot_{{ item }}"
-      dest: "~/.{{ item }}"
-  loop:
-      - gitconfig
-      - Xdefaults
+  template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: "644"
+  with_items:
+      - src: "dot_gitconfig.j2"
+        dest: "~/.gitconfig"
+      - src: "dot_Xdefaults.j2"
+        dest: "~/.Xdefaults"
+      - src: "alacritty.yml.j2"
+        dest: "{{ config_dir }}/alacritty/alacritty.yml"
 
 - import_tasks: zsh.yml
   when: install_zsh
