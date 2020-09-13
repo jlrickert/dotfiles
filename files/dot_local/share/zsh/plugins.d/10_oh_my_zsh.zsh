@@ -56,11 +56,13 @@ HIST_STAMPS="yyyy-mm-dd"
 
 plugins=(
 	# adb
+	alacritty
 	ant
 	chezmoi
 	command-not-found
 	cp
 	debian
+	deno
 	dotenv
 	fasd
 	git
