@@ -1,4 +1,9 @@
 ---
+- name: "Create neovim config directory"
+  file:
+      path: "{{ config_dir }}/nvim"
+      state: directory
+
 - name: "Install vimrc dotfiles vim and neovim"
   template:
       src: dot_vimrc.j2
