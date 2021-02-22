@@ -4,7 +4,7 @@
       path: "{{ config_dir }}/nvim"
       state: directory
 
-- name: "Install vimrc dotfiles vim and neovim"
+- name: "Install dotfiles for vim and neovim"
   template:
       src: dot_vimrc.j2
       dest: "{{ item.vim_dotfile }}"

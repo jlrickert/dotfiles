@@ -1,34 +1,4 @@
----
-- name: Create required directories
-  file:
-      path: "{{ item }}"
-      state: directory
-  loop:
-      - "{{ data_dir }}"
-      - "~/.local/bin"
-      - "{{ config_dir }}"
-      - "{{ config_dir }}/alacritty"
-
-- name: Install useful scripts
-  copy:
-      src: dot_local/bin/
-      dest: ~/.local/bin/
-      mode: +x
-  tags:
-      - scripts
-
-- name: "Install misc dotfiles"
-  template:
-      src: "{{ item.src }}"
-      dest: "{{ item.dest }}"
-      mode: "644"
-  with_items:
-      - src: "dot_gitconfig.j2"
-        dest: "~/.gitconfig"
-      - src: "dot_Xdefaults.j2"
-        dest: "~/.Xdefaults"
-      - src: "alacritty.yml.j2"
-        dest: "{{ config_dir }}/alacritty/alacritty.yml"
+- import_tasks: misc.yml
 
 - import_tasks: zsh.yml
   when: install_zsh
@@ -44,3 +14,8 @@
   when: install_emacs
   tags:
       - emacs
+
+- import_tasks: javascript.yml
+  when: install_javascript
+  tags:
+      - javascript
