@@ -1,4 +1,15 @@
 ---
+- name: Install zsh and friends
+  become: true
+  apt:
+      name:
+          - zsh
+          - fasd
+          - direnv
+      state: latest
+      update_cache: true
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
 - name: Install zshenv
   template:
       src: "dot_zshenv.j2"
@@ -19,6 +30,17 @@
 
 - name: Install zsh files
   copy:
-      src: dot_local/share/zsh
+      src: "dot_local/share/zsh"
       dest: "{{ data_dir }}"
       mode: "644"
+
+- name: Find zsh binary
+  command: which zsh
+  changed_when: False
+  register: zsh_exe_res
+
+- name: change user shell to zsh
+  become: yes
+  user:
+      name: "{{ ansible_user_id }}"
+      shell: "{{ zsh_exe_res.stdout }}"

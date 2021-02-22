@@ -63,6 +63,7 @@ plugins=(
 	cp
 	debian
 	deno
+	direnv
 	dotenv
 	fasd
 	git
