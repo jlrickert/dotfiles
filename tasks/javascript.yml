@@ -32,9 +32,11 @@
       executable: "{{ bash_path_res.stdout }}"
 
 - name: Check if deno is installed.
-  stat:
-      path: "/usr/local/deno"
-  register: deno_bin
+  shell:
+      cmd: "which deno"
+  failed_when: false
+  changed_when: false
+  register: deno_exists
 
 - name: Install curl
   apt:
@@ -46,17 +48,14 @@
       src: deno-install.sh
       dest: "/home/{{ ansible_user }}/"
       mode: "0755"
-  when:
-      - not deno_bin.stat.exists
+  when: deno_exists.rc == 1
 
 - name: Install deno
   shell: "/home/{{ ansible_user }}/deno-install.sh"
-  when:
-      - not deno_bin.stat.exists
+  when: deno_exists.rc == 1
 
 - name: Remove deno install script
   file:
       path: "/home/{{ ansible_user }}/deno-install.sh"
       state: absent
-  when:
-      - not deno_bin.stat.exists
+  when: deno_exists.rc == 1
