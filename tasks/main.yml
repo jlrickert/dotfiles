@@ -19,3 +19,8 @@
   when: install_javascript
   tags:
       - javascript
+
+- import_tasks: golang.yml
+  when: install_golang
+  tags:
+      - golang

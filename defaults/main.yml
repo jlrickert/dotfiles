@@ -3,8 +3,11 @@ install_emacs: yes
 install_nvim: yes
 install_vim: yes
 install_javascript: yes
+install_golang: yes
+go_tarball: "go1.16.2.linux-amd64.tar.gz"
+go_checksum: "sha256:542e936b19542e62679766194364f45141fde55169db2d8d01046555ca9eb4b8"
+go_version_check: "go version go1.16.2 linux/amd64"
 data_dir: "{{ ansible_env.XDG_DATA_HOME|default('~/.local/share') }}"
 config_dir: "{{ ansible_env.XDG_CONFIG_HOME|default('~/.config') }}"
 cache_dir: "{{ ansible_env.XDG_CACHE_HOME|default('~/.cache') }}"
-
 alacritty_font_size: 9.0

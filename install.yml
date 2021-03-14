@@ -8,5 +8,6 @@
             install_emacs: no
             install_nvim: yes
             install_javascript: yes
+            install_golang: yes
         import_role:
             name: .

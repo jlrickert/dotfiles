@@ -30,6 +30,12 @@ are used from other roles.
       - { role: jlrickert.dotfiles }
 ```
 
+## Quick installation
+
+```
+curl -fsSL https://raw.githubusercontent.com/jlrickert/dotfiles/master/install.sh | sh
+```
+
 ## License
 
 MIT

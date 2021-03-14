@@ -6,6 +6,7 @@
   loop:
       - "{{ data_dir }}"
       - "~/.local/bin"
+      - "~/.local/src"
       - "{{ config_dir }}"
       - "{{ config_dir }}/alacritty"
 
