@@ -22,7 +22,7 @@ bindkey -M vicmd 'k' up-line
 bindkey -M vicmd 'j' down-line
 bindkey '^ ' autosuggest-accept
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#262626"
 
 path=(
 	$HOME/.local/bin
