@@ -32,3 +32,5 @@ path=(
 	$path[@]
 )
 
+alias vim=nvim
+
