@@ -45,7 +45,7 @@ ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"UTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
 # Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
 # COMPLETION_WAITING_DOTS="true"
 
@@ -70,7 +70,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(ag ansible aws command-not-found cp debian direnv dotenv rust git node npm nvm z zsh-autocompletions)
+plugins=(ag ansible aws command-not-found cp debian direnv dotenv git node npm nvm rust vi-mode z zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -85,7 +85,7 @@ source $ZSH/oh-my-zsh.sh
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='neovim'
+  export EDITOR='nvim'
 fi
 
 # Compilation flags
@@ -101,3 +101,4 @@ export ARCHFLAGS="-arch x86_64"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 source ~/.zsh_profile
+

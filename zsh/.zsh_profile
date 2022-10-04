@@ -20,6 +20,9 @@ bindkey -M vicmd '^[n' down-history
 bindkey -M vicmd '^[p' up-history
 bindkey -M vicmd 'k' up-line
 bindkey -M vicmd 'j' down-line
+bindkey '^ ' autosuggest-accept
+
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
 
 path=(
 	$HOME/.local/bin
