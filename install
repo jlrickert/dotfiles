@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+cd $DOTFILES
+for folder in $(echo $STOW_FOLDERS | set "s/,/ /g")
+do
+	echo "stow $folder"
+	stow -D $folder
+	stow $folder
+done
+

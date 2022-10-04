@@ -1,0 +1,31 @@
+export XDG_CONFIG_HOME=$HOME/.config
+VIM="nvim"
+
+source /usr/share/doc/fzf/examples/key-bindings.zsh
+source /usr/share/doc/fzf/examples/completion.zsh
+
+export FLYCTL_INSTALL=$HOME/.fly
+export GIT_EDITOR=$VIM
+export GOPATH=$HOME/go
+export DENO_INSTALL=$HOME/.deno
+export DOTFILES=$HOME/.dotfiles
+
+export KEYTIMEOUT=1
+bindkey '^[p' up-history
+bindkey '^[n' down-history
+bindkey '^[r' history-incremental-search-backward
+bindkey -M vicmd "w" vi-backward-word
+bindkey -M vicmd "e" vi-forward-word-end
+bindkey -M vicmd '^[n' down-history
+bindkey -M vicmd '^[p' up-history
+bindkey -M vicmd 'k' up-line
+bindkey -M vicmd 'j' down-line
+
+path=(
+	$HOME/.local/bin
+	$FLYCTL_INSTALL/bin
+	$HOME/.node_modules/bin
+	$DENO_INSTALL/bin
+	$path[@]
+)
+
