@@ -9,6 +9,7 @@ export GIT_EDITOR=$VIM
 export GOPATH=$HOME/go
 export DENO_INSTALL=$HOME/.deno
 export DOTFILES=$HOME/.dotfiles
+export UPNGO_ROOT=$HOME/upngo/upngo-web
 
 export KEYTIMEOUT=1
 bindkey '^[p' up-history
@@ -25,11 +26,12 @@ bindkey '^ ' autosuggest-accept
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#262626"
 
 path=(
-	$HOME/.local/bin
-	$FLYCTL_INSTALL/bin
-	$HOME/.node_modules/bin
-	$DENO_INSTALL/bin
-	$path[@]
+    $HOME/.local/bin
+    $FLYCTL_INSTALL/bin
+    $HOME/.node_modules/bin
+    $DENO_INSTALL/bin
+    $HOME/.cargo/bin
+    $path[@]
 )
 
 alias vim=nvim

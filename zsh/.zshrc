@@ -107,3 +107,5 @@ export NVM_DIR="$HOME/code/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 # END ANSIBLE MANAGED BLOCK
+ 
+alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
