@@ -1,0 +1,9 @@
+[user]
+	email = jaredrickert52@gmail.com
+	name = Jared Rickert
+[core]
+	editor = nvim
+[pull]
+	ff = only
+[ncludeIf "gitdir:~/upngo/"]
+    path = ~/upngo/.gitconfig
