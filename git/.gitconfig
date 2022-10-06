@@ -5,5 +5,5 @@
 	editor = nvim
 [pull]
 	ff = only
-[ncludeIf "gitdir:~/upngo/"]
+[includeIf "gitdir:~/upngo/"]
     path = ~/upngo/.gitconfig
