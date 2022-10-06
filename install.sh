@@ -8,4 +8,5 @@ stow bin
 stow git
 stow nvim
 stow tmux
+stow upngo
 stow zsh
