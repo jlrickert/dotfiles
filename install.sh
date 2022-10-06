@@ -9,5 +9,4 @@ stow git
 stow i3
 stow nvim
 stow tmux
-stow upngo
 stow zsh
