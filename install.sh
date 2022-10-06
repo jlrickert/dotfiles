@@ -6,6 +6,7 @@ cd $SCRIPT_DIR
 
 stow bin
 stow git
+stow i3
 stow nvim
 stow tmux
 stow upngo
