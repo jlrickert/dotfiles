@@ -12,11 +12,10 @@ source /usr/share/doc/fzf/examples/completion.zsh
 export GOPATH=$HOME/go
 export API_TOOLS=$HOME/work/tools/edge/scripts
 export GIT_EDITOR=$VIM
-export DENO_INSTALL="$HOME/.deno"
+export DENO_INSTALL="$HOME/.local/share/deno"
 export N_PREFIX="$HOME/.local/n"
 export DOTFILES=$HOME/.dotfiles
-export FLYCTL_INSTALL=$HOME/.fly
-export DENO_INSTALL=$HOME/.deno
+export FLYCTL_INSTALL=$HOME/.local/share/.fly
 export UPNGO_ROOT=$HOME/upngo/upngo-web
 
 # Where should I put you?
