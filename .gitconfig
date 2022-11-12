@@ -1,11 +1,51 @@
 [user]
 	email = jaredrickert52@gmail.com
 	name = Jared Rickert
+
 [core]
 	editor = nvim
+    autocrlf = input
+
+[color]
+    branch = auto
+    diff = auto
+    status = auto
+
+
+[color "branch"]
+    current = red reverse
+    local = blue
+    remote = green
+
+[color "diff"]
+    meta = yellow
+    frag = magenta
+    old = red bold
+    new = green
+    plain = white
+
+[branch]
+    autosetuprebase = always
+
+[push]
+    default = current
+
 [pull]
-	ff = only
+    default = current
+
+
 [includeIf "gitdir:~/upngo/"]
     path = ~/upngo/.gitconfig
+
 [init]
 	defaultBranch = main
+
+[alias]
+    st = status
+    stat = status
+    cm = commit -m
+    cma = commit -a -m
+    amend = commit --amend
+    caa = commit -a --amend -C HEAD
+    filelog = log -u
+    fl = log -u
