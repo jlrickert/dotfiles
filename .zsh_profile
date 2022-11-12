@@ -1,22 +1,31 @@
 export XDG_CONFIG_HOME=$HOME/.config
 VIM="nvim"
 
+PERSONAL=$XDG_CONFIG_HOME/personal
+source $PERSONAL/env
+for i in `find -L $PERSONAL`; do
+    source $i
+done
 source /usr/share/doc/fzf/examples/key-bindings.zsh
 source /usr/share/doc/fzf/examples/completion.zsh
 
-export FLYCTL_INSTALL=$HOME/.fly
-export GIT_EDITOR=$VIM
 export GOPATH=$HOME/go
-export DENO_INSTALL=$HOME/.deno
+export API_TOOLS=$HOME/work/tools/edge/scripts
+export GIT_EDITOR=$VIM
+export DENO_INSTALL="$HOME/.deno"
+export N_PREFIX="$HOME/.local/n"
 export DOTFILES=$HOME/.dotfiles
+export FLYCTL_INSTALL=$HOME/.fly
+export DENO_INSTALL=$HOME/.deno
 export UPNGO_ROOT=$HOME/upngo/upngo-web
 
+# Where should I put you?
+
 export KEYTIMEOUT=1
+bindkey -s ^f "tmux-sessionizer\n"
 bindkey '^[p' up-history
 bindkey '^[n' down-history
 bindkey '^[r' history-incremental-search-backward
-bindkey -M vicmd "w" vi-backward-word
-bindkey -M vicmd "e" vi-forward-word-end
 bindkey -M vicmd '^[n' down-history
 bindkey -M vicmd '^[p' up-history
 bindkey -M vicmd 'k' up-line
@@ -35,4 +44,5 @@ path=(
 )
 
 alias vim=nvim
+alias config='/usr/bin/git --git-dir=$DOTFILES/ --work-tree=$HOME'
 

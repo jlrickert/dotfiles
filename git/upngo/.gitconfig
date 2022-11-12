@@ -1,5 +1,0 @@
-[user]
-	email = jrickert@upngopay.com
-	name = jrickert-upngo
-[core]
-    sshCommand = ssh -i ~/.ssh/id_rsa_jrickert
