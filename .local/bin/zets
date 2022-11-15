@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+query="$@"
+
+ack -t markdown -i $query
+
