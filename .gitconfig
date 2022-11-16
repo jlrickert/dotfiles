@@ -11,7 +11,6 @@
     diff = auto
     status = auto
 
-
 [color "branch"]
     current = red reverse
     local = blue
@@ -33,7 +32,6 @@
 [pull]
     default = current
 
-
 [includeIf "gitdir:~/upngo/"]
     path = ~/upngo/.gitconfig
 
@@ -49,3 +47,5 @@
     caa = commit -a --amend -C HEAD
     filelog = log -u
     fl = log -u
+    ch = checkout
+
