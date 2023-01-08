@@ -1,18 +1,12 @@
 #!/usr/bin/env bash
 set -e
-
-HERE="$(cd "$(dirname "$0")" && pwd)"
-ROOT="$(cd $HERE/../.. && pwd)"
-
-source "$ROOT/util.sh"
-
 if [[ -z "$REPOS" ]]; then
     echo "REPOS is not set"
     exit 1
 fi
 
-_sudo apt-get update
-_sudo apt-get install -y \
+sudo apt-get update
+sudo apt-get install -y \
     git \
     make \
     libssl-dev \

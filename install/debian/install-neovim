@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-HERE="$(cd "$(dirname "$0")" && pwd)"
-ROOT="$(cd $HERE/../.. && pwd)"
-
-source "$ROOT/util.sh"
-
-_sudo apt-get install -y \
+sudo apt-get install -y \
     ninja-build gettext libtool libtool-bin autoconf automake cmake g++ \
     pkg-config unzip curl doxygen
 
