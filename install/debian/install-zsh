@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+if ! command -v zsh &>/dev/null; then
+    echo sudo apt update
+    echo sudo apt install -y zsh
+fi
+
+if [[ ! -d "$ZSH" ]]; then
+    # sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    git clone https://github.com/ohmyzsh/ohmyzsh "$ZSH"
+fi
+
+echo chsh -s "$(which zsh)"

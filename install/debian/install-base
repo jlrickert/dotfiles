@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -e
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd $HERE/../.. && pwd)"
+
+source "$ROOT/util.sh"
+
+_sudo apt-get update
+_sudo apt-get install -y \
+        apt-utils \
+        build-essential \
+        software-properties-common \
+        apt-transport-https \
+        ca-certificates \
+        man-db \
+        curl 
+
+# Add latest github cli gh
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | _sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+_sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | _sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+
+_sudo apt-get install -y --no-install-recommends \
+        vim tmux dialog perl python3 git gh jq sudo lynx shellcheck \
+        figlet sl tree nmap ed bc iputils-ping bind9-dnsutils htop \
+        libncurses5 libcurses-perl net-tools ssh sshpass sshfs rsync \
+        cifs-utils smbclient bash-completion make wget less lolcat \
+        silversearcher-ag ripgrep fzf
+

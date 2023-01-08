@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if test type tmux >/dev/null 2>&1; then
+    echo "TMUX isn't installed. Skipping."
+    exit 1
+fi
+
+if test ! -d ~/.tmux/themes; then
+    git clone https://github.com/srcery-colors/srcery-tmux/ ~/.tmux/themes/srcery-tmux
+fi
+
+ln -sf "$PWD/tmux.conf" "$HOME/.tmux.conf"

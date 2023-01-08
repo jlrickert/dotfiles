@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+
+cd $HERE
+
+. ../util.sh
+
+_symlink $HERE/alacrity.yml $HOME/.config/alacritty/alacritty.yml
+

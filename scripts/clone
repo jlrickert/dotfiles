@@ -1,0 +1,20 @@
+#!/bin/bash
+
+repo="$1" user
+repo="${repo#https://github.com/}"
+repo="${repo#git@github.com:}"
+if [[ $repo =~ / ]]; then
+    user="${repo%%/*}"
+else
+    user="$GITUSER"
+    [[ -z "$user" ]] && user="$USER"
+fi
+name="${repo##*/}"
+userd="$REPOS/github.com/$user"
+path="$userd/$name"
+[[ -d "$path" ]] && cd "$path" && return
+mkdir -p "$userd"
+cd "$userd" || exit
+echo gh repo clone "$user/$name" -- --recurse-submodule
+gh repo clone "$user/$name" -- --recurse-submodule
+cd "$name" || exit

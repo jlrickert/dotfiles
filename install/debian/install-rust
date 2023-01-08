@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+
+# Backup all files as rust is about to trash them
+declare -a FILES=(~/.bash_profile ~/.bashrc ~/.profile)
+for file in ${FILES[@]}; do
+    test -e $file && mv $file $file.bak
+    touch $file
+done
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# Restore my dotfiles
+for file in ${FILES[@]}; do
+    test -e $file.bak && mv $file.bak $file
+done
+
+# remove additional installer stupidness
+test -e $HOME/.bash_profile && rm $HOME/.bash_profile
+

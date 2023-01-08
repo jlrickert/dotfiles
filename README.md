@@ -1,10 +1,4 @@
 # My personal dotfiles
 
-## Requirements
+Pilfer at your own peril.
 
-- git
-- curl
-
-## Install
-
-    curl -Lks https://raw.githubusercontent.com/jlrickert/dotfiles/main/.local/bin/install_dotfiles.sh

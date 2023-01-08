@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -e
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd $HERE/../.. && pwd)"
+
+source "$ROOT/util.sh"
+
+if [[ -z "$REPOS" ]]; then
+    echo "REPOS is not set"
+    exit 1
+fi
+
+_sudo apt-get update
+_sudo apt-get install -y \
+    git \
+    make \
+    libssl-dev \
+    libghc-zlib-dev \
+    libcurl4-gnutls-dev \
+    libexpat1-dev \
+    gettext \
+    unzip
+
+git clone https://github.com/git/git "$REPOS/github.com/git/git"
+make prefix=/usr/local all
+sudo make prefix=/usr/local install
+
