@@ -1,0 +1,49 @@
+[user]
+    email = jaredrickert52@gmail.com
+    name = Jared Rickert
+    #email = jrickert@upngopay.com
+    #name = jrickert-upngo
+
+[core]
+    #editor = nvim
+    #sshCommand = ssh -i ~/.ssh/id_rsa_jrickert
+
+[branch]
+    autosetuprebase = always
+
+[push]
+    default = current
+
+[pull]
+    #ff = only
+    default = current
+
+[color]
+    branch = auto
+    diff = auto
+    status = auto
+
+[color "branch"]
+    current = red reverse
+    local = blue
+    remote = green
+
+[color "diff"]
+    meta = yellow
+    frag = magenta
+    old = red bold
+    new = green
+    plain = white
+
+[includeIf "gitdir:~/Repos/github.com/upngo/"]
+    path = ~/Repos/github.com/upngo/.gitconfig
+
+[includeIf "gitdir:~/Repos/github.com/jrickert-upngo/"]
+    path = ~/Repos/github.com/jrickert-upngo/.gitconfig
+
+[includeIf "gitdir:~/Repos/github.com/dbradbury-upngo/"]
+    path = ~/Repos/github.com/jrickert-upngo/.gitconfig
+
+[init]
+    defaultBranch = main
+

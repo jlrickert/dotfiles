@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd $HERE/../.. && pwd)"
+
+source "$ROOT/util.sh"
+
+_sudo apt-get install -y \
+    ninja-build gettext libtool libtool-bin autoconf automake cmake g++ \
+    pkg-config unzip curl doxygen
+
+clone neovim/neovim
+git checkout stable
+
+test -d build && rm -r build/  # clear the CMake cache
+make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$HOME/.local/share/neovim"
+make install
+
+

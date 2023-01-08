@@ -1,0 +1,8 @@
+#!/bin/bash
+
+NVIM_CONFIG="$HOME/.config/nvim"
+NVIM_BAK="$HOME/.config/nvim.bak"
+
+[[ ! -d $NVIM_CONFIG ]] && mv "$NVIM_CONFIG" "$NVIM_BAK"
+ln -sf "$PWD/nvim" "$NVIM_CONFIG"
+
