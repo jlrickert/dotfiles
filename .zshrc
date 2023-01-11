@@ -20,7 +20,6 @@ plugins=(
   golang
   node
   npm
-  nvm
   rust
   vi-mode
   volta

@@ -47,6 +47,7 @@ export PYTHONDONTWRITEBYTECODE=2
 export LC_COLLATE=C
 #export CFLAGS="-Wall -Wextra -Werror -O0 -g -fsanitize=address -fno-omit-frame-pointer -finstrument-functions"
 export ZSH="$XDG_DATA_HOME/oh-my-zsh"
+export VOLTA_HOME="$HOME/.volta"
 
 # PERSONAL=$XDG_CONFIG_HOME/personal
 # source $PERSONAL/env
@@ -81,6 +82,7 @@ path=(
     "$HOME/.node_modules/bin"
     "$DENO_INSTALL/bin"
     "$CARGO_HOME/bin"
+    "$VOLTA_HOME/bin"
     "$SCRIPTS"
     "$path[@]"
 )

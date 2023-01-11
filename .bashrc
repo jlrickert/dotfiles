@@ -396,3 +396,5 @@ _have ansible-vault && . <(register-python-argcomplete3 ansible-vault)
 
 _source_if "$HOME/.bash-personal"
 _source_if "$HOME/.bash-work"
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
