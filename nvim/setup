@@ -1,8 +1,11 @@
 #!/bin/bash
 
-NVIM_CONFIG="$HOME/.config/nvim"
-NVIM_BAK="$HOME/.config/nvim.bak"
+NVIM_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
+NVIM_BAK="${XDG_CONFIG_HOME:-$HOME/.config}/nvim.bak"
 
-[[ ! -d $NVIM_CONFIG ]] && mv "$NVIM_CONFIG" "$NVIM_BAK"
+DIR="$(dirname $NVIM_CONFIG)"
+[[ ! -d "$DIR" ]] && echo mkdir -p "$DIR"
+[[ -L $NVIM_CONFIG ]] && rm "$NVIM_CONFIG"
+[[ -d $NVIM_CONFIG ]] && mv "$NVIM_CONFIG" "$NVIM_BAK"
 ln -sf "$PWD/nvim" "$NVIM_CONFIG"
 

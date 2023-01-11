@@ -7,13 +7,10 @@
 ZSH_THEME="agnoster"
 plugins=(
   ag
-  ansible
-  aws
   command-not-found
   cp
   debian
   direnv
-  dotenv
   fzf
   gh
   git
@@ -22,7 +19,7 @@ plugins=(
   npm
   rust
   vi-mode
-  volta
+  fnm
   vscode
   z
 )
@@ -37,11 +34,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='nvim'
-fi
+#if [[ -n $SSH_CONNECTION ]]; then
+#  export EDITOR='vim'
+#else
+#  export EDITOR='nvim'
+#fi
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
@@ -69,5 +66,5 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 #                      personalized configuration
 ################################################################################
 
-_source_if "$HOME/.bash-personal"
-_source_if "$HOME/.bash-work"
+[[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
+[[ -f "$HOME/.work-secrets" ]] && source "$HOME/.work-secrets"

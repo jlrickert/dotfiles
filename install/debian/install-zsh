@@ -2,14 +2,17 @@
 
 set -e
 
-if ! command -v zsh &>/dev/null; then
+if [ "$(which zsh)" = "" ]; then
     echo sudo apt update
     echo sudo apt install -y zsh
 fi
+
+DEFAULT="${XDG_DATA_HOME:-$HOME/.local/share/oh-my-zsh}"
+ZSH="${ZSH:-$DEFAULT}"
 
 if [[ ! -d "$ZSH" ]]; then
     # sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
     git clone https://github.com/ohmyzsh/ohmyzsh "$ZSH"
 fi
 
-echo chsh -s "$(which zsh)"
+chsh -s "$(which zsh)"

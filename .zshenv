@@ -1,43 +1,36 @@
-_have()      { type "$1" &>/dev/null; }
-_source_if() { [[ -r "$1" ]] && source "$1"; }
-
 export USER="${USER:-$(whoami)}"
 export GITUSER="$USER"
-export REPOS="$HOME/Repos"
-export GHREPOS="$REPOS/github.com/$GITUSER"
-export DOTFILES="$GHREPOS/dotfiles"
-export SCRIPTS="$HOME/Scripts"
-export SNIPPETS="$DOTFILES/snippets"
+export REPOS="$HOME/repos"
+export PERSONAL="$HOME/personal"
+export DOTFILES="$PERSONAL/dotfiles"
+export SCRIPTS="$HOME/scripts"
+export SNIPPETS="$HOME/snippets"
 export HELP_BROWSER=lynx
+
 export DESKTOP="$HOME/Desktop"
 export DOCUMENTS="$HOME/Documents"
 export DOWNLOADS="$HOME/Downloads"
+export PUBLIC="$HOME/Public"
+export PRIVATE="$HOME/Private"
+export PICTURES="$HOME/Pictures"
+export TEMPLATES="$HOME/Templates"
+export MUSIC="$HOME/Music"
+export VIDEOS="$HOME/Videos"
 
 export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"}
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:="$HOME/.config"}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:="$HOME/.cache"}
 export XDG_STATE_HOME=${XDG_STATE_HOME:="$HOME/.local/state"}
 
-export TEMPLATES="$HOME/Templates"
-export PUBLIC="$HOME/Public"
-export PRIVATE="$HOME/Private"
-export PICTURES="$HOME/Pictures"
-export MUSIC="$HOME/Music"
-export VIDEOS="$HOME/Videos"
 export ZETDIR="$GHREPOS/zet"
 export TERM=xterm-256color
 export HRULEWIDTH=73
-_have nano && export EDITOR=nano
-_have vi && export EDITOR=vi
-_have vim && export EDITOR=vim
-_have nvim && export EDITOR=nvim
-_have vim && export VISUAL=vim
-_have nvim && export VISUAL=nvim
-_have vim && export EDITOR_PREFIX=vim
 export DENO_INSTALL="$XDG_DATA_HOME/deno"
 export NVM_DIR="$XDG_DATA_HOME/nvm"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export VOLTA_HOME="$HOME/.volta"
+export FNM_HOME="$HOME/.fnm" # Figure out how to change this to use XDG_DATA_HOME
 export GOPRIVATE="github.com/$GITUSER/*,gitlab.com/$GITUSER/*"
 export GOPATH="$XDG_DATA_HOME/go"
 export GOBIN="$HOME/.local/bin"
@@ -47,7 +40,6 @@ export PYTHONDONTWRITEBYTECODE=2
 export LC_COLLATE=C
 #export CFLAGS="-Wall -Wextra -Werror -O0 -g -fsanitize=address -fno-omit-frame-pointer -finstrument-functions"
 export ZSH="$XDG_DATA_HOME/oh-my-zsh"
-export VOLTA_HOME="$HOME/.volta"
 
 # PERSONAL=$XDG_CONFIG_HOME/personal
 # source $PERSONAL/env
@@ -57,8 +49,21 @@ export VOLTA_HOME="$HOME/.volta"
 # source /usr/share/doc/fzf/examples/key-bindings.zsh
 # source /usr/share/doc/fzf/examples/completion.zsh
 
-export GIT_EDITOR=$EDITOR
 export FLYCTL_INSTALL=$XDG_DATA_HOME/.fly
+
+export PATH="$HOME/.local/bin:$FLYCTL_INSTALL/bin:$DENO_INSTALL/bin:$CARGO_HOME/bin:$VNM_HOME/bin:$SCRIPTS:${PATH}"
+
+[[ -x "$(which nano)" ]] && export EDITOR=nano
+[[ -x "$(which vi)" ]] && export EDITOR=vi
+[[ -x "$(which vim)" ]] && export EDITOR=vim
+[[ -x "$(which nvim)" ]] && export EDITOR=nvim
+[[ -x "$(which vim)" ]] && export VISUAL=vim
+[[ -x "$(which nvim)" ]] && export VISUAL=nvim
+[[ -x "$(which vi)" ]] && export EDITOR_PREFIX=vi
+[[ -x "$(which vi)" ]] && export EDITOR_PREFIX=vi
+[[ -x "$(which vim)" ]] && export EDITOR_PREFIX=vim
+[[ -x "$(which nxvim)" ]] && export EDITOR_PREFIX=nvim
+export GIT_EDITOR=$EDITOR
 
 # # Where should I put you?
 
@@ -75,16 +80,17 @@ export FLYCTL_INSTALL=$XDG_DATA_HOME/.fly
 
 # ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#262626"
 
-typeset -aU path
-path=(
-    "$HOME/.local/bin"
-    "$FLYCTL_INSTALL/bin"
-    "$HOME/.node_modules/bin"
-    "$DENO_INSTALL/bin"
-    "$CARGO_HOME/bin"
-    "$VOLTA_HOME/bin"
-    "$SCRIPTS"
-    "$path[@]"
-)
+#typeset -aU path
+#path=(
+#    "$HOME/.local/bin"
+#    "$FLYCTL_INSTALL/bin"
+#    "$HOME/.node_modules/bin"
+#    "$DENO_INSTALL/bin"
+#    "$CARGO_HOME/bin"
+#    "$VOLTA_HOME/bin"
+#    "$FNM_HOME/bin"
+#    "$SCRIPTS"
+#    "$path[@]"
+#)
 
 alias vim=nvim
