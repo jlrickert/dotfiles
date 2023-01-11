@@ -1,0 +1,4 @@
+#!/bin/sh
+
+CHOICE=$(fzf)
+[ -n "$CHOICE" ] && $EDITOR "$CHOICE"
