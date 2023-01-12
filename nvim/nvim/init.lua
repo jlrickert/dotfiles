@@ -478,8 +478,11 @@ mason_lspconfig.setup_handlers {
     end,
 }
 
--- Turn on lsp status information
-require('fidget').setup()
+-- Turn on lsp status information.  This adds a loading indicator at the bottom
+-- right of the screen
+if not is_vscode then
+    require('fidget').setup()
+end
 
 -- nvim-cmp setup
 local cmp = require 'cmp'
