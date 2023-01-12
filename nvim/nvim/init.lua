@@ -105,10 +105,10 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 })
 
 -- Enable spell check for markdown files
-local markdownSpell = vim.api.nvim_create_augroup('markdownSpell', {})
-vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
-    pattern = { '*.md', '*COMMIT_EDITMSG$' },
-    group = markdownSpell,
+local spelling_group = vim.api.nvim_create_augroup('Spelling', {})
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'gitcommit', 'NeogitCommitMessage', 'text', 'markdown', 'text' },
+    group = spelling_group,
     callback = function()
         vim.opt_local.spell = true
     end
