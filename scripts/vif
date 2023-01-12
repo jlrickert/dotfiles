@@ -1,0 +1,4 @@
+#!/bin/sh
+
+CHOICE=$(fzf --preview="$VISUAL {}" --bind shift-up:preview-page-up,shift-down:preview-page-down)
+[ -n "$CHOICE" ] && $EDITOR "$CHOICE"
