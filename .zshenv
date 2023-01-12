@@ -30,7 +30,7 @@ export NVM_DIR="$XDG_DATA_HOME/nvm"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export VOLTA_HOME="$HOME/.volta"
-export FNM_HOME="$HOME/.fnm" # Figure out how to change this to use XDG_DATA_HOME
+export FNM_HOME="$HOME/.local/share/fnm" # Figure out how to change this to use XDG_DATA_HOME
 export GOPRIVATE="github.com/$GITUSER/*,gitlab.com/$GITUSER/*"
 export GOPATH="$XDG_DATA_HOME/go"
 export GOBIN="$HOME/.local/bin"
@@ -51,7 +51,48 @@ export ZSH="$XDG_DATA_HOME/oh-my-zsh"
 
 export FLYCTL_INSTALL=$XDG_DATA_HOME/.fly
 
-export PATH="$HOME/.local/bin:$FLYCTL_INSTALL/bin:$DENO_INSTALL/bin:$CARGO_HOME/bin:$VNM_HOME/bin:$SCRIPTS:${PATH}"
+pathappend() {
+  declare arg
+  for arg in "$@"; do
+    test -d "$arg" || continue
+    PATH=${PATH//":$arg:"/:}
+    PATH=${PATH/#"$arg:"/}
+    PATH=${PATH/%":$arg"/}
+    export PATH="${PATH:+"$PATH:"}$arg"
+  done
+}
+
+pathprepend() {
+  for arg in "$@"; do
+    test -d "$arg" || continue
+    PATH=${PATH//:"$arg:"/:}
+    PATH=${PATH/#"$arg:"/}
+    PATH=${PATH/%":$arg"/}
+    export PATH="$arg${PATH:+":${PATH}"}"
+  done
+}
+
+# remember last arg will be first in path
+pathprepend \
+  "$HOME/.local/bin" \
+  "$CARGO_HOME/bin" \
+  "$FNM_HOME" \
+  /usr/local/go/bin \
+  /usr/local/bin \
+  "$SCRIPTS"
+
+pathappend \
+  /usr/local/bin \
+  /usr/local/sbin \
+  /usr/local/games \
+  /usr/games \
+  /usr/sbin \
+  /usr/bin \
+  /snap/bin \
+  /sbin \
+  /bin
+
+# export PATH="$HOME/.local/bin:$FLYCTL_INSTALL/bin:$DENO_INSTALL/bin:$CARGO_HOME/bin:$VNM_HOME/bin:$SCRIPTS:${FNM_HOME}:${PATH}"
 
 [[ -x "$(which nano)" ]] && export EDITOR=nano
 [[ -x "$(which vi)" ]] && export EDITOR=vi
@@ -63,6 +104,7 @@ export PATH="$HOME/.local/bin:$FLYCTL_INSTALL/bin:$DENO_INSTALL/bin:$CARGO_HOME/
 [[ -x "$(which vi)" ]] && export EDITOR_PREFIX=vi
 [[ -x "$(which vim)" ]] && export EDITOR_PREFIX=vim
 [[ -x "$(which nxvim)" ]] && export EDITOR_PREFIX=nvim
+
 export GIT_EDITOR=$EDITOR
 
 # # Where should I put you?

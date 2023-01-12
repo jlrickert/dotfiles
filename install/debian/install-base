@@ -16,5 +16,5 @@ sudo apt-get install -y --no-install-recommends \
         figlet tree nmap ed bc iputils-ping bind9-dnsutils btop htop \
         libncurses5 libcurses-perl net-tools ssh sshpass sshfs rsync \
         cifs-utils smbclient bash-completion make wget less lolcat \
-        silversearcher-ag ripgrep fzf direnv zsh
+        unzip zip silversearcher-ag ripgrep fzf direnv zsh
 
