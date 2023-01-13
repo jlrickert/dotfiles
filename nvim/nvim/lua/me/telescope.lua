@@ -1,8 +1,9 @@
 local M = {}
+
 M.setup = function()
     -- [[ Configure Telescope ]]
     -- See `:help telescope` and `:help telescope.setup()`
-    require('telescope').setup {
+    require('telescope').setup({
         defaults = {
             file_ignore_patterns = { '.git', 'node_modules' },
             mappings = {
@@ -14,7 +15,7 @@ M.setup = function()
             layout_strategy = 'vertical',
             layout_config = { height = 0.95 },
         },
-    }
+    })
 
     -- Enable telescope fzf native, if installed
     pcall(require('telescope').load_extension, 'fzf')
@@ -22,19 +23,15 @@ M.setup = function()
     -- See `:help telescope.builtin`
     vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
     vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
-    vim.keymap.set(
-        'n', '<leader>/',
-        function()
-            -- You can pass additional configuration to telescope to change theme, layout, etc.
-            local themes = require('telescope.themes')
-            local dropdown = themes.get_dropdown {
-                winblend = 10,
-                previewer = false,
-            }
-            require('telescope.builtin').current_buffer_fuzzy_find(dropdown)
-        end,
-        { desc = '[/] Fuzzily search in current buffer]' }
-    )
+    vim.keymap.set('n', '<leader>/', function()
+        -- You can pass additional configuration to telescope to change theme, layout, etc.
+        local themes = require('telescope.themes')
+        local dropdown = themes.get_dropdown({
+            winblend = 10,
+            previewer = false,
+        })
+        require('telescope.builtin').current_buffer_fuzzy_find(dropdown)
+    end, { desc = '[/] Fuzzily search in current buffer]' })
 
     vim.keymap.set('n', '<leader>sf', function()
         require('telescope.builtin').find_files({
@@ -47,4 +44,5 @@ M.setup = function()
     vim.keymap.set('n', '<leader>ss', require('telescope.builtin').git_status, { desc = '[S]earch by git [S]tatus' })
     vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 end
+
 return M

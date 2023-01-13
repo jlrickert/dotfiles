@@ -1,4 +1,5 @@
 local M = {}
+
 M.setup = function()
     -- LSP settings.
     --  This function gets run when an LSP connects to a particular buffer.
@@ -39,12 +40,11 @@ M.setup = function()
             print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
         end, '[W]orkspace [L]ist Folders')
 
+        nmap('<leader>f', ':Format<CR>', '[Format] current buffer with LSP')
         -- Create a command `:Format` local to the LSP buffer
-        vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-            vim.lsp.buf.format()
-        end, { desc = 'Format current buffer with LSP' })
-
-        nmap('<leader>f', vim.lsp.buf.format, '[Format] current buffer with LSP')
+        -- vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
+        -- 	-- vim.lsp.buf.format()
+        -- end, { desc = "Format current buffer with LSP" })
     end
 
     -- Enable the following language servers
@@ -80,16 +80,16 @@ M.setup = function()
             Lua = {
                 format = {
                     defaultConfig = {
-                        indent_type = "spaces",
+                        indent_type = 'spaces',
                         indent_width = 2,
                         quote_style = 'AutoPreferDouble',
-                    }
+                    },
                 },
                 workspace = { checkThirdParty = false },
                 telemetry = { enable = false },
                 diagnostics = {
-                    globals = { 'vim' }
-                }
+                    globals = { 'vim' },
+                },
             },
         },
     }
@@ -105,21 +105,21 @@ M.setup = function()
     require('mason').setup()
 
     -- Ensure the servers above are installed
-    local mason_lspconfig = require 'mason-lspconfig'
+    local mason_lspconfig = require('mason-lspconfig')
 
-    mason_lspconfig.setup {
+    mason_lspconfig.setup({
         ensure_installed = vim.tbl_keys(servers),
-    }
+    })
 
-    mason_lspconfig.setup_handlers {
+    mason_lspconfig.setup_handlers({
         function(server_name)
-            require('lspconfig')[server_name].setup {
+            require('lspconfig')[server_name].setup({
                 capabilities = capabilities,
                 on_attach = on_attach,
                 settings = servers[server_name],
-            }
+            })
         end,
-    }
+    })
 end
 
 return M
