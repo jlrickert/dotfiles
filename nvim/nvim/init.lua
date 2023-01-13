@@ -52,7 +52,7 @@ require('packer').startup(function(use)
 
     -- Git related plugins
     use('tpope/vim-fugitive')
-    use('tpope/vim-rhubarb')
+    use('tpope/vim-rhubarb') -- Adds :GBrowse to open GitHub urls
     use('lewis6991/gitsigns.nvim')
 
     use('navarasu/onedark.nvim') -- Theme inspired by Atom
@@ -106,16 +106,6 @@ vim.api.nvim_create_autocmd('BufWritePost', {
     command = 'source <afile> | silent! LspStop | silent! LspStart | PackerCompile',
     group = packer_group,
     pattern = vim.fn.expand('$MYVIMRC'),
-})
-
--- Enable spell check for markdown files
-local spelling_group = vim.api.nvim_create_augroup('Spelling', {})
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'gitcommit', 'NeogitCommitMessage', 'text', 'markdown', 'text' },
-    group = spelling_group,
-    callback = function()
-        vim.opt_local.spell = true
-    end,
 })
 
 -- [[ Setting options ]]
@@ -190,6 +180,22 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     pattern = '*',
 })
 
+-- Enable spell check for markdown files
+local spelling_group = vim.api.nvim_create_augroup('Spelling', { clear = true })
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'gitcommit', 'NeogitCommitMessage', 'text', 'markdown', 'text' },
+    group = spelling_group,
+    callback = function()
+        vim.opt_local.spell = true
+    end,
+})
+
+vim.api.nvim_create_user_command('ReloadConfig', function()
+    local file = vim.fn.expand('$MYVIMRC')
+    dofile(file)
+    print('Config reloaded!')
+end, {})
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
@@ -228,6 +234,3 @@ end
 if is_vscode then
     require('me.vscode').setup()
 end
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=4 sts=4 sw=4 et
