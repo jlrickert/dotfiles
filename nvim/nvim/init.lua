@@ -222,6 +222,7 @@ if not is_vscode then
 	-- Turn on lsp status information.  This adds a loading indicator at the bottom
 	-- right of the screen
 	require("fidget").setup()
+    require('me.nvim-tree').setup()
 end
 
 if is_vscode then
