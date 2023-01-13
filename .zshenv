@@ -103,36 +103,7 @@ pathappend \
 [[ -x "$(which vi)" ]] && export EDITOR_PREFIX=vi
 [[ -x "$(which vi)" ]] && export EDITOR_PREFIX=vi
 [[ -x "$(which vim)" ]] && export EDITOR_PREFIX=vim
-[[ -x "$(which nxvim)" ]] && export EDITOR_PREFIX=nvim
+[[ -x "$(which nvim)" ]] && export EDITOR_PREFIX=nvim
 
 export GIT_EDITOR=$EDITOR
 
-# # Where should I put you?
-
-# export KEYTIMEOUT=1
-# bindkey -s ^f "tmux-sessionizer\n"
-# bindkey '^[p' up-history
-# bindkey '^[n' down-history
-# bindkey '^[r' history-incremental-search-backward
-# bindkey -M vicmd '^[n' down-history
-# bindkey -M vicmd '^[p' up-history
-# bindkey -M vicmd 'k' up-line
-# bindkey -M vicmd 'j' down-line
-# bindkey '^ ' autosuggest-accept
-
-# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#262626"
-
-#typeset -aU path
-#path=(
-#    "$HOME/.local/bin"
-#    "$FLYCTL_INSTALL/bin"
-#    "$HOME/.node_modules/bin"
-#    "$DENO_INSTALL/bin"
-#    "$CARGO_HOME/bin"
-#    "$VOLTA_HOME/bin"
-#    "$FNM_HOME/bin"
-#    "$SCRIPTS"
-#    "$path[@]"
-#)
-
-alias vim=nvim

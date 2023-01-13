@@ -54,12 +54,6 @@ export ARCHFLAGS="-arch x86_64"
 
 # _source_if ~/.zsh_profile
 
-# # BEGIN ANSIBLE MANAGED BLOCK
-# export NVM_DIR="$HOME/code/nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-# # END ANSIBLE MANAGED BLOCK
-
 alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 
 ################################################################################
@@ -71,8 +65,11 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 
 # fnm
 export PATH="/home/jlrickert/.local/share/fnm:$PATH"
-eval "`fnm env`"
+eval "$(fnm env --use-on-cd)"
 
 # tabtab source for packages
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
+
+alias vim=nvim
+
