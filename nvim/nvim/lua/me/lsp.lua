@@ -82,7 +82,7 @@ M.setup = function()
                     defaultConfig = {
                         indent_type = "spaces",
                         indent_width = 2,
-                        quote_style = "AutoPreferDouble",
+                        quote_style = 'AutoPreferDouble',
                     }
                 },
                 workspace = { checkThirdParty = false },
