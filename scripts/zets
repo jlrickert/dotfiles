@@ -9,4 +9,7 @@ CHOICE=$(fzf --bind "change:reload:$RG_PREFIX {q} || true" \
     --preview '[[ ! -z {} ]] && rg --pretty --ignore-case --context 10 {q} {}' \
     --ansi --phony --query "$INITIAL_QUERY")
 
-[ -n "$CHOICE" ] && nvim "$CHOICE"
+if [ -n "$CHOICE" ]; then
+    nvim "$CHOICE"
+    echo "$CHOICE"
+fi
