@@ -209,7 +209,15 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 require('Comment').setup()
 require('me.completions').setup()
 
+local is_wsl = (function()
+    local output = vim.fn.systemlist('uname -r')
+    return not not string.find(output[1] or '', 'WSL')
+end)()
 local is_vscode = vim.g.vscode
+
+if is_wsl then
+    vim.g.netrw_browsex_viewer = 'wsl-open'
+end
 
 if not is_vscode then
     require('me.statusline').setup()
