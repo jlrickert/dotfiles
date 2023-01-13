@@ -32,8 +32,11 @@ require('packer').startup(function(use)
         requires = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
     })
 
-    -- formatting
+    -- Formatting
     use('mhartington/formatter.nvim')
+
+    -- Linting
+    use('mfussenegger/nvim-lint')
 
     use({ -- Highlight, edit, and navigate code
         'nvim-treesitter/nvim-treesitter',
@@ -216,6 +219,7 @@ if not is_vscode then
     require('me.treesitter').setup({ highlight = not is_vscode })
     require('me.version-control').setup()
     require('me.formatter').setup()
+    require('me.linter').setup()
     require('me.nvim-tree').setup()
 
     -- Enable `lukas-reineke/indent-blankline.nvim`
