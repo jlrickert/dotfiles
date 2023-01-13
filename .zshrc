@@ -71,5 +71,6 @@ eval "$(fnm env --use-on-cd)"
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
 
+complete -C keg keg
 alias vim=nvim
 
