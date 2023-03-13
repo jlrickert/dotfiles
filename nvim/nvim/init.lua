@@ -32,6 +32,9 @@ require('packer').startup(function(use)
         requires = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
     })
 
+    -- Autopairs
+    use('windwp/nvim-autopairs')
+
     -- Formatting
     use('mhartington/formatter.nvim')
 
@@ -218,6 +221,8 @@ local is_vscode = vim.g.vscode
 if is_wsl then
     vim.g.netrw_browsex_viewer = 'wsl-open'
 end
+
+require('nvim-autopairs').setup {}
 
 if not is_vscode then
     require('me.statusline').setup()
