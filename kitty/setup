@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+
+cd $HERE
+
+_symlink() {
+	d=$(dirname "$2")
+	test -d "$d" || mkdir -p "$d"
+	ln -sf "$1" "$2"
+}
+
+_symlink $HERE/kitty.conf $HOME/.config/kitty/kitty.conf
+

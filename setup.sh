@@ -29,9 +29,10 @@ _symlink "$HERE/.dircolors" "$HOME/.dircolors"
 _symlink "$HERE/.inputrc" "$HOME/.inputrc"
 _symlink "$HERE/.zshrc" "$HOME/.zshrc"
 _symlink "$HERE/.zshenv" "$HOME/.zshenv"
+_symlink "$HERE/.tmux.conf" "$HOME/.tmux.conf"
 _symlink_dir "$HERE/scripts" "$SCRIPTS"
 
-for i in git nvim tmux vim; do
+for i in git nvim vim kitty; do
 	_cd $i && ./setup
 	_cd -
 done
