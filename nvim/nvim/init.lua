@@ -61,6 +61,7 @@ require('packer').startup(function(use)
     use('tpope/vim-rhubarb') -- Adds :GBrowse to open GitHub urls
     use('lewis6991/gitsigns.nvim')
 
+    use('ellisonleao/gruvbox.nvim')
     use('navarasu/onedark.nvim') -- Theme inspired by Atom
     use('nvim-lualine/lualine.nvim') -- Fancier statusline
     use('lukas-reineke/indent-blankline.nvim') -- Add indentation guides even on blank lines
@@ -150,7 +151,7 @@ vim.wo.signcolumn = 'yes'
 
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd([[colorscheme onedark]])
+vim.cmd([[colorscheme gruvbox]])
 
 -- Seems to show hidden characters when this is set
 vim.opt.list = true
