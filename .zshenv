@@ -104,6 +104,7 @@ pathappend \
 [[ -x "$(which vi)" ]] && export EDITOR_PREFIX=vi
 [[ -x "$(which vim)" ]] && export EDITOR_PREFIX=vim
 [[ -x "$(which nvim)" ]] && export EDITOR_PREFIX=nvim
+[[ -x "$(which pomo)" ]] && compdef '_arguments -C "pomo"' pomo
 
 export GIT_EDITOR=$EDITOR
 

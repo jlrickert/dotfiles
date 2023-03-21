@@ -197,6 +197,16 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
+-- Enable keg files to use yaml
+local keg_group = vim.api.nvim_create_augroup('Keg', { clear = true })
+vim.api.nvim_create_autocmd({'BufNewFile','BufRead'}, {
+    pattern = { 'keg', },
+    group = keg_group,
+    callback = function()
+        vim.opt_local.filetype = 'yaml'
+    end,
+})
+
 vim.api.nvim_create_user_command('ReloadConfig', function()
     local file = vim.fn.expand('$MYVIMRC')
     dofile(file)
@@ -223,7 +233,7 @@ if is_wsl then
     vim.g.netrw_browsex_viewer = 'wsl-open'
 end
 
-require('nvim-autopairs').setup {}
+require('nvim-autopairs').setup({})
 
 if not is_vscode then
     require('me.statusline').setup()
