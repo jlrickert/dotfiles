@@ -63,14 +63,11 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 [[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
 [[ -f "$HOME/.work-secrets" ]] && source "$HOME/.work-secrets"
 
-# fnm
-export PATH="/home/jlrickert/.local/share/fnm:$PATH"
-eval "$(fnm env --use-on-cd)"
-
 # tabtab source for packages
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
 
 complete -C keg keg
+complete -C pomo pomo
 alias vim=nvim
 
