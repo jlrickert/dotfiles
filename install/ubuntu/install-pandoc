@@ -1,5 +1,10 @@
 #!/bin/sh
 set -e
+
+if [ "$(which pandoc)" ]; then
+    exit
+fi
+
 loc=$(curl -o /dev/null -sIw "%{redirect_url}" \
 	'https://github.com/jgm/pandoc/releases/latest')
 vers=${loc##*/}

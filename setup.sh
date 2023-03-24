@@ -21,8 +21,9 @@ _symlink_dir() {
 HERE="$(cd "$(dirname "$0")" && pwd)"
 cd "$HERE"
 
-source "$HERE/.zshenv"
+source "${HERE}/.zshenv"
 
+test -d ~/.config || mkdir -p ~/.config
 _symlink "$HERE/.bashrc" "$HOME/.bashrc"
 _symlink "$HERE/.profile" "$HOME/.profile"
 _symlink "$HERE/.dircolors" "$HOME/.dircolors"

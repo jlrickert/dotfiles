@@ -69,5 +69,7 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 
 complete -C keg keg
 complete -C pomo pomo
+command -v podman &>/dev/null && podman completion -f "${fpath[1]}/_podman" zsh
+command -v fnm &>/dev/null && eval "$(fnm env --use-on-cd)"
 alias vim=nvim
 

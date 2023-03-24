@@ -1,5 +1,31 @@
 #!/bin/bash
 
-#sudo apt-get install -y golang
+GO_VERSION="$(go version | cut -d' ' -f3 | sed 's/go//g')"
+GO_MAJOR=$(echo "${GO_VERSION}" | cut -d'.' -f1)
+GO_MINOR=$(echo "${GO_VERSION}" | cut -d'.' -f2)
+#GO_PATCH=$(echo "${GO_VERSION}" | cut -d'.' -f3)
+if [ "${GO_MAJOR}" -le 1 ] && [ "${GO_MINOR}" -lt 20 ]; then
+    sudo apt-get remove -y golang
 
-go install github.com/posener/complete/gocomplete@latest
+    VERSION="$(curl -s 'https://go.dev/VERSION?m=text')"
+    TARBALL="${VERSION}.linux-amd64.tar.gz"
+
+    # Download the latest version of Go
+    test -e "/tmp/${TARBALL}" || wget "https://golang.org/dl/${TARBALL} -O /tmp/${TARBALL}"
+
+    # Extract the archive to /usr/local
+    sudo tar -C /usr/local -xzf "/tmp/${TARBALL}"
+fi
+
+if [ ! "$(which keg)" ]; then
+    go install github.com/rwxrob/keg/cmd/keg@latestx
+fi
+
+if [ ! "$(which gocomplete)" ]; then
+    go install github.com/posener/complete/gocomplete@latest
+fi
+
+if [ ! "$(which gopls)" ]; then
+    go install golang.org/x/tools/gopls@latest
+fi
+

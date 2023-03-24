@@ -11,8 +11,8 @@ sudo apt-get install -y \
     man-db \
     curl
 
-sudo apt-get install -y --no-install-recommends
-bash-completion \
+sudo apt-get install -y --no-install-recommends \
+    bash-completion \
     bc \
     bind9-dnsutils \
     btop \
@@ -25,6 +25,7 @@ bash-completion \
     gh \
     git \
     htop \
+    httpie \
     iputils-ping \
     jq \
     less \

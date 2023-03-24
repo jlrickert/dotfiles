@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+VERSION=$(podman version | grep '^Version' | awk '{print $2}')
+MAJOR=$(echo "${VERSION}" | cut -d'.' -f1)
+MINOR=$(echo "${VERSION}" | cut -d'.' -f2)
+if [ "$MAJOR" -ge 4 ] && [ "$MINOR" -ge 4 ]; then
+    exit
+fi
+
 sudo mkdir -p /etc/apt/keyrings
 
 # Debian Testing/Bookworm
