@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -e
+
+sudo apt-get update
+sudo apt-get install -y \
+    apt-utils \
+    build-essential \
+    software-properties-common \
+    apt-transport-https \
+    ca-certificates \
+    man-db \
+    curl
+
+sudo apt-get install -y --no-install-recommends
+bash-completion \
+    bc \
+    bind9-dnsutils \
+    btop \
+    cifs-utils \
+    dialog \
+    direnv \
+    ed \
+    figlet \
+    fzf \
+    gh \
+    git \
+    htop \
+    iputils-ping \
+    jq \
+    less \
+    libcurses-perl \
+    libncurses5 \
+    lolcat \
+    lynx \
+    make \
+    net-tools \
+    nmap \
+    perl \
+    python3 \
+    ripgrep \
+    rsync \
+    shellcheck \
+    shfmt \
+    silversearcher-ag \
+    smbclient \
+    ssh \
+    sshfs \
+    sshpass \
+    sudo \
+    tmux \
+    tree \
+    unzip \
+    vim \
+    wget \
+    zip \
+    zsh
