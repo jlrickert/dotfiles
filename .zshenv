@@ -106,3 +106,4 @@ pathappend \
 [[ -x "$(which nvim)" ]] && export EDITOR_PREFIX=nvim
 export GIT_EDITOR=$EDITOR
 
+export fpath=("{XDG_DATA_HOME:-$HOME/.local/share}/zsh/completion" $fpath)

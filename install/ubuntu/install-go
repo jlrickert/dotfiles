@@ -17,15 +17,21 @@ if [ "${GO_MAJOR}" -le 1 ] && [ "${GO_MINOR}" -lt 20 ]; then
     sudo tar -C /usr/local -xzf "/tmp/${TARBALL}"
 fi
 
-if [ ! "$(which keg)" ]; then
+if ! command -v keg &>/dev/null; then
     go install github.com/rwxrob/keg/cmd/keg@latestx
 fi
 
-if [ ! "$(which gocomplete)" ]; then
+if ! command -v gocomplete &>/dev/null; then
     go install github.com/posener/complete/gocomplete@latest
 fi
 
-if [ ! "$(which gopls)" ]; then
+if ! command -v gopls &>/dev/null; then
     go install golang.org/x/tools/gopls@latest
 fi
 
+if ! command -v hugo &>/dev/null; then
+    go install   github.com/gohugoio/hugo@latest
+    DIR="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/completion"
+    test -d "${DIR}" || mkdir -p "${DIR}"
+    hugo completion zsh > "${DIR}/_hugo"
+fi
