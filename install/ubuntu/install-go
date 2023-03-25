@@ -11,7 +11,7 @@ if [ "${GO_MAJOR}" -le 1 ] && [ "${GO_MINOR}" -lt 20 ]; then
     TARBALL="${VERSION}.linux-amd64.tar.gz"
 
     # Download the latest version of Go
-    test -e "/tmp/${TARBALL}" || wget "https://golang.org/dl/${TARBALL} -O /tmp/${TARBALL}"
+    test -e "/tmp/${TARBALL}" || wget "https://golang.org/dl/${TARBALL}" -O "/tmp/${TARBALL}"
 
     # Extract the archive to /usr/local
     sudo tar -C /usr/local -xzf "/tmp/${TARBALL}"
