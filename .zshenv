@@ -31,6 +31,7 @@ export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export VOLTA_HOME="$HOME/.volta"
 export FNM_HOME="$HOME/.local/share/fnm" # Figure out how to change this to use XDG_DATA_HOME
+export ZSH_HOME="$HOME/.local/share/zsh"
 export GOPRIVATE="github.com/$GITUSER/*,gitlab.com/$GITUSER/*"
 export GOPATH="$XDG_DATA_HOME/go"
 export GOBIN="$HOME/.local/bin"
@@ -106,4 +107,4 @@ pathappend \
 [[ -x "$(which nvim)" ]] && export EDITOR_PREFIX=nvim
 export GIT_EDITOR=$EDITOR
 
-export fpath=("{XDG_DATA_HOME:-$HOME/.local/share}/zsh/completion" $fpath)
+export fpath=("${ZSH_HOME}/zsh/completions" $fpath)

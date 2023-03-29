@@ -31,7 +31,7 @@ fi
 
 if ! command -v hugo &>/dev/null; then
     go install   github.com/gohugoio/hugo@latest
-    DIR="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/completion"
+    DIR="${ZSH_HOME:-$HOME/.local/share/zsh}/completions"
     test -d "${DIR}" || mkdir -p "${DIR}"
     hugo completion zsh > "${DIR}/_hugo"
 fi
