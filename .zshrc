@@ -67,9 +67,11 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
 
-complete -C keg keg
-complete -C pomo pomo
-command -v podman &>/dev/null && podman completion -f "${fpath[1]}/_podman" zsh
-command -v fnm &>/dev/null && eval "$(fnm env --use-on-cd)"
+command -v keg &>/dev/null && complete -C keg keg
+command -v pomo &>/dev/null && complete -C pomo pomo
+command -v podman &>/dev/null && source <(podman completion zsh)
+command -v kubectl &>/dev/null && source <(kubectl completion zsh)
+command -v hugo &>/dev/null && source <(hugo completion zsh) && compdef _hugo hugo
+command -v fnm &>/dev/null && source <(fnm env --use-on-cd)
 alias vim=nvim
 

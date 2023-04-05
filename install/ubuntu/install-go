@@ -30,8 +30,5 @@ if ! command -v gopls &>/dev/null; then
 fi
 
 if ! command -v hugo &>/dev/null; then
-    go install   github.com/gohugoio/hugo@latest
-    DIR="${ZSH_HOME:-$HOME/.local/share/zsh}/completions"
-    test -d "${DIR}" || mkdir -p "${DIR}"
-    hugo completion zsh > "${DIR}/_hugo"
+    go install github.com/gohugoio/hugo@latest
 fi
