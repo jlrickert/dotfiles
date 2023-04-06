@@ -3,13 +3,14 @@ set -e
 
 sudo apt-get update
 sudo apt-get install -y \
+    apt-transport-https \
     apt-utils \
     build-essential \
-    software-properties-common \
-    apt-transport-https \
     ca-certificates \
+    curl \
     man-db \
-    curl
+    software-properties-common \
+    wget
 
 sudo apt-get install -y --no-install-recommends \
     bash-completion \
