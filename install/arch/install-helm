@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+
+cd $(mktemp -d)
+curl -fsSL -O https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+#export HELM_INSTALL_DIR="${HOME}/.local/bin"
+bash ./get-helm-3
