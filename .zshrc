@@ -72,6 +72,7 @@ command -v pomo &>/dev/null && complete -C pomo pomo
 command -v podman &>/dev/null && source <(podman completion zsh)
 command -v kubectl &>/dev/null && source <(kubectl completion zsh)
 command -v k3s &>/dev/null && source <(k3s completion zsh)
+command -v helm &>/dev/null && source <(helm completion zsh)
 command -v hugo &>/dev/null && source <(hugo completion zsh) && compdef _hugo hugo
 command -v fnm &>/dev/null && source <(fnm env --use-on-cd)
 alias vim=nvim
