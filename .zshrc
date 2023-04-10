@@ -71,9 +71,22 @@ command -v keg &>/dev/null && complete -C keg keg
 command -v pomo &>/dev/null && complete -C pomo pomo
 command -v podman &>/dev/null && source <(podman completion zsh)
 command -v kubectl &>/dev/null && source <(kubectl completion zsh)
-command -v k3s &>/dev/null && source <(k3s completion zsh)
-command -v helm &>/dev/null && source <(helm completion zsh)
 command -v hugo &>/dev/null && source <(hugo completion zsh) && compdef _hugo hugo
 command -v fnm &>/dev/null && source <(fnm env --use-on-cd)
+_argparse() {
+  if _have register-python-argcomplete && _have "$1"; then
+    source <(register-python-argcomplete "$1")
+  fi
+}
+
+_argparse ansible
+_argparse ansible-config
+_argparse ansible-console
+_argparse ansible-doc
+_argparse ansible-galaxy
+_argparse ansible-inventory
+_argparse ansible-playbook
+_argparse ansible-pull
+_argparse ansible-vault
 alias vim=nvim
 
