@@ -67,12 +67,17 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
 
-command -v keg &>/dev/null && complete -C keg keg
-command -v pomo &>/dev/null && complete -C pomo pomo
-command -v podman &>/dev/null && source <(podman completion zsh)
-command -v kubectl &>/dev/null && source <(kubectl completion zsh)
-command -v hugo &>/dev/null && source <(hugo completion zsh) && compdef _hugo hugo
-command -v fnm &>/dev/null && source <(fnm env --use-on-cd)
+_have() { command -v "$1" &>/dev/null; }
+
+_have keg && complete -C keg keg
+_have pomo && complete -C pomo pomo
+_have podman && source <(podman completion zsh)
+_have kubectl && source <(kubectl completion zsh)
+_have hugo && source <(hugo completion zsh) && compdef _hugo hugo
+_have k3s && source <(k3s completion zsh)
+_have helm && source <(helm completion zsh)
+_have fnm && source <(fnm env --use-on-cd)
+
 _argparse() {
   if _have register-python-argcomplete && _have "$1"; then
     source <(register-python-argcomplete "$1")
@@ -88,5 +93,6 @@ _argparse ansible-inventory
 _argparse ansible-playbook
 _argparse ansible-pull
 _argparse ansible-vault
+
 alias vim=nvim
 
