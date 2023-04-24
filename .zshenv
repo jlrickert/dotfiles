@@ -76,6 +76,7 @@ pathprepend() {
 
 # remember last arg will be first in path
 pathprepend \
+  "$HOME/.local/share/flutter/bin" \
   "$HOME/.local/bin" \
   "$CARGO_HOME/bin" \
   "$FNM_HOME" \

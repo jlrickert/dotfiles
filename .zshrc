@@ -71,6 +71,7 @@ _have() { command -v "$1" &>/dev/null; }
 
 _have keg && complete -C keg keg
 _have pomo && complete -C pomo pomo
+_have flutter && source <(flutter zsh-completion)
 _have podman && source <(podman completion zsh)
 _have kubectl && source <(kubectl completion zsh)
 _have hugo && source <(hugo completion zsh) && compdef _hugo hugo
