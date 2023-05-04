@@ -1,0 +1,8 @@
+---
+- name: Create directory ~/.local/bin/
+  file:
+    path: "{{ ansible_env.HOME }}/.local/bin"
+    state: directory
+
+- name: Install packages
+  import_tasks: packages.yml

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+function log() {
+    echo "Running: $@"
+    exec "$@"
+}
+
+export PATH="$PATH:~/.local/bin"
+
+if ! command -v ansible &>/dev/null; then
+    log pip install --user ansible
+fi
+
+log ansible-galaxy collection install -r requirements.yml

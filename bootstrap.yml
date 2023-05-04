@@ -1,0 +1,8 @@
+---
+- name: Bootstrap development environment
+  hosts: localhost
+  tasks:
+    - name: Command-line
+      tags: cli
+      import_role:
+        name: cli

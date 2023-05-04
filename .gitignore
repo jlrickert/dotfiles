@@ -1,0 +1,8 @@
+.config/nvim/spell/
+.vagrant
+venv
+.DS_Store
+.config/Code/
+!.config/Code/User/settings.json
+!.config/Code/User/keybindings.json
+vault.key

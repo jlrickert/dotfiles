@@ -1,0 +1,115 @@
+---
+- name: Install CLI tools (Archlinux)
+  community.general.pacman:
+    name:
+      - ansible
+      - bash-completion
+      - bat
+      - bitwarden
+      - btop
+      - colordiff
+      - direnv
+      - entr
+      - fzf
+      - git
+      - github-cli
+      - httpie
+      - jq
+      - kubeadm
+      - kubectl
+      - neovim
+      - openssh
+      - python
+      - python-pipenv
+      - ranger
+      - ripgrep
+      - rsync
+      - shellcheck
+      - shfmt
+      - ssh-tools
+      - the_silver_searcher
+      - tmux
+      - vim
+      - zsh
+    state: present
+    reason: explicit
+  when: ansible_distribution == 'Archlinux'
+
+- name: Install CLI tools (Ubuntu)
+  become: true
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - apt-utils
+      - bash-completion 
+      - bc 
+      - bind9-dnsutils 
+      - btop 
+      - build-essential
+      - ca-certificates
+      - cifs-utils 
+      - curl
+      - dialog 
+      - direnv 
+      - ed 
+      - fd-find
+      - figlet 
+      - fzf 
+      - gh 
+      - git 
+      - htop
+      - htop 
+      - httpie 
+      - iputils-ping 
+      - jq
+      - less 
+      - libcurses-perl 
+      - libncurses5 
+      - lolcat 
+      - lynx 
+      - make 
+      - man-db
+      - net-tools 
+      - nmap 
+      - perl 
+      - python3 
+      - python3-pip
+      - ripgrep 
+      - rsync 
+      - shellcheck 
+      - shfmt 
+      - silversearcher-ag 
+      - smbclient 
+      - software-properties-common
+      - ssh 
+      - sshfs 
+      - sshpass 
+      - sudo 
+      - tig
+      - tmux 
+      - tree 
+      - unzip
+      - vim 
+      - wget 
+      - xclip
+      - zip 
+    state: present
+  when: ansible_distribution == "Ubuntu"
+
+- name: Create the `aur_builder` user (Archlinux)
+  become: yes
+  ansible.builtin.user:
+    name: aur_builder
+    create_home: yes
+    group: wheel
+  when: ansible_distribution == 'Archlinux'
+
+- name: Allow the `aur_builder` user to run `sudo pacman` without a password
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/11-install-aur_builder
+    line: "aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman"
+    create: yes
+    validate: "visudo -cf %s"
+  when: ansible_distribution == 'Archlinux'
+
