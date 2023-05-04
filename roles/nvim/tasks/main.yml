@@ -1,0 +1,40 @@
+- name: Install nvim (Linux)
+  import_tasks: linux.yml
+  when: ansible_distribution in ["Ubuntu", "Fedora", "Archlinux"]
+
+- name: Install pynvim
+  ansible.builtin.pip:
+    name:
+      - pynvim
+    state: present
+    executable: pip3
+
+- name: Install treesitter parsers
+  shell:
+    cmd: nvim --headless -c 'TSInstallSync! {{ parsers | join(" ") }}' -c quit
+  vars:
+    parsers:
+      - astro
+      - bash
+      - c
+      - cpp
+      - diff
+      - go
+      - html
+      - javascript
+      - jsdoc
+      - json
+      - jsonc
+      - lua
+      - markdown
+      - markdown_inline
+      - python
+      - rust
+      - scss
+      - svelte
+      - toml
+      - tsx
+      - typescript
+      - vim
+      - yaml
+  changed_when: false

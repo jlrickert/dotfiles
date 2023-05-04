@@ -1,0 +1,37 @@
+---
+- name: Install stow (Ubuntu)
+  become: true
+  ansible.builtin.apt:
+    name:
+      - stow
+    state: present
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Install stow (Archlinux)
+  become: true
+  ansible.builtin.apt:
+    name:
+      - stow
+    state: present
+  when: ansible_distribution == 'Archlinux'
+
+- name: Install Stow (Fedora)
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - stow
+    state: present
+  when: ansible_distribution == 'Fedora'
+
+- name: Remove files that will conflict with Stow
+  loop:
+    - .bashrc
+    - .profile
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+    state: absent
+
+- name: Run stow
+  shell: "stow . --target {{ ansible_env.HOME }} --verbose=2"
+  register: result
+  changed_when: 'result.stderr is search("LINK: ")'

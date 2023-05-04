@@ -2,7 +2,23 @@
 - name: Bootstrap development environment
   hosts: localhost
   tasks:
+    - name: Update all submodules
+      tags: submodules
+      command:
+        cmd: git submodule update --force --init --recursive --jobs 4
+      changed_when: false
+
     - name: Command-line
       tags: cli
       import_role:
         name: cli
+
+    - name: Stow
+      tags: stow
+      import_role:
+        name: stow
+
+    - name: Neovim
+      tags: nvim
+      import_role:
+        name: nvim

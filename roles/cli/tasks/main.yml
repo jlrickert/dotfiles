@@ -6,3 +6,9 @@
 
 - name: Install packages
   import_tasks: packages.yml
+
+- name: Install bat
+  import_tasks: bat.yml
+
+- name: Install github-cli
+  import_tasks: github-cli.yml

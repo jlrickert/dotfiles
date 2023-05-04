@@ -4,7 +4,7 @@ import subprocess
 import os
 
 # Find relevant playbook file
-project_path = os.path.dirname(os.path.realpath(__file__))
+project_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 default_password_file = os.path.join(project_path, "vault.key")
 playbook_file = os.path.join(project_path, "bootstrap.yml")
 
