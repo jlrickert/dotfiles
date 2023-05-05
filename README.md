@@ -17,6 +17,7 @@ Run the following to quickly install.  This will also ask for a password on the 
 ```bash
 git clone git@github.com:jlrickert/dotfiles.git
 cd dotfiles
+./hack
 ./install
 ./scripts/dotctl
 ```

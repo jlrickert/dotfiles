@@ -7,7 +7,7 @@ function log() {
     exec "$@"
 }
 
-export PATH="$PATH:~/.local/bin"
+export PATH="$PATH:~/.local/bin:$PWD/dots/scripts"
 
 if ! command -v ansible &>/dev/null; then
     log pip install --user ansible

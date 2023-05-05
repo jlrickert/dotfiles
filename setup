@@ -7,10 +7,4 @@ IFS=$'\n\t'
 
 export PATH="$PATH:~/.local/bin:$PWD/dots/scripts"
 
-if ! test -f vault.key; then
-    echo -n "Enter your password: "
-    read -s password
-    echo
-    echo $password >vault.key
-    chmod 0600 vault.key
-fi
+dotctl
