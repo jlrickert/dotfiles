@@ -31,7 +31,6 @@
       - the_silver_searcher
       - tmux
       - vim
-      - zsh
     state: present
     reason: explicit
   when: ansible_distribution == 'Archlinux'
