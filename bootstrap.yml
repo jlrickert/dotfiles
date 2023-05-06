@@ -31,11 +31,11 @@
         - zsh
         - default
 
-    - name: Neovim
+    - name: Nodejs
       import_role:
-        name: nvim
+        name: node
       tags:
-        - nvim
+        - node
         - default
 
     - name: Golang
@@ -43,4 +43,11 @@
         name: golang
       tags:
         - golang
+        - default
+
+    - name: Neovim
+      import_role:
+        name: nvim
+      tags:
+        - nvim
         - default

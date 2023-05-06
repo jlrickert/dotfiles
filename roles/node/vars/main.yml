@@ -1,0 +1,5 @@
+---
+node_version: --lts
+node_packages:
+- prettier
+- pnpm
