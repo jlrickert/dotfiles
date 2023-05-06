@@ -1,0 +1,6 @@
+---
+go_version: 1.20.4
+go_checksum: "sha256:698ef3243972a51ddb4028e4a1ac63dc6d60821bf18e59a807e051fee0a385bd"
+go_os: linux
+go_arch: amd64
+go_install_dir: /usr/local

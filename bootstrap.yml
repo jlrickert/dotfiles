@@ -37,3 +37,10 @@
       tags:
         - nvim
         - default
+
+    - name: Golang
+      import_role:
+        name: go
+      tags:
+        - go
+        - default
