@@ -3,22 +3,37 @@
   hosts: localhost
   tasks:
     - name: Update all submodules
-      tags: submodules
       command:
         cmd: git submodule update --force --init --recursive --jobs 4
+      tags:
+        - submodules
+        - default
       changed_when: false
 
     - name: Command-line
-      tags: cli
       import_role:
         name: cli
+      tags:
+        - cli
+        - default
 
     - name: Stow
-      tags: stow
       import_role:
         name: stow
+      tags:
+        - stow
+        - default
+
+    - name: Zsh
+      import_role:
+        name: zsh
+      tags:
+        - zsh
+        - default
 
     - name: Neovim
-      tags: nvim
       import_role:
         name: nvim
+      tags:
+        - nvim
+        - default

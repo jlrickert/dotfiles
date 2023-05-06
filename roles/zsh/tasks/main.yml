@@ -1,0 +1,33 @@
+---
+- name: Install zsh (Ubuntu)
+  become: true
+  ansible.builtin.apt:
+    name: zsh
+    state: present
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Install zsh (Archlinux)
+  become: true
+  community.general.pacman:
+    name: zsh
+    state: present
+  when: ansible_distribution == 'Archlinux'
+
+- name: Install zsh (Fedora)
+  become: true
+  ansible.builtin.dnf:
+    name: zsh
+    state: present
+  when: ansible_distribution == 'Fedora'
+
+- name: Get zsh shell location
+  command: which zsh
+  changed_when: no
+  failed_when: zsh_path_res.rc != 0
+  register: zsh_path_res
+
+- name: Set default shell to zsh
+  become: true
+  user:
+    name: "{{ansible_env.USER}}"
+    shell: "{{zsh_path_res.stdout}}"

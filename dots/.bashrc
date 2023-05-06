@@ -20,13 +20,12 @@ _source_if() { [[ -r "$1" ]] && source "$1"; }
 #                         environment variables
 #                           (also see envx)
 ################################################################################
-
 export USER="${USER:-$(whoami)}"
 export GITUSER="$USER"
 export REPOS="$HOME/Repos"
 export GHREPOS="$REPOS/github.com/$GITUSER"
-export DOTFILES="$GHREPOS/dot"
-export SCRIPTS="$HOME/Scripts"
+export DOTFILES="$HOME/personal/dotfiles"
+export SCRIPTS="$HOME/scripts"
 export SNIPPETS="$DOTFILES/snippets"
 export HELP_BROWSER=lynx
 export DESKTOP="$HOME/Desktop"

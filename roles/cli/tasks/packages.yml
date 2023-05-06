@@ -1,5 +1,6 @@
 ---
 - name: Install CLI tools (Archlinux)
+  become: true
   community.general.pacman:
     name:
       - ansible
@@ -73,7 +74,9 @@
       - nmap 
       - perl 
       - python3 
+      - python3-argcomplete
       - python3-pip
+      - ranger
       - ripgrep 
       - rsync 
       - shellcheck 
