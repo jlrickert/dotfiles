@@ -13,3 +13,23 @@
     remote_src: yes
     creates: "{{ go_install_dir }}/go"
 
+- name: Install keg binary
+  command: "go install github.com/rwxrob/keg/cmd/keg@latest"
+  args:
+    creates: "{{ gobin }}/keg"
+
+- name: Install gocomplete binary
+  command: "go install github.com/posener/complete/gocomplete@latest"
+  args:
+    creates: "{{ gobin }}/gocomplete"
+
+- name: Install gopls binary
+  command: "go install golang.org/x/tools/gopls@latest"
+  args:
+    creates: "{{ gobin }}/gopls"
+
+- name: Install hugo binary
+  command: "go install github.com/gohugoio/hugo@latest"
+  args:
+    creates: "{{ gobin }}/hugo"
+
