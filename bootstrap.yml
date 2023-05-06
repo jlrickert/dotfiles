@@ -40,7 +40,7 @@
 
     - name: Golang
       import_role:
-        name: go
+        name: golang
       tags:
-        - go
+        - golang
         - default

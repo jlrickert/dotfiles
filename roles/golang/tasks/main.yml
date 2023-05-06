@@ -1,11 +1,4 @@
 ---
-# - name: Install golang
-#   become: yes
-#   ansible.builtin.unarchive:
-#     src: 
-#     dest: /usr/local
-#     remote_src: yes
-
 - name: Download Go archive
   ansible.builtin.get_url:
     url: "https://go.dev/dl/go{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
@@ -13,6 +6,7 @@
     checksum: "{{ go_checksum }}"
 
 - name: Extract Go archive
+  become: yes
   ansible.builtin.unarchive:
     src: "/tmp/go{{ go_version }}.tar.gz"
     dest: "{{ go_install_dir }}"
