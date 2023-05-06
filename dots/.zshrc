@@ -95,5 +95,6 @@ _argparse ansible-playbook
 _argparse ansible-pull
 _argparse ansible-vault
 
-alias vim=nvim
+_have nvim && alias vim=nvim
+_have ranger && alias r=ranger
 
