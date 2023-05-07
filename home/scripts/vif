@@ -1,5 +1,6 @@
 #!/bin/sh
 
+export FZF_DEFAULT_COMMAND='rg --ignore-case --files --hidden -g "!.git"'
 CHOICE=$(fzf --preview="$VISUAL {}" --bind shift-up:preview-page-up,shift-down:preview-page-down)
 if [ -n "$CHOICE" ]; then
     $EDITOR "$CHOICE"

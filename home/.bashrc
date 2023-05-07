@@ -274,6 +274,10 @@ alias '....'='cd ../../../'
 _have vim && alias vi=vim
 _have nvim && alias vi=nvim
 _have nvim && alias vim=nvim
+_have ranger && alias r=ranger
+_have exa && alias ls='exa --color=auto'
+_have exa && alias la='exa -lah'
+_have bat && alias cat=bat
 
 ################################################################################
 #                               functions

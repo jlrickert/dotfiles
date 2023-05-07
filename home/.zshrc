@@ -19,7 +19,6 @@ plugins=(
   npm
   rust
   vi-mode
-  fnm
   vscode
   z
 )
@@ -94,7 +93,11 @@ _argparse ansible-inventory
 _argparse ansible-playbook
 _argparse ansible-pull
 _argparse ansible-vault
+_argparse dotctl
 
 _have nvim && alias vim=nvim
 _have ranger && alias r=ranger
+_have exa && alias ls='exa --color=auto'
+_have exa && alias la='exa -lah'
+_have bat && alias cat=bat
 
