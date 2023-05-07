@@ -2,21 +2,22 @@
 - name: Install bat (Ubuntu)
   become: true
   ansible.builtin.apt:
-    deb: https://github.com/sharkdp/bat/releases/download/v{{ bat_version }}/bat-musl_{{ bat_version }}_amd64.deb
+      deb: https://github.com/sharkdp/bat/releases/download/v{{ bat_version }}/bat-musl_{{ bat_version }}_amd64.deb
+      force: true
   when: ansible_distribution == "Ubuntu"
 
 - name: Install bat (Archlinux)
   become: true
   community.general.pacman:
-    name:
-      - bat
-    state: present
+      name:
+          - bat
+      state: present
   when: ansible_distribution == "Archlinux"
 
 - name: Install bat in Fedora
   become: true
   ansible.builtin.dnf:
-    name:
-      - bat
-    state: present
+      name:
+          - bat
+      state: present
   when: ansible_distribution == "Fedora"
