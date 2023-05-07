@@ -1,35 +1,34 @@
 ---
 - name: Download Go archive
   ansible.builtin.get_url:
-    url: "https://go.dev/dl/go{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
-    dest: "/tmp/go{{ go_version }}.tar.gz"
-    checksum: "{{ go_checksum }}"
+      url: "https://go.dev/dl/go{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+      dest: "/tmp/go{{ go_version }}.tar.gz"
+      checksum: "{{ go_checksum }}"
 
 - name: Extract Go archive
   become: yes
   ansible.builtin.unarchive:
-    src: "/tmp/go{{ go_version }}.tar.gz"
-    dest: "{{ go_install_dir }}"
-    remote_src: yes
-    creates: "{{ go_install_dir }}/go"
+      src: "/tmp/go{{ go_version }}.tar.gz"
+      dest: "{{ go_install_dir }}"
+      remote_src: yes
+      creates: "{{ go_install_dir }}/go"
 
 - name: Install keg binary
-  command: "go install github.com/rwxrob/keg/cmd/keg@latest"
+  command: "{{ go_install_dir }}/go/bin/go install github.com/rwxrob/keg/cmd/keg@latest"
   args:
-    creates: "{{ gobin }}/keg"
+      creates: "{{ gobin }}/keg"
 
 - name: Install gocomplete binary
-  command: "go install github.com/posener/complete/gocomplete@latest"
+  command: "{{ go_install_dir }}/go/bin/go install github.com/posener/complete/gocomplete@latest"
   args:
-    creates: "{{ gobin }}/gocomplete"
+      creates: "{{ gobin }}/gocomplete"
 
 - name: Install gopls binary
-  command: "go install golang.org/x/tools/gopls@latest"
+  command: "{{ go_install_dir }}/go/bin/go install golang.org/x/tools/gopls@latest"
   args:
-    creates: "{{ gobin }}/gopls"
+      creates: "{{ gobin }}/gopls"
 
 - name: Install hugo binary
-  command: "go install github.com/gohugoio/hugo@latest"
+  command: "{{ go_install_dir }} /go/bin/go install github.com/gohugoio/hugo@latest"
   args:
-    creates: "{{ gobin }}/hugo"
-
+      creates: "{{ gobin }}/hugo"
