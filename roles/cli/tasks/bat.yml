@@ -1,5 +1,12 @@
 ---
-- name: Install bat (Ubuntu)
+- name: Remove bat (Ubuntu)
+  become: true
+  ansible.builtin.apt:
+      name: bat
+      state: absent
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install bat-musl (Ubuntu)
   become: true
   ansible.builtin.apt:
       deb: https://github.com/sharkdp/bat/releases/download/v{{ bat_version }}/bat-musl_{{ bat_version }}_amd64.deb
