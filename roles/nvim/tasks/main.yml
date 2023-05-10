@@ -17,6 +17,11 @@
       state: present
       executable: pip3
 
+- name: Install packer packages
+  shell:
+      cmd: nvim --headless -c 'PackerUpdate' -c quit
+  changed_when: false
+
 - name: Install mason packages
   shell:
       cmd: nvim --headless -c 'MasonUpdate' -c quit
