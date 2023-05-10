@@ -5,6 +5,6 @@ set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 IFS=$'\n\t'
 
-export PATH="$PATH:~/.local/bin:$PWD/dots/scripts"
+export PATH="$PATH:~/.local/bin:$PWD/home/scripts"
 
 dotctl
