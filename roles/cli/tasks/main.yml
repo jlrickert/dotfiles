@@ -10,5 +10,8 @@
 - name: Install bat
   import_tasks: bat.yml
 
+- name: Install fzf
+  import_tasks: fzf.yml
+
 - name: Install github-cli
   import_tasks: github-cli.yml

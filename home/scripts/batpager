@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Inspired by https://github.com/sharkdp/bat/issues/388#issuecomment-1024923102
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+# IFS=$'\n\t'
+
+# if [[ $1 =~ ^\+[0-9]+[gpP]?$ ]]; then
+#     bat --pager="less $1 -RF" "${@:2:$(($# - 1))}"
+#     # Explanation:
+#     # --style=plain to omit the header, line-numbers, and border decorations
+#     # --pager="less ... -RF" per `bat` defaults
+#     # "${@...}" to pass remaining args to bat
+# else
+#     bat --pager="less -RF" "$@"
+# fi
+
+declare -r file=$1
+declare -i -r line=$2
+declare -i -r lines=$LINES
+
+# subtract 3 for the header
+declare -i center=$(( (lines - 3) / 2 ))
+
+if [ $line -lt $center ]; then
+    center=$line
+fi
+declare -i -r start=$(( line - center ))
+declare -i -r end=$(( lines + start ))
+
+echo "$file"
+echo "$line"
+echo "$LINES"
+exec bat --color always --highlight-line $line --line-range $start:$end --paging never "$file"

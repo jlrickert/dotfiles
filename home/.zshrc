@@ -11,7 +11,7 @@ plugins=(
   cp
   debian
   direnv
-  fzf
+  # fzf
   gh
   git
   golang
@@ -77,6 +77,7 @@ _have hugo && source <(hugo completion zsh) && compdef _hugo hugo
 _have k3s && source <(k3s completion zsh)
 _have helm && source <(helm completion zsh)
 _have fnm && source <(fnm env --use-on-cd)
+_have fzf && source "${XDG_CONFIG_HOME}/fzf/fzf.zsh"
 
 _argparse() {
   if _have register-python-argcomplete && _have "$1"; then
@@ -101,3 +102,13 @@ _have exa && alias ls='exa --color=auto'
 _have exa && alias la='exa -lah'
 _have bat && alias cat=bat
 
+# 
+# FZF setup
+#
+function _fzf_compgen_path {
+  rg --files --hidden --color=never
+}
+
+function _fzf_compgen_dir {
+  fdfind --color=never --type d
+}

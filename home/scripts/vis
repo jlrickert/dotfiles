@@ -1,14 +1,17 @@
 #!/bin/sh
 
-RG_PREFIX='rg --files-with-matches --ignore-case --hidden -g "!.git"'
+# RG_PREFIX='rg --files-with-matches --ignore-case --hidden -g "!.git"'
+RG_PREFIX='rg --column --line-number --no-heading --smart-case --files-with-matches --hidden -g "!.git"'
 INITIAL_QUERY=""
-FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'"
+export FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'"
 CHOICE=$(fzf --bind "change:reload:$RG_PREFIX {q} || true" \
     --sort \
     --multi \
-    --preview "[[ ! -z {} ]] && $VISUAL {q} {}" \
+    --delimiter=':' \
+    --preview "batpager {1} {2}" \
     --ansi --phony --query "$INITIAL_QUERY")
 
+# --preview "[[ ! -z {} ]] && $VISUAL {q} {}" \
 # --preview '[[ ! -z {} ]] && rg --pretty --ignore-case --context 5 {q} {}' \
 if [ -n "$CHOICE" ]; then
     $EDITOR "$CHOICE"

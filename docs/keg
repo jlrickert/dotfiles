@@ -1,0 +1,16 @@
+updated: 2023-05-10 18:23:41Z
+kegv:    2023-01
+
+title:   Dotfile notes
+url:     git@github.com:jlrickert/dotfiles.git
+creator: git@github.com:jlrickert/jlrickert.git
+state:   living
+
+summary:
+    My notes for my dotfiles
+
+indexes:
+  - file: dex/changes.md
+    summary: latest changes
+  - file: dex/nodes.tsv
+    summary: all nodes by id

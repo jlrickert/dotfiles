@@ -2,52 +2,52 @@
 - name: Bootstrap development environment
   hosts: localhost
   tasks:
-    - name: Update all submodules
-      command:
-        cmd: git submodule update --force --init --recursive --jobs 4
-      tags:
-        - submodules
-        - default
-      changed_when: false
+      - name: Update all submodules
+        command:
+            cmd: git submodule update --force --init --recursive --jobs 4
+        tags:
+            - submodules
+            - default
+        changed_when: false
 
-    - name: Command-line
-      import_role:
-        name: cli
-      tags:
-        - cli
-        - default
+      - name: Golang
+        import_role:
+            name: golang
+        tags:
+            - golang
+            - default
 
-    - name: Stow
-      import_role:
-        name: stow
-      tags:
-        - stow
-        - default
+      - name: Command-line
+        import_role:
+            name: cli
+        tags:
+            - cli
+            - default
 
-    - name: Zsh
-      import_role:
-        name: zsh
-      tags:
-        - zsh
-        - default
+      - name: Stow
+        import_role:
+            name: stow
+        tags:
+            - stow
+            - default
 
-    - name: Nodejs
-      import_role:
-        name: node
-      tags:
-        - node
-        - default
+      - name: Zsh
+        import_role:
+            name: zsh
+        tags:
+            - zsh
+            - default
 
-    - name: Golang
-      import_role:
-        name: golang
-      tags:
-        - golang
-        - default
+      - name: Nodejs
+        import_role:
+            name: node
+        tags:
+            - node
+            - default
 
-    - name: Neovim
-      import_role:
-        name: nvim
-      tags:
-        - nvim
-        - default
+      - name: Neovim
+        import_role:
+            name: nvim
+        tags:
+            - nvim
+            - default
