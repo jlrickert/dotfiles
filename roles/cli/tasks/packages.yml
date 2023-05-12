@@ -69,6 +69,7 @@
           - lynx
           - make
           - man-db
+          - ncal
           - net-tools
           - nmap
           - perl
