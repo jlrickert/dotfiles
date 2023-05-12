@@ -54,7 +54,6 @@
           - direnv
           - ed
           - fd-find
-          - fdclone
           - figlet
           - fzf
           - gh

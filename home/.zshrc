@@ -110,5 +110,5 @@ function _fzf_compgen_path {
 }
 
 function _fzf_compgen_dir {
-  fdfind --color=never --type d
+  fdfind --color=never --type d --follow --exclude ".git"
 }

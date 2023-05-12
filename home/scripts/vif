@@ -1,8 +1,10 @@
 #!/bin/sh
 
-export FZF_DEFAULT_COMMAND='rg --ignore-case --files --hidden -g "!.git"'
-CHOICE=$(fzf --preview="$VISUAL {}" --bind shift-up:preview-page-up,shift-down:preview-page-down)
-if [ -n "$CHOICE" ]; then
-    $EDITOR "$CHOICE"
-    echo "$CHOICE"
-fi
+# shellcheck disable=SC2034
+FZF_DEFAULT_COMMAND='rg --smart-case --files --hidden --glob "!.git"'
+fzf \
+    --preview="bat --color=always {}" \
+    --bind shift-up:preview-page-up,shift-down:preview-page-down \
+    --bind "enter:become($EDITOR {1} +{2} && CHOICE={1})"
+
+echo "$CHOICE"

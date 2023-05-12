@@ -54,7 +54,12 @@ export ZSH="$XDG_DATA_HOME/oh-my-zsh"
 export FLYCTL_INSTALL=$XDG_DATA_HOME/.fly
 
 export FZF_DEFAULT_COMMAND='rg --files --hidden --color=never'
-export FZF_ALT_C_COMMAND='fd --color=never --type d'
+# export FZF_ALT_C_COMMAND='fd --color=never --type d'
+export FZF_ALT_C_COMMAND='fdfind --color=never --type d'
+export FZF_ALT_C_OPTS="--preview 'tree -C {}"
+
+# Options to fzf command
+# export FZF_COMPLETION_OPTS='--border --info=inline'
 
 pathappend() {
   declare arg
@@ -112,4 +117,4 @@ pathappend \
 [[ -x "$(which nvim)" ]] && export EDITOR_PREFIX=nvim
 export GIT_EDITOR=$EDITOR
 
-export fpath=("${ZSH_HOME}/zsh/completions" $fpath)
+export fpath=("${ZSH_HOME}/completions" $fpath)

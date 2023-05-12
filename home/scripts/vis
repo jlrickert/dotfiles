@@ -1,19 +1,15 @@
-#!/bin/sh
+#!/bin/bash
 
-# RG_PREFIX='rg --files-with-matches --ignore-case --hidden -g "!.git"'
-RG_PREFIX='rg --column --line-number --no-heading --smart-case --files-with-matches --hidden -g "!.git"'
+RG_PREFIX='rg --color=always --line-number --no-heading --smart-case --hidden -g "!.git"'
 INITIAL_QUERY=""
-export FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'"
-CHOICE=$(fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+# shellcheck disable=SC2034
+FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'"
+fzf \
+    --bind "change:reload:$RG_PREFIX {q} || true" \
+    --bind "enter:become($EDITOR {1} +{2} && CHOICE={1})" \
     --sort \
-    --multi \
-    --delimiter=':' \
-    --preview "batpager {1} {2}" \
-    --ansi --phony --query "$INITIAL_QUERY")
+    --delimiter ':' \
+    --preview "bat --color=always {1} --highlight-line {2} --paging never" \
+    --ansi --phony --query "$INITIAL_QUERY"
 
-# --preview "[[ ! -z {} ]] && $VISUAL {q} {}" \
-# --preview '[[ ! -z {} ]] && rg --pretty --ignore-case --context 5 {q} {}' \
-if [ -n "$CHOICE" ]; then
-    $EDITOR "$CHOICE"
-    echo "$CHOICE"
-fi
+echo -n "$CHOICE"
