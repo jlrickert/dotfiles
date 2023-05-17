@@ -28,6 +28,7 @@
           - shellcheck
           - shfmt
           - ssh-tools
+          - stow
           - the_silver_searcher
           - tmux
           - vim
@@ -87,6 +88,7 @@
           - ssh
           - sshfs
           - sshpass
+          - stow
           - sudo
           - tig
           - tmux

@@ -29,6 +29,6 @@
       creates: "{{ gobin }}/gopls"
 
 - name: Install hugo binary
-  command: "{{ go_install_dir }} /go/bin/go install github.com/gohugoio/hugo@latest"
+  command: "{{ go_install_dir }}/go/bin/go install github.com/gohugoio/hugo@latest"
   args:
       creates: "{{ gobin }}/hugo"
