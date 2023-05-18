@@ -80,8 +80,10 @@ _have fnm && source <(fnm env --use-on-cd)
 _have fzf && source "${XDG_CONFIG_HOME}/fzf/fzf.zsh"
 
 _argparse() {
-  if _have register-python-argcomplete && _have "$1"; then
-    source <(register-python-argcomplete "$1")
+  # This is from the python3-argcomplete package on ubuntu
+  # FIXME: make this work on other distros
+  if _have register-python-argcomplete3 && _have "$1"; then
+    source <(register-python-argcomplete3 "$1")
   fi
 }
 
