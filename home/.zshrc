@@ -114,3 +114,22 @@ function _fzf_compgen_path {
 function _fzf_compgen_dir {
   fdfind --color=never --type d --follow --exclude ".git"
 }
+
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf --preview 'tree -C {} | head -200'   "$@" ;;
+    export|unset) fzf --preview "eval 'echo \$'{}"         "$@" ;;
+    ssh)          fzf --preview 'dig {}'                   "$@" ;;
+    keg)          _keg-node-complete                       "$@" ;;
+    *)            fzf --preview 'bat -n --color=always {}' "$@" ;;
+  esac
+}
+
+# TODO: figure out what is going on here.  This feeds an initial list of nodes
+# to fzf to prevent garbage displaying at first
+_fzf_complete_keg() {
+  _fzf_complete +m -- "$@" < <(_keg-list-nodes)
+}
