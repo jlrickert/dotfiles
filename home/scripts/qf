@@ -5,7 +5,8 @@ set -e
 cmds="help usage grep modified"
 
 help() {
-    echo "would print help"
+    usage
+    exit 0
 }
 
 grep() {
@@ -17,15 +18,22 @@ modified() {
 }
 
 usage() {
-    echo "usage: foo [COMMAND|name] [OPTIONS]"
-}
-
-list() {
-    printf "one\ntwo\nthree"
+    echo "NAME"
+    echo
+    echo "    qf - create a quick fix list"
+    echo
+    echo "Synopsis"
+    echo
+    echo "    $(basename "$0") COMMAND"
+    echo
+    echo "COMMANDS"
+    echo
+    echo "    g|grep     - grep regular expression"
+    echo "    m|modified - all modified files"
 }
 
 default() {
-    echo "default command"
+    help
 }
 
 # ---------------------- bash completion context ---------------------
@@ -45,9 +53,13 @@ fi
 cmd="$1"
 test $# -gt 0 && shift
 
+if test -z "{cmd}"; then
+    help
+    exit 1
+fi
+
 case "$cmd" in
-ls | list) list "$@" ;;
-grep) grep "$@" ;;
-modified) modified "$@" ;;
+g | grep) grep "$@" ;;
+m | modified) modified "$@" ;;
 *) default "$@" ;;
 esac
