@@ -54,6 +54,7 @@ export ZSH="$XDG_DATA_HOME/oh-my-zsh"
 export FLYCTL_INSTALL=$XDG_DATA_HOME/.fly
 
 export FZF_DEFAULT_COMMAND='rg --files --hidden --color=never'
+# export FZF_DEFAULT_OPTS="--ansi --phony --preview='bat --color=always {}'"
 # export FZF_ALT_C_COMMAND='fd --color=never --type d'
 export FZF_ALT_C_COMMAND='fdfind --color=never --type d'
 export FZF_ALT_C_OPTS="--preview 'tree -C {}"

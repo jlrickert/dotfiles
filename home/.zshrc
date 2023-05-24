@@ -69,6 +69,9 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 _have() { command -v "$1" &>/dev/null; }
 
 _have keg && complete -C keg keg
+_have kn && complete -C kn kn
+_have knp && complete -C kn knp
+_have knw && complete -C kn knw
 _have pomo && complete -C pomo pomo
 _have flutter && source <(flutter zsh-completion)
 _have podman && source <(podman completion zsh)
@@ -104,14 +107,14 @@ _have exa && alias ls='exa --color=auto'
 _have exa && alias la='exa -lah'
 _have bat && alias cat=bat
 
-# 
+#
 # FZF setup
 #
-function _fzf_compgen_path {
+_fzf_compgen_path() {
   rg --files --hidden --color=never
 }
 
-function _fzf_compgen_dir {
+_fzf_compgen_dir() {
   fdfind --color=never --type d --follow --exclude ".git"
 }
 
@@ -120,11 +123,14 @@ _fzf_comprun() {
   shift
 
   case "$command" in
-    cd)           fzf --preview 'tree -C {} | head -200'   "$@" ;;
-    export|unset) fzf --preview "eval 'echo \$'{}"         "$@" ;;
-    ssh)          fzf --preview 'dig {}'                   "$@" ;;
-    keg)          _keg-node-complete                       "$@" ;;
-    *)            fzf --preview 'bat -n --color=always {}' "$@" ;;
+    cd)           fzf --preview 'tree -C {} | head -200'           "$@" ;;
+    export|unset) fzf --preview "eval 'echo \$'{}"                 "$@" ;;
+    ssh)          fzf --preview 'dig {}'                           "$@" ;;
+    keg)          _keg-node-complete                               "$@" ;;
+    knp)          KEG_CURRENT=~/personal/zettel _keg-node-complete "$@" ;;
+    knw)          KEG_CURRENT=~/work/zet _keg-node-complete        "$@" ;;
+    kn)           KEG_CURRENT=~/personal/zet _keg-node-complete    "$@" ;;
+    *)            fzf --preview 'bat -n --color=always {}'         "$@" ;;
   esac
 }
 
@@ -132,4 +138,13 @@ _fzf_comprun() {
 # to fzf to prevent garbage displaying at first
 _fzf_complete_keg() {
   _fzf_complete +m -- "$@" < <(_keg-list-nodes)
+}
+_fzf_complete_knp() {
+  _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zettel _keg-list-nodes)
+}
+_fzf_complete_knw() {
+   _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/work/zet _keg-list-nodes)
+}
+_fzf_complete_kn() {
+  _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zet _keg-list-nodes)
 }
