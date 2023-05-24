@@ -1,0 +1,53 @@
+#!/bin/sh
+
+set -e
+
+cmds="help usage grep modified"
+
+help() {
+    echo "would print help"
+}
+
+grep() {
+    rg --line-number --no-heading --column "$@"
+}
+
+modified() {
+    git diff --name-only | awk -F: '{print $1 ":1:Modified"}'
+}
+
+usage() {
+    echo "usage: foo [COMMAND|name] [OPTIONS]"
+}
+
+list() {
+    printf "one\ntwo\nthree"
+}
+
+default() {
+    echo "default command"
+}
+
+# ---------------------- bash completion context ---------------------
+
+# add `complete -S qf qf` to bashrc
+
+if test -n "${COMP_LINE}"; then
+    pre="${COMP_LINE##* }"
+    for c in ${cmds:+${cmds} $(list)}; do
+        test -z "${pre}" -o "${c}" != "${c#${pre}}" && echo "$c"
+    done
+    exit
+fi
+
+# ------------------------------- main -------------------------------
+
+cmd="$1"
+test $# -gt 0 && shift
+
+case "$cmd" in
+ls | list) list "$@" ;;
+grep) grep "$@" ;;
+modified) modified "$@" ;;
+*) default "$@" ;;
+esac

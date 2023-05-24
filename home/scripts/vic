@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 FILE="$(which "$1")"
-if [ ! -f "${FILE}" ]; then
+if ! [[ "$(file "${FILE}")" =~ ASCII ]]; then
     exit
 fi
 $EDITOR "${FILE}"
