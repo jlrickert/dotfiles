@@ -32,3 +32,8 @@
   command: "{{ go_install_dir }}/go/bin/go install github.com/gohugoio/hugo@latest"
   args:
       creates: "{{ gobin }}/hugo"
+
+- name: Install auth binary
+  command: "{{ go_install_dir }}/go/bin/go install github.com/rwxrob/auth-go/cmd/auth@latest"
+  args:
+      creates: "{{ gobin }}/auth"

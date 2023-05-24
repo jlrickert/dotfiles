@@ -68,11 +68,10 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 
 _have() { command -v "$1" &>/dev/null; }
 
-_have keg && complete -C keg keg
-_have kn && complete -C kn kn
-_have knp && complete -C kn knp
-_have knw && complete -C kn knw
-_have pomo && complete -C pomo pomo
+# bonzai style completions
+owncomp=(keg auth gocomplete kn knp knw pomo)
+for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
+
 _have flutter && source <(flutter zsh-completion)
 _have podman && source <(podman completion zsh)
 _have kubectl && source <(kubectl completion zsh)
@@ -82,6 +81,7 @@ _have helm && source <(helm completion zsh)
 _have fnm && source <(fnm env --use-on-cd)
 _have fzf && source "${XDG_CONFIG_HOME}/fzf/fzf.zsh"
 
+# python argparse completions
 _argparse() {
   # This is from the python3-argcomplete package on ubuntu
   # FIXME: make this work on other distros
@@ -90,16 +90,8 @@ _argparse() {
   fi
 }
 
-_argparse ansible
-_argparse ansible-config
-_argparse ansible-console
-_argparse ansible-doc
-_argparse ansible-galaxy
-_argparse ansible-inventory
-_argparse ansible-playbook
-_argparse ansible-pull
-_argparse ansible-vault
-_argparse dotctl
+argcomp=(ansible ansible-config ansible-console ansible-doc ansible-galaxy ansible-inventory ansible-playbook ansible-pull ansible-vault dotctl)
+for i in "${argcomp[@]}"; do _argparse "$i"; done
 
 _have nvim && alias vim=nvim
 _have ranger && alias r=ranger
@@ -130,7 +122,7 @@ _fzf_comprun() {
     knp)          KEG_CURRENT=~/personal/zettel _keg-node-complete "$@" ;;
     knw)          KEG_CURRENT=~/work/zet _keg-node-complete        "$@" ;;
     kn)           KEG_CURRENT=~/personal/zet _keg-node-complete    "$@" ;;
-    *)            fzf --preview 'bat -n --color=always {}'         "$@" ;;
+    *)            fuz                                              "$@" ;;
   esac
 }
 

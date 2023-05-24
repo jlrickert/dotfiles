@@ -15,6 +15,7 @@
             name: golang
         tags:
             - golang
+            - go
             - default
 
       - name: Command-line
