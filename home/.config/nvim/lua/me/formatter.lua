@@ -38,6 +38,9 @@ M.setup = function()
             sh = {
                 require('formatter.filetypes.sh').shfmt,
             },
+            sql = {
+                require('formatter.filetypes.sql').pgformat,
+            },
             svelte = {
                 require('formatter.filetypes.svelte').prettier,
             },
