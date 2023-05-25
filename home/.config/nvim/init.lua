@@ -188,20 +188,29 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     pattern = '*',
 })
 
--- Enable spell check for markdown files
-local spelling_group = vim.api.nvim_create_augroup('Spelling', { clear = true })
+-- Enable spell check for for a few file times
+local text_group = vim.api.nvim_create_augroup('Spelling', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'gitcommit', 'NeogitCommitMessage', 'text', 'markdown', 'text' },
-    group = spelling_group,
+    pattern = { 'gitcommit', 'NeogitCommitMessage', 'text', 'markdown' },
+    group = text_group,
     callback = function()
         vim.opt_local.spell = true
     end,
 })
 
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'gitcommit', 'NeogitCommitMessage', 'text', 'markdown' },
+    group = text_group,
+    callback = function()
+        -- enough for line number + gutter within 80 standard
+        vim.opt_local.textwidth = 72
+    end,
+})
+
 -- Enable keg files to use yaml
 local keg_group = vim.api.nvim_create_augroup('Keg', { clear = true })
-vim.api.nvim_create_autocmd({'BufNewFile','BufRead'}, {
-    pattern = { 'keg', },
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+    pattern = { 'keg' },
     group = keg_group,
     callback = function()
         vim.opt_local.filetype = 'yaml'
