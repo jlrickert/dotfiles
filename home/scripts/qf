@@ -1,8 +1,13 @@
-#!/bin/sh
+#!/bin/bash
+#
+# Generate a quickfix list that vim may consume
+#
+# Here is an example:
+#
+#   `vim <(qf grep SYMBOL)`
+#   `vim <(qf modified)`
 
 set -e
-
-cmds="help usage grep modified"
 
 help() {
     usage
@@ -36,30 +41,28 @@ default() {
     help
 }
 
-# ---------------------- bash completion context ---------------------
+########################## Command Delegation ##########################
+declare subcommand="${1:-modified}"
+test $# -gt 0 && shift
+declare -a commands=(help usage grep modified)
+
+######################### Tab Completion Context ########################
 
 # add `complete -S qf qf` to bashrc
 
 if test -n "${COMP_LINE}"; then
-    pre="${COMP_LINE##* }"
-    for c in ${cmds:+${cmds} $(list)}; do
-        test -z "${pre}" -o "${c}" != "${c#${pre}}" && echo "$c"
+    pre="${COMP_LINE#* }"
+    for cmd in "${commands[@]}"; do
+        [[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
     done
-    exit
+    exit 0
 fi
 
-# ------------------------------- main -------------------------------
+###################### Regular Context Delegation ######################
 
-cmd="$1"
-test $# -gt 0 && shift
-
-if test -z "{cmd}"; then
-    help
-    exit 1
-fi
-
-case "$cmd" in
-g | grep) grep "$@" ;;
-m | modified) modified "$@" ;;
-*) default "$@" ;;
-esac
+for i in "${commands[@]}"; do
+    if [[ $i == "$subcommand" ]]; then
+        "$subcommand" "$@"
+        exit 0
+    fi
+done
