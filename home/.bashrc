@@ -387,7 +387,7 @@ if ! shopt -oq posix; then
     fi
 fi
 
-owncomp=(keg auth gocomplete kn knp knw pomo qf sshkey)
+owncomp=(keg auth gocomplete kn knp knw ku pomo qf sshkey)
 for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
 
 _have gh && . <(gh completion -s bash)

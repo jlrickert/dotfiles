@@ -69,7 +69,7 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 _have() { command -v "$1" &>/dev/null; }
 
 # bonzai style completions
-owncomp=(keg auth gocomplete kn knp knw pomo qf sshkey)
+owncomp=(keg auth gocomplete kn knp knw ku pomo qf sshkey)
 for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
 
 _have flutter && source <(flutter zsh-completion)
@@ -118,10 +118,10 @@ _fzf_comprun() {
     cd)           fzf --preview 'tree -C {} | head -200'           "$@" ;;
     export|unset) fzf --preview "eval 'echo \$'{}"                 "$@" ;;
     ssh)          fzf --preview 'dig {}'                           "$@" ;;
-    keg)          _keg-node-complete                               "$@" ;;
-    knp)          KEG_CURRENT=~/personal/zettel _keg-node-complete "$@" ;;
-    knw)          KEG_CURRENT=~/work/zet _keg-node-complete        "$@" ;;
-    kn)           KEG_CURRENT=~/personal/zet _keg-node-complete    "$@" ;;
+    keg)          ku fzf                                           "$@" ;;
+    knp)          KEG_CURRENT=~/personal/zettel ku fzf             "$@" ;;
+    knw)          KEG_CURRENT=~/work/zet ku fzf                    "$@" ;;
+    kn)           KEG_CURRENT=~/personal/zet ku fzf                "$@" ;;
     *)            fuz                                              "$@" ;;
   esac
 }
@@ -129,14 +129,14 @@ _fzf_comprun() {
 # TODO: figure out what is going on here.  This feeds an initial list of nodes
 # to fzf to prevent garbage displaying at first
 _fzf_complete_keg() {
-  _fzf_complete +m -- "$@" < <(_keg-list-nodes)
+  _fzf_complete +m -- "$@" < <(ku nodes)
 }
 _fzf_complete_knp() {
-  _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zettel _keg-list-nodes)
+  _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zettel ku nodes)
 }
 _fzf_complete_knw() {
-   _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/work/zet _keg-list-nodes)
+   _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/work/zet ku nodes)
 }
 _fzf_complete_kn() {
-  _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zet _keg-list-nodes)
+  _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zet ku nodes)
 }

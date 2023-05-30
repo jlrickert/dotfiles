@@ -1,0 +1,96 @@
+#!/bin/bash
+# ku or keg utils
+
+set -e
+
+nodes() {
+    list() {
+        find . -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
+    }
+    case "$1" in
+    quick-fix) list ;;
+    list) list ;;
+    *) list ;;
+    esac
+}
+
+titles() {
+    find . -name "nodes.tsv" -exec awk -F'\t' '{print "docs/"$1"/README.md:1:"$3}' {} +
+}
+
+search() {
+    rg \
+        --line-number \
+        --files-with-matches \
+        --no-heading \
+        --smart-case \
+        --glob "docs/**/README.md" \
+        "$@" | grep -o -E '[0-9]+'
+}
+
+search-qf() {
+    rg \
+        --line-number \
+        --files-with-matches \
+        --no-heading \
+        --smart-case \
+        --glob "docs/**/README.md" \
+        "$@" | awk '{ cmd = "head -n 1 " $1; cmd | getline $2; close(cmd); print $1":1:"$2}'
+}
+
+fzf() {
+    ku nodes | _keg-node-complete "$@"
+    # RG_PREFIX='ku search'
+    # INITIAL_QUERY=""
+    # # shellcheck disable=SC2034
+    # FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
+    #     --bind "change:reload:$RG_PREFIX {q} || true" \
+    #     --sort \
+    #     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
+    #     --height=100% \
+    #     --width=80% \
+    #     --ansi --phony --query "$INITIAL_QUERY" "$@"
+    #
+    # FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
+    #     --bind "change:reload:$RG_PREFIX {q} || true" \
+    #     --sort \
+    #     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
+    #     --height=100% \
+    #     --ansi --phony --query "$INITIAL_QUERY" "$@"
+}
+
+help() {
+    echo ""
+}
+
+########################## Command Delegation ##########################
+
+declare subcommand="${1:-title}"
+test $# -gt 0 && shift
+declare -a commands=(nodes titles fzf search help)
+
+######################### Tab Completion Context ########################
+
+# add `complete -S qf qf` to bashrc
+
+if test -n "${COMP_LINE}"; then
+    pre="${COMP_LINE#* }"
+    for cmd in "${commands[@]}"; do
+        [[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
+    done
+    exit 0
+fi
+
+###################### Regular Context Delegation ######################
+
+KEG_CURRENT="${KEG_CURRENT:-$(keg current)}"
+if [[ ! "$(basename "${PWD}")" = "$(basename "${KEG_CURRENT}")" ]]; then
+    cd "${KEG_CURRENT}" || exit 1
+fi
+
+for i in "${commands[@]}"; do
+    if [[ $i == "$subcommand" ]]; then
+        "$subcommand" "$@"
+        exit 0
+    fi
+done

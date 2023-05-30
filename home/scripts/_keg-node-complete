@@ -6,15 +6,15 @@ set -o pipefail # exit if no-zero status code is returned in a pipeline
 IFS=$'\n\t'
 
 # RG_PREFIX='rg --color=always --line-number --files --no-heading --smart-case --glob "docs/**/README.md"'
-RG_PREFIX='_keg-node-search'
+RG_PREFIX='ku search'
 INITIAL_QUERY=""
 # shellcheck disable=SC2034
-FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'"
 if [[ -n "${KEG_CURRENT}" ]]; then
     cd "${KEG_CURRENT}"
 fi
-fzf \
+FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
     --bind "change:reload:$RG_PREFIX {q} || true" \
     --sort \
     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
+    --height=100% \
     --ansi --phony --query "$INITIAL_QUERY" "$@"

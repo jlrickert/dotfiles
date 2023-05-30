@@ -5,7 +5,8 @@ set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 IFS=$'\n\t'
 
-if [[ -n "${KEG_CURRENT}" ]]; then
+KEG_CURRENT="${KEG_CURRENT:-$(keg current)}"
+if [[ ! "$(basename "${PWD}")" = "$(basename "${KEG_CURRENT}")" ]]; then
     cd "${KEG_CURRENT}"
 fi
 grep -o '[0-9]*' <(find . -name "README.md") | sort -n -u
