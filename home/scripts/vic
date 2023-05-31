@@ -1,7 +1,40 @@
 #!/bin/bash
 
-FILE="$(which "$1")"
-if ! [[ "$(file "${FILE}")" =~ ASCII ]]; then
+cmds="e edit list ls"
+
+edit() {
+    FILE="$(which "$1")"
+    if ! [[ "$(file "${FILE}")" =~ ASCII ]]; then
+        exit
+    fi
+    $EDITOR "${FILE}"
+
+}
+
+list() {
+    ls "${SCRIPT:-$HOME/scripts}"
+}
+
+# ---------------------- bash completion context ---------------------
+
+# add `complete -S sshkey sshkey` to bashrc
+
+if test -n "${COMP_LINE}"; then
+    pre="${COMP_LINE##* }"
+    for c in ${cmds:+${cmds} $(list)}; do
+        test -z "${pre}" -o "${c}" != "${c#${pre}}" && echo "$c"
+    done
     exit
 fi
-$EDITOR "${FILE}"
+
+# ------------------------------- main -------------------------------
+
+cmd="${1}"
+test ${#} -gt 0 && shift
+
+echo "$@"
+case "$cmd" in
+ls | list) list "$@" ;;
+e | edit) edit "$@" ;;
+*) edit "$cmd" ;;
+esac

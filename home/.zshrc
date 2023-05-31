@@ -69,7 +69,7 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 _have() { command -v "$1" &>/dev/null; }
 
 # bonzai style completions
-owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf sshkey)
+owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf sshkey vic)
 for i in "${owncomp[@]}"; do _have "$i" && complete -C "$i" "$i"; done
 
 _have flutter && source <(flutter zsh-completion)
@@ -143,4 +143,7 @@ _fzf_complete_kn() {
 }
 _fzf_complete_chrome() {
   _fzf_complete +m -- "$@" < <(chrome history)
+}
+_fzf_complete_vic() {
+  _fzf_complete +m -- "$@" < <(vic list)
 }

@@ -1,3 +1,4 @@
 #!/bin/bash
-cd ~/personal/zettel || exit
+export KEG_CURRENT="${HOME}/personal/zettel/docs"
+cd "${KEG_CURRENT}
 keg "$@"
