@@ -69,8 +69,8 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 _have() { command -v "$1" &>/dev/null; }
 
 # bonzai style completions
-owncomp=(keg auth gocomplete kn knp knw ku pomo qf sshkey)
-for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
+owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf sshkey)
+for i in "${owncomp[@]}"; do _have "$i" && complete -C "$i" "$i"; done
 
 _have flutter && source <(flutter zsh-completion)
 _have podman && source <(podman completion zsh)
@@ -79,7 +79,7 @@ _have hugo && source <(hugo completion zsh) && compdef _hugo hugo
 _have k3s && source <(k3s completion zsh)
 _have helm && source <(helm completion zsh)
 _have fnm && source <(fnm env --use-on-cd)
-_have fzf && source "${XDG_CONFIG_HOME}/fzf/fzf.zsh"
+_have fzf && source "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh"
 
 # python argparse completions
 _argparse() {
@@ -122,6 +122,7 @@ _fzf_comprun() {
     knp)          KEG_CURRENT=~/personal/zettel ku fzf             "$@" ;;
     knw)          KEG_CURRENT=~/work/zet ku fzf                    "$@" ;;
     kn)           KEG_CURRENT=~/personal/zet ku fzf                "$@" ;;
+    chrome)       fzf --ansi --multi                               "$@" ;;
     *)            fuz                                              "$@" ;;
   esac
 }
@@ -139,4 +140,7 @@ _fzf_complete_knw() {
 }
 _fzf_complete_kn() {
   _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zet ku nodes)
+}
+_fzf_complete_chrome() {
+  _fzf_complete +m -- "$@" < <(chrome history)
 }

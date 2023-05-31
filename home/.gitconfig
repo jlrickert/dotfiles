@@ -1,9 +1,9 @@
 [user]
-	email = jaredrickert52@gmail.com
-	name = Jared Rickert
+    email = jaredrickert52@gmail.com
+    name = Jared Rickert
 
 [core]
-	editor = nvim
+    editor = nvim
     autocrlf = input
 
 [color]
@@ -32,11 +32,11 @@
 [pull]
     default = current
 
-[includeIf "gitdir:~/upngo/"]
-    path = ~/upngo/.gitconfig
+[includeIf "gitdir:~/work/"]
+    path = ~/work/.gitconfig
 
 [init]
-	defaultBranch = main
+    defaultBranch = main
 
 [alias]
     st = status

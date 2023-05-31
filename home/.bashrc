@@ -387,16 +387,18 @@ if ! shopt -oq posix; then
     fi
 fi
 
-owncomp=(keg auth gocomplete kn knp knw ku pomo qf sshkey)
+owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf sshkey)
 for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
 
 _have gh && . <(gh completion -s bash)
 _have pandoc && . <(pandoc --bash-completion)
 _have spotify && . <(spotify completion bash 2>/dev/null)
-_have podman && _source_if "$HOME/.local/share/podman/completion" # d
-_have docker && _source_if "$HOME/.local/share/docker/completion" # d
-_have docker-compose && complete -F _docker_compose dc            # dc
-_have nvm && _source_if "$NVM_DIR/bash_completion"
+_have podman && _source_if "$HOME/.local/share/podman/completion"
+_have docker && _source_if "$HOME/.local/share/docker/completion"
+_have docker-compose && complete -F _docker_compose dc          
+_have fnm && source <(fnm env --use-on-cd)
+# _have nvm && _source_if "$NVM_DIR/bash_completion"
+_have fzf && source "$HOME/.config/fzf/fzf.bash"
 _have cargo && _source_if "$CARGO_HOME/env"
 _have terraform && complete -C /usr/bin/terraform terraform
 _have terraform && complete -C /usr/bin/terraform tf

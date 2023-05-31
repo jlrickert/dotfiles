@@ -62,47 +62,26 @@ export FZF_ALT_C_OPTS="--preview 'tree -C {}"
 # Options to fzf command
 # export FZF_COMPLETION_OPTS='--border --info=inline'
 
-pathappend() {
-  declare arg
-  for arg in "$@"; do
-    test -d "$arg" || continue
-    PATH=${PATH//":$arg:"/:}
-    PATH=${PATH/#"$arg:"/}
-    PATH=${PATH/%":$arg"/}
-    export PATH="${PATH:+"$PATH:"}$arg"
-  done
-}
-
-pathprepend() {
-  for arg in "$@"; do
-    test -d "$arg" || continue
-    PATH=${PATH//:"$arg:"/:}
-    PATH=${PATH/#"$arg:"/}
-    PATH=${PATH/%":$arg"/}
-    export PATH="$arg${PATH:+":${PATH}"}"
-  done
-}
-
-# remember last arg will be first in path
-pathprepend \
-  "$HOME/.local/share/flutter/bin" \
-  "$HOME/.local/bin" \
-  "$CARGO_HOME/bin" \
-  "$FNM_HOME" \
-  /usr/local/go/bin \
-  /usr/local/bin \
+# ZSH magic to set the $PATH variable
+typeset -U path
+path+=(
   "$SCRIPTS"
-
-pathappend \
-  /usr/local/bin \
-  /usr/local/sbin \
-  /usr/local/games \
-  /usr/games \
-  /usr/sbin \
-  /usr/bin \
-  /snap/bin \
-  /sbin \
+  "$HOME/.local/bin"
+  "$HOME/.local/share/flutter/bin"
+  "$CARGO_HOME/bin"
+  "$FNM_HOME"
+  /usr/local/go/bin
+  /usr/local/bin
+  /usr/local/bin
+  /usr/local/sbin
+  /usr/local/games
+  /usr/games
+  /usr/sbin
+  /usr/bin
+  /snap/bin
+  /sbin
   /bin
+)
 
 # export PATH="$HOME/.local/bin:$FLYCTL_INSTALL/bin:$DENO_INSTALL/bin:$CARGO_HOME/bin:$VNM_HOME/bin:$SCRIPTS:${FNM_HOME}:${PATH}"
 

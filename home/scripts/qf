@@ -15,7 +15,7 @@ help() {
 }
 
 grep() {
-    rg --line-number --no-heading --column "$@"
+    rg --line-number --no-heading --column "${*:-}"
 }
 
 modified() {
