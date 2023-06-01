@@ -59,14 +59,19 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 #                      personalized configuration
 ################################################################################
 
+_have() { command -v "$1" &>/dev/null; }
+
 [[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
 [[ -f "$HOME/.work-secrets" ]] && source "$HOME/.work-secrets"
+
+BREW=/opt/homebrew/bin/brew
+if _have "${BREW}"; then
+  source <("${BREW}" shellenv)
+fi
 
 # tabtab source for packages
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
-
-_have() { command -v "$1" &>/dev/null; }
 
 # bonzai style completions
 owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf sshkey vic)
