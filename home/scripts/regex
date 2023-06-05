@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+cmds="list ls"
+
+puts() {
+    case "$1" in
+    todo) echo "\[ \] TODO:" ;;
+    email) echo "^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$" ;;
+    phone) echo "^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$" ;;
+    *)
+        list
+        exit 1
+        ;;
+    esac
+}
+
+list() {
+    echo "todo email"
+}
+
+# ---------------------- bash completion context ---------------------
+
+# add `complete -S regex regex` to bashrc or zshrc
+
+if test -n "${COMP_LINE}"; then
+    pre="${COMP_LINE##* }"
+    for c in ${cmds:+${cmds} $(list)}; do
+        test -z "${pre}" -o "${c}" != "${c#${pre}}" && echo "$c"
+    done
+    exit
+fi
+
+# ------------------------------- main -------------------------------
+
+cmd="${1}"
+test ${#} -gt 0 && shift
+
+case "$cmd" in
+ls | list) list "$@" ;;
+*) puts "$cmd" ;;
+esac
