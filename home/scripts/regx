@@ -5,7 +5,7 @@ set -o pipefail # exit if no-zero status code is returned in a pipeline
 
 cmds="list ls"
 
-puts() {
+_puts() {
     case "$1" in
     todo) echo "\[ \] TODO:" ;;
     email) echo "^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$" ;;
@@ -17,8 +17,8 @@ puts() {
     esac
 }
 
-list() {
-    echo "todo email"
+_list() {
+    echo "todo phone email"
 }
 
 # ---------------------- bash completion context ---------------------
@@ -27,18 +27,18 @@ list() {
 
 if test -n "${COMP_LINE}"; then
     pre="${COMP_LINE##* }"
-    for c in ${cmds:+${cmds} $(list)}; do
+    cmd="$(echo "${COMP_LINE}" | cut -d' ' -f 2)"
+    for c in ${cmds:+${cmds} $(_list)}; do
         test -z "${pre}" -o "${c}" != "${c#${pre}}" && echo "$c"
     done
     exit
 fi
 
 # ------------------------------- main -------------------------------
-
 cmd="${1}"
 test ${#} -gt 0 && shift
 
 case "$cmd" in
-ls | list) list "$@" ;;
-*) puts "$cmd" ;;
+ls | list) _list "$@" ;;
+*) _puts "$cmd" ;;
 esac

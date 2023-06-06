@@ -85,9 +85,9 @@ path+=(
 
 # export PATH="$HOME/.local/bin:$FLYCTL_INSTALL/bin:$DENO_INSTALL/bin:$CARGO_HOME/bin:$VNM_HOME/bin:$SCRIPTS:${FNM_HOME}:${PATH}"
 
-[[ -x "$(which nano)" ]] && export EDITOR=nano
-[[ -x "$(which vi)" ]] && export EDITOR=vi
-[[ -x "$(which vim)" ]] && export EDITOR=vim
+# [[ -x "$(which nano)" ]] && export EDITOR=nano
+# [[ -x "$(which vi)" ]] && export EDITOR=vi
+# [[ -x "$(which vim)" ]] && export EDITOR=vim
 [[ -x "$(which nvim)" ]] && export EDITOR=nvim
 [[ -x "$(which vim)" ]] && export VISUAL=vim
 [[ -x "$(which nvim)" ]] && export VISUAL=nvim

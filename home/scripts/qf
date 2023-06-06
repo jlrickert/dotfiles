@@ -6,23 +6,31 @@
 #
 #   `vim <(qf grep SYMBOL)`
 #   `vim <(qf modified)`
+#   `vim <(qf regex todo)`
+#   `vim <(qf regex phone)`
+#   `vim <(qf regex email)`
 
 set -e
 
-help() {
-    usage
-    exit 0
-}
+######################### Tab Completion Context ########################
+# add `complete -S qf qf` to bashrc
 
-grep() {
-    rg --line-number --no-heading --column "${*:-}"
-}
+declare -a COMMANDS=(help grep modified regex)
+if [[ -n "${COMP_LINE}" ]]; then
+    cmd="$(echo "${COMP_LINE}" | cut -d' ' -f 2)"
+    if [[ $cmd == "regex" ]]; then
+        echo "${COMP_LINE:${#cmd}}" >>tmp
+        COMP_LINE="" regx list
+        exit
+    fi
+    for c in "${COMMANDS[@]}"; do
+        [[ ${c:0:${#1}} == "$1" ]] && echo "$c"
+    done
+    exit
+fi
 
-modified() {
-    git diff --name-only | awk -F: '{print $1 ":1:Modified"}'
-}
-
-usage() {
+###################### Regular Context Delegation ######################
+_help() {
     echo "NAME"
     echo
     echo "    qf - create a quick fix list"
@@ -35,34 +43,29 @@ usage() {
     echo
     echo "    g|grep     - grep regular expression"
     echo "    m|modified - all modified files"
-}
-
-default() {
-    help
-}
-
-########################## Command Delegation ##########################
-declare subcommand="${1:-modified}"
-test $# -gt 0 && shift
-declare -a commands=(help usage grep modified)
-
-######################### Tab Completion Context ########################
-
-# add `complete -S qf qf` to bashrc
-
-if test -n "${COMP_LINE}"; then
-    pre="${COMP_LINE#* }"
-    for cmd in "${commands[@]}"; do
-        [[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
-    done
+    echo "    r|regex    - pre baked regex codes"
+    echo "    h|help     - this help menu"
     exit 0
-fi
+}
 
-###################### Regular Context Delegation ######################
+_grep() {
+    rg --line-number --no-heading --column "${1:-}"
+}
 
-for i in "${commands[@]}"; do
-    if [[ $i == "$subcommand" ]]; then
-        "$subcommand" "$@"
-        exit 0
-    fi
-done
+_regex() {
+    _grep "$(regx "${@}")"
+}
+
+_modified() {
+    git diff --name-only | awk -F: '{print $1 ":1:Modified"}'
+}
+
+CMD="${1}"
+shift # pops off first argument off of ${@}
+case "${CMD}" in
+g | grep) _grep "${@}" ;;
+r | regex) _regex "${@}" ;;
+m | modified) _modified "${@}" ;;
+h | help) _help "${@}" ;;
+*) _help "${@}" ;;
+esac

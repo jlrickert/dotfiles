@@ -6,17 +6,29 @@ set -e
 
 typ=ed25519
 confd="$HOME/.ssh"
-cmds="gen pub list ls"
+cmds="gen pub list ls passwd comment"
 
 gen() {
     name=${1:-$(date -u +%Y%m%d%H%M%S)}
-    ssh-keygen -t "${typ}" -f "${confd}/$name"
+    ssh-keygen -t "${typ}" -f "${confd}/id_${typ}_$name"
 }
 
 pub() {
     name="${1:-id_ed25519}"
     test -e "${confd}/${name}.pub" || return 1
     cat "${confd}/${name}.pub"
+}
+
+passwd() {
+    name="${1:-id_ed25519}"
+    test -e "${confd}/${name}.pub" || return 1
+    ssh-keygen -p -f "${confd}/${name}"
+}
+
+comment() {
+    name="${1:-id_ed25519}"
+    test -e "${confd}/${name}.pub" || return 1
+    ssh-keygen -c -f "${confd}/${name}"
 }
 
 list() {
@@ -49,5 +61,7 @@ case "$cmd" in
 pub) pub "$@" ;;
 gen) gen "$@" ;;
 ls | list) list "$@" ;;
+passwd) passwd "$@" ;;
+comment) comment "$@" ;;
 *) pub "$@" ;;
 esac

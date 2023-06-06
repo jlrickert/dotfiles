@@ -11,6 +11,7 @@ plugins=(
   cp
   debian
   direnv
+  docker
   # fzf
   gh
   git
@@ -59,14 +60,14 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 #                      personalized configuration
 ################################################################################
 
+_source_if() { [[ -r "$1" ]] && source "$1"; }
 _have() { command -v "$1" &>/dev/null; }
 
 [[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
 [[ -f "$HOME/.work-secrets" ]] && source "$HOME/.work-secrets"
 
-BREW=/opt/homebrew/bin/brew
-if _have "${BREW}"; then
-  source <("${BREW}" shellenv)
+if _have /opt/homebrew/bin/brew; then
+  source <(/opt/homebrew/bin/brew shellenv)
 fi
 
 # tabtab source for packages
@@ -74,7 +75,7 @@ fi
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
 
 # bonzai style completions
-owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf sshkey vic)
+owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf regx sshkey vic build ./build)
 for i in "${owncomp[@]}"; do _have "$i" && complete -C "$i" "$i"; done
 
 _have flutter && source <(flutter zsh-completion)
@@ -152,3 +153,6 @@ _fzf_complete_chrome() {
 _fzf_complete_vic() {
   _fzf_complete +m -- "$@" < <(vic list)
 }
+
+_source_if "$HOME/.zsh-personal"
+_source_if "$HOME/.zsh-work"

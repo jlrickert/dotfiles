@@ -17,7 +17,7 @@ list() {
 
 # ---------------------- bash completion context ---------------------
 
-# add `complete -S sshkey sshkey` to bashrc
+# add `complete -S vic vic` to bashrc or zshrc
 
 if test -n "${COMP_LINE}"; then
     pre="${COMP_LINE##* }"
@@ -32,7 +32,6 @@ fi
 cmd="${1}"
 test ${#} -gt 0 && shift
 
-echo "$@"
 case "$cmd" in
 ls | list) list "$@" ;;
 e | edit) edit "$@" ;;
