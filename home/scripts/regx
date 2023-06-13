@@ -10,6 +10,9 @@ _puts() {
     todo) echo "\[ \] TODO:" ;;
     email) echo "^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$" ;;
     phone) echo "^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$" ;;
+    date) echo "\d{4}-\d{2}-\d{2}$" ;;
+    meta-date) echo '^ {0,4}date: *\d{4}-\d{2}-\d{2}$' ;;
+    meta-daily) echo '^ {0,4}.* #daily' ;;
     *)
         list
         exit 1
@@ -18,7 +21,7 @@ _puts() {
 }
 
 _list() {
-    echo "todo phone email"
+    echo "todo phone email date meta-date meta-daily"
 }
 
 # ---------------------- bash completion context ---------------------

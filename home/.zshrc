@@ -12,6 +12,7 @@ plugins=(
   debian
   direnv
   docker
+  docker-compose
   # fzf
   gh
   git
@@ -75,7 +76,7 @@ fi
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
 
 # bonzai style completions
-owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf regx sshkey vic build ./build)
+owncomp=(keg auth gocomplete chrome kn knp knw ku pomo dlcp qf regx sshkey vic tmpl build win ./build)
 for i in "${owncomp[@]}"; do _have "$i" && complete -C "$i" "$i"; done
 
 _have flutter && source <(flutter zsh-completion)
@@ -129,6 +130,7 @@ _fzf_comprun() {
     knw)          KEG_CURRENT=~/work/zet ku fzf                    "$@" ;;
     kn)           KEG_CURRENT=~/personal/zet ku fzf                "$@" ;;
     chrome)       fzf --ansi --multi                               "$@" ;;
+    vim)          fuz                                              "$@" ;;
     *)            fuz                                              "$@" ;;
   esac
 }
@@ -149,6 +151,9 @@ _fzf_complete_kn() {
 }
 _fzf_complete_chrome() {
   _fzf_complete +m -- "$@" < <(chrome history)
+}
+_fzf_complete_vim() {
+  _fzf_complete +m -- "$@" < <(rg --files --ignore --color=never)
 }
 _fzf_complete_vic() {
   _fzf_complete +m -- "$@" < <(vic list)

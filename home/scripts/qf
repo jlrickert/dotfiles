@@ -15,17 +15,37 @@ set -e
 ######################### Tab Completion Context ########################
 # add `complete -S qf qf` to bashrc
 
-declare -a COMMANDS=(help grep modified regex)
 if [[ -n "${COMP_LINE}" ]]; then
-    cmd="$(echo "${COMP_LINE}" | cut -d' ' -f 2)"
-    if [[ $cmd == "regex" ]]; then
-        echo "${COMP_LINE:${#cmd}}" >>tmp
+    cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
+    case "$cmd" in
+    help) ;;
+    grep) ;;
+    modified) ;;
+    regex)
         COMP_LINE="" regx list
-        exit
-    fi
-    for c in "${COMMANDS[@]}"; do
-        [[ ${c:0:${#1}} == "$1" ]] && echo "$c"
-    done
+        ;;
+    util)
+        subcmd="$(echo "${COMP_LINE}" | awk '{print $3}')"
+        if [[ -z $subcmd ]]; then
+            for c in file col desc; do
+                [[ ${c:0:${#1}} == "$1" ]] && echo "$c"
+            done
+        fi
+        ;;
+    *)
+        for c in help grep modified regex util; do
+            [[ ${c:0:${#1}} == "$1" ]] && echo "$c"
+        done
+        ;;
+
+    esac
+    # if [[ $cmd == "regex" ]]; then
+    #     COMP_LINE="" regx list
+    #     exit
+    # fi
+    # for c in "${COMMANDS[@]}"; do
+    #     [[ ${c:0:${#1}} == "$1" ]] && echo "$c"
+    # done
     exit
 fi
 
@@ -60,6 +80,14 @@ _modified() {
     git diff --name-only | awk -F: '{print $1 ":1:Modified"}'
 }
 
+_util() {
+    case "$1" in
+    file) echo "$1" | awk -F':' '{print $1}' ;;
+    col) echo "$1" | awk -F':' '{print $2}' ;;
+    desc) echo "$1" | awk -F':' '{print $3}' ;;
+    esac
+}
+
 CMD="${1}"
 shift # pops off first argument off of ${@}
 case "${CMD}" in
@@ -67,5 +95,6 @@ g | grep) _grep "${@}" ;;
 r | regex) _regex "${@}" ;;
 m | modified) _modified "${@}" ;;
 h | help) _help "${@}" ;;
+u | util) _util "${@}" ;;
 *) _help "${@}" ;;
 esac
