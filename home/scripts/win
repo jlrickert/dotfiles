@@ -1,0 +1,166 @@
+#!/bin/bash
+
+set -o errexit # exit if non-zero status code is returned
+# set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+# FOCUSED_SPACE="$(yabai -m query --spaces | jq -r '.[] | select(."has-focus")')"
+# FOCUSED_WINDOW="$(yabai -m query --windows --window)"
+# FOCUSED_WINDOW_ID="$(yabai -m query --windows --window | jq -r '.id')"
+# ACTIVE_SPACES="$(yabai -m query --spaces | jq -r '.[] | select(."is-visible")')"
+
+DISPLAY_COUNT="$(yabai -m query --displays | jq -r length)"
+DIRECTION=
+
+_windows() {
+    yabai -m query --windows --space
+}
+
+_window() {
+    yabai -m query --windows --window
+}
+
+_move_check() {
+    if [[ ! "$(_window | jq -r '."can-move"')" = "true" ]]; then
+        exit 0
+    fi
+}
+
+_east() {
+    exit
+    _move_check
+
+    # check if window needs to be moved to the display to the right
+    if [[ $(_window | jq -r '.frame.x') -ge $(_windows | jq -r '[.[].frame.x] | max') ]]; then
+        if [[ $(_window | jq -r '.display') -gt ${DISPLAY_COUNT} ]]; then
+            yabai -m window --display east
+            yabai -m display --focus east
+        else
+            yabai -m window --focus east
+        fi
+        exit
+    fi
+    yabai -m window --focus east
+}
+
+_west() {
+    echo "WEST"
+    exit
+    _move_check
+    WINDOW_X="$(yabai -m query --windows --window | jq -r '.frame.x')"
+    WINDOW_X="$(yabai -m query --windows --window | jq -r '.frame.x')"
+
+    if ! [[ ${WINDOW_X} -lt 20 ]]; then
+        yabai -m window --focus west
+    fi
+    echo "yes"
+    yabai -m window --focus west
+}
+
+if [[ -n "${COMP_LINE}" ]]; then
+    for c in east west; do
+        [[ ${c:0:${#1}} == "$1" ]] && echo "$c"
+    done
+fi
+
+_move() {
+    if [[ ! "$(_window | jq -r '."can-move"')" = "true" ]]; then
+        exit 0
+    fi
+
+    "$1"
+}
+
+_focus() {
+    echo "FOCUS"
+    "$1"
+}
+
+case "$1" in
+focus) CMD=focus ;;
+move) CMD=move ;;
+*)
+    echo "$1 is invalid"
+    exit 1
+    ;;
+esac
+
+case "$2" in
+east) DIRECTION=east ;;
+west) DIRECTION=west ;;
+next) DIRECTION=next ;;
+prev) DIRECTION=prev ;;
+*)
+    echo "$2 is invalid"
+    exit 1
+    ;;
+esac
+
+_focus_west() {
+    echo "FOCUS WEST"
+}
+
+_move_west() {
+    echo "MOVE WEST"
+}
+
+_focus_east() {
+    if yabai -m window --focus east; then
+        exit
+    fi
+    yabai -m display --focus east
+    #    jq -nr \
+    # --argjson displays "$(yabai -m query --displays)" \
+    # --argjson focused "$(yabai -m query --displays --display)" \
+    # --argjson direction "0" \
+    # '$displays
+    # 	| map(select(.id != $focused.id))
+    # 	| sort_by((1 | atan * 2 * $direction)
+    # 		- (	  (.frame.y + .frame.h / 2 - $focused.frame.y - $focused.frame.h / 2)
+    # 			/ (.frame.x + .frame.w / 2 - $focused.frame.x - $focused.frame.w / 2)
+    # 			| atan)
+    # 		| fabs)
+    # 	| first.index // empty' \
+    # | xargs yabai -m display --focus
+
+    # if yabai -m window --focus east; then
+    #     exit
+    # fi
+    # SPACES=$(yabai -m query --spaces --display next || yabai -m query --spaces --display first)
+    # echo $SPACES
+    # if yabai -m window --focus "$(echo "$SPACES" | jq -re '.[] | select(.visible == 1)."first-window"')"; then
+    #     exit
+    # fi
+    #
+    # yabai -m display --focus east || yabai -m display --focus first
+}
+
+_move_east() {
+    exit
+}
+
+_focus_next() {
+    if yabai -m window --focus next; then
+        exit
+    fi
+    SPACES=$(yabai -m query --spaces --display next || yabai -m query --spaces --display first)
+    if yabai -m window --focus "$(echo "$SPACES" | jq -re '.[] | select(.visible == 1)."first-window"')"; then
+        exit
+    fi
+
+    yabai -m display --focus next || yabai -m display --focus first
+}
+
+_focus_prev() {
+    if yabai -m window --focus prev; then
+        exit
+    fi
+    SPACES=$(yabai -m query --spaces --display prev || yabai -m query --spaces --display last)
+    if yabai -m window --focus "$(echo "$SPACES" | jq -re '.[] | select(.visible == 1)."first-window"')"; then
+        exit
+    fi
+
+    yabai -m display --focus next || yabai -m display --focus first
+}
+
+"_${CMD}_${DIRECTION}"

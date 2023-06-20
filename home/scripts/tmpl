@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+TMPL_DIR=${TMPL_DIR:-${HOME}/.config/tmpl}
+
+_edit() {
+    $EDITOR "${TMPL_DIR}/$1"
+}
+
+_list() {
+    ls "${TMPL_DIR}"
+}
+
+_view() {
+    local script
+    script="$(cat "${TMPL_DIR}/$1")"
+    eval printf '%s' "${script}"
+}
+
+# ---------------------- bash completion context ---------------------
+
+if test -n "${COMP_LINE}"; then
+    declare -a COMMANDS=(ls list edit view)
+    for c in "${COMMANDS[@]}" $(_list); do
+        [[ ${c:0:${#1}} == "$1" ]] && echo "$c"
+    done
+    exit
+fi
+
+# ------------------------------- main -------------------------------
+
+cmd="${1}"
+test "${#}" -gt 0 && shift
+
+case "$cmd" in
+ls | list) _list "${@}" ;;
+e | edit) _edit "${@}" ;;
+v | view) _view "${@}" ;;
+*) _view "${cmd}" ;;
+esac
