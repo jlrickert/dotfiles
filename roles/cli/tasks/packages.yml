@@ -102,6 +102,32 @@
       state: present
   when: ansible_distribution == "Ubuntu"
 
+- name: Install cli tools (MacOSX)
+  community.general.homebrew:
+      name:
+        - ansible
+        - awk
+        - bat
+        - composer
+        - coreutils
+        - exa
+        - fzf
+        - gh
+        - go
+        - httpie
+        - ripgrep
+        - shellcheck
+        - shfmt
+        - stow
+        - tig
+        - tmux
+        # [ ] TODO: figure out how to install these
+        # - visual-studio-code
+        # - android-studio
+        # - stats
+      state: present
+  when: ansible_distribution == "MacOSX"
+
 - name: Create the `aur_builder` user (Archlinux)
   become: yes
   ansible.builtin.user:

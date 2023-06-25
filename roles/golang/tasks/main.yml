@@ -1,39 +1,35 @@
 ---
-- name: Download Go archive
-  ansible.builtin.get_url:
-      url: "https://go.dev/dl/go{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
-      dest: "/tmp/go{{ go_version }}.tar.gz"
-      checksum: "{{ go_checksum }}"
+- name: Install go
+  import_tasks: linux.yml
+  when: ansible_distribution != "MacOSX"
 
-- name: Extract Go archive
-  become: yes
-  ansible.builtin.unarchive:
-      src: "/tmp/go{{ go_version }}.tar.gz"
-      dest: "{{ go_install_dir }}"
-      remote_src: yes
-      creates: "{{ go_install_dir }}/go"
+- name: Install go
+  community.general.homebrew:
+      name: go
+      state: present
+  when: ansible_distribution == "MacOSX"
 
 - name: Install keg binary
-  command: "{{ go_install_dir }}/go/bin/go install github.com/rwxrob/keg/cmd/keg@latest"
+  command: "{{ go_bin[ansible_distribution] }} install github.com/rwxrob/keg/cmd/keg@latest"
   args:
       creates: "{{ gobin }}/keg"
 
 - name: Install gocomplete binary
-  command: "{{ go_install_dir }}/go/bin/go install github.com/posener/complete/gocomplete@latest"
+  command: "{{ go_bin[ansible_distribution] }} install github.com/posener/complete/gocomplete@latest"
   args:
       creates: "{{ gobin }}/gocomplete"
 
 - name: Install gopls binary
-  command: "{{ go_install_dir }}/go/bin/go install golang.org/x/tools/gopls@latest"
+  command: "{{ go_bin[ansible_distribution] }} install golang.org/x/tools/gopls@latest"
   args:
       creates: "{{ gobin }}/gopls"
 
 - name: Install hugo binary
-  command: "{{ go_install_dir }}/go/bin/go install github.com/gohugoio/hugo@latest"
+  command: "{{ go_bin[ansible_distribution] }} install github.com/gohugoio/hugo@latest"
   args:
       creates: "{{ gobin }}/hugo"
 
 - name: Install auth binary
-  command: "{{ go_install_dir }}/go/bin/go install github.com/rwxrob/auth-go/cmd/auth@latest"
+  command: "{{ go_bin[ansible_distribution] }} install github.com/rwxrob/auth-go/cmd/auth@latest"
   args:
       creates: "{{ gobin }}/auth"
