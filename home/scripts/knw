@@ -1,4 +1,5 @@
 #!/bin/bash
 export KEG_CURRENT="${HOME}/work/zet/docs"
-cd "${KEG_CURRENT}"
+cd "$(dirname "${KEG_CURRENT}")" || exit 1
+git pull
 keg "$@"
