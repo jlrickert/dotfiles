@@ -1,49 +1,49 @@
 export USER="${USER:-$(whoami)}"
-export GITUSER="$USER"
-export REPOS="$HOME/repos"
-export PERSONAL="$HOME/personal"
-export DOTFILES="$PERSONAL/dotfiles"
-export SCRIPTS="$HOME/scripts"
-export SNIPPETS="$HOME/snippets"
+export GITUSER="${USER}"
+export REPOS="${HOME}/repos"
+export PERSONAL="${HOME}/personal"
+export DOTFILES="${PERSONAL}/dotfiles"
+export SCRIPTS="${HOME}/scripts"
+export SNIPPETS="${HOME}/snippets"
 export HELP_BROWSER=lynx
 
-export DESKTOP="$HOME/Desktop"
-export DOCUMENTS="$HOME/Documents"
-export DOWNLOADS="$HOME/Downloads"
-export PUBLIC="$HOME/Public"
-export PRIVATE="$HOME/Private"
-export PICTURES="$HOME/Pictures"
-export TEMPLATES="$HOME/Templates"
-export MUSIC="$HOME/Music"
-export VIDEOS="$HOME/Videos"
+export DESKTOP="${HOME}/Desktop"
+export DOCUMENTS="${HOME}/Documents"
+export DOWNLOADS="${HOME}/Downloads"
+export PUBLIC="${HOME}/Public"
+export PRIVATE="${HOME}/Private"
+export PICTURES="${HOME}/Pictures"
+export TEMPLATES="${HOME}/Templates"
+export MUSIC="${HOME}/Music"
+export VIDEOS="${HOME}/Videos"
 
 export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"}
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:="$HOME/.config"}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:="$HOME/.cache"}
 export XDG_STATE_HOME=${XDG_STATE_HOME:="$HOME/.local/state"}
 
-export ZETDIR="$GHREPOS/zet"
+export ZETDIR="${GHREPOS}/zet"
 export TERM=xterm-256color
 export HRULEWIDTH=73
-export DENO_INSTALL="$XDG_DATA_HOME/deno"
-export NVM_DIR="$XDG_DATA_HOME/nvm"
-export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
-export CARGO_HOME="$XDG_DATA_HOME/cargo"
-export VOLTA_HOME="$HOME/.volta"
-export FNM_HOME="$HOME/.local/share/fnm" # Figure out how to change this to use XDG_DATA_HOME
-export ZSH_HOME="$HOME/.local/share/zsh"
-export GOPRIVATE="github.com/$GITUSER/*,gitlab.com/$GITUSER/*"
-export GOPATH="$XDG_DATA_HOME/go"
-export GOBIN="$HOME/.local/bin"
+export DENO_INSTALL="${XDG_DATA_HOME}/deno"
+export NVM_DIR="${XDG_DATA_HOME}/nvm"
+export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
+export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+export VOLTA_HOME="${HOME}/.volta"
+export FNM_HOME="${HOME}/.local/share/fnm" # Figure out how to change this to use XDG_DATA_HOME
+export ZSH_HOME="${HOME}/.local/share/zsh"
+export GOPRIVATE="github.com/${GITUSER}/*,gitlab.com/${GITUSER}/*"
+export GOPATH="${XDG_DATA_HOME}/go"
+export GOBIN="${HOME}/.local/bin"
 #export GOPROXY=direct
-export KUBECONFIG="$HOME/.kube/config"
+export KUBECONFIG="${HOME}/.kube/config"
 export CGO_ENABLED=0
 export PYTHONDONTWRITEBYTECODE=2
 export LC_COLLATE=C
 #export CFLAGS="-Wall -Wextra -Werror -O0 -g -fsanitize=address -fno-omit-frame-pointer -finstrument-functions"
-export ZSH="$XDG_DATA_HOME/oh-my-zsh"
+export ZSH="${XDG_DATA_HOME}/oh-my-zsh"
 
-# PERSONAL=$XDG_CONFIG_HOME/personal
+# PERSONAL="${XDG_CONFIG_HOME}/personal
 # source $PERSONAL/env
 # for i in $(find -L $PERSONAL); do
 #     source "$i"
