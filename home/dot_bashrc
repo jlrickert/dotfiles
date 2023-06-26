@@ -219,7 +219,7 @@ PROMPT_MAX=95
 PROMPT_AT=@
 
 __ps1() {
-    local P='$' dir="${PWD##*/}" B countme short long double \
+    local P='$' dir="${PWD/$HOME/\~}" B countme short long double \
         r='\[\e[31m\]' g='\[\e[32m\]' h='\[\e[34m\]' \
         u='\[\e[33m\]' p='\[\e[34m\]' w='\[\e[35m\]'
 
