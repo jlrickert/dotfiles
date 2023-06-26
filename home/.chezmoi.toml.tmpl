@@ -1,4 +1,8 @@
 {{- $email := promptStringOnce . "email" "Email address" -}}
+{{- $name  := promptStringOnce . "name" "Full name" -}}
+{{- $openai_token  := promptStringOnce . "openai_token" "Chat GPT token" -}}
 
 [data]
+    name = {{ $name | quote }}
     email = {{ $email | quote }}
+	openai_token = {{ $openai_token | quote }}
