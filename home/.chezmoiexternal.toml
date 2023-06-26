@@ -6,3 +6,11 @@
     type = "git-repo"
     url = "https://github.com/ohmyzsh/ohmyzsh.git"
     refreshPeriod = "168h"
+[".local/share/blesh"]
+    type = "git-repo"
+    url = "https://github.com/akinomyoga/ble.sh.git"
+    refreshPeriod = "168h"
+[".local/share/fzf"]
+    type = "git-repo"
+    url = "https://github.com/junegunn/fzf.git"
+    refreshPeriod = "168h"
