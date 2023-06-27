@@ -1,8 +1,10 @@
 {{- $email := promptStringOnce . "email" "Email address" -}}
 {{- $name  := promptStringOnce . "name" "Full name" -}}
 {{- $openai_token  := promptStringOnce . "openai_token" "Chat GPT token" -}}
+{{- $include_repos := promptBoolOnce . "include_repos" "Include Repos" -}}
 
 [data]
     name = {{ $name | quote }}
     email = {{ $email | quote }}
-	openai_token = {{ $openai_token | quote }}
+    openai_token = {{ $openai_token | quote }}
+    include_repos = {{ $include_repos | default true }}

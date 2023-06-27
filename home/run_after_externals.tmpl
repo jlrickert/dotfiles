@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+_have() { type "$1" &>/dev/null; }
+
+_version_ge()
+{
+    printf '%s\n%s\n' "$2" "$1" | sort --check=quiet --version-sort
+}
+
+########################################
+# Install fzf binaries and completions
+########################################
+_install_fzf() {
+VERSION=$(fzf --version | awk '{print $1}')
+    # Remove old versions of fzf
+    if _have fzf && ! _version_ge "${VERSION}" "0.42.0"; then
+        {{ if eq .chezmoi.osRelease.idLike "debian" }}
+        sudo apt-get remove -y fzf
+        {{ end }}
+        {{ if eq .chezmoi.os "darwin" }}
+        _have brew && brew remove fzf
+        {{ end }}
+    fi
+    ./install --no-update-rc --key-bindings --completion --xdg
+    cp bin/fzf bin/fzf-tmux ~/.local/bin/
+}
+cd "${XDG_DATA_HOME:-$HOME/.local/share}/fzf" && _install_fzf && cd -

@@ -20,36 +20,13 @@ _source_if() { [[ -r "$1" ]] && source "$1"; }
 #                         environment variables
 #                           (also see envx)
 ################################################################################
-export USER="${USER:-$(whoami)}"
-export GITUSER="$USER"
-export REPOS="$HOME/Repos"
-export GHREPOS="$REPOS/github.com/$GITUSER"
-export DOTFILES="$HOME/personal/dotfiles"
-export SCRIPTS="$HOME/scripts"
-export SNIPPETS="$DOTFILES/snippets"
-export HELP_BROWSER=lynx
-export DESKTOP="$HOME/Desktop"
-export DOCUMENTS="$HOME/Documents"
-export DOWNLOADS="$HOME/Downloads"
+source "~/.zshenv"
 
-export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"}
-export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:="$HOME/.config"}
-export XDG_CACHE_HOME=${XDG_CACHE_HOME:="$HOME/.cache"}
-export XDG_STATE_HOME=${XDG_STATE_HOME:="$HOME/.local/state"}
-
-export TEMPLATES="$HOME/Templates"
-export PUBLIC="$HOME/Public"
-export PRIVATE="$HOME/Private"
-export PICTURES="$HOME/Pictures"
-export MUSIC="$HOME/Music"
-export VIDEOS="$HOME/Videos"
-export ZETDIR="$GHREPOS/zet"
-export TERM=xterm-256color
-export HRULEWIDTH=73
 _have nano && export EDITOR=nano
 _have vi && export EDITOR=vi
 _have vim && export EDITOR=vim
 _have nvim && export EDITOR=nvim
+_have vi && export VISUAL=vi
 _have vim && export VISUAL=vim
 _have nvim && export VISUAL=nvim
 _have vim && export EDITOR_PREFIX=vim
@@ -162,6 +139,7 @@ pathprepend \
     "$HOME/.local/bin" \
     "$GHREPOS/cmd-"* \
     "$CARGO_HOME/bin" \
+    "$HOME/.local/share/go/bin" \
     /usr/local/go/bin \
     /usr/local/bin \
     "$SCRIPTS"
@@ -322,52 +300,12 @@ envx() {
 
 [[ -e "$HOME/.env" ]] && envx "$HOME/.env"
 
-new-from() {
-    local template="$1"
-    local name="$2"
-    ! _have gh && echo "gh command not found" && return 1
-    [[ -z "$name" ]] && echo "usage: $0 <name>" && return 1
-    [[ -z "$GHREPOS" ]] && echo "GHREPOS not set" && return 1
-    [[ ! -d "$GHREPOS" ]] && echo "Not found: $GHREPOS" && return 1
-    cd "$GHREPOS" || return 1
-    [[ -e "$name" ]] && echo "exists: $name" && return 1
-    gh repo create -p "$template" --public "$name"
-    gh repo clone "$name"
-    cd "$name" || return 1
-}
-
-new-bonzai() { new-from jlrickert/bonzai-example "$1"; }
-new-cmd() { new-from jlrickert/template-bash-command "cmd-$1"; }
-
-export -f new-from new-bonzai new-cmd
-
-clone() {
-    local repo="$1" user
-    local repo="${repo#https://github.com/}"
-    local repo="${repo#git@github.com:}"
-    if [[ $repo =~ / ]]; then
-        user="${repo%%/*}"
-    else
-        user="$GITUSER"
-        [[ -z "$user" ]] && user="$USER"
-    fi
-    local name="${repo##*/}"
-    local userd="$REPOS/github.com/$user"
-    local path="$userd/$name"
-    [[ -d "$path" ]] && cd "$path" && return
-    mkdir -p "$userd"
-    cd "$userd"
-    echo gh repo clone "$user/$name" -- --recurse-submodule
-    gh repo clone "$user/$name" -- --recurse-submodule
-    cd "$name"
-} && export -f clone
-
 ################################################################################
 #               programming language specific source files
 ################################################################################
 
 # TODO: this takes like 2 seconds too long to load
-_source_if "$NVM_DIR/nvm.sh"
+#_source_if "$NVM_DIR/nvm.sh"
 
 ################################################################################
 #               source external dependencies / completion
@@ -387,15 +325,20 @@ if ! shopt -oq posix; then
     fi
 fi
 
-owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf sshkey)
+_source_if "${XDG_DATA_HOME}/blesh/ble.sh"
+
+owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf sshkey vic build ./build)
 for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
 
 _have gh && . <(gh completion -s bash)
-_have pandoc && . <(pandoc --bash-completion)
-_have spotify && . <(spotify completion bash 2>/dev/null)
+_have flutter && source <(flutter zsh-completion)
+_have pandoc && source <(pandoc --bash-completion)
+_have spotify && source <(spotify completion bash 2>/dev/null)
+_have hugo && source <(hugo completion bash) && compdef _hugo hugo
+_have chezmoi && source <(chezmoi completion bash)
 _have podman && _source_if "$HOME/.local/share/podman/completion"
 _have docker && _source_if "$HOME/.local/share/docker/completion"
-_have docker-compose && complete -F _docker_compose dc          
+_have docker-compose && complete -F _docker_compose dc
 _have fnm && source <(fnm env --use-on-cd)
 # _have nvm && _source_if "$NVM_DIR/bash_completion"
 _have fzf && source "$HOME/.config/fzf/fzf.bash"
@@ -403,22 +346,26 @@ _have cargo && _source_if "$CARGO_HOME/env"
 _have terraform && complete -C /usr/bin/terraform terraform
 _have terraform && complete -C /usr/bin/terraform tf
 
-_have ansible && . <(register-python-argcomplete3 ansible)
-_have ansible-config && . <(register-python-argcomplete3 ansible-config)
-_have ansible-console && . <(register-python-argcomplete3 ansible-console)
-_have ansible-doc && . <(register-python-argcomplete3 ansible-doc)
-_have ansible-galaxy && . <(register-python-argcomplete3 ansible-galaxy)
-_have ansible-inventory && . <(register-python-argcomplete3 ansible-inventory)
-_have ansible-playbook && . <(register-python-argcomplete3 ansible-playbook)
-_have ansible-pull && . <(register-python-argcomplete3 ansible-pull)
-_have ansible-vault && . <(register-python-argcomplete3 ansible-vault)
+
+# python argparse completions
+_argparse() {
+  # This is from the python3-argcomplete package on ubuntu
+  # FIXME: make this work on other distros
+  if _have register-python-argcomplete3 && _have "$1"; then
+    source <(register-python-argcomplete3 "$1")
+  fi
+}
+
+argcomp=(ansible ansible-config ansible-console ansible-doc ansible-galaxy ansible-inventory ansible-playbook ansible-pull ansible-vault dotctl)
+for i in "${argcomp[@]}"; do _argparse "$i"; done
+
 #_have ssh-agent && test -z "$SSH_AGENT_PID" && . <(ssh-agent)
 
 ################################################################################
 #                      personalized configuration
 ################################################################################
 
-_source_if "$HOME/.bash-personal"
-_source_if "$HOME/.bash-work"
+_source_if "$HOME/.privaterc"
+_source_if "$HOME/.workrc"
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"

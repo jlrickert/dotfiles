@@ -4,8 +4,12 @@ set -o errexit  # exit if non-zero status code is returned
 set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 
-# Install fzf binaries and completions
-cd "${XDG_DATA_HOME:-$HOME/.local/share}/fzf" || exit 1
-./install --no-update-rc --key-bindings --completion --xdg
-cp bin/fzf bin/fzf-tmux ~/.local/bin/
-cd -
+source ~/.zshenv
+
+cd ${PERSONAL} || exit 1
+clone jlrickert/zet
+clone jlrickert/zettel
+
+{{ if .include_repos }}
+
+{{ end }}

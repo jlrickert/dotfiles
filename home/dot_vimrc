@@ -7,6 +7,7 @@ Plug 'tpope/vim-sensible'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'srcery-colors/srcery-vim'
+Plug 'sbdchd/neoformat'
 call plug#end()
 
 " Enable type file detection. Vim will be able to try to detect the type of file in use.
@@ -35,7 +36,10 @@ set showbreak=↪\
 
 set listchars=trail:␣,tab:»\ 
 
-set autoindent noexpandtab tabstop=4 shiftwidth=4
+set autoindent
+set expandtab
+set tabstop=4
+set shiftwidth=4
 
 colorscheme srcery
 
@@ -74,12 +78,13 @@ au bufnewfile,bufRead *gitconfig set filetype=gitconfig
 au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.go set spell spellcapcheck=0
 au bufnewfile,bufRead commands.yaml set spell
+au bufnewfile,bufRead *.md set tabstop=2 shiftwidth=2
 
 " bash
 fun! s:DetectBash()
     if getline(1) == '#!/usr/bin/bash' || getline(1) == '#!/bin/bash'
         set ft=bash
-        set shiftwidth=4
+        set shiftwidth=4 smarttab
     endif
 endfun
 autocmd BufNewFile,BufRead * call s:DetectBash()
@@ -122,6 +127,10 @@ inoremap [] []<Left>
 inoremap "" ""<Left>
 inoremap '' ''<Left>
 inoremap `` ``<Left>`
+
+" neoformat
+let g:neoformat_try_node_exe = 1
+nnoremap <silent> <leader>f :Neoformat<CR>
 
 " intellij specific
 if has('ide')
