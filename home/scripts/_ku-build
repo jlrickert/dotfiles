@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# set -o errexit  # exit if non-zero status code is returned
+# set -o nounset  # exit if undefined variable is used
+# set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+# OUTPUT="${HOME}/jrickert@br8kthru.com - Google Drive/My Drive/zet"
+OUTPUT=output
+
+log() {
+    echo "$@"
+    "$@"
+}
+
+compile() {
+    local header dir
+    header="$(head -n 1 "${1}")"
+    header="${header:2}"
+
+    local out="${OUTPUT}/${1/.md/.html}"
+    dir="$(dirname "${out}")"
+    if ! test -d "${dir}"; then
+        log mkdir -p "${dir}"
+    fi
+    # log pandoc -s -f gfm --metadata title="\"${header}\"" -t html -o "${out}" "$1"
+
+    # out="${OUTPUT}/${1/.md/.pdf}"
+    # log pandoc -s -f gfm --metadata title="\"${header}\"" -t pdf -o "${out}" "$1"
+    #
+    out="${OUTPUT}/${1/.md/.docx}"
+    log pandoc -s -f gfm --metadata title="\"${header}\"" -t docx -o "${out}" "$1"
+}
+
+copy() {
+    local dir
+    dir="$(dirname "${OUTPUT}/$1")"
+    if ! test -d "${dir}"; then
+        log mkdir -p "${dir}"
+    fi
+    log cp "$1" "${OUTPUT}/$1"
+}
+
+clean() {
+    if test -d "${OUTPUT}"; then
+        log rm -r ${OUTPUT}
+    fi
+}
+
+# set -o errexit  # exit if non-zero status code is returned
+# set -o nounset  # exit if undefined variable is used
+# set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+KEG_CURRENT="${KEG_CURRENT:-$(git rev-parse --show-toplevel)}"
+cd "${KEG_CURRENT}" || exit 1
+
+# ensure we are in a valid keg
+keg current &>/dev/null || exit 1
+
+clean
+copy docs/dex/nodes.tsv
+copy docs/keg
+compile README.md
+compile docs/dex/changes.md
+
+while read -r line; do
+    node="$(echo "${line}" | awk '{print $1}')"
+    header="$(echo "${line}" | awk -F '\t' '{print $3}')"
+    input="docs/${node}/README.md"
+    compile "${input}"
+done <docs/dex/nodes.tsv

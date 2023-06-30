@@ -132,6 +132,7 @@ _fzf_comprun() {
     knp)          KEG_CURRENT=~/personal/zettel ku fzf             "$@" ;;
     knw)          KEG_CURRENT=~/work/zet ku fzf                    "$@" ;;
     kn)           KEG_CURRENT=~/personal/zet ku fzf                "$@" ;;
+    ku)           ku fzf                                           "$@" ;;
     chrome)       fzf --ansi --multi                               "$@" ;;
     vim)          fuz                                              "$@" ;;
     *)            fuz                                              "$@" ;;
@@ -151,6 +152,9 @@ _fzf_complete_knw() {
 }
 _fzf_complete_kn() {
   _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zet ku nodes)
+}
+_fzf_complete_kn() {
+  _fzf_complete +m -- "$@" < <(ku nodes)
 }
 _fzf_complete_chrome() {
   _fzf_complete +m -- "$@" < <(chrome history)

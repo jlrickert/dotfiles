@@ -14,6 +14,12 @@ nodes() {
     esac
 }
 
+title() {
+    HEADER="$(cat "docs/${1}/README")"
+    HEADER="${HEADER:2}"
+    echo "${HEADER}"
+}
+
 titles() {
     find . -name "nodes.tsv" -exec awk -F'\t' '{print "docs/"$1"/README.md:1:"$3}' {} +
 }
@@ -63,34 +69,57 @@ help() {
     echo ""
 }
 
-########################## Command Delegation ##########################
+KEG_CURRENT="${KEG_CURRENT:-$(git rev-parse --show-toplevel)}"
+cd "${KEG_CURRENT}" || exit 1
 
-declare subcommand="${1:-title}"
-test $# -gt 0 && shift
-declare -a commands=(nodes titles fzf search help)
+# keg doesn't handle the context as expected.  Let keg refigure it out from here
+KEG_CURRENT=''
+
+# ensure we are in a keg
+keg current &>/dev/null || exit 1
 
 ######################### Tab Completion Context ########################
-
-# add `complete -S qf qf` to bashrc
-
 if test -n "${COMP_LINE}"; then
+    cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
     pre="${COMP_LINE#* }"
-    for cmd in "${commands[@]}"; do
-        [[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
-    done
+    echo ku CMD="$cmd" COMP_LINE="$COMP_LINE" PRE="$pre" >/tmp/ku_log
+    case "${cmd}" in
+    edit | view | title)
+        nodes list
+        exit 0
+        ;;
+    keg)
+        COMP_LINE="${pre}" keg
+        exit 0
+        ;;
+    *)
+        for cmd in build edit view keg nodes titles fzf search deploy help; do
+            [[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
+        done
+        ;;
+    esac
     exit 0
 fi
 
 ###################### Regular Context Delegation ######################
 
-KEG_CURRENT="${KEG_CURRENT:-$(keg current)}"
-if [[ ! "$(basename "${PWD}")" = "$(basename "${KEG_CURRENT}")" ]]; then
-    cd "${KEG_CURRENT}" || exit 1
-fi
+CMD="$(echo "$@" | awk '{print $1}')"
+shift
 
-for i in "${commands[@]}"; do
-    if [[ $i == "$subcommand" ]]; then
-        "$subcommand" "$@"
-        exit 0
-    fi
-done
+case "${CMD}" in
+edit) keg edit "$@" ;;
+view) keg edit "$@" ;;
+keg) keg "$@" ;;
+build) ./build "$@" ;;
+deploy) ./deploy "$@" ;;
+list) nodes "$@" ;;
+nodes) nodes "$@" ;;
+title) title "$@" ;;
+titles) titles "$@" ;;
+search) search "$@" ;;
+qf-search) search-qf "$@" ;;
+fzf) fzf "$@" ;;
+*)
+    keg edit "$CMD"
+    ;;
+esac
