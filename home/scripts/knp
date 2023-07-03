@@ -8,5 +8,5 @@ if test -n "${COMP_LINE}"; then
 fi
 
 cd "${HOME}/personal/zettel" || exit 1
-git pull
+git pull &>/dev/null
 ku "$@"

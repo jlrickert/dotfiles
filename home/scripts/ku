@@ -4,14 +4,7 @@
 set -e
 
 nodes() {
-    list() {
-        find . -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
-    }
-    case "$1" in
-    quick-fix) list ;;
-    list) list ;;
-    *) list ;;
-    esac
+    find docs -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
 }
 
 title() {
@@ -69,7 +62,10 @@ help() {
     echo ""
 }
 
-KEG_CURRENT="${KEG_CURRENT:-$(git rev-parse --show-toplevel)}"
+# ensure we are in a keg
+keg current &>/dev/null || exit 1
+
+KEG_CURRENT="${KEG_CURRENT:-$(git rev-parse --show-toplevel &>/dev/null || echo '')}"
 cd "${KEG_CURRENT}" || exit 1
 
 # keg doesn't handle the context as expected.  Let keg refigure it out from here
@@ -93,12 +89,12 @@ if test -n "${COMP_LINE}"; then
         exit 0
         ;;
     *)
-        for cmd in build edit view keg nodes titles fzf search deploy help; do
+        for cmd in build create pwd edit view keg nodes titles fzf search deploy help; do
             [[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
         done
+        exit 0
         ;;
     esac
-    exit 0
 fi
 
 ###################### Regular Context Delegation ######################
@@ -110,6 +106,8 @@ case "${CMD}" in
 edit) keg edit "$@" ;;
 view) keg edit "$@" ;;
 keg) keg "$@" ;;
+c) keg c "$@" ;;
+create) keg c "$@" ;;
 build) ./build "$@" ;;
 deploy) ./deploy "$@" ;;
 list) nodes "$@" ;;
@@ -118,6 +116,9 @@ title) title "$@" ;;
 titles) titles "$@" ;;
 search) search "$@" ;;
 qf-search) search-qf "$@" ;;
+pwd)
+    pwd
+    ;;
 fzf) fzf "$@" ;;
 *)
     keg edit "$CMD"
