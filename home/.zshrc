@@ -142,7 +142,7 @@ _fzf_comprun() {
 # TODO: figure out what is going on here.  This feeds an initial list of nodes
 # to fzf to prevent garbage displaying at first
 _fzf_complete_keg() {
-  _fzf_complete +m -- "$@" < <(ku nodes)
+  _fzf_complete +m -- "$@" < <(KEG_CURRENT=$(keg current) ku nodes)
 }
 _fzf_complete_knp() {
   _fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zettel ku nodes)

@@ -108,7 +108,7 @@ view) keg edit "$@" ;;
 keg) keg "$@" ;;
 c) keg c "$@" ;;
 create) keg c "$@" ;;
-build) ./build "$@" ;;
+build) make -f "${XDG_CONFIG_HOME:-$HOME/.config}/ku/makefile" "$@" ;;
 deploy) ./deploy "$@" ;;
 list) nodes "$@" ;;
 nodes) nodes "$@" ;;
