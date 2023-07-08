@@ -60,6 +60,7 @@ if ! _have hugo; then
     go install github.com/gohugoio/hugo@latest
 fi
 
+{{ if eq .chezmoi.os "linux" }}
 {{ if eq .chezmoi.osRelease.id "ubuntu" }}
 if ! _have i3; then
     /usr/lib/apt/apt-helper download-file https://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2023.02.18_all.deb keyring.deb SHA256:a511ac5f10cd811f8a4ca44d665f2fa1add7a9f09bef238cdfad8461f5239cc4
@@ -69,5 +70,5 @@ if ! _have i3; then
     sudo apt install i3 rofi dunst
 fi
 {{ end }}
-
+{{ end }}
 {{ end }}

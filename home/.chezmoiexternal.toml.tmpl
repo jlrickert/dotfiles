@@ -2,40 +2,44 @@
     type = "file"
     url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
     refreshPeriod = "168h"
+
 [".local/share/oh-my-zsh"]
     type = "git-repo"
     url = "https://github.com/ohmyzsh/ohmyzsh.git"
     refreshPeriod = "168h"
+
 [".local/share/blesh"]
     type = "git-repo"
     url = "https://github.com/akinomyoga/ble.sh.git"
     refreshPeriod = "168h"
+
+{{ if eq .chezmoi.os "linux" }}
 [".local/share/fzf"]
     type = "git-repo"
     url = "https://github.com/junegunn/fzf.git"
     refreshPeriod = "168h"
+{{ end }}
+
 [".local/bin/keg"]
     type = "file"
     url = "https://github.com/rwxrob/keg/releases/latest/download/keg-{{- .chezmoi.os -}}-{{- .chezmoi.arch -}}"
     executable = true
     refreshPeriod = "168h"
+
+{{ if eq .chezmoi.os "linux" }}
 [".local/bin/bat"]
     type = "file"
-    {{ if eq .chezmoi.os "linux" }}
     url = "https://github.com/sharkdp/bat/releases/download/v0.23.0/bat-v0.23.0-x86_64-unknown-linux-musl.tar.gz"
-    {{ end }}
-    {{ if eq .chezmoi.os "darwin" }}
-    url = "https://github.com/sharkdp/bat/releases/download/v0.23.0/bat-v0.23.0-x86_64-apple-darwin.tar.gz"
-    {{ end }}
     executable = true
     refreshPeriod = "168h"
     [".local/bin/bat".filter]
         command = "tar"
         stripComponents = 1
         args = ["--extract", "--file", "/dev/stdin", "--gzip", "--to-stdout", "--no-anchored", "bat"]
+{{ end }}
+
 [".local/share/go"]
     type = "archive"
     url = "https://go.dev/dl/go1.20.5.{{- .chezmoi.os -}}-{{- .chezmoi.arch -}}.tar.gz"
     stripComponents = 1
     refreshPeriod = "168h"
-

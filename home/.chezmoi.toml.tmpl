@@ -5,6 +5,7 @@
 {{- $workstation := promptBoolOnce . "workstation" "Workstation" -}}
 
 [data]
+    chezmoi_managed = "Managed by chezmoi"
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     openai_token = {{ $openai_token | quote }}

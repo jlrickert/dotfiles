@@ -4,14 +4,13 @@
 set -e
 
 nodes() {
-    list() {
-        find . -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
-    }
-    case "$1" in
-    quick-fix) list ;;
-    list) list ;;
-    *) list ;;
-    esac
+    find docs -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
+}
+
+title() {
+    HEADER="$(cat "docs/${1}/README")"
+    HEADER="${HEADER:2}"
+    echo "${HEADER}"
 }
 
 titles() {
@@ -63,34 +62,65 @@ help() {
     echo ""
 }
 
-########################## Command Delegation ##########################
+# ensure we are in a keg
+keg current &>/dev/null || exit 1
 
-declare subcommand="${1:-title}"
-test $# -gt 0 && shift
-declare -a commands=(nodes titles fzf search help)
+KEG_CURRENT="${KEG_CURRENT:-$(git rev-parse --show-toplevel &>/dev/null || echo '')}"
+cd "${KEG_CURRENT}" || exit 1
+
+# keg doesn't handle the context as expected.  Let keg refigure it out from here
+KEG_CURRENT=''
+
+# ensure we are in a keg
+keg current &>/dev/null || exit 1
 
 ######################### Tab Completion Context ########################
-
-# add `complete -S qf qf` to bashrc
-
 if test -n "${COMP_LINE}"; then
+    cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
     pre="${COMP_LINE#* }"
-    for cmd in "${commands[@]}"; do
-        [[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
-    done
-    exit 0
+    echo ku CMD="$cmd" COMP_LINE="$COMP_LINE" PRE="$pre" >/tmp/ku_log
+    case "${cmd}" in
+    edit | view | title)
+        nodes list
+        exit 0
+        ;;
+    keg)
+        COMP_LINE="${pre}" keg
+        exit 0
+        ;;
+    *)
+        for cmd in build create pwd edit view keg nodes titles fzf search deploy help; do
+            [[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
+        done
+        exit 0
+        ;;
+    esac
 fi
 
 ###################### Regular Context Delegation ######################
 
-KEG_CURRENT="${KEG_CURRENT:-$(keg current)}"
-if [[ ! "$(basename "${PWD}")" = "$(basename "${KEG_CURRENT}")" ]]; then
-    cd "${KEG_CURRENT}" || exit 1
-fi
+CMD="$(echo "$@" | awk '{print $1}')"
+shift
 
-for i in "${commands[@]}"; do
-    if [[ $i == "$subcommand" ]]; then
-        "$subcommand" "$@"
-        exit 0
-    fi
-done
+case "${CMD}" in
+edit) keg edit "$@" ;;
+view) keg edit "$@" ;;
+keg) keg "$@" ;;
+c) keg c "$@" ;;
+create) keg c "$@" ;;
+build) make -f "${XDG_CONFIG_HOME:-$HOME/.config}/ku/makefile" "$@" ;;
+deploy) ./deploy "$@" ;;
+list) nodes "$@" ;;
+nodes) nodes "$@" ;;
+title) title "$@" ;;
+titles) titles "$@" ;;
+search) search "$@" ;;
+qf-search) search-qf "$@" ;;
+pwd)
+    pwd
+    ;;
+fzf) fzf "$@" ;;
+*)
+    keg edit "$CMD"
+    ;;
+esac

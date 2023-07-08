@@ -1,6 +1,7 @@
 ################################################################################
 # Utils
 ################################################################################
+
 _have() { type "$1" &>/dev/null; }
 
 ################################################################################
@@ -107,6 +108,12 @@ _pathappend \
     /snap/bin \
     /sbin \
     /bin
+
+{{ if eq .chezmoi.os "darwin" }}
+if _have /opt/homebrew/bin/brew; then
+  source <(/opt/homebrew/bin/brew shellenv)
+fi
+{{ end }}
 
 _have vi && export EDITOR=vi
 _have vim && export EDITOR=vim
