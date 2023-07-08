@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o nounset  # exit if undefined variable is used
+
 cmds="e edit list ls"
 
 edit() {
@@ -16,6 +18,7 @@ list() {
 }
 
 # ---------------------- bash completion context ---------------------
+set +o nounset  # exit if undefined variable is used
 
 # add `complete -S vic vic` to bashrc or zshrc
 
