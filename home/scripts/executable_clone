@@ -11,7 +11,7 @@ clone() {
     [[ -z "$user" ]] && user="$USER"
   fi
   local name="${repo##*/}"
-  local userd="$REPOS/github.com/$user"
+  local userd="${REPOS:-$HOME/repos}/github.com/$user"
   local path="$userd/$name"
   [[ -d "$path" ]] && cd "$path" && return
   mkdir -p "$userd"

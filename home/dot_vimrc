@@ -2,11 +2,22 @@
 set nocompatible
 
 call plug#begin()
-Plug 'preservim/nerdtree'
-Plug 'tpope/vim-sensible'
+Plug 'airblade/vim-gitgutter'
+" Plug 'dense-analysis/ale'
+Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
-Plug 'vim-pandoc/vim-pandoc'
+" Plug 'garbas/vim-snipmate'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'sbdchd/neoformat'
 Plug 'srcery-colors/srcery-vim'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax'
 call plug#end()
 
 " Enable type file detection. Vim will be able to try to detect the type of file in use.
@@ -23,7 +34,8 @@ set nu
 " set relativenumber
 
 " Line wrap (number of cols)
-set textwidth=120
+set nowrap
+set textwidth=79
 
 set encoding=utf-8
 set fileencoding=utf-8
@@ -35,7 +47,10 @@ set showbreak=↪\
 
 set listchars=trail:␣,tab:»\ 
 
-set autoindent noexpandtab tabstop=4 shiftwidth=4
+set autoindent
+set expandtab
+set tabstop=4
+set shiftwidth=4
 
 colorscheme srcery
 
@@ -74,19 +89,25 @@ au bufnewfile,bufRead *gitconfig set filetype=gitconfig
 au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.go set spell spellcapcheck=0
 au bufnewfile,bufRead commands.yaml set spell
+au bufnewfile,bufRead *.md setlocal tabstop=2 shiftwidth=2
+au bufnewfile,bufRead pandoc setlocal tabstop=2 shiftwidth=2
 
 " bash
 fun! s:DetectBash()
     if getline(1) == '#!/usr/bin/bash' || getline(1) == '#!/bin/bash'
         set ft=bash
-        set shiftwidth=4
+        set shiftwidth=2 tabstop=2 smarttab
     endif
 endfun
 autocmd BufNewFile,BufRead * call s:DetectBash()
 
 " pandoc
-let g:pandoc#formatting#mode = 'h' " A'
-let g:pandoc#formatting#textwidth = 72
+let g:pandoc#formatting#mode = 'ha' " A'
+"let g:pandoc#formatting#mode = 'a' " A'
+"let g:pandoc#formatting#textwidth = 120
+let g:pandoc#modules#disabled = ["folding"]
+let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
+let g:pandoc#filetypes#pandoc_markdown = 0
 
 " golang
 let g:go_fmt_fail_silently = 0
@@ -115,36 +136,42 @@ au FileType go nmap <leader>m ilog.Print("made")<CR><ESC>
 au FileType go nmap <leader>n iif err != nil {return err}<CR><ESC>
 
 " Brace pairing
-inoremap <> <><Left>
-inoremap () ()<Left>
-inoremap {} {}<Left>
-inoremap [] []<Left>
-inoremap "" ""<Left>
-inoremap '' ''<Left>
-inoremap `` ``<Left>`
+" inoremap <> <><Left>
+" inoremap () ()<Left>
+" inoremap {} {}<Left>
+" inoremap [] []<Left>
+" inoremap "" ""<Left>
+" inoremap '' ''<Left>
+" inoremap `` ``<Left>`
 
-" intellij specific
-if has('ide')
-    if &ide =~? 'intellij idea'
-        " some mappings and options for IntelliJ IDEA Community Edition
-        if &ide =~? 'community'
+" formatting
+" let g:neoformat_try_node_exe = 1
+" let g:ale_fixers = { 'pandoc': ['pandoc', 'prettier'] }
+let g:ale_fixers = {
+            \ 'markdown': 'pandoc',
+            \ }
+" leg g:ale_mkarkdown_pandoc_options = ''
+nnoremap <silent> <leader>f :ALEFix<CR>
+" let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+" augroup pandoc
+"     autocmd!
+"     autocmd FileType pandoc g
+" augroup END
 
-        " some mappings and options for IntelliJ IDEA Ultimate Edition
-        elseif &ide =~? 'ultimate'
-        endif
+" git gutter
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
+nmap <leader>hs <Plug>(GitGutterStageHunk)
+nmap <leader>hu <Plug>(GitGutterUndoHunk)
+nmap <leader>hp <Plug>(GitGutterPreviewHunk)
 
-    " Webstorm specific mappings and options
-    elseif &ide =~? 'webstorm'
+let g:gitgutter_show_msg_on_hunk_jumping = 0
 
-    " PyCharm specific mappings and options
-    elseif &ide =~? 'pycharm'
-    endif
-else
+" status line
+let g:airline#extensions#tabline#enabled = 1
 
-    " ========== Steve Losh hacks ==========="
-    " w!! to write a file as sudo
-    cmap w!! w !sudo tee % >/dev/null
-
-endif
+" ========== Steve Losh hacks ==========="
+" w!! to write a file as sudo
+cmap w!! w !sudo tee % >/dev/null
 
 " vim:set ft=vim et sw=4:

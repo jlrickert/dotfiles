@@ -3,7 +3,7 @@
     name = Jared Rickert
 
 [core]
-    editor = nvim
+    editor = vim
     autocrlf = input
 
 [color]

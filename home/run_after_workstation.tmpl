@@ -1,0 +1,74 @@
+#!/bin/bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+{{ if .workstation }}
+
+_source_if() { [[ -r "$1" ]] && source "$1"; }
+_have() { command -v "$1" &>/dev/null; }
+
+source ~/.zshenv
+
+if ! _have cargo; then
+    cd "$(mktemp -d)" || exit 1
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh
+    export RUSTUP_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/rustup"
+    export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
+    if [[ "$(sha256sum rustup.sh | awk '{print $1}')" = "be3535b3033ff5e0ecc4d589a35d3656f681332f860c5fd6684859970165ddcc" ]]; then
+        sh rustup.sh --no-modify-path -y
+    fi
+    cd -
+fi
+
+if ! _have fnm; then
+    cd "$(mktemp -d)" || exit 1
+    curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "${FNM_HOME}" --skip-shell
+    eval "$(fnm env --use-on-cd --shell=bash)"
+    mkdir -p "${ZSH_HOME:-~/.local/share/zsh}/completions"
+    fnm completions --shell zsh > "${ZSH_HOME}/completions/_fnm"
+    cd -
+fi
+
+eval "$(fnm env --use-on-cd --shell=bash)"
+
+if ! _have node; then
+    MAJOR="$(node --version awk -F'[^0-9]*' '{print $2}')"
+    MINOR="$(node --version awk -F'[^0-9]*' '{print $3}')"
+    PATCH="$(node --version awk -F'[^0-9]*' '{print $4}')"
+    fnm install --lts
+fi
+
+if ! _have keg; then
+    go install github.com/rwxrob/keg/cmd/keg@latest
+fi
+
+if ! _have auth; then
+    go install github.com/rwxrob/auth-go/cmd/auth@latest
+fi
+
+if ! _have gocomplete; then
+    go install github.com/posener/complete/gocomplete@latest
+fi
+
+if ! _have gopls; then
+    go install golang.org/x/tools/gopls@latest
+fi
+
+if ! _have hugo; then
+    go install github.com/gohugoio/hugo@latest
+fi
+
+{{ if eq .chezmoi.os "linux" }}
+{{ if eq .chezmoi.osRelease.id "ubuntu" }}
+if ! _have i3; then
+    /usr/lib/apt/apt-helper download-file https://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2023.02.18_all.deb keyring.deb SHA256:a511ac5f10cd811f8a4ca44d665f2fa1add7a9f09bef238cdfad8461f5239cc4
+    sudo apt install ./keyring.deb
+    echo "deb http://debian.sur5r.net/i3/ $(grep '^DISTRIB_CODENAME=' /etc/lsb-release | cut -f2 -d=) universe" | sudo tee /etc/apt/sources.list.d/sur5r-i3.list
+    sudo apt update
+    sudo apt install i3 rofi dunst
+fi
+{{ end }}
+{{ end }}
+{{ end }}

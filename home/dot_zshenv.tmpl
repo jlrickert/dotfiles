@@ -1,0 +1,128 @@
+################################################################################
+# Utils
+################################################################################
+
+_have() { type "$1" &>/dev/null; }
+
+################################################################################
+# Variables
+################################################################################
+
+export USER="${USER:-$(whoami)}"
+export GITUSER="${USER}"
+export REPOS="${HOME}/repos"
+export GHREPOS="$REPOS/github.com/$GITUSER"
+export PERSONAL="${HOME}/personal"
+export DOTFILES="${XDG_DATA_HOME}/chezmoi"
+export SCRIPTS="${HOME}/scripts"
+export SNIPPETS="${HOME}/snippets"
+export HELP_BROWSER=lynx
+
+export DESKTOP="${HOME}/Desktop"
+export DOCUMENTS="${HOME}/Documents"
+export DOWNLOADS="${HOME}/Downloads"
+export PUBLIC="${HOME}/Public"
+export PICTURES="${HOME}/Pictures"
+export TEMPLATES="${HOME}/Templates"
+export MUSIC="${HOME}/Music"
+export VIDEOS="${HOME}/Videos"
+
+export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"}
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:="$HOME/.config"}
+export XDG_CACHE_HOME=${XDG_CACHE_HOME:="$HOME/.cache"}
+export XDG_STATE_HOME=${XDG_STATE_HOME:="$HOME/.local/state"}
+
+export TERM=xterm-256color
+export DENO_INSTALL="${XDG_DATA_HOME}/deno"
+export NVM_DIR="${XDG_DATA_HOME}/nvm"
+export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
+export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+export VOLTA_HOME="${HOME}/.volta"
+export FNM_HOME="${HOME}/.local/share/fnm"
+export ZSH_HOME="${HOME}/.local/share/zsh"
+export GOPRIVATE="github.com/${GITUSER}/*,gitlab.com/${GITUSER}/*"
+export GOPATH="${XDG_DATA_HOME}/go"
+export GOBIN="${HOME}/.local/bin"
+#export GOPROXY=direct
+export KUBECONFIG="${HOME}/.kube/config"
+export CGO_ENABLED=0
+export PYTHONDONTWRITEBYTECODE=2
+export LC_COLLATE=C
+#export CFLAGS="-Wall -Wextra -Werror -O0 -g -fsanitize=address -fno-omit-frame-pointer -finstrument-functions"
+export ZSH="${XDG_DATA_HOME}/oh-my-zsh"
+export FLYCTL_INSTALL=$XDG_DATA_HOME/.local/share/fly
+
+################################################################################
+# Fuzzy finder
+################################################################################
+export FZF_DEFAULT_COMMAND='rg --files --hidden --color=never'
+# export FZF_DEFAULT_OPTS="--ansi --phony --preview='bat --color=always {}'"
+# export FZF_ALT_C_COMMAND='fd --color=never --type d'
+export FZF_ALT_C_COMMAND='fdfind --color=never --type d'
+export FZF_ALT_C_OPTS="--preview 'tree -C {}"
+
+# Options to fzf command
+# export FZF_COMPLETION_OPTS='--border --info=inline'
+
+################################################################################
+# Path
+################################################################################
+_pathappend() {
+    for arg in "$@"; do
+        test -d "$arg" || continue
+        PATH=${PATH//":$arg:"/:}  # remove all occuences of `:$arg:` from the PATH
+        PATH=${PATH/#"$arg:"/}    # remove `"$arg:"` from the the beginning of the string
+        PATH=${PATH/%":$arg"/}    # remove `":$arg` from the end of the string
+        export PATH="${PATH:+"$PATH:"}$arg"
+    done
+}
+
+_pathprepend() {
+    for arg in "$@"; do
+        test -d "$arg" || continue
+        PATH=${PATH//:"$arg:"/:}
+        PATH=${PATH/#"$arg:"/}
+        PATH=${PATH/%":$arg"/}
+        export PATH="$arg${PATH:+":${PATH}"}"
+    done
+}
+
+# remember last arg will be first in path. Precedence comes to the item that comes at the head of the list
+_pathprepend \
+    "${SCRIPTS}" \
+    "${HOME}/.local/bin" \
+    "${XDG_DATA_HOME}/flutter/bin" \
+    "${CARGO_HOME}/bin" \
+    "${FNM_HOME}" \
+    "${XDG_DATA_HOME}/go/bin" \
+    /usr/local/go/bin \
+    /usr/local/bin
+
+_pathappend \
+    /usr/local/bin \
+    /usr/local/sbin \
+    /usr/local/games \
+    /usr/games \
+    /usr/sbin \
+    /usr/bin \
+    /snap/bin \
+    /sbin \
+    /bin
+
+{{ if eq .chezmoi.os "darwin" }}
+if _have /opt/homebrew/bin/brew; then
+  source <(/opt/homebrew/bin/brew shellenv)
+fi
+{{ end }}
+
+_have vi && export EDITOR=vi
+_have vim && export EDITOR=vim
+_have nvim && export EDITOR=nvim
+_have vi && export VISUAL=vi
+_have vim && export VISUAL=vim
+_have nvim && export VISUAL=nvim
+_have vi && export EDITOR_PREFIX=vi
+_have vim && export EDITOR_PREFIX=vim
+_have nvim && export EDITOR_PREFIX=nvim
+export GIT_EDITOR=$EDITOR
+

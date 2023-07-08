@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+source ~/.zshenv
+
+mkdir -p "${REPOS}"
+mkdir -p "${GHREPOS}"
+mkdir -p "${DOWNLOADS}"
+mkdir -p "${PUBLIC}"
+mkdir -p "${PRIVATE}"
+mkdir -p "${PERSONAL}"
+

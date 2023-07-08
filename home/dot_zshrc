@@ -86,6 +86,7 @@ _have flutter && source <(flutter zsh-completion)
 _have podman && source <(podman completion zsh)
 _have kubectl && source <(kubectl completion zsh)
 _have hugo && source <(hugo completion zsh) && compdef _hugo hugo
+_have chezmoi && source <(chezmoi completion zsh)
 _have k3s && source <(k3s completion zsh)
 _have helm && source <(helm completion zsh)
 _have fnm && source <(fnm env --use-on-cd)
