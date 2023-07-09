@@ -1,0 +1,38 @@
+{
+  "languageserver": {
+    "go": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod"],
+      "trace.server": "verbose",
+      "filetypes": ["go"]
+    }
+  },
+  "sh.enable": true,
+  "diagnostic.enableSign": true,
+  "diagnostic-languageserver.filetypes": {
+    "vim": "vint",
+    "email": "languagetool",
+    "markdown": ["write-good", "markdownlint"],
+    "sh": "shellcheck",
+    "bash": "shellcheck",
+    "elixir": ["mix_credo", "mix_credo_compile"],
+    "eelixir": ["mix_credo", "mix_credo_compile"],
+    "php": ["phpstan", "psalm"],
+    "yaml": ["yamllint"],
+    "cmake": ["cmake-lint", "cmakelint"],
+    "systemd": "systemd-analyze"
+  },
+  "diagnostic-languageserver.formatFiletypes": {
+    "dart": "dartfmt",
+    "elixir": "mix_format",
+    "eelixir": "mix_format",
+    "python": ["black", "isort"],
+    "markdown": "prettier",
+    "lua": "lua-format",
+    "sh": "shfmt",
+    "bash": "shfmt",
+    "blade": "blade-formatter",
+    "cmake": "cmake-format"
+  },
+  "snippets.ultisnips.pythonPrompt": false
+}
