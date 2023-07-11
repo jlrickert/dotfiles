@@ -135,7 +135,7 @@ _fzf_comprun() {
     kn)           KEG_CURRENT=~/personal/zet ku fzf                "$@" ;;
     ku)           ku fzf                                           "$@" ;;
     chrome)       fzf --ansi --multi                               "$@" ;;
-    vim)          fuz                                              "$@" ;;
+    vim)          fzf --preview 'bat -n --color=always {}'         "$@" ;;
     *)            fuz                                              "$@" ;;
   esac
 }
