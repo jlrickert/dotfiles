@@ -1,0 +1,90 @@
+#!/bin/bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+_have() { type "$1" &>/dev/null; }
+
+_sudo() {
+    if [[ "$(whoami)" = "root" ]]; then
+        "$@"
+    else
+        sudo "$@"
+    fi
+}
+
+{{ if eq .chezmoi.os "linux" }}
+{{   if eq .chezmoi.osRelease.id "ubuntu" }}
+_sudo apt-get update -y
+_sudo apt-get remove -y fzf
+_sudo apt-get install -y \
+    apt-transport-https \
+    apt-utils \
+    atool \
+    bash-completion \
+    bc \
+    bind9-dnsutils \
+    btop \
+    build-essential \
+    ca-certificates \
+    cifs-utils \
+    curl \
+    dialog \
+    direnv \
+    ed \
+    fd-find \
+    figlet \
+    gh \
+    git \
+    htop \
+    httpie \
+    iputils-ping \
+    jq \
+    less \
+    libcurses-perl \
+    libncurses5 \
+    lolcat \
+    lynx \
+    make \
+    man-db \
+    ncal \
+    net-tools \
+    nmap \
+    perl \
+    pgformatter \
+    python3 \
+    python3-argcomplete \
+    python3-pip \
+    ranger \
+    ripgrep \
+    rsync \
+    shellcheck \
+    shfmt \
+    silversearcher-ag \
+    smbclient \
+    software-properties-common \
+    ssh \
+    sshfs \
+    sshpass \
+    stow \
+    sudo \
+    tig \
+    tmux \
+    tree \
+    unzip \
+    vim \
+    wget \
+    xclip \
+    zip \
+    zsh
+{{   end }}
+{{ end }}
+
+{{ if eq .chezmoi.os "darwin" }}
+if ! _have /opt/home/bin/brew; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    source <(/opt/homebrew/bin/brew shellenv)
+    brew install ansible ripgrep yq jq yabai zsh-completions ranger watchman fnm exa entr
+fi
+{{ end }}

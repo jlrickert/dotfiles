@@ -7,48 +7,59 @@ set -o pipefail # exit if no-zero status code is returned in a pipeline
 
 _have() { type "$1" &>/dev/null; }
 
-source ~/.zshenv
+source "${HOME}/.zshenv"
 
-{{ if eq .chezmoi.os "linux" }}
-########################################
-# Install fzf binaries and completions
-########################################
-_version_ge()
-{
-    printf '%s\n%s\n' "$2" "$1" | sort --check=quiet --version-sort
-}
-
-_install_fzf() {
-    VERSION=$(fzf --version | awk '{print $1}')
-    # Remove old versions of fzf
-    if _have fzf && ! _version_ge "${VERSION}" "0.42.0"; then
-        sudo apt-get remove -y fzf
-    fi
-    ./install --no-update-rc --key-bindings --completion --xdg
-    cp bin/fzf bin/fzf-tmux ~/.local/bin/
-}
-cd "${XDG_DATA_HOME:-$HOME/.local/share}/fzf"
-_install_fzf 
+cd "${HOME}/.local/share/fzf"
+./install --no-update-rc --xdg --completion --key-bindings
 cd -
-{{ end }}
 
-{{ if eq .chezmoi.os "darwin" }}
-########################################
-# Install fzf binaries and completions
-########################################
-if ! _have brew; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    source <(/opt/homebrew/bin/brew shellenv)
+if ! _have keg; then
+    go install github.com/rwxrob/keg/cmd/keg@latest
 fi
 
-if ! _have bat; then
-    brew install bat
+if ! _have auth; then
+    go install github.com/rwxrob/auth-go/cmd/auth@latest
 fi
 
-if ! _have fzf; then
-    brew install fzf
-    cd $(brew --prefix)/opt/fzf
-    ./install --no-update-rc --key-bindings --completion --xdg
+if ! _have gocomplete; then
+    go install github.com/posener/complete/gocomplete@latest
+fi
+
+if ! _have gopls; then
+    go install golang.org/x/tools/gopls@latest
+fi
+
+if ! _have hugo; then
+    go install github.com/gohugoio/hugo@latest
+fi
+
+if ! _have cargo; then
+    cd "$(mktemp -d)" || exit 1
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >rustup.sh
+    # export RUSTUP_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/rustup"
+    # export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
+    if [[ "$(sha256sum rustup.sh | awk '{print $1}')" = "be3535b3033ff5e0ecc4d589a35d3656f681332f860c5fd6684859970165ddcc" ]]; then
+        sh rustup.sh --no-modify-path -y
+    fi
+    source ~/.zshenv
     cd -
 fi
-{{ end }}
+
+cargo install exa stylua fnm
+
+if ! _have fnm; then
+    cargo install fnm
+    eval "$(fnm env --use-on-cd --shell=bash)"
+    mkdir -p "${ZSH_HOME:-$HOME/.local/share/zsh}/completions"
+    fnm completions --shell zsh >"${ZSH_HOME}/completions/_fnm"
+    source <(fnm env)
+fi
+
+if ! _have node; then
+    fnm install --lts
+    source <(fnm env)
+fi
+
+# FIXME: This requires user intervention because it complains about plugins not
+# being installed.  Classic chicken and egg problem.
+vim +PlugInstall +CocUpdateSync +qall

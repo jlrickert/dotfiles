@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo $0 $1
 if [[ -z "$1" ]]; then
     echo "Usage:"
     echo -e "\t$0 your file name"

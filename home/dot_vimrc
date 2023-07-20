@@ -4,12 +4,15 @@ set nocompatible
 call plug#begin()
 Plug 'airblade/vim-gitgutter'
 " Plug 'dense-analysis/ale'
+Plug 'junegunn/fzf', {'dir': '~/.local/share/fzf','do': './install --no-update-rc --xdg'}
+Plug 'junegunn/fzf.vim' "
+Plug 'antoinemadec/coc-fzf'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 " Plug 'garbas/vim-snipmate'
-Plug 'jlrickert/vim-keg'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'sbdchd/neoformat'
+Plug 'morhetz/gruvbox'
 Plug 'srcery-colors/srcery-vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
@@ -35,7 +38,7 @@ set nu
 " set relativenumber
 
 " Line wrap (number of cols)
-set nowrap
+set wrap
 set textwidth=80
 
 set encoding=utf-8
@@ -55,8 +58,6 @@ set shiftwidth=4
 
 set mouse=a
 
-colorscheme srcery
-
 set hlsearch    "Highlight all search results
 set smartcase   "Enable smart-case search
 set ignorecase  "Always case-insensitive
@@ -70,6 +71,27 @@ set nobackup
 
 " prevent jank on the gutter
 set signcolumn=yes
+
+" https://github.com/morhetz/gruvbox/wiki/Terminal-specific
+"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+"If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
+"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
+if (empty($TMUX))
+  if (has("nvim"))
+    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  endif
+  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+endif
+
+colorscheme gruvbox
+set background=dark
+" colorscheme srcery
 
 " force some files to be specific file type
 au bufnewfile,bufRead $SNIPPETS/md/* set ft=pandoc
@@ -95,8 +117,8 @@ au bufnewfile,bufRead *gitconfig set filetype=gitconfig
 au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.go set spell spellcapcheck=0
 au bufnewfile,bufRead commands.yaml set spell
-au bufnewfile,bufRead *.md set tabstop=2 shiftwidth=2
-au bufnewfile,bufRead pandoc set tabstop=2 shiftwidth=2
+au bufnewfile,bufRead *.md set tabstop=2 shiftwidth=2 textwidth=0
+au bufnewfile,bufRead pandoc set tabstop=2 shiftwidth=2 textwidth=0
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " bash
@@ -112,7 +134,7 @@ autocmd BufNewFile,BufRead * call s:DetectBash()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " pandoc
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:pandoc#formatting#mode = 'ha' " A'
+let g:pandoc#formatting#mode = 'hA' " A'
 "let g:pandoc#formatting#mode = 'a' " A'
 " leg g:pandoc#formatting#equalprog = ''
 " leg g:pandoc#formatting#extra_equalprog = ''
@@ -173,45 +195,26 @@ let g:airline#extensions#tabline#enabled = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Completions
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" " Use tab for trigger completion with characters ahead and navigate
-" " NOTE: There's always complete item selected by default, you may want to enable
-" " no select by `"suggest.noselect": true` in your configuration file
-" " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" " other plugin before putting this into your config
-" inoremap <silent><expr> <TAB>
-"       \ coc#pum#visible() ? coc#pum#next(1) :
-"       \ CheckBackspace() ? "\<Tab>" :
-"       \ coc#refresh()
-" inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-
-" " Make <CR> to accept selected completion item or notify coc.nvim to format
-" " <C-g>u breaks current undo, please make your own choice
-" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-
-" function! CheckBackspace() abort
-"   let col = col('.') - 1
-"   return !col || getline('.')[col - 1]  =~# '\s'
-" endfunction
-
-
-"CoC Settings
-" Use tab for trigger completion with characters ahead and navigate.
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
+" other plugin before putting this into your config
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-function! s:check_back_space() abort
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
 
 " Use <c-space> to trigger completion
 if has('nvim')
@@ -220,32 +223,15 @@ else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
-"Ultisnips Settings
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
-
-"coc-snippets Settings
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ CheckBackspace() ? "\<TAB>" :
-      \ coc#refresh()
-
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-let g:coc_snippet_next = '<tab>'
+set tagfunc=CocTagFunc
 
 " Use `[d` and `]d` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
 nmap <silent> [d <Plug>(coc-diagnostic-prev)
 nmap <silent> ]d <Plug>(coc-diagnostic-next)
+nmap <silent> [e <Plug>(coc-diagnostic-prev-error)
+nmap <silent> ]e <Plug>(coc-diagnostic-next-error)
+nmap <silent> gl <Plug>(coc-diagnostic-info)
 
 " GoTo code navigation
 nmap <silent> gd <Plug>(coc-definition)
@@ -264,6 +250,10 @@ function! ShowDocumentation()
   endif
 endfunction
 
+" function! ShowDiagnostic()
+"     if CocActionAsync('hasProvider', )
+" endfunction
+
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
@@ -273,7 +263,8 @@ nmap <leader>rn <Plug>(coc-rename)
 " Formatting selected code
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
-nnoremap <silent> <leader>f :Format<CR>
+
+nnoremap <leader>ff :Format<CR>
 
 augroup mygroup
   autocmd!
@@ -345,47 +336,64 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings for CoCList
 " Show all diagnostics
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" The <C-u> removes the range before runing
+nnoremap <silent><nowait> <leader>ll  :<C-u>CocFzfList lists<cr>
+nnoremap <silent><nowait> <leader>ld  :<C-u>CocFzfList diagnostics<cr>
 " Manage extensions
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+nnoremap <silent><nowait> <leader>le  :<C-u>CocList extensions<cr>
+nnoremap <silent><nowait> <leader>lo  :<C-u>CocList outline<cr>
 " Search workspace symbols
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+nnoremap <silent><nowait> <leader>ls  :<C-u>CocList -I symbols<cr>
 " Do default action for next item
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+nnoremap <silent><nowait> <leader>j  :<C-u>CocNext<CR>
 " Do default action for previous item
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+nnoremap <silent><nowait> <leader>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <leader>p   :<C-u>CocFzfListResume<CR>
+nnoremap <silent><nowait> <leader>so  :<C-u>CocFzfList outline<CR>
+nnoremap <silent><nowait> <leader>sh  :<C-u>CocFzfList gchunks<CR>
+nnoremap <silent><nowait> <leader>sb  :<C-u>Buffers!<CR>
+nnoremap <silent><nowait> <leader>sf  :<C-u>Files!<CR>
+nnoremap <silent><nowait> <leader>sd  :<C-u>CocFzfList diagnostics<CR>
+nnoremap <silent><nowait> <leader>sg  :<C-u>Rg!<CR>
+nnoremap <silent><nowait> <leader>sc  :<C-u>BCommits!<CR>
+nnoremap <silent><nowait> <leader>sC  :<C-u>Commits!<CR>
+nnoremap <silent><nowait> <leader>sm  :<C-u>Marks!<CR>
+nnoremap <silent><nowait> <leader>sw  :<C-u>Windows!<CR>
+nnoremap <silent><nowait> <leader>st  :<C-u>Tags<CR>
+nnoremap <silent><nowait> <leader>sP  :<C-u>CocFzfList commands<CR>
+nnoremap <silent><nowait> <leader>sp  :<C-u>Commands!<CR>
 
+nmap <space>e :<C-u>CocCommand explorer<CR>
+
+" TODO: Add coc-snippets
+" TODO: Add @yaegassy/coc-ansible
+" TODO: add  coc-symbol-line
 let g:coc_global_extensions = [
-            \ '@yaegassy/coc-ansible',
             \ '@yaegassy/coc-astro',
+            \ '@yaegassy/coc-intelephense',
             \ 'coc-css',
             \ 'coc-diagnostic',
             \ 'coc-eslint',
+            \ 'coc-explorer',
             \ 'coc-flutter',
+            \ 'coc-git',
             \ 'coc-go',
             \ 'coc-highlight',
             \ 'coc-html',
             \ 'coc-json',
+            \ 'coc-lists',
             \ 'coc-lua',
             \ 'coc-pairs',
-            \ 'coc-phpactor',
             \ 'coc-prettier',
             \ 'coc-python',
             \ 'coc-rls',
             \ 'coc-sh',
-            \ 'coc-snippets',
             \ 'coc-spell-checker',
             \ 'coc-stylua',
             \ 'coc-svelte',
             \ 'coc-svg',
             \ 'coc-swagger',
-            \ 'coc-symbol-line',
             \ 'coc-tailwindcss',
             \ 'coc-toml',
             \ 'coc-tsserver',
@@ -396,30 +404,22 @@ let g:coc_global_extensions = [
 let g:coc_filetype_map = {'pandoc': 'markdown', 'yaml.ansible': 'ansible'}
 
 " formatting
-let g:neoformat_try_formatprg = 1
-let g:neoformat_try_node_exe = 1
-" let g:ale_fixers = { 'pandoc': ['pandoc', 'prettier'] }
-" let g:ale_fixers = {
-"             \ 'markdown': 'pandoc',
+" let g:neoformat_try_formatprg = 1
+" let g:neoformat_try_node_exe = 1
+" let g:neoformat_pandoc_gfm = {
+"             \ 'exe': 'pandoc',
+"             \ 'args': [
+"                 \ '--from=markdown',
+"                 \ '--to=gfm',
+"                 \ '--standalone',
+"                 \ '--columns=80',
+"                 \ '--wrap=auto',
+"                 \ '--reference-links',
+"             \],
+"             \ 'stdin': 1,
 "             \ }
-" leg g:ale_mkarkdown_pandoc_options = ''
-" nnoremap <silent> <leader>f :ALEFix<CR>
-" nnoremap <silent> <leader>f :Neoformat<CR>
-let g:neoformat_pandoc_gfm = {
-            \ 'exe': 'pandoc',
-            \ 'args': [
-                \ '--from=markdown',
-                \ '--to=gfm',
-                \ '--standalone',
-                \ '--columns=80',
-                \ '--wrap=auto',
-                \ '--reference-links',
-            \],
-            \ 'stdin': 1,
-            \ }
-let g:neoformat_enabled_pandoc = ['gfm']
-let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
-
+" let g:neoformat_enabled_pandoc = ['gfm']
+" let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 
 " ========== Steve Losh hacks ==========="
 " w!! to write a file as sudo

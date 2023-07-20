@@ -20,7 +20,7 @@ _source_if() { [[ -r "$1" ]] && source "$1"; }
 #                         environment variables
 #                           (also see envx)
 ################################################################################
-source "~/.zshenv"
+source "${HOME}/.zshenv"
 
 _have nano && export EDITOR=nano
 _have vi && export EDITOR=vi
