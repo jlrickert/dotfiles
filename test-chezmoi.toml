@@ -1,0 +1,7 @@
+[data]
+    chezmoi_managed = "Managed by chezmoi"
+    name = "Jared Rickert"
+    email = "jaredrickert52@gmail.com"
+    openai_token = ""
+    include_repos = true
+    workstation = false

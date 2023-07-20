@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+BRANCH="$(git rev-parse --abbref-ref HEAD)"
+CHEZMOI_INIT_ARGS=""
+USERNAME="jlrickert"
+
+# --volume "$(pwd):/home/$(whoami)/.local/share/chezmoi" \
+
+./build
+docker run --rm -it \
+    --name "dotfiles-test" \
+    --env "CHEZMOI_INIT_ARGS=${CHEZMOI_INIT_ARGS}" \
+    --user "$(id -u):$(id -g)" \
+    --mount "type=bind,source=$(pwd),target=/home/${USERNAME}/.local/share/chezmoi" \
+    --mount "type=bind,source=$(pwd)/test-chezmoi.toml,target=/home/${USERNAME}/.config/chezmoi/chezmoi.toml,readonly" \
+    dotfiles "$@"

@@ -4,5 +4,12 @@ set -o errexit  # exit if non-zero status code is returned
 set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 
-VERSION="$(cat .version)"
-podman build . -t dotfiles:$VERSION
+BRANCH="$(git rev-parse --abbref-ref HEAD)"
+USER_UID="$(id -u)"
+BIN="${BIN:-docker}"
+# VERSION=$(git rev-parse HEAD)
+"${BIN}" build . \
+    "--build-arg=BRANCH=${BRANCH}" \
+    "--build-arg=USER_UID=${USER_UID}" \
+    "--build-arg=USER_GID=${USER_UID}" \
+    --tag "dotfiles" "$@"
