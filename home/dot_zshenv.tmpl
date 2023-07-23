@@ -2,6 +2,7 @@
 # Utils
 ################################################################################
 
+_source_if() { [[ -r "$1" ]] && source "$1"; }
 _have() { type "$1" &>/dev/null; }
 
 ################################################################################
@@ -126,5 +127,7 @@ _have vim && export VISUAL=vim
 _have vi && export EDITOR_PREFIX=vi
 _have vim && export EDITOR_PREFIX=vim
 # _have nvim && export EDITOR_PREFIX=nvim
-export GIT_EDITOR=$EDITOR
+export GIT_EDITOR="${EDITOR}"
+
+_source_if "${HOME}/.secrets"
 

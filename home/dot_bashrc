@@ -365,7 +365,5 @@ for i in "${argcomp[@]}"; do _argparse "$i"; done
 #                      personalized configuration
 ################################################################################
 
-_source_if "$HOME/.privaterc"
-_source_if "$HOME/.workrc"
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
