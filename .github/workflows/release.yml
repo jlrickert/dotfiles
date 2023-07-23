@@ -2,7 +2,7 @@ name: Release
 on:
     push:
         branches:
-            - main
+            - "main"
 
 permissions:
     contents: read # for checkout
@@ -25,12 +25,15 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: "lts/*"
+
+            - name: Install pnpm
+              run: npm install --global pnpm
             - name: Install dependencies
-              run: npm clean-install
+              run: pnpm install
             - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
-              run: npm audit signatures
+              run: pnpm audit signatures
             - name: Release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-              run: npx semantic-release
+              run: pnpx semantic-release
