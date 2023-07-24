@@ -331,7 +331,7 @@ owncomp=(keg auth gocomplete chrome kn knp knw ku pomo qf sshkey vic build ./bui
 for i in "${owncomp[@]}"; do complete -C "$i" "$i"; done
 
 _have gh && . <(gh completion -s bash)
-_have flutter && source <(flutter zsh-completion)
+_have flutter && source <(flutter bash-completion)
 _have pandoc && source <(pandoc --bash-completion)
 _have spotify && source <(spotify completion bash 2>/dev/null)
 _have hugo && source <(hugo completion bash) && compdef _hugo hugo
