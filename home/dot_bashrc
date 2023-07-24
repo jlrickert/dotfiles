@@ -37,31 +37,31 @@ export LESS="-R"
 export MANPAGER="less -R --use-color -Dd+r -Du+b"
 
 export LESS_TERMCAP_mb=$(
-    tput bold
-    tput setaf 2
+	tput bold
+	tput setaf 2
 ) # green
 export LESS_TERMCAP_md=$(
-    tput bold
-    tput setaf 6
+	tput bold
+	tput setaf 6
 ) # cyan
 export LESS_TERMCAP_me=$(tput sgr0)
 export LESS_TERMCAP_so=$(
-    tput bold
-    tput setaf 3
-    tput setab 4
+	tput bold
+	tput setaf 3
+	tput setab 4
 ) # yellow on blue
 export LESS_TERMCAP_se=$(
-    tput rmso
-    tput sgr0
+	tput rmso
+	tput sgr0
 )
 export LESS_TERMCAP_us=$(
-    tput smul
-    tput bold
-    tput setaf 7
+	tput smul
+	tput bold
+	tput setaf 7
 ) # white
 export LESS_TERMCAP_ue=$(
-    tput rmul
-    tput sgr0
+	tput rmul
+	tput sgr0
 )
 export LESS_TERMCAP_mr=$(tput rev)
 export LESS_TERMCAP_mh=$(tput dim)
@@ -82,8 +82,8 @@ export GPG_TTY=$(tty)
 ################################################################################
 
 if [[ -x /usr/bin/lesspipe ]]; then
-    export LESSOPEN="| /usr/bin/lesspipe %s"
-    export LESSCLOSE="/usr/bin/lesspipe %s %s"
+	export LESSOPEN="| /usr/bin/lesspipe %s"
+	export LESSCLOSE="/usr/bin/lesspipe %s %s"
 fi
 
 ################################################################################
@@ -91,11 +91,11 @@ fi
 ################################################################################
 
 if _have dircolors; then
-    if [[ -r "$HOME/.dircolors" ]]; then
-        eval "$(dircolors -b "$HOME/.dircolors")"
-    else
-        eval "$(dircolors -b)"
-    fi
+	if [[ -r "$HOME/.dircolors" ]]; then
+		eval "$(dircolors -b "$HOME/.dircolors")"
+	else
+		eval "$(dircolors -b)"
+	fi
 fi
 
 ################################################################################
@@ -103,46 +103,46 @@ fi
 ################################################################################
 
 pathappend() {
-    declare arg
-    for arg in "$@"; do
-        test -d "$arg" || continue
-        PATH=${PATH//":$arg:"/:}
-        PATH=${PATH/#"$arg:"/}
-        PATH=${PATH/%":$arg"/}
-        export PATH="${PATH:+"$PATH:"}$arg"
-    done
+	declare arg
+	for arg in "$@"; do
+		test -d "$arg" || continue
+		PATH=${PATH//":$arg:"/:}
+		PATH=${PATH/#"$arg:"/}
+		PATH=${PATH/%":$arg"/}
+		export PATH="${PATH:+"$PATH:"}$arg"
+	done
 } && export -f pathappend
 
 pathprepend() {
-    for arg in "$@"; do
-        test -d "$arg" || continue
-        PATH=${PATH//:"$arg:"/:}
-        PATH=${PATH/#"$arg:"/}
-        PATH=${PATH/%":$arg"/}
-        export PATH="$arg${PATH:+":${PATH}"}"
-    done
+	for arg in "$@"; do
+		test -d "$arg" || continue
+		PATH=${PATH//:"$arg:"/:}
+		PATH=${PATH/#"$arg:"/}
+		PATH=${PATH/%":$arg"/}
+		export PATH="$arg${PATH:+":${PATH}"}"
+	done
 } && export -f pathprepend
 
 # remember last arg will be first in path
 pathprepend \
-    "$HOME/.local/bin" \
-    "$GHREPOS/cmd-"* \
-    "$CARGO_HOME/bin" \
-    "$HOME/.local/share/go/bin" \
-    /usr/local/go/bin \
-    /usr/local/bin \
-    "$SCRIPTS"
+	"$HOME/.local/bin" \
+	"$GHREPOS/cmd-"* \
+	"$CARGO_HOME/bin" \
+	"$HOME/.local/share/go/bin" \
+	/usr/local/go/bin \
+	/usr/local/bin \
+	"$SCRIPTS"
 
 pathappend \
-    /usr/local/bin \
-    /usr/local/sbin \
-    /usr/local/games \
-    /usr/games \
-    /usr/sbin \
-    /usr/bin \
-    /snap/bin \
-    /sbin \
-    /bin
+	/usr/local/bin \
+	/usr/local/sbin \
+	/usr/local/games \
+	/usr/games \
+	/usr/sbin \
+	/usr/bin \
+	/snap/bin \
+	/sbin \
+	/bin
 
 ################################################################################
 #                                cdpath
@@ -186,34 +186,34 @@ PROMPT_MAX=95
 PROMPT_AT=@
 
 __ps1() {
-    local P='$' dir="${PWD/$HOME/\~}" B countme short long double \
-        r='\[\e[31m\]' g='\[\e[32m\]' h='\[\e[34m\]' \
-        u='\[\e[33m\]' p='\[\e[34m\]' w='\[\e[35m\]'
+	local P='$' dir="${PWD/$HOME/\~}" B countme short long double \
+		r='\[\e[31m\]' g='\[\e[32m\]' h='\[\e[34m\]' \
+		u='\[\e[33m\]' p='\[\e[34m\]' w='\[\e[35m\]'
 
-    b='\[\e[36m\]' x='\[\e[0m\]'
+	b='\[\e[36m\]' x='\[\e[0m\]'
 
-    [[ $EUID == 0 ]] && P='#' && u=$r && p=$u # root
-    [[ $PWD = / ]] && dir=/
-    [[ $PWD = "$HOME" ]] && dir='~'
+	[[ $EUID == 0 ]] && P='#' && u=$r && p=$u # root
+	[[ $PWD = / ]] && dir=/
+	[[ $PWD = "$HOME" ]] && dir='~'
 
-    B=$(git branch --show-current 2>/dev/null)
-    [[ $dir = "$B" ]] && B=.
-    countme="$USER$PROMPT_AT$(hostname):$dir($B)\$ "
+	B=$(git branch --show-current 2>/dev/null)
+	[[ $dir = "$B" ]] && B=.
+	countme="$USER$PROMPT_AT$(hostname):$dir($B)\$ "
 
-    [[ $B == master || $B == main ]] && b="$r"
-    [[ -n "$B" ]] && B="$g($b$B$g)"
+	[[ $B == master || $B == main ]] && b="$r"
+	[[ -n "$B" ]] && B="$g($b$B$g)"
 
-    short="$u\u$g$PROMPT_AT$h\h$g:$w$dir$B$p$P$x "
-    long="$g╔ $u\u$g$PROMPT_AT$h\h$g:$w$dir$B\n$g╚ $p$P$x "
-    double="$g╔ $u\u$g$PROMPT_AT$h\h$g:$w$dir\n$g║ $B\n$g╚ $p$P$x "
+	short="$u\u$g$PROMPT_AT$h\h$g:$w$dir$B$p$P$x "
+	long="$g╔ $u\u$g$PROMPT_AT$h\h$g:$w$dir$B\n$g╚ $p$P$x "
+	double="$g╔ $u\u$g$PROMPT_AT$h\h$g:$w$dir\n$g║ $B\n$g╚ $p$P$x "
 
-    if ((${#countme} > PROMPT_MAX)); then
-        PS1="$double"
-    elif ((${#countme} > PROMPT_LONG)); then
-        PS1="$long"
-    else
-        PS1="$short"
-    fi
+	if ((${#countme} > PROMPT_MAX)); then
+		PS1="$double"
+	elif ((${#countme} > PROMPT_LONG)); then
+		PS1="$long"
+	else
+		PS1="$short"
+	fi
 }
 
 PROMPT_COMMAND="__ps1"
@@ -277,14 +277,14 @@ _have bat && alias cat=bat
 # } && export -f lesscoloroff
 
 envx() {
-    local envfile="${1:-"$HOME/.env"}"
-    [[ ! -e "$envfile" ]] && echo "$envfile not found" && return 1
-    while IFS= read -r line; do
-        name=${line%%=*}
-        value=${line#*=}
-        [[ -z "${name}" || $name =~ ^# ]] && continue
-        export "$name"="$value"
-    done <"$envfile"
+	local envfile="${1:-"$HOME/.env"}"
+	[[ ! -e "$envfile" ]] && echo "$envfile not found" && return 1
+	while IFS= read -r line; do
+		name=${line%%=*}
+		value=${line#*=}
+		[[ -z "${name}" || $name =~ ^# ]] && continue
+		export "$name"="$value"
+	done <"$envfile"
 } && export -f envx
 
 [[ -e "$HOME/.env" ]] && envx "$HOME/.env"
@@ -307,11 +307,11 @@ envx() {
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        . /usr/share/bash-completion/bash_completion
-    elif [ -f /etc/bash_completion ]; then
-        . /etc/bash_completion
-    fi
+	if [ -f /usr/share/bash-completion/bash_completion ]; then
+		. /usr/share/bash-completion/bash_completion
+	elif [ -f /etc/bash_completion ]; then
+		. /etc/bash_completion
+	fi
 fi
 
 _source_if "${XDG_DATA_HOME}/blesh/ble.sh"
