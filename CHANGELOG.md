@@ -1,3 +1,10 @@
+# [0.2.0](https://github.com/jlrickert/dotfiles/compare/v0.1.1...v0.2.0) (2023-07-24)
+
+
+### Features
+
+* **keg:** removed automatic syncing ([73eec43](https://github.com/jlrickert/dotfiles/commit/73eec43f807388374fa0c37e035d55ad9183d299))
+
 ## [0.1.1](https://github.com/jlrickert/dotfiles/compare/v0.1.0...v0.1.1) (2023-07-24)
 
 
