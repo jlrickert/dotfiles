@@ -1,3 +1,10 @@
+## [0.1.1](https://github.com/jlrickert/dotfiles/compare/v0.1.0...v0.1.1) (2023-07-24)
+
+
+### Bug Fixes
+
+* **cli:** flutter cli completions ([7d4b89b](https://github.com/jlrickert/dotfiles/commit/7d4b89b762286f482c1938d9200919dfb3667889))
+
 # [0.1.0](https://github.com/jlrickert/dotfiles/compare/v0.0.2...v0.1.0) (2023-07-23)
 
 
