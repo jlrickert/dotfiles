@@ -9,5 +9,4 @@ if test -n "${COMP_LINE}"; then
 fi
 
 cd "${KEG_CURRENT}" || exit 1
-git pull &>/dev/null
 ku "$@"

@@ -116,11 +116,12 @@ title) title "$@" ;;
 titles) titles "$@" ;;
 search) search "$@" ;;
 qf-search) search-qf "$@" ;;
+sync) git pull "$@" ;;
 pwd)
-    pwd
-    ;;
+	pwd
+	;;
 fzf) fzf "$@" ;;
 *)
-    keg edit "$CMD"
-    ;;
+	keg edit "$CMD"
+	;;
 esac
