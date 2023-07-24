@@ -4,62 +4,62 @@
 set -e
 
 nodes() {
-    find docs -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
+	find docs -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
 }
 
 title() {
-    HEADER="$(cat "docs/${1}/README")"
-    HEADER="${HEADER:2}"
-    echo "${HEADER}"
+	HEADER="$(cat "docs/${1}/README")"
+	HEADER="${HEADER:2}"
+	echo "${HEADER}"
 }
 
 titles() {
-    find . -name "nodes.tsv" -exec awk -F'\t' '{print "docs/"$1"/README.md:1:"$3}' {} +
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print "docs/"$1"/README.md:1:"$3}' {} +
 }
 
 search() {
-    rg \
-        --line-number \
-        --files-with-matches \
-        --no-heading \
-        --smart-case \
-        --glob "docs/**/README.md" \
-        "$@" | grep -o -E '[0-9]+'
+	rg \
+		--line-number \
+		--files-with-matches \
+		--no-heading \
+		--smart-case \
+		--glob "docs/**/README.md" \
+		"$@" | grep -o -E '[0-9]+'
 }
 
 search-qf() {
-    rg \
-        --line-number \
-        --files-with-matches \
-        --no-heading \
-        --smart-case \
-        --glob "docs/**/README.md" \
-        "$@" | awk '{ cmd = "head -n 1 " $1; cmd | getline $2; close(cmd); print $1":1:"$2}'
+	rg \
+		--line-number \
+		--files-with-matches \
+		--no-heading \
+		--smart-case \
+		--glob "docs/**/README.md" \
+		"$@" | awk '{ cmd = "head -n 1 " $1; cmd | getline $2; close(cmd); print $1":1:"$2}'
 }
 
 fzf() {
-    ku nodes | _keg-node-complete "$@"
-    # RG_PREFIX='ku search'
-    # INITIAL_QUERY=""
-    # # shellcheck disable=SC2034
-    # FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
-    #     --bind "change:reload:$RG_PREFIX {q} || true" \
-    #     --sort \
-    #     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
-    #     --height=100% \
-    #     --width=80% \
-    #     --ansi --phony --query "$INITIAL_QUERY" "$@"
-    #
-    # FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
-    #     --bind "change:reload:$RG_PREFIX {q} || true" \
-    #     --sort \
-    #     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
-    #     --height=100% \
-    #     --ansi --phony --query "$INITIAL_QUERY" "$@"
+	ku nodes | _keg-node-complete "$@"
+	# RG_PREFIX='ku search'
+	# INITIAL_QUERY=""
+	# # shellcheck disable=SC2034
+	# FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
+	#     --bind "change:reload:$RG_PREFIX {q} || true" \
+	#     --sort \
+	#     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
+	#     --height=100% \
+	#     --width=80% \
+	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
+	#
+	# FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
+	#     --bind "change:reload:$RG_PREFIX {q} || true" \
+	#     --sort \
+	#     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
+	#     --height=100% \
+	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
 }
 
 help() {
-    echo ""
+	echo ""
 }
 
 # ensure we are in a keg
@@ -76,25 +76,25 @@ keg current &>/dev/null || exit 1
 
 ######################### Tab Completion Context ########################
 if test -n "${COMP_LINE}"; then
-    cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
-    pre="${COMP_LINE#* }"
-    echo ku CMD="$cmd" COMP_LINE="$COMP_LINE" PRE="$pre" >/tmp/ku_log
-    case "${cmd}" in
-    edit | view | title)
-        nodes list
-        exit 0
-        ;;
-    keg)
-        COMP_LINE="${pre}" keg
-        exit 0
-        ;;
-    *)
-        for cmd in build create pwd edit view keg nodes titles fzf search deploy help; do
-            [[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
-        done
-        exit 0
-        ;;
-    esac
+	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
+	pre="${COMP_LINE#* }"
+	echo ku CMD="$cmd" COMP_LINE="$COMP_LINE" PRE="$pre" >/tmp/ku_log
+	case "${cmd}" in
+	edit | view | title)
+		nodes list
+		exit 0
+		;;
+	keg)
+		COMP_LINE="${pre}" keg
+		exit 0
+		;;
+	*)
+		for cmd in build create pwd edit view keg nodes titles fzf search deploy sync help; do
+			[[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
+		done
+		exit 0
+		;;
+	esac
 fi
 
 ###################### Regular Context Delegation ######################
