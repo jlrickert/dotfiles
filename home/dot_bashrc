@@ -30,17 +30,6 @@ _have vi && export VISUAL=vi
 _have vim && export VISUAL=vim
 _have nvim && export VISUAL=nvim
 _have vim && export EDITOR_PREFIX=vim
-export NVM_DIR="$HOME/.local/share/nvm"
-export RUSTUP_HOME="$HOME/.local/share/rustup"
-export CARGO_HOME="$HOME/.local/share/cargo"
-export GOPRIVATE="github.com/$GITUSER/*,gitlab.com/$GITUSER/*"
-export GOPATH="$HOME/.local/share/go"
-export GOBIN="$HOME/.local/bin"
-#export GOPROXY=direct
-export CGO_ENABLED=0
-export PYTHONDONTWRITEBYTECODE=2
-export LC_COLLATE=C
-export ZSH="$XDG_DATA_HOME/oh-my-zsh"
 #export CFLAGS="-Wall -Wextra -Werror -O0 -g -fsanitize=address -fno-omit-frame-pointer -finstrument-functions"
 
 export LESS="-R"
@@ -346,24 +335,16 @@ _have cargo && _source_if "$CARGO_HOME/env"
 _have terraform && complete -C /usr/bin/terraform terraform
 _have terraform && complete -C /usr/bin/terraform tf
 
-
 # python argparse completions
 _argparse() {
-  # This is from the python3-argcomplete package on ubuntu
-  # FIXME: make this work on other distros
-  if _have register-python-argcomplete3 && _have "$1"; then
-    source <(register-python-argcomplete3 "$1")
-  fi
+	# This is from the python3-argcomplete package on ubuntu
+	# FIXME: make this work on other distros
+	if _have register-python-argcomplete3 && _have "$1"; then
+		source <(register-python-argcomplete3 "$1")
+	fi
 }
 
 argcomp=(ansible ansible-config ansible-console ansible-doc ansible-galaxy ansible-inventory ansible-playbook ansible-pull ansible-vault dotctl)
 for i in "${argcomp[@]}"; do _argparse "$i"; done
 
 #_have ssh-agent && test -z "$SSH_AGENT_PID" && . <(ssh-agent)
-
-################################################################################
-#                      personalized configuration
-################################################################################
-
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"

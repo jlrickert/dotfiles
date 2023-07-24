@@ -168,6 +168,3 @@ _fzf_complete_vim() {
 _fzf_complete_vic() {
   _fzf_complete +m -- "$@" < <(vic list)
 }
-
-_source_if "${HOME}/.zsh-personal"
-_source_if "${HOME}/.zsh-work"
