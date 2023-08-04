@@ -78,7 +78,6 @@ keg current &>/dev/null || exit 1
 if test -n "${COMP_LINE}"; then
 	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
 	pre="${COMP_LINE#* }"
-	echo ku CMD="$cmd" COMP_LINE="$COMP_LINE" PRE="$pre" >/tmp/ku_log
 	case "${cmd}" in
 	edit | view | title)
 		nodes list
