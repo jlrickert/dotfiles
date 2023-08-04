@@ -1,3 +1,15 @@
+# [0.3.0](https://github.com/jlrickert/dotfiles/compare/v0.2.0...v0.3.0) (2023-08-04)
+
+
+### Bug Fixes
+
+* ku no longer echos to a log ([01f4d5c](https://github.com/jlrickert/dotfiles/commit/01f4d5c49f47cf76d58102a3ff8056ba0e047f88))
+
+
+### Features
+
+* rename passwd to chpasswd for sshkey ([3a9e4c2](https://github.com/jlrickert/dotfiles/commit/3a9e4c2877f127376c70915dd92d5783e229adc4))
+
 # [0.2.0](https://github.com/jlrickert/dotfiles/compare/v0.1.1...v0.2.0) (2023-07-24)
 
 
