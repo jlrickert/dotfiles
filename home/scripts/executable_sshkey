@@ -6,7 +6,6 @@ set -e
 
 typ=ed25519
 confd="$HOME/.ssh"
-cmds="gen pub list ls passwd comment"
 
 gen() {
     name=${1:-$(date -u +%Y%m%d%H%M%S)}
@@ -19,7 +18,7 @@ pub() {
     cat "${confd}/${name}.pub"
 }
 
-passwd() {
+chpasswd() {
     name="${1:-id_ed25519}"
     test -e "${confd}/${name}.pub" || return 1
     ssh-keygen -p -f "${confd}/${name}"
@@ -45,10 +44,18 @@ EOF
 # add `complete -S sshkey sshkey` to bashrc
 
 if test -n "${COMP_LINE}"; then
+    cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
     pre="${COMP_LINE##* }"
-    for c in ${cmds:+${cmds} $(list)}; do
-        test -z "${pre}" -o "${c}" != "${c#${pre}}" && echo "$c"
-    done
+    case "${cmd}" in
+    chpasswd | comment)
+        list
+        ;;
+    *)
+        for c in gen pub chpasswd comment list; do
+            test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+        done
+        ;;
+    esac
     exit
 fi
 
@@ -61,7 +68,7 @@ case "$cmd" in
 pub) pub "$@" ;;
 gen) gen "$@" ;;
 ls | list) list "$@" ;;
-passwd) passwd "$@" ;;
+chpasswd) chpasswd "$@" ;;
 comment) comment "$@" ;;
 *) pub "$@" ;;
 esac
