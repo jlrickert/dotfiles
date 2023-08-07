@@ -1,3 +1,15 @@
+# [0.5.0](https://github.com/jlrickert/dotfiles/compare/v0.4.0...v0.5.0) (2023-08-07)
+
+
+### Bug Fixes
+
+* **mac:** no longer reinstalls brew ([366bb86](https://github.com/jlrickert/dotfiles/commit/366bb8684f45eab817a03f866cb7aa5cd8ed2900))
+
+
+### Features
+
+* update bash completions for mac ([5da7239](https://github.com/jlrickert/dotfiles/commit/5da7239ec1a7645ad75aaeb55699b06f4ec22db4))
+
 # [0.4.0](https://github.com/jlrickert/dotfiles/compare/v0.3.0...v0.4.0) (2023-08-07)
 
 
