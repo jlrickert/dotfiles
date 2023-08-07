@@ -11,7 +11,7 @@ _sudo() {
 }
 
 {{ if eq .chezmoi.os "linux" }}
-{{   if eq .chezmoi.osRelease.id "ubuntu" }}
+{{ if eq .chezmoi.osRelease.id "ubuntu" }}
 _sudo apt-get update -y
 _sudo apt-get remove -y fzf
 _sudo apt-get install -y \
@@ -74,13 +74,13 @@ _sudo apt-get install -y \
     xclip \
     zip \
     zsh
-{{   end }}
+{{ end }}
 {{ end }}
 
 {{ if eq .chezmoi.os "darwin" }}
 if ! _have /opt/home/bin/brew; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     source <(/opt/homebrew/bin/brew shellenv)
-    brew install ansible ripgrep yq jq yabai zsh-completions ranger watchman fnm exa entr
+    brew install ansible ripgrep yq jq yabai zsh-completions ranger watchman fnm exa entr bash bash-completion@2
 fi
 {{ end }}

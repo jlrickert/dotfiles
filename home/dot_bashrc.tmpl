@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -20,7 +20,7 @@ _source_if() { [[ -r "$1" ]] && source "$1"; }
 #                         environment variables
 #                           (also see envx)
 ################################################################################
-source "${HOME}/.zshenv"
+_source_if "${HOME}/.zshenv"
 
 _have nano && export EDITOR=nano
 _have vi && export EDITOR=vi
@@ -303,6 +303,11 @@ envx() {
 # for mac
 [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
+
+export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+_source_if "/usr/local/etc/profile.d/bash_completion.sh"
+
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -323,7 +328,7 @@ _have gh && . <(gh completion -s bash)
 _have flutter && source <(flutter bash-completion)
 _have pandoc && source <(pandoc --bash-completion)
 _have spotify && source <(spotify completion bash 2>/dev/null)
-_have hugo && source <(hugo completion bash) && compdef _hugo hugo
+_have hugo && source <(hugo completion bash)
 _have chezmoi && source <(chezmoi completion bash)
 _have podman && _source_if "$HOME/.local/share/podman/completion"
 _have docker && _source_if "$HOME/.local/share/docker/completion"
