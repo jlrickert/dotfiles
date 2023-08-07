@@ -9,9 +9,13 @@ _have() { type "$1" &>/dev/null; }
 
 source "${HOME}/.zshenv"
 
-cd "${HOME}/.local/share/fzf"
-./install --no-update-rc --xdg --completion --key-bindings
-cd -
+if ! _have fzf; then
+    cd "${HOME}/.local/share/fzf"
+    ./install --no-update-rc --xdg --completion --key-bindings
+    ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf"
+    ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf-tmux"
+    cd -
+fi
 
 if ! _have keg; then
     go install github.com/rwxrob/keg/cmd/keg@latest
@@ -49,7 +53,12 @@ if ! _have cargo; then
     cd -
 fi
 
-cargo install exa stylua fnm
+if ! _have exa; then
+    cargo install exa
+fi
+if ! _have stylua; then
+    cargo install stylua
+fi
 
 if ! _have fnm; then
     cargo install fnm
@@ -61,9 +70,9 @@ fi
 
 if ! _have node; then
     fnm install --lts
-    source <(fnm env)
 fi
 
 # FIXME: This requires user intervention because it complains about plugins not
 # being installed.  Classic chicken and egg problem.
-vim +PlugInstall +CocUpdateSync +qall
+vim +PlugInstall +qall
+vim +CocUpdateSync +qall
