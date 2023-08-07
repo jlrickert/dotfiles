@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/jlrickert/dotfiles/compare/v0.5.0...v0.5.1) (2023-08-07)
+
+
+### Bug Fixes
+
+* **mac:** no longer reinstalls brew ([48f4a99](https://github.com/jlrickert/dotfiles/commit/48f4a992fc531efdc694fb6dea9f5d8289dc6e2b))
+
 # [0.5.0](https://github.com/jlrickert/dotfiles/compare/v0.4.0...v0.5.0) (2023-08-07)
 
 
