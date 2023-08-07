@@ -1,3 +1,16 @@
+# [0.4.0](https://github.com/jlrickert/dotfiles/compare/v0.3.0...v0.4.0) (2023-08-07)
+
+
+### Bug Fixes
+
+* fzf install as expected ([c501d17](https://github.com/jlrickert/dotfiles/commit/c501d172b121eca72b968c1a760c441375a21972))
+
+
+### Features
+
+* add mods cli utility ([e402bac](https://github.com/jlrickert/dotfiles/commit/e402bac47e38464d0fa2fab7116bd1fe10ee491f))
+* packages installed only onchange ([4e70d36](https://github.com/jlrickert/dotfiles/commit/4e70d361f05cbc93cd05827d2248e099b89fa8c9))
+
 # [0.3.0](https://github.com/jlrickert/dotfiles/compare/v0.2.0...v0.3.0) (2023-08-04)
 
 
