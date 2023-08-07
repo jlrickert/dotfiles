@@ -33,6 +33,10 @@ if ! _have hugo; then
     go install github.com/gohugoio/hugo@latest
 fi
 
+if ! _have mods; then
+  go install github.com/charmbracelet/mods@latest
+fi
+
 if ! _have cargo; then
     cd "$(mktemp -d)" || exit 1
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >rustup.sh
