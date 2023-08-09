@@ -65,9 +65,6 @@ alias luamake=/home/jlrickert/code/sumneko/3rd/luamake/luamake
 _source_if() { [[ -r "$1" ]] && source "$1"; }
 _have() { command -v "$1" &>/dev/null; }
 
-[[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
-[[ -f "$HOME/.work-secrets" ]] && source "$HOME/.work-secrets"
-
 {{ if eq .chezmoi.os "darwin" }}
 if _have /opt/homebrew/bin/brew; then
 	source <(/opt/homebrew/bin/brew shellenv)

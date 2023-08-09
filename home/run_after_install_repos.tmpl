@@ -7,7 +7,7 @@ set -o pipefail # exit if no-zero status code is returned in a pipeline
 {{ if .include_repos }}
 source ~/.zshenv
 
-cd "${PERSONAL}" || exit 1
+cd "${GHREPOS}" || exit 1
 # clone jlrickert/zet
 # clone jlrickert/zettel
 
