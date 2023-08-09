@@ -52,7 +52,7 @@ set showbreak=↪\
 set listchars=trail:␣,tab:»\ 
 
 set autoindent
-set expandtab
+set noexpandtab
 set tabstop=4
 set shiftwidth=4
 
