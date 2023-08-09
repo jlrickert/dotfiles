@@ -49,6 +49,7 @@ if ! _have cargo; then
     if [[ "$(sha256sum rustup.sh | awk '{print $1}')" = "be3535b3033ff5e0ecc4d589a35d3656f681332f860c5fd6684859970165ddcc" ]]; then
         sh rustup.sh --no-modify-path -y
     fi
+    # Re-sourcing adds rusts paths
     source ~/.zshenv
     cd -
 fi
@@ -74,5 +75,5 @@ fi
 
 # FIXME: This requires user intervention because it complains about plugins not
 # being installed.  Classic chicken and egg problem.
-vim +PlugInstall +qall
-vim +CocUpdateSync +qall
+# vim +PlugInstall +qall
+# vim +CocUpdateSync +qall
