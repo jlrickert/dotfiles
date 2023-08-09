@@ -1,3 +1,18 @@
+# [0.6.0](https://github.com/jlrickert/dotfiles/compare/v0.5.1...v0.6.0) (2023-08-09)
+
+
+### Bug Fixes
+
+* no longer sources scerts multiple times ([a795ab0](https://github.com/jlrickert/dotfiles/commit/a795ab0ed159b8de901e26483389c8076d541c0d))
+
+
+### Features
+
+* add bw command for bitwarden ([6c16317](https://github.com/jlrickert/dotfiles/commit/6c163172424e980764def161a9abf081f1bb4416))
+* disable vim plugin installation ([bad3584](https://github.com/jlrickert/dotfiles/commit/bad358456ff0bc20f6a5aa299111015d8b551871))
+* **keg:** moved keg repos locations ([06d6af7](https://github.com/jlrickert/dotfiles/commit/06d6af701ef6abb6b270fc2e5850f9c8c30b4e8f))
+* **vim:** no expand tabs by default ([d86f88e](https://github.com/jlrickert/dotfiles/commit/d86f88e1902b022fe7aa428b1894ae8ccab49483))
+
 ## [0.5.1](https://github.com/jlrickert/dotfiles/compare/v0.5.0...v0.5.1) (2023-08-07)
 
 
