@@ -1,5 +1,5 @@
-#!/bin/bash
-export KEG_CURRENT="${HOME}/work/zet"
+#!/usr/bin/env bash
+export KEG_CURRENT="${GHREPOS}/br8kthru-zet"
 
 if test -n "${COMP_LINE}"; then
     pre="${COMP_LINE#* }"

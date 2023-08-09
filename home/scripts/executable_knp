@@ -1,5 +1,5 @@
 #!/bin/bash
-export KEG_CURRENT="${HOME}/personal/zettel"
+export KEG_CURRENT="${GHREPOS}/zettel"
 
 if test -n "${COMP_LINE}"; then
     pre="${COMP_LINE#* }"
