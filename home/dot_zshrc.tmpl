@@ -75,6 +75,7 @@ _have k3s && source <(k3s completion zsh)
 _have helm && source <(helm completion zsh)
 _have fnm && source <(fnm env --use-on-cd)
 _have fzf && source "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh"
+_have bw && source <(bw completion --shell zsh); compdef _bw bw
 
 # python argparse completions
 _argparse() {
