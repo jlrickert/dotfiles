@@ -1,6 +1,0 @@
-indent_type = "Spaces"
-indent_width = 4
-quote_style = "AutoPreferSingle"
-call_parentheses = "Always"
-collapse_simple_statement = "Never"
-line_endings = "Unix"

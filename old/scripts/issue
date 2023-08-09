@@ -1,8 +1,0 @@
-#!/bin/sh
-
-if [ -n "$1" ]; then
-    exec gh issue edit "$@"
-fi
-
-exec gh issue create
-
