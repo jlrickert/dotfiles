@@ -3,6 +3,7 @@
 {{- $openai_token  := promptStringOnce . "openai_token" "Chat GPT token" -}}
 {{- $include_repos := promptBoolOnce . "include_repos" "Include Repos" -}}
 {{- $workstation := promptBoolOnce . "workstation" "Workstation" -}}
+{{- $is_ubuntu := and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")  -}}
 
 [data]
     chezmoi_managed = "Managed by chezmoi"
@@ -11,3 +12,8 @@
     openai_token = {{ $openai_token | quote }}
     include_repos = {{ $include_repos | default true }}
     workstation = {{ $workstation | default false }}
+    is_wsl = {{ .chezmoi.kernel.osrelease | regexMatch "WSL2$" }}
+    is_macos = {{ .chezmoi.os | regexMatch "darwin" }}
+    is_linux = {{ eq .chezmoi.os "linux" | default true }}
+    is_ubuntu = {{ $is_ubuntu }}
+

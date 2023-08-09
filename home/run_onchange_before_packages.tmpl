@@ -74,9 +74,8 @@ _sudo apt-get install -y \
     zip \
     zsh
 {{ end }}
-{{ end }}
 
-{{ if eq .chezmoi.os "darwin" }}
+{{ if .is_macos }}
 if ! _have /opt/homebrew/bin/brew; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     source <(/opt/homebrew/bin/brew shellenv)

@@ -24,6 +24,11 @@ export SECRETS="${HOME}/.secrets"
 export SNIPPETS="${HOME}/snippets"
 export HELP_BROWSER=lynx
 
+export LANG=en_US.UTF-8
+{{ if .is_ubuntu }}
+export BROWSER="google-chrome-stable"
+{{ end }}
+
 export DESKTOP="${HOME}/Desktop"
 export DOCUMENTS="${HOME}/Documents"
 export DOWNLOADS="${HOME}/Downloads"
