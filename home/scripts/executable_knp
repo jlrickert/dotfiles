@@ -2,10 +2,10 @@
 export KEG_CURRENT="${GHREPOS}/zettel"
 
 if test -n "${COMP_LINE}"; then
-    pre="${COMP_LINE#* }"
-    COMP_LINE="ku ${pre}" ku
-    exit 0
+	pre="${COMP_LINE#* }"
+	COMP_LINE="ku ${pre}" ku
+	exit 0
 fi
 
-cd "${HOME}/personal/zettel" || exit 1
+cd "${KEG_CURRENT}" || exit 1
 ku "$@"

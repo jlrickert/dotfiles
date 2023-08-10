@@ -102,13 +102,12 @@ CMD="$(echo "$@" | awk '{print $1}')"
 shift
 
 case "${CMD}" in
-edit) keg edit "$@" ;;
-view) keg edit "$@" ;;
-keg) keg "$@" ;;
-c) keg c "$@" ;;
-create) keg c "$@" ;;
-build) make -f "${XDG_CONFIG_HOME:-$HOME/.config}/ku/makefile" "$@" ;;
-deploy) ./deploy "$@" ;;
+e | edit) keg edit "$@" ;;
+v | view) keg edit "$@" ;;
+k | keg) keg "$@" ;;
+c | create) keg c "$@" ;;
+b | build) make -f "${XDG_CONFIG_HOME:-$HOME/.config}/ku/makefile" "$@" ;;
+d | deploy) ./deploy "$@" ;;
 list) nodes "$@" ;;
 nodes) nodes "$@" ;;
 title) title "$@" ;;

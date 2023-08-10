@@ -115,10 +115,10 @@ _fzf_comprun() {
 	cd) fzf --preview 'tree -C {} | head -200' "$@" ;;
 	export | unset) fzf --preview "eval 'echo \$'{}" "$@" ;;
 	ssh) fzf --preview 'dig {}' "$@" ;;
-	keg) ku fzf "$@" ;;
-	knp) KEG_CURRENT=~/personal/zettel ku fzf "$@" ;;
-	knw) KEG_CURRENT=~/work/zet ku fzf "$@" ;;
-	kn) KEG_CURRENT=~/personal/zet ku fzf "$@" ;;
+	keg) KEG_CURRENT=$(keg current) ku fzf "$@" ;;
+	knp) knp fzf "$@" ;;
+	knw) knw fzf "$@" ;;
+	kn) kn fzf "$@" ;;
 	ku) ku fzf "$@" ;;
 	chrome) fzf --ansi --multi "$@" ;;
 	vim) fzf --preview 'bat -n --color=always {}' "$@" ;;
@@ -132,15 +132,15 @@ _fzf_complete_keg() {
 	_fzf_complete +m -- "$@" < <(KEG_CURRENT=$(keg current) ku nodes)
 }
 _fzf_complete_knp() {
-	_fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zettel ku nodes)
+	_fzf_complete +m -- "$@" < <(knp nodes)
 }
 _fzf_complete_knw() {
-	_fzf_complete +m -- "$@" < <(KEG_CURRENT=~/work/zet ku nodes)
+	_fzf_complete +m -- "$@" < <(knw nodes)
 }
 _fzf_complete_kn() {
-	_fzf_complete +m -- "$@" < <(KEG_CURRENT=~/personal/zet ku nodes)
+	_fzf_complete +m -- "$@" < <(kn nodes)
 }
-_fzf_complete_kn() {
+_fzf_complete_ku() {
 	_fzf_complete +m -- "$@" < <(ku nodes)
 }
 _fzf_complete_chrome() {
