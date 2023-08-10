@@ -1,43 +1,50 @@
 # My personal dotfiles
 
-Pilfer at your own peril.
+My personal dotfiles. Pilfer at your own peril!
 
-## Install Dependencies
+## Installation
 
-### Ubuntu
+Installation is simple. Just install git and curl, copy over the chezmoi config, and let chezmoi do the rest. Sudo access is assumed.
 
-```bash
-sudo apt install -y python3-pip git
+Start by copying the following and updating.
+
+```toml
+[data]
+    chezmoi_managed = "Managed by chezmoi"
+    name = "Your name"
+    email = "example@gmail.com"
+    openai_token = ""
+    discord_token = ""
+    workstation = false # TODO: unstable. This is for setting up things like i3.
+    is_wsl = false
+    is_macos = false
+    is_linux = true
+    is_ubuntu = true
 ```
 
-## Install
+Supported OS currently are WSL2 and MacOSX. Optionally `--branch vX.X.X` may be specified to lock in a version (untested).
 
-Run the following to quickly install. This will also ask for a password on the command line.
-
-```bash
-git clone git@github.com:jlrickert/dotfiles.git
-cd dotfiles
-./hack
-./install
-./scripts/dotctl
-```
-
-`./hack` may be run before `./scripts/dotctl` to remove the password prompt.
-
-## File structure
-
-| Directory | Description                                 |
-| --------- | ------------------------------------------- |
-| home      | my dotfiles managed by stow                 |
-| deps      | third party repos managed by git submodules |
-
-## Quick install
+### Ubuntu and WSL2
 
 ```bash
-# install chezmoi if you don't have it already
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b $HOME/.local/bin
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:jlrickert/dotfiles.git
+sudo apt install -y git curl
+$ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jlrickert
 ```
+
+### MacOSX
+
+```bash
+brew install curl git # I am guessing here. Too lazy to look it up
+$ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jlrickert
+```
+
+## Architecture
+
+All things managed by chezmoi are placed in `home`.
+
+| Directory | Description                    |
+| --------- | ------------------------------ |
+| home      | my dotfiles managed by chezmoi |
 
 ## Installation steps
 
@@ -46,8 +53,17 @@ WIP
 1. Run `./install`. This will install needed dependencies
 2. Run `./setup`
 
-## Test environment setup for quick prototyping
+## Quick testing cheatsheet
+
+Spin up a dev environment with `podman` to test in isolation. Optionally, `podman` may be replaced by `docker`.
 
 ```
-podman run --rm -it -v `pwd`:/home/jlrickert ubuntu bash
+podman run --rm -it -v `pwd`:/home/jlrickert/.local/share/chezmoi ubuntu bash
 ```
+
+The following commands are run inside of the container
+
+| Command           | Description                       |
+| ----------------- | --------------------------------- |
+| `chezmoi apply`   | Run installation                  |
+| `chezmoi upgrade` | Pull latest changes from upstream |
