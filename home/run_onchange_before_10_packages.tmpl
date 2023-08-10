@@ -11,69 +11,23 @@ _sudo() {
 }
 
 {{ if .is_ubuntu }}
-_sudo apt-get update -y
-_sudo apt-get remove -y fzf
-_sudo apt-get install -y \
-    apt-transport-https \
-    apt-utils \
-    atool \
-    bash-completion \
-    bc \
-    bind9-dnsutils \
-    btop \
-    build-essential \
-    ca-certificates \
-    cifs-utils \
-    curl \
-    dialog \
-    direnv \
-    ed \
-    fd-find \
-    figlet \
-    gh \
-    git \
-    htop \
-    httpie \
-    iputils-ping \
-    jq \
-    less \
-    libcurses-perl \
-    libncurses5 \
-    lolcat \
-    lynx \
-    make \
-    man-db \
-    ncal \
-    net-tools \
-    nmap \
-    perl \
-    pgformatter \
-    python3 \
-    python3-argcomplete \
-    python3-pip \
-    ranger \
-    ripgrep \
-    rsync \
-    shellcheck \
-    shfmt \
-    silversearcher-ag \
-    smbclient \
-    software-properties-common \
-    ssh \
-    sshfs \
-    sshpass \
-    stow \
-    sudo \
-    tig \
-    tmux \
-    tree \
-    unzip \
-    vim \
-    wget \
-    xclip \
-    zip \
-    zsh
-{{ end }}
+    {{- if .is_wsl -}}
+_sudo add-apt-repository ppa:wslutilities/wslu --yes
+    {{- end }}
+_sudo apt-get update --yes
+_sudo apt-get remove --yes fzf ## fzf is installed later
+_sudo apt-get install --yes \
+    apt-transport-https apt-utils atool bash-completion bc bind9-dnsutils btop \
+    build-essential ca-certificates cifs-utils curl dialog direnv ed entr \
+    fd-find figlet gh git htop httpie iputils-ping jq less \
+    libcurses-perl libncurses5 lolcat lynx make man-db ncal net-tools \
+    nmap perl pgformatter python3 python3-argcomplete python3-pip ranger \
+    ripgrep rsync shellcheck shfmt silversearcher-ag smbclient \
+    software-properties-common ssh sshfs sshpass stow sudo tig tmux tree \
+    unzip vim wget {{ if .is_wsl -}} wslu {{- end }} xclip zip zsh \
+
+ln -sf "$(which fdfind)" "${HOME}/.local/bin/fd"
+{{- end }}
 
 {{ if .is_macos }}
 if ! _have /opt/homebrew/bin/brew; then
