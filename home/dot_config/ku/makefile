@@ -7,7 +7,7 @@ PANDOC_DOCX_OPTIONS =
 BUILD_DIR := ./output
 
 NODES := $(shell find . -name '*.md')
-SRC_OBJS := $(shell find docs -type file ! -name '*.md')
+SRC_OBJS := $(shell find docs -type f ! -name '*.md')
 OBJS := $(SRC_OBJS:%=$(BUILD_DIR)/%)
 
 DOCX := $(NODES:%.md=$(BUILD_DIR)/%.docx)
