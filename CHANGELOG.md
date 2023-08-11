@@ -1,3 +1,20 @@
+# [0.7.0](https://github.com/jlrickert/dotfiles/compare/v0.6.0...v0.7.0) (2023-08-11)
+
+
+### Bug Fixes
+
+* ku build script works on ubuntu ([75a1f00](https://github.com/jlrickert/dotfiles/commit/75a1f0047f9cbe054f3128c755ba883de869db0c))
+
+
+### Features
+
+* update tmux config ([c962a0f](https://github.com/jlrickert/dotfiles/commit/c962a0ffe31b09c248cd170f18778c67bd08e30a))
+
+
+### Performance Improvements
+
+* only run scripts on change ([0798886](https://github.com/jlrickert/dotfiles/commit/0798886b4fb424b965f19eb862d0318da0fd9088))
+
 # [0.7.0](https://github.com/jlrickert/dotfiles/compare/v0.6.0...v0.7.0) (2023-08-10)
 
 
