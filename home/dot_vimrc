@@ -117,8 +117,8 @@ au bufnewfile,bufRead *gitconfig set filetype=gitconfig
 au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.go set spell spellcapcheck=0
 au bufnewfile,bufRead commands.yaml set spell
-au bufnewfile,bufRead *.md set tabstop=2 shiftwidth=2 textwidth=0
-au bufnewfile,bufRead pandoc set tabstop=2 shiftwidth=2 textwidth=0
+au bufnewfile,bufRead *.md set tabstop=2 shiftwidth=2 textwidth=0 expandtab
+au bufnewfile,bufRead pandoc set tabstop=2 shiftwidth=2 textwidth=0 expandtab
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " bash
