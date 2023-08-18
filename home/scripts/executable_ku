@@ -79,7 +79,7 @@ if test -n "${COMP_LINE}"; then
 	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
 	pre="${COMP_LINE#* }"
 	case "${cmd}" in
-	edit | view | title)
+	edit | view | title | link)
 		nodes list
 		exit 0
 		;;
@@ -88,7 +88,7 @@ if test -n "${COMP_LINE}"; then
 		exit 0
 		;;
 	*)
-		for cmd in build create pwd edit view keg nodes titles fzf search deploy sync help; do
+		for cmd in build create pwd edit link view keg nodes titles fzf search deploy sync help; do
 			[[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
 		done
 		exit 0
@@ -115,6 +115,7 @@ titles) titles "$@" ;;
 search) search "$@" ;;
 qf-search) search-qf "$@" ;;
 sync) git pull "$@" ;;
+l | link) keg link "$@" ;;
 pwd)
 	pwd
 	;;
