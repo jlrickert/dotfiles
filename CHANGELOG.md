@@ -1,3 +1,10 @@
+## [0.7.1](https://github.com/jlrickert/dotfiles/compare/v0.7.0...v0.7.1) (2023-08-18)
+
+
+### Bug Fixes
+
+* version bug fix attempt ([8552021](https://github.com/jlrickert/dotfiles/commit/855202146453f29af0ee59ff4e8c2cde052f2d23))
+
 # [0.7.0](https://github.com/jlrickert/dotfiles/compare/v0.6.0...v0.7.0) (2023-08-18)
 
 ### Bug Fixes
