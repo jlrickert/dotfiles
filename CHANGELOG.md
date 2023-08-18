@@ -1,3 +1,26 @@
+# [0.7.0](https://github.com/jlrickert/dotfiles/compare/v0.6.0...v0.7.0) (2023-08-18)
+
+
+### Bug Fixes
+
+* ku build script works on ubuntu ([75a1f00](https://github.com/jlrickert/dotfiles/commit/75a1f0047f9cbe054f3128c755ba883de869db0c))
+* **tmux:** prefix C-a and pane number ([968a187](https://github.com/jlrickert/dotfiles/commit/968a18799bde2af606761acaaf1cd744dbcd4c0d))
+* **vim:** use spaces instead of tabs in markdown ([2ef4201](https://github.com/jlrickert/dotfiles/commit/2ef420163ea9d03215e8a1a2b69651fa9e044444))
+
+
+### Features
+
+* **chezmoi:** add installation flags to config ([77158a2](https://github.com/jlrickert/dotfiles/commit/77158a2856eb14ef3d42ba5226ef551467024f13))
+* hacky fix for release bot ([86f59a3](https://github.com/jlrickert/dotfiles/commit/86f59a3937d442dbea05a39bd9c257c56553079b))
+* **hugo:** install enhanced version of hugo ([fd008de](https://github.com/jlrickert/dotfiles/commit/fd008ded0a68b590cb143c0ce0e227a099822543))
+* **keg:** add link subcommand to ku ([db04d33](https://github.com/jlrickert/dotfiles/commit/db04d33c78be2bdeeb331d8c0aa2c3d2aeec16be))
+* update tmux config ([c962a0f](https://github.com/jlrickert/dotfiles/commit/c962a0ffe31b09c248cd170f18778c67bd08e30a))
+
+
+### Performance Improvements
+
+* only run scripts on change ([0798886](https://github.com/jlrickert/dotfiles/commit/0798886b4fb424b965f19eb862d0318da0fd9088))
+
 # [0.7.0](https://github.com/jlrickert/dotfiles/compare/v0.6.0...v0.7.0) (2023-08-11)
 
 
