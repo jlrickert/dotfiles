@@ -17,6 +17,7 @@ if ! _have fzf; then
     cd -
 fi
 
+{{ if .setup_go }}
 if ! _have keg; then
     go install github.com/rwxrob/keg/cmd/keg@latest
 fi
@@ -36,10 +37,15 @@ fi
 if ! _have mods; then
   go install github.com/charmbracelet/mods@latest
 fi
+{{ end }}
 
+{{ if .setup_hugo }}
 if ! _have hugo; then
     CGO_ENABLED=1 go install -tags extended github.com/gohugoio/hugo@latest
 fi
+{{ end }}
+
+{{ if (or .setup_rust .setup_node .setup_lua) }}
 if ! _have cargo; then
     cd "$(mktemp -d)" || exit 1
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >rustup.sh
@@ -56,10 +62,15 @@ fi
 if ! _have exa; then
     cargo install exa
 fi
+{{ end }}
+
+{{ if .setup_lua }}
 if ! _have stylua; then
     cargo install stylua
 fi
+{{ end }}
 
+{{ if .setup_node }}
 if ! _have fnm; then
     cargo install fnm
     eval "$(fnm env --use-on-cd --shell=bash)"
@@ -71,6 +82,7 @@ fi
 if ! _have node; then
     fnm install --lts
 fi
+{{ end }}
 
 # FIXME: This requires user intervention because it complains about plugins not
 # being installed.  Classic chicken and egg problem.

@@ -16,4 +16,9 @@
     is_macos = {{ .chezmoi.os | regexMatch "darwin" }}
     is_linux = {{ eq .chezmoi.os "linux" | default true }}
     is_ubuntu = {{ $is_ubuntu }}
+    setup_go = true
+    setup_hugo = true
+    setup_lua = true
+    setup_node = true
+    setup_rust = true
 
