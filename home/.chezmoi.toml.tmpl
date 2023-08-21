@@ -15,7 +15,9 @@
     is_wsl = {{ .chezmoi.kernel.osrelease | regexMatch "WSL2$" }}
     is_macos = {{ .chezmoi.os | regexMatch "darwin" }}
     is_linux = {{ eq .chezmoi.os "linux" | default true }}
-    is_ubuntu = {{ $is_ubuntu }}
+    is_ubuntu = {{ and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu") }}
+    is_arch = {{ and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") }}
+    is_workstation = false
     setup_go = true
     setup_hugo = true
     setup_lua = true

@@ -45,7 +45,8 @@ if ! _have hugo; then
 fi
 {{ end }}
 
-{{ if (or .setup_rust .setup_node .setup_lua) }}
+{{ $install_rust := (or .setup_rust .setup_node (and .setup_lua (not .is_arch))) }}
+{{ if $install_rust }}
 if ! _have cargo; then
     cd "$(mktemp -d)" || exit 1
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >rustup.sh
@@ -60,13 +61,21 @@ if ! _have cargo; then
 fi
 
 if ! _have exa; then
+    {{ if .is_arch }}
+    pacman --sync --needed --noconfirm exa
+    {{ else }}
     cargo install exa
+    {{ end }}
 fi
 {{ end }}
 
 {{ if .setup_lua }}
 if ! _have stylua; then
+    {{ if .is_arch }}
+    pacman --sync --needed --noconfirm stylua
+    {{ else }}
     cargo install stylua
+    {{ end }}
 fi
 {{ end }}
 
