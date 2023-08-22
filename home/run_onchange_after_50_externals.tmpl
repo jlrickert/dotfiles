@@ -6,65 +6,69 @@ set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 
 _have() { type "$1" &>/dev/null; }
+_log() {
+    echo "$@"
+    "$@"
+}
 
-source "${HOME}/.zshenv"
+_log source "${HOME}/.zshenv"
 
 if ! _have fzf; then
-    cd "${HOME}/.local/share/fzf"
-    ./install --no-update-rc --xdg --completion --key-bindings
-    ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf"
-    ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf-tmux"
-    cd -
+    _log cd "${HOME}/.local/share/fzf"
+    _log ./install --no-update-rc --xdg --completion --key-bindings
+    _log ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf"
+    _log ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf-tmux"
+    _log cd -
 fi
 
 {{ if .setup_go }}
 if ! _have keg; then
-    go install github.com/rwxrob/keg/cmd/keg@latest
+    _log go install github.com/rwxrob/keg/cmd/keg@latest
 fi
 
 if ! _have auth; then
-    go install github.com/rwxrob/auth-go/cmd/auth@latest
+    _log go install github.com/rwxrob/auth-go/cmd/auth@latest
 fi
 
 if ! _have gocomplete; then
-    go install github.com/posener/complete/gocomplete@latest
+    _log go install github.com/posener/complete/gocomplete@latest
 fi
 
 if ! _have gopls; then
-    go install golang.org/x/tools/gopls@latest
+    _log go install golang.org/x/tools/gopls@latest
 fi
 
 if ! _have mods; then
-  go install github.com/charmbracelet/mods@latest
+    _log go install github.com/charmbracelet/mods@latest
 fi
 {{ end }}
 
 {{ if .setup_hugo }}
 if ! _have hugo; then
-    CGO_ENABLED=1 go install -tags extended github.com/gohugoio/hugo@latest
+    _log CGO_ENABLED=1 go install -tags extended github.com/gohugoio/hugo@latest
 fi
 {{ end }}
 
 {{ $install_rust := (or .setup_rust .setup_node (and .setup_lua (not .is_arch))) }}
 {{ if $install_rust }}
 if ! _have cargo; then
-    cd "$(mktemp -d)" || exit 1
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >rustup.sh
+    _log cd "$(mktemp -d)" || exit 1
+    _log curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >rustup.sh
     # export RUSTUP_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/rustup"
     # export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
     if [[ "$(sha256sum rustup.sh | awk '{print $1}')" = "be3535b3033ff5e0ecc4d589a35d3656f681332f860c5fd6684859970165ddcc" ]]; then
-        sh rustup.sh --no-modify-path -y
+        _log sh rustup.sh --no-modify-path -y
     fi
     # Re-sourcing adds rusts paths
-    source ~/.zshenv
+    _log source ~/.zshenv
     cd -
 fi
 
 if ! _have exa; then
     {{ if .is_arch }}
-    pacman --sync --needed --noconfirm exa
+    _log pacman --sync --needed --noconfirm exa
     {{ else }}
-    cargo install exa
+    _log cargo install exa
     {{ end }}
 fi
 {{ end }}
@@ -72,24 +76,24 @@ fi
 {{ if .setup_lua }}
 if ! _have stylua; then
     {{ if .is_arch }}
-    pacman --sync --needed --noconfirm stylua
+    _log pacman --sync --needed --noconfirm stylua
     {{ else }}
-    cargo install stylua
+    _log cargo install stylua
     {{ end }}
 fi
 {{ end }}
 
 {{ if .setup_node }}
 if ! _have fnm; then
-    cargo install fnm
-    eval "$(fnm env --use-on-cd --shell=bash)"
-    mkdir -p "${ZSH_HOME:-$HOME/.local/share/zsh}/completions"
-    fnm completions --shell zsh >"${ZSH_HOME}/completions/_fnm"
-    source <(fnm env)
+    _log cargo install fnm
+    _log eval "$(fnm env --use-on-cd --shell=bash)"
+    _log mkdir -p "${ZSH_HOME:-$HOME/.local/share/zsh}/completions"
+    _log fnm completions --shell zsh >"${ZSH_HOME}/completions/_fnm"
+    _log source <(fnm env)
 fi
 
 if ! _have node; then
-    fnm install --lts
+    _log fnm install --lts
 fi
 {{ end }}
 
