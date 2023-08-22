@@ -30,8 +30,6 @@ _log _sudo apt-get install --yes \
     ripgrep rsync shellcheck shfmt silversearcher-ag smbclient \
     software-properties-common ssh sshfs sshpass stow sudo tig tmux tree \
     unzip vim wget {{ if .is_wsl -}} wslu {{- end }} xclip zip zsh
-
-_log ln -sf "$(which fdfind)" "${HOME}/.local/bin/fd"
 {{- end }}
 
 {{ if .is_macos }}
@@ -43,7 +41,14 @@ fi
 {{ end }}
 
 {{ if .is_arch }}
-_log _sudo pacman --sync --refresh --noconfirm \
+_log _sudo pacman --sync --refresh --needed --noconfirm \
     ansible-core bash-completion bc btop curl entr fd git github-cli httpie jq \
-    pandoc shellcheck patch pkgconf python ranger ripgrep tig tmux yq zip zsh
+    pandoc shellcheck patch pkgconf python ranger ripgrep tig \
+    {{ if .workstation -}} gvim {{ else }} vim {{- end }} tmux yq zip zsh
 {{ end }}
+
+if ! _have fd; then
+    if _have fdfind; then
+        _log ln -sf "$(command -v fdfind)" "${HOME}/.local/bin/fd"
+    fi
+fi

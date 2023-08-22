@@ -5,8 +5,28 @@ set -o errexit  # exit if non-zero status code is returned
 set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 
+declare NOCOLOR=
+[[ -t 1 ]] || NOCOLOR=y
+declare GOLD=$'\033[38;2;184;138;0m'
+declare RED=$'\033[38;2;255;0;0m'
+declare GREY=$'\033[38;2;100;100;100m'
+declare CYAN=$'\033[38;2;0;255;255m'
+declare GREEN=$'\033[38;2;0;255;0m'
+declare RESET=$'\033[0m'
+
+if [[ -n "$NOCOLOR" ]] ; then
+  GOLD=
+  RED=
+  GREY=
+  CYAN=
+  GREEN=
+  RESET=
+fi
+
 _log() {
-    echo "$@"
+    local MSG="$1"
+    shift
+    echo "${GREEN}${MSG}:${RESET} $@"
     "$@"
 }
 
@@ -21,9 +41,10 @@ _sudo() {
 _source_if() { [[ -r "$1" ]] && source "$1"; }
 _have() { command -v "$1" &>/dev/null; }
 
-_log source ~/.zshenv
+_log "Sourcing environemnt" source ~/.zshenv
 
-_log _sudo pacman --sync --refresh --needed --noconfirm \
+# Awesomewm
+_log "Installing awesomewm packages:" _sudo pacman --sync --refresh --needed --noconfirm \
     acpi \
     alacritty \
     arandr \
@@ -74,4 +95,92 @@ _log _sudo pacman --sync --refresh --needed --noconfirm \
     xfce4-terminal \
     xorg-xbacklight \
     xorg-xinit
+
+# Sway
+_log "Installing sway packages:" _sudo pacman --sync --refresh --needed --noconfirm \
+    acpi \
+    alacritty \
+    awesome-terminal-fonts \
+    bluez-utils \
+    brightnessctl \
+    btop \
+    dex \
+    egl-wayland \
+    file-roller \
+    grim \
+    gtk-engine-murrine \
+    gtk-layer-shell \
+    htop \
+    jq \
+    lxappearance-gtk3 \
+    mako \
+    network-manager-applet \
+    polkit \
+    polkit-gnome \
+    sddm \
+    slurp \
+    sway \
+    swaybg \
+    swayidle \
+    swaylock \
+    sysstat \
+    thunar \
+    thunar-archive-plugin \
+    thunar-volman \
+    ttf-firacode-nerd \
+    ttf-jetbrains-mono \
+    ttf-nerd-fonts-symbols \
+    ttf-ubuntu-font-family \
+    waybar \
+    wayland-protocols \
+    wl-clipboard \
+    wofi \
+    xdg-desktop-portal-wlr \
+    xed \
+    xorg-xwayland
+
+# I3WM
+_log "Installing i3 packages" _sudo pacman --sync --refresh --needed --noconfirm \
+    acpi \
+    arandr \
+    archlinux-xdg-menu \
+    awesome-terminal-fonts \
+    dex \
+    dmenu \
+    dunst \
+    feh \
+    file-roller \
+    galculator \
+    gthumb \
+    gtk-engine-murrine \
+    gvfs \
+    gvfs-afc \
+    gvfs-gphoto2 \
+    gvfs-mtp \
+    gvfs-nfs \
+    gvfs-smb \
+    i3-wm \
+    i3blocks \
+    i3lock \
+    i3status \
+    jq \
+    lxappearance-gtk3 \
+    mpv \
+    network-manager-applet \
+    numlockx \
+    playerctl \
+    polkit-gnome \
+    rofi \
+    scrot \
+    sysstat \
+    thunar \
+    thunar-archive-plugin \
+    thunar-volman \
+    tumbler \
+    xbindkeys \
+    xdg-user-dirs-gtk \
+    xed \
+    xfce4-terminal \
+    xorg-xbacklight \
+    xorg-xdpyinfo
 {{ end }}
