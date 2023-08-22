@@ -94,6 +94,11 @@ colorscheme gruvbox
 set background=dark
 " colorscheme srcery
 
+if has('persistent_undo')
+  set undofile
+  set undodir=~/.cache/vim
+endif
+
 " force some files to be specific file type
 au bufnewfile,bufRead $SNIPPETS/md/* set ft=pandoc
 au bufnewfile,bufRead $SNIPPETS/sh/* set ft=sh
