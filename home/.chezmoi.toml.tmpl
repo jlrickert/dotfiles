@@ -1,26 +1,32 @@
 {{- $email := promptStringOnce . "email" "Email address" -}}
-{{- $name  := promptStringOnce . "name" "Full name" -}}
-{{- $openai_token  := promptStringOnce . "openai_token" "Chat GPT token" -}}
-{{- $include_repos := promptBoolOnce . "include_repos" "Include Repos" -}}
+{{- $name := promptStringOnce . "name" "Full name" -}}
+{{- $openai_token := promptStringOnce . "openai_token" "Chat GPT token" -}}
+{{- $openweather_key := promptStringOnce . "openweather_key" "Open weather api key" }}
+{{- $openweather_city_id := promptStringOnce . "openweather_city_id" "Open weather city id" }}
 {{- $workstation := promptBoolOnce . "workstation" "Workstation" -}}
-{{- $is_ubuntu := and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")  -}}
+{{- $setup_go := promptBoolOnce . "go" "Install go tools" -}}
+{{- $setup_hugo := promptBoolOnce . "hugo" "Install hugo" -}}
+{{- $setup_lua := promptBoolOnce . "lua" "Install lua tools" -}}
+{{- $setup_node := promptBoolOnce . "node" "Install node tools" -}}
+{{- $setup_rust := promptBoolOnce . "rust" "Install rust tools" -}}
 
 [data]
     chezmoi_managed = "Managed by chezmoi"
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     openai_token = {{ $openai_token | quote }}
-    include_repos = {{ $include_repos | default true }}
+    openweather_key = {{ $openweather_key | quote }}
     workstation = {{ $workstation | default false }}
+    openweather_city_id = {{ $openweather_city_id | quote }}
     is_wsl = {{ .chezmoi.kernel.osrelease | regexMatch "WSL2$" }}
     is_macos = {{ .chezmoi.os | regexMatch "darwin" }}
     is_linux = {{ eq .chezmoi.os "linux" | default true }}
     is_ubuntu = {{ and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu") }}
     is_arch = {{ and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") }}
-    is_workstation = false
-    setup_go = true
-    setup_hugo = true
-    setup_lua = true
-    setup_node = true
-    setup_rust = true
+    is_workstation = {{ $workstation | default false }}
+    setup_go = {{ $setup_go | default true }}
+    setup_hugo = {{ $setup_hugo | default true }}
+    setup_lua = {{ $setup_lua | default true }}
+    setup_node = {{ $setup_node | default true }}
+    setup_rust = {{ $setup_rust | default true }}
 
