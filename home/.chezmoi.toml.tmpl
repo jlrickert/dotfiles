@@ -16,14 +16,13 @@
     email = {{ $email | quote }}
     openai_token = {{ $openai_token | quote }}
     openweather_key = {{ $openweather_key | quote }}
-    workstation = {{ $workstation | default false }}
     openweather_city_id = {{ $openweather_city_id | quote }}
     is_wsl = {{ .chezmoi.kernel.osrelease | regexMatch "WSL2$" }}
     is_macos = {{ .chezmoi.os | regexMatch "darwin" }}
     is_linux = {{ eq .chezmoi.os "linux" | default true }}
     is_ubuntu = {{ and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu") }}
     is_arch = {{ and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") }}
-    is_workstation = {{ $workstation | default false }}
+    workstation = {{ $workstation | default false }}
     setup_go = {{ $setup_go | default true }}
     setup_hugo = {{ $setup_hugo | default true }}
     setup_lua = {{ $setup_lua | default true }}

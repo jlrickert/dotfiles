@@ -1,6 +1,6 @@
 #!/bin/bash
 
-{{ if (and .is_arch .is_workstation)  }}
+{{ if (and .is_arch .workstation)  }}
 set -o errexit  # exit if non-zero status code is returned
 set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
