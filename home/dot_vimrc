@@ -13,6 +13,7 @@ Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'sbdchd/neoformat'
 Plug 'morhetz/gruvbox'
+Plug 'ojroques/vim-oscyank', {'branch': 'main'}
 Plug 'srcery-colors/srcery-vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
@@ -420,6 +421,14 @@ let g:coc_filetype_map = {'pandoc': 'markdown', 'yaml.ansible': 'ansible'}
 "             \ }
 " let g:neoformat_enabled_pandoc = ['gfm']
 " let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
+""""""""""""""""""""""""""""""""""""""""
+" OSC52 clipboard
+""""""""""""""""""""""""""""""""""""""""
+autocmd TextYankPost *
+    \ if v:event.operator is 'y' && v:event.regname is '+' |
+    \ execute 'OSCYankRegister +' |
+    \ endif
 
 " ========== Steve Losh hacks ==========="
 " w!! to write a file as sudo
