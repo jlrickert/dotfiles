@@ -5,7 +5,8 @@
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="bureau"
-ZSH_THEME="fino-time"
+# ZSH_THEME="fino-time"
+ZSH_THEME=""
 plugins=(
 	ag
 	command-not-found
@@ -152,3 +153,5 @@ _fzf_complete_vim() {
 _fzf_complete_vic() {
 	_fzf_complete +m -- "$@" < <(vic list)
 }
+
+_have starship && eval "$(starship init zsh)"

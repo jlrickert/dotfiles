@@ -6,9 +6,18 @@ set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 
 _have() { type "$1" &>/dev/null; }
+
 _log() {
     echo "$@"
     "$@"
+}
+
+_sudo() {
+    if [[ "$(whoami)" = "root" ]]; then
+        "$@"
+    else
+        sudo "$@"
+    fi
 }
 
 _log source "${HOME}/.zshenv"
@@ -64,9 +73,17 @@ if ! _have cargo; then
     cd -
 fi
 
+if ! _have starship; then
+    {{ if .is_arch}}
+    _log _sudo pacman --sync --needed --noconfirm starship
+    {{ else }}
+    _log curl -sS https://starship.rs/install.sh | sh
+    {{ end }}
+fi
+
 if ! _have exa; then
     {{ if .is_arch }}
-    _log pacman --sync --needed --noconfirm exa
+    _log _sudo pacman --sync --needed --noconfirm exa
     {{ else }}
     _log cargo install exa
     {{ end }}
@@ -76,7 +93,7 @@ fi
 {{ if .setup_lua }}
 if ! _have stylua; then
     {{ if .is_arch }}
-    _log pacman --sync --needed --noconfirm stylua
+    _log _sudo pacman --sync --needed --noconfirm stylua
     {{ else }}
     _log cargo install stylua
     {{ end }}
