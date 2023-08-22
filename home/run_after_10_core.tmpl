@@ -4,10 +4,21 @@ set -o errexit  # exit if non-zero status code is returned
 set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 
-source ~/.zshenv
+_log() {
+    echo "$@"
+    "$@"
+}
 
-mkdir -p "${REPOS}"
-mkdir -p "${GHREPOS}"
-mkdir -p "${DOWNLOADS}"
-mkdir -p "${PUBLIC}"
+_log source ~/.zshenv
 
+_log mkdir -p "${REPOS}"
+_log mkdir -p "${GHREPOS}"
+
+_log mkdir -p "${XDG_DESKTOP_DIR}"
+_log mkdir -p "${XDG_DOWNLOAD_DIR}"
+_log mkdir -p "${XDG_TEMPLATES_DIR}"
+_log mkdir -p "${XDG_PUBLICSHARE_DIR}"
+_log mkdir -p "${XDG_DOCUMENTS_DIR}"
+_log mkdir -p "${XDG_MUSIC_DIR}"
+_log mkdir -p "${XDG_PICTURES_DIR}"
+_log mkdir -p "${XDG_VIDEOS_DIR}"
