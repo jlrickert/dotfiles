@@ -1,0 +1,77 @@
+#!/bin/bash
+
+{{ if (and .is_arch .is_workstation)  }}
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+_log() {
+    echo "$@"
+    "$@"
+}
+
+_sudo() {
+    if [[ "$(whoami)" = "root" ]]; then
+        "$@"
+    else
+        sudo "$@"
+    fi
+}
+
+_source_if() { [[ -r "$1" ]] && source "$1"; }
+_have() { command -v "$1" &>/dev/null; }
+
+_log source ~/.zshenv
+
+_log _sudo pacman --sync --refresh --needed --noconfirm \
+    acpi \
+    alacritty \
+    arandr \
+    archlinux-xdg-menu \
+    autoconf \
+    automake \
+    awesome \
+    awesome-terminal-fonts \
+    bind \
+    bison \
+    capitaine-cursors \
+    celluloid \
+    dex \
+    dunst \
+    file-roller \
+    ttf-firacode-nerd \
+    galculator \
+    gst-plugins-ugly \
+    gthumb \
+    gtk-engine-murrine \
+    gvfs \
+    gvfs-afc \
+    gvfs-gphoto2 \
+    gvfs-mtp \
+    gvfs-nfs \
+    gvfs-smb \
+    jq \
+    light-locker \
+    lxappearance-gtk3 \
+    make \
+    network-manager-applet \
+    numlockx \
+    patch \
+    picom \
+    pkgconf \
+    polkit-gnome \
+    rofi \
+    scrot \
+    sysstat \
+    thunar \
+    thunar-archive-plugin \
+    thunar-volman \
+    tumbler \
+    xdg-user-dirs-gtk \
+    xed \
+    xfce4-power-manager \
+    xfce4-screenshooter \
+    xfce4-terminal \
+    xorg-xbacklight \
+    xorg-xinit
+{{ end }}
