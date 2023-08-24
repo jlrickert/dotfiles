@@ -1,3 +1,24 @@
+# [0.8.0](https://github.com/jlrickert/dotfiles/compare/v0.7.1...v0.8.0) (2023-08-24)
+
+
+### Bug Fixes
+
+* make osc52 work with tmux ([cb9b5ca](https://github.com/jlrickert/dotfiles/commit/cb9b5cad69cc1597b5b770e763c779c3f033cfcb))
+
+
+### Features
+
+* add alacritty config and nerd fonts ([31d2717](https://github.com/jlrickert/dotfiles/commit/31d2717fe805450f6baf8617270096c5665c76e5))
+* add openweather api key env ([a55fca1](https://github.com/jlrickert/dotfiles/commit/a55fca1e82359ca62b81175c3d132f5c0692b1a8))
+* add persistant undo in vim ([7893ec3](https://github.com/jlrickert/dotfiles/commit/7893ec3fdda8b5d30b289cc932ebeb1b8e3cd042))
+* add starship prompt for zsh ([010879a](https://github.com/jlrickert/dotfiles/commit/010879adaab2321278de49a6e05477b6431af755))
+* add workstation packages for arch ([438b218](https://github.com/jlrickert/dotfiles/commit/438b218ad5030a45bf741625e7b2811cdbb62157))
+* add xdg environmental aliases ([dc3ce74](https://github.com/jlrickert/dotfiles/commit/dc3ce747434d742c14f8f7a517f4290c067d2bf9))
+* better copy and paste with OSC52 ([3ec6ce8](https://github.com/jlrickert/dotfiles/commit/3ec6ce8bbd778ba7df6719328df827c1cbc20220))
+* install arch linux workstation packages ([a946e16](https://github.com/jlrickert/dotfiles/commit/a946e160cd9009d9509177206c1a0b5a6d780bc1))
+* **tmux:** move host to left ([29d2b47](https://github.com/jlrickert/dotfiles/commit/29d2b47ef3a3eec9c33f4f59aa855917fe6afb90))
+* use package in arch repo if available ([738e242](https://github.com/jlrickert/dotfiles/commit/738e24253310465722b5c137329f32c2ede1402b))
+
 ## [0.7.1](https://github.com/jlrickert/dotfiles/compare/v0.7.0...v0.7.1) (2023-08-18)
 
 
