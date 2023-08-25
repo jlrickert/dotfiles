@@ -1,3 +1,11 @@
+# [0.9.0](https://github.com/jlrickert/dotfiles/compare/v0.8.0...v0.9.0) (2023-08-25)
+
+
+### Features
+
+* update i3 config for terra ([a8c7c1d](https://github.com/jlrickert/dotfiles/commit/a8c7c1dd39572b5384cb4a6f62e10a47db333148))
+* working base for i3 ([0466ba5](https://github.com/jlrickert/dotfiles/commit/0466ba53bd72bf4f7fe582463b8de3d429127e02))
+
 # [0.8.0](https://github.com/jlrickert/dotfiles/compare/v0.7.1...v0.8.0) (2023-08-24)
 
 
