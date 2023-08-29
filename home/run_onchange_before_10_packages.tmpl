@@ -47,8 +47,8 @@ _log _sudo pacman --sync --refresh --needed --noconfirm \
     {{ if .workstation -}} gvim {{ else }} vim {{- end }} tmux yq zip zsh
 {{ end }}
 
-if ! _have fd; then
-    if _have fdfind; then
-        _log ln -sf "$(command -v fdfind)" "${HOME}/.local/bin/fd"
+if ! _have fdfind; then
+    if _have fd; then
+        _log ln -sf "$(command -v fd)" "${HOME}/.local/bin/fdfind"
     fi
 fi
