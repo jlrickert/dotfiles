@@ -5,10 +5,30 @@ set -o errexit  # exit if non-zero status code is returned
 set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 
+declare NOCOLOR=
+[[ -t 1 ]] || NOCOLOR=y
+declare GOLD=$'\033[38;2;184;138;0m'
+declare RED=$'\033[38;2;255;0;0m'
+declare GREY=$'\033[38;2;100;100;100m'
+declare CYAN=$'\033[38;2;0;255;255m'
+declare GREEN=$'\033[38;2;0;255;0m'
+declare RESET=$'\033[0m'
+
+if [[ -n "$NOCOLOR" ]] ; then
+    GOLD=
+    RED=
+    GREY=
+    CYAN=
+    GREEN=
+    RESET=
+fi
+
 _have() { type "$1" &>/dev/null; }
 
 _log() {
-    echo "$@"
+    local MSG="${1}"
+    shift
+    echo "${GREEN}${MSG}:${RESET} $@"
     "$@"
 }
 
@@ -20,72 +40,73 @@ _sudo() {
     fi
 }
 
-_log source "${HOME}/.zshenv"
+_log "Initial env setup" source "${HOME}/.zshenv"
 
 if ! _have fzf; then
-    _log cd "${HOME}/.local/share/fzf"
-    _log ./install --no-update-rc --xdg --completion --key-bindings
-    _log ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf"
-    _log ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf-tmux"
+    _log "Running" cd "${HOME}/.local/share/fzf"
+    _log "Running" ./install --no-update-rc --xdg --completion --key-bindings
+    _log "Symlink fzf" ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf"
+    _log "Symlink fzf-tmux" ln -sf "$(pwd)/bin/fzf" "${HOME}/.local/bin/fzf-tmux"
     _log cd -
 fi
 
 {{ if .setup_go }}
 if ! _have keg; then
-    _log go install github.com/rwxrob/keg/cmd/keg@latest
+    _log "Install keg" go install github.com/rwxrob/keg/cmd/keg@latest
 fi
 
 if ! _have auth; then
-    _log go install github.com/rwxrob/auth-go/cmd/auth@latest
+    _log "Install auth" go install github.com/rwxrob/auth-go/cmd/auth@latest
 fi
 
 if ! _have gocomplete; then
-    _log go install github.com/posener/complete/gocomplete@latest
+    _log "Install gocomplete" go install github.com/posener/complete/gocomplete@latest
 fi
 
 if ! _have gopls; then
-    _log go install golang.org/x/tools/gopls@latest
+    _log "Install gopls" go install golang.org/x/tools/gopls@latest
 fi
 
+# chatGPT stuff
 if ! _have mods; then
-    _log go install github.com/charmbracelet/mods@latest
+    _log "Install mods" go install github.com/charmbracelet/mods@latest
 fi
 {{ end }}
 
 {{ if .setup_hugo }}
 if ! _have hugo; then
-    _log CGO_ENABLED=1 go install -tags extended github.com/gohugoio/hugo@latest
+    CGO_ENABLED=1 _log go install -tags extended github.com/gohugoio/hugo@latest
 fi
 {{ end }}
 
 {{ $install_rust := (or .setup_rust .setup_node (and .setup_lua (not .is_arch))) }}
 {{ if $install_rust }}
 if ! _have cargo; then
-    _log cd "$(mktemp -d)" || exit 1
-    _log curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >rustup.sh
-    # export RUSTUP_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/rustup"
-    # export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
+    _log "Running" cd "$(mktemp -d)" || exit 1
+    _log "Download rustup.sh" curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >rustup.sh
     if [[ "$(sha256sum rustup.sh | awk '{print $1}')" = "be3535b3033ff5e0ecc4d589a35d3656f681332f860c5fd6684859970165ddcc" ]]; then
-        _log sh rustup.sh --no-modify-path -y
+        _log "Install rustup" sh rustup.sh --no-modify-path -y
+    else
+        _log "rustup sha256sum changed" exit 1
     fi
     # Re-sourcing adds rusts paths
-    _log source ~/.zshenv
+    _log "Update paths" source ~/.zshenv
     cd -
 fi
 
 if ! _have starship; then
     {{ if .is_arch}}
-    _log _sudo pacman --sync --needed --noconfirm starship
+    _log "Install starship" _sudo pacman --sync --needed --noconfirm starship
     {{ else }}
-    _log curl -sS https://starship.rs/install.sh | sh
+    _log "Install starship" curl -sS https://starship.rs/install.sh | sh
     {{ end }}
 fi
 
 if ! _have exa; then
     {{ if .is_arch }}
-    _log _sudo pacman --sync --needed --noconfirm exa
+    _log "Install exa" _sudo pacman --sync --needed --noconfirm exa
     {{ else }}
-    _log cargo install exa
+    _log "Compile exa" cargo install exa
     {{ end }}
 fi
 {{ end }}
@@ -93,24 +114,25 @@ fi
 {{ if .setup_lua }}
 if ! _have stylua; then
     {{ if .is_arch }}
-    _log _sudo pacman --sync --needed --noconfirm stylua
+    _log "Install stylua" _sudo pacman --sync --needed --noconfirm stylua
     {{ else }}
-    _log cargo install stylua
+    _log "Compile stylua" cargo install stylua
     {{ end }}
 fi
 {{ end }}
 
 {{ if .setup_node }}
 if ! _have fnm; then
-    _log cargo install fnm
-    _log eval "$(fnm env --use-on-cd --shell=bash)"
-    _log mkdir -p "${ZSH_HOME:-$HOME/.local/share/zsh}/completions"
-    _log fnm completions --shell zsh >"${ZSH_HOME}/completions/_fnm"
-    _log source <(fnm env)
+    _log "Update paths" source ~/.zshenv
+    _log "Compile fnm" cargo install fnm
+    _log "Update fnm environment" eval "$(fnm env --use-on-cd --shell=bash)"
+    _log "Running" mkdir -p "${ZSH_HOME:-$HOME/.local/share/zsh}/completions"
+    _log "Running" fnm completions --shell zsh >"${ZSH_HOME}/completions/_fnm"
+    _log "Setup fnm environment" eval "$(fnm env)"
 fi
 
 if ! _have node; then
-    _log fnm install --lts
+    _log "Install lts node version" fnm install --lts
 fi
 {{ end }}
 
