@@ -9,6 +9,7 @@
 {{- $setup_lua := promptBoolOnce . "lua" "Install lua tools" -}}
 {{- $setup_node := promptBoolOnce . "node" "Install node tools" -}}
 {{- $setup_rust := promptBoolOnce . "rust" "Install rust tools" -}}
+{{- $is_hiDPI := promptBoolOnce . "hiDPI" "Has High DPI screen" -}}
 
 [data]
     chezmoi_managed = "Managed by chezmoi"
@@ -28,4 +29,5 @@
     setup_lua = {{ $setup_lua | default true }}
     setup_node = {{ $setup_node | default true }}
     setup_rust = {{ $setup_rust | default true }}
+    has_4k = {{ $is_hiDPI }}
 

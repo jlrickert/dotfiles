@@ -1,49 +1,37 @@
 /*******************************************************
- * ROFI configs i3 Apps menu for EndeavourOS
+ * ROFI configs i3 powermenu for EndeavourOS
  * Maintainer: joekamprad [joekamprad //a_t// endeavouros.com]
  *******************************************************/
 configuration {
-    font:                "FiraCode Nerd Font Regular 12";
-    show-icons:          true;
-    icon-theme:          "Qogir";
-    display-drun:        "Apps";
-    drun-display-format: "{name}";
-    scroll-method:       0;
-    disable-history:     false;
-    sidebar-mode:        false;
-    dpi:                 220;
+    font:             "FiraCode Nerd Font Regular 12";
+    show-icons:       false;
+    icon-theme:       "Obsidian";
+    scroll-method:    0;
+    disable-history:  false;
+    fullscreen:       false;
+    hide-scrollbar:   true;
+    sidebar-mode:     false;
+    {{- $has_4k -}}
+    dpi:              220;
+    {{- end -}}
 }
 
 @import "~/.config/rofi/gruvbox_dark.rasi"
 
+
 window {
     background-color: @background;
     border:           0;
-    padding:          30;
+    padding:          10;
+    transparency:     "real";
+    width:            400px;
+    location:         east;
+    /*y-offset:       18;*/
+    /*x-offset:       850;*/
 }
 listview {
-    lines:   10;
-    columns: 3;
-}
-mainbox {
-    border:  0;
-    padding: 0;
-}
-message {
-    border:       2px 0px 0px;
-    border-color: @separatorcolor;
-    padding:      1px;
-}
-textbox {
-    text-color: @foreground;
-}
-listview {
-    fixed-height: 0;
-    border:       8px 0px 0px;
-    border-color: @separatorcolor;
-    spacing:      8px;
-    scrollbar:    false;
-    padding:      2px 0px 0px;
+    lines:   4;
+    columns: 1;
 }
 element {
     border:  0;
@@ -130,7 +118,7 @@ inputbar {
 }
 textbox-prompt-colon {
     expand:     false;
-    str:        ":";
+    str:        "Set Power Profile:";
     margin:     0px 0.3em 0em 0em;
     text-color: @normal-foreground;
 }

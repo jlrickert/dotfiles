@@ -5,7 +5,7 @@
 configuration {
     font:                "FiraCode Nerd Font Regular 12";
     show-icons:          false;
-    icon-theme:          "Qogir";
+    icon-theme:          "Obsidian";
     display-drun:        "KeyHint";
     drun-display-format: "{name}";
     scroll-method:       0;
@@ -13,7 +13,9 @@ configuration {
     fullscreen:          false;
     hide-scrollbar:      true;
     sidebar-mode:        false;
-    dpi:                 220;
+    {{- $has_4k -}}
+    dpi:              220;
+    {{- end -}}
 }
 
 @import "~/.config/rofi/gruvbox_dark.rasi"
