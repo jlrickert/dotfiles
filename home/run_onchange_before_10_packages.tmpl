@@ -42,7 +42,7 @@ fi
 
 {{ if .is_arch }}
 _log _sudo pacman --sync --refresh --needed --noconfirm \
-    ansible-core bash-completion bc btop curl entr fd git github-cli httpie jq \
+    ansible-core bash-completion bc btop curl entr fd gcc git github-cli httpie jq \
     pandoc shellcheck patch pkgconf python ranger ripgrep tig \
     {{ if .workstation -}} gvim {{ else }} vim {{- end }} tmux yq zip zsh
 {{ end }}
