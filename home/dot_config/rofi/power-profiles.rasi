@@ -11,9 +11,10 @@ configuration {
     fullscreen:       false;
     hide-scrollbar:   true;
     sidebar-mode:     false;
+    dpi:              220;
 }
 
-@import "~/.config/rofi/arc_dark_colors.rasi"
+@import "~/.config/rofi/gruvbox_dark.rasi"
 
 
 window {

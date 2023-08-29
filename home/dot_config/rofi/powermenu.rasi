@@ -3,22 +3,23 @@
  * Maintainer: joekamprad [joekamprad //a_t// endeavouros.com]
  *******************************************************/
 configuration {
-    font:            "Noto Sans Regular 10";
+    font:            "FiraCode Nerd Font Regular 12";
     show-icons:      false;
     icon-theme:      "Qogir";
     scroll-method:   0;
     disable-history: false;
     sidebar-mode:    false;
+    dpi:             220;
 }
 
-@import "~/.config/rofi/arc_dark_transparent_colors.rasi"
+@import "~/.config/rofi/gruvbox_dark.rasi"
 
 window {
     background-color: @background;
     border:           0;
     padding:          10;
     transparency:     "real";
-    width:            120px;
+    width:            300px;
     location:         east;
     /*y-offset:       18;*/
     /*x-offset:       850;*/
