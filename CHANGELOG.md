@@ -1,3 +1,19 @@
+# [0.10.0](https://github.com/jlrickert/dotfiles/compare/v0.9.0...v0.10.0) (2023-08-31)
+
+
+### Bug Fixes
+
+* add hiDPI switch for rofi ([c8e1b5b](https://github.com/jlrickert/dotfiles/commit/c8e1b5b1c10aaa60a5db4e211259bd03d258ca92))
+* fd now symlinked to fdfind ([991ff75](https://github.com/jlrickert/dotfiles/commit/991ff75b8ec756b5e0a6d98c7808b99881a11188))
+* rofi color scheme import issue ([d6485b1](https://github.com/jlrickert/dotfiles/commit/d6485b1121a51fdb7133c4fe881b2b5da399b104))
+* VIDEO env var exported to correct value ([9005901](https://github.com/jlrickert/dotfiles/commit/9005901cc96c3fe3d801e54e1f1be73468e759e4))
+
+
+### Features
+
+* add gruvbox and hidpi support for rofi ([c2d07b3](https://github.com/jlrickert/dotfiles/commit/c2d07b3481a067b32e62c606a0bbfbb17ef25843))
+* **arch:** add gcc instalation to base packages ([b2224e8](https://github.com/jlrickert/dotfiles/commit/b2224e8444904d4e21fb53156038e378505cd9fa))
+
 # [0.9.0](https://github.com/jlrickert/dotfiles/compare/v0.8.0...v0.9.0) (2023-08-25)
 
 
