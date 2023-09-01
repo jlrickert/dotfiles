@@ -5,16 +5,41 @@ set -o errexit  # exit if non-zero status code is returned
 set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 
+declare NOCOLOR=
+[[ -t 1 ]] || NOCOLOR=y
+declare GOLD=$'\033[38;2;184;138;0m'
+declare RED=$'\033[38;2;255;0;0m'
+declare GREY=$'\033[38;2;100;100;100m'
+declare CYAN=$'\033[38;2;0;255;255m'
+declare GREEN=$'\033[38;2;0;255;0m'
+declare RESET=$'\033[0m'
+
+if [[ -n "$NOCOLOR" ]] ; then
+  GOLD=
+  RED=
+  GREY=
+  CYAN=
+  GREEN=
+  RESET=
+fi
+
+_log() {
+    local MSG="$1"
+    shift
+    echo "${GREEN}${MSG}:${RESET} $@"
+    "$@"
+}
+
 _source_if() { [[ -r "$1" ]] && source "$1"; }
 _have() { command -v "$1" &>/dev/null; }
 
-source ~/.zshenv
+_log "Loading enviornmet" source ~/.zshenv
 
 if ! _have i3; then
-    /usr/lib/apt/apt-helper download-file https://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2023.02.18_all.deb keyring.deb SHA256:a511ac5f10cd811f8a4ca44d665f2fa1add7a9f09bef238cdfad8461f5239cc4
-    sudo apt install ./keyring.deb
+    _log "Grabbing keyring" /usr/lib/apt/apt-helper download-file https://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2023.02.18_all.deb keyring.deb SHA256:a511ac5f10cd811f8a4ca44d665f2fa1add7a9f09bef238cdfad8461f5239cc4
+    _log sudo apt install ./keyring.deb
     echo "deb http://debian.sur5r.net/i3/ $(grep '^DISTRIB_CODENAME=' /etc/lsb-release | cut -f2 -d=) universe" | sudo tee /etc/apt/sources.list.d/sur5r-i3.list
     sudo apt update
-    sudo apt install i3 rofi dunst
+    _log "Installing i3 and friends" sudo apt install i3 rofi dunst
 fi
 {{ end }}

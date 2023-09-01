@@ -4,21 +4,41 @@ set -o errexit  # exit if non-zero status code is returned
 set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 
+declare NOCOLOR=
+[[ -t 1 ]] || NOCOLOR=y
+declare GOLD=$'\033[38;2;184;138;0m'
+declare RED=$'\033[38;2;255;0;0m'
+declare GREY=$'\033[38;2;100;100;100m'
+declare CYAN=$'\033[38;2;0;255;255m'
+declare GREEN=$'\033[38;2;0;255;0m'
+declare RESET=$'\033[0m'
+
+if [[ -n "$NOCOLOR" ]] ; then
+  GOLD=
+  RED=
+  GREY=
+  CYAN=
+  GREEN=
+  RESET=
+fi
+
 _log() {
-    echo "$@"
+    local MSG="$1"
+    shift
+    echo "${GREEN}${MSG}:${RESET} $@"
     "$@"
 }
 
-_log source ~/.zshenv
+_log "Sourcing environment" source ~/.zshenv
 
-_log mkdir -p "${REPOS}"
-_log mkdir -p "${GHREPOS}"
+_log "Creating repo dir" mkdir -p "${REPOS}"
+_log "Creating user repo dir" mkdir -p "${GHREPOS}"
 
-_log mkdir -p "${XDG_DESKTOP_DIR}"
-_log mkdir -p "${XDG_DOWNLOAD_DIR}"
-_log mkdir -p "${XDG_TEMPLATES_DIR}"
-_log mkdir -p "${XDG_PUBLICSHARE_DIR}"
-_log mkdir -p "${XDG_DOCUMENTS_DIR}"
-_log mkdir -p "${XDG_MUSIC_DIR}"
-_log mkdir -p "${XDG_PICTURES_DIR}"
-_log mkdir -p "${XDG_VIDEOS_DIR}"
+_log "Creating Desktop dir" mkdir -p "${XDG_DESKTOP_DIR}"
+_log "Creating Downloads dir" mkdir -p "${XDG_DOWNLOAD_DIR}"
+_log "Creating Templates dir" mkdir -p "${XDG_TEMPLATES_DIR}"
+_log "Creating Public dir" mkdir -p "${XDG_PUBLICSHARE_DIR}"
+_log "Creating Documents dir" mkdir -p "${XDG_DOCUMENTS_DIR}"
+_log "Creating Music dir" mkdir -p "${XDG_MUSIC_DIR}"
+_log "Creating Pictures dir" mkdir -p "${XDG_PICTURES_DIR}"
+_log "Creating Videos dir" mkdir -p "${XDG_VIDEOS_DIR}"
