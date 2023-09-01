@@ -13,9 +13,9 @@ configuration {
     fullscreen:          false;
     hide-scrollbar:      true;
     sidebar-mode:        false;
-    {{- $has_4k -}}
-    dpi:              220;
-    {{- end -}}
+    {{- if .has_4k }}
+    dpi:                 220;
+    {{- end }}
 }
 
 @import "~/.config/rofi/gruvbox_dark.rasi"
