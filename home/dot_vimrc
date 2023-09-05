@@ -8,7 +8,7 @@ Plug 'junegunn/fzf', {'dir': '~/.local/share/fzf','do': './install --no-update-r
 Plug 'junegunn/fzf.vim' "
 Plug 'antoinemadec/coc-fzf'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+" Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 " Plug 'garbas/vim-snipmate'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'sbdchd/neoformat'
