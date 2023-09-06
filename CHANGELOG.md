@@ -1,3 +1,19 @@
+# [0.11.0](https://github.com/jlrickert/dotfiles/compare/v0.10.0...v0.11.0) (2023-09-06)
+
+
+### Bug Fixes
+
+* add hiDPI switch for rofi ([2b465b3](https://github.com/jlrickert/dotfiles/commit/2b465b3506f447c16a2ed2f985b80810b94d5c93))
+* **arch:** add missing emoji's ([1957f22](https://github.com/jlrickert/dotfiles/commit/1957f229e343b30c5f0ef2043accb3a76d8f2c63))
+
+
+### Features
+
+* add xinitrc file for i3 ([c2f0598](https://github.com/jlrickert/dotfiles/commit/c2f0598dc09edd9eed346939affcc3195399dbde))
+* **arch:** add wip arch flutter install ([c974d50](https://github.com/jlrickert/dotfiles/commit/c974d5033cf54b92af4e774b40335a7141f4aee2))
+* update create bash script to include colors ([3ac4736](https://github.com/jlrickert/dotfiles/commit/3ac4736fb665174f7a65c0ed9cfe2061a056de59))
+* **vim:** remove duplicate go lsp ([c186eef](https://github.com/jlrickert/dotfiles/commit/c186eef8fc9fa442711a06a4c7512e79e86abd33))
+
 # [0.10.0](https://github.com/jlrickert/dotfiles/compare/v0.9.0...v0.10.0) (2023-08-31)
 
 

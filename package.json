@@ -7,5 +7,5 @@
         "@semantic-release/npm": "^10.0.4",
         "semantic-release": "^21.0.7"
     },
-    "version": "0.10.0"
+    "version": "0.11.0"
 }
