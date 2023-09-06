@@ -1,51 +1,53 @@
 [user]
-    email = jaredrickert52@gmail.com
-    name = Jared Rickert
+	email = jaredrickert52@gmail.com
+	name = Jared Rickert
 
 [core]
-    editor = vim
-    autocrlf = input
+	editor = vim
+	autocrlf = input
 
 [color]
-    branch = auto
-    diff = auto
-    status = auto
+	branch = auto
+	diff = auto
+	status = auto
 
 [color "branch"]
-    current = red reverse
-    local = blue
-    remote = green
+	current = red reverse
+	local = blue
+	remote = green
 
 [color "diff"]
-    meta = yellow
-    frag = magenta
-    old = red bold
-    new = green
-    plain = white
+	meta = yellow
+	frag = magenta
+	old = red bold
+	new = green
+	plain = white
 
 [branch]
-    autosetuprebase = always
+	autosetuprebase = always
 
 [push]
-    default = current
+	default = current
 
 [pull]
-    default = current
+	default = current
 
 [includeIf "gitdir:~/work/"]
-    path = ~/work/.gitconfig
+	path = ~/work/.gitconfig
 
 [init]
-    defaultBranch = main
+	defaultBranch = main
 
 [alias]
-    st = status
-    stat = status
-    cm = commit -m
-    cma = commit -a -m
-    amend = commit --amend
-    caa = commit -a --amend -C HEAD
-    filelog = log -u
-    fl = log -u
-    ch = checkout
+	st = status
+	stat = status
+	cm = commit -m
+	cma = commit -a -m
+	amend = commit --amend
+	caa = commit -a --amend -C HEAD
+	filelog = log -u
+	fl = log -u
+	ch = checkout
 
+[safe]
+	directory = /opt/flutter

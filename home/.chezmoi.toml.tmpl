@@ -9,6 +9,7 @@
 {{- $setup_lua := promptBoolOnce . "lua" "Install lua tools" -}}
 {{- $setup_node := promptBoolOnce . "node" "Install node tools" -}}
 {{- $setup_rust := promptBoolOnce . "rust" "Install rust tools" -}}
+{{- $setup_flutter := promptBoolOnce . "flutter" "Install flutter" }}
 {{- $is_hiDPI := promptBoolOnce . "hiDPI" "Has High DPI screen" -}}
 
 [data]
@@ -29,5 +30,6 @@
     setup_lua = {{ $setup_lua | default true }}
     setup_node = {{ $setup_node | default true }}
     setup_rust = {{ $setup_rust | default true }}
-    has_4k = {{ $is_hiDPI }}
+    setup_flutter = {{ $setup_flutter | default false }}
+    has_4k = {{ $is_hiDPI | default false }}
 

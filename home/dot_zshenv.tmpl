@@ -36,8 +36,9 @@ export HELP_BROWSER=lynx
 export LANG=en_US.UTF-8
 {{ if .is_wsl }}
 export BROWSER="wslview"
-{{ else if .is_ubuntu }}
+{{ else if (or .is_ubuntu .is_arch) }}
 export BROWSER="google-chrome-stable"
+export CHROME_EXECUTABLE="google-chrome-stable"
 {{ end }}
 
 export DESKTOP="${XDG_DESKTOP_DIR}"
@@ -115,6 +116,7 @@ _pathprepend \
 	"${XDG_DATA_HOME}/flutter/bin" \
 	"${CARGO_HOME}/bin" \
 	"${FNM_HOME}" \
+    "${HOME}/.config/emacs/bin" \
 	"${XDG_DATA_HOME}/go/bin"
 
 _pathappend \

@@ -59,6 +59,10 @@ if ! _have auth; then
     _log "Install auth" go install github.com/rwxrob/auth-go/cmd/auth@latest
 fi
 
+if ! _have bleeve; then
+    _log "Install bleeve" go install github.com/blevesearch/bleve/v2/cmd/bleve@latest
+fi
+
 if ! _have gocomplete; then
     _log "Install gocomplete" go install github.com/posener/complete/gocomplete@latest
 fi
