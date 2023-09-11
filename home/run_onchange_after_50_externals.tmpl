@@ -72,9 +72,9 @@ if ! _have gopls; then
 fi
 
 # chatGPT stuff
-if ! _have mods; then
-    _log "Install mods" go install github.com/charmbracelet/mods@latest
-fi
+# if ! _have mods; then
+#     _log "Install mods" go install github.com/charmbracelet/mods@latest
+# fi
 {{ end }}
 
 {{ if .setup_hugo }}
