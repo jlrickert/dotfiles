@@ -79,7 +79,7 @@ fi
 
 {{ if .setup_hugo }}
 if ! _have hugo; then
-    CGO_ENABLED=1 _log go install -tags extended github.com/gohugoio/hugo@latest
+    CGO_ENABLED=1 _log "Install hugo extended version" go install -tags extended github.com/gohugoio/hugo@latest
 fi
 {{ end }}
 
