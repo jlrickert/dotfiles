@@ -96,9 +96,11 @@ fi
 
 if ! _have starship; then
     {{ if .is_arch}}
-    _log "Install starship" _sudo pacman --sync --needed --noconfirm starship
+    _log "Install starship (Arch)" _sudo pacman --sync --needed --noconfirm starship
+    {{ else if .is_macos }}
+    _log "Install starship (MacOSX)" brew install starship
     {{ else }}
-    _log "Install starship" curl -sS https://starship.rs/install.sh | sh
+    _log "Install starship (Generic)" curl -sS https://starship.rs/install.sh | sh
     {{ end }}
 fi
 
