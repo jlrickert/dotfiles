@@ -87,12 +87,8 @@ fi
 {{ if $install_rust }}
 if ! _have cargo; then
     _log "Running" cd "$(mktemp -d)" || exit 1
-    _log "Download rustup.sh" curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >rustup.sh
-    if [[ "$(sha256sum rustup.sh | awk '{print $1}')" = "be3535b3033ff5e0ecc4d589a35d3656f681332f860c5fd6684859970165ddcc" ]]; then
-        _log "Install rustup" sh rustup.sh --no-modify-path -y
-    else
-        _log "rustup sha256sum changed" exit 1
-    fi
+    _log "Download rustup.sh" "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh"
+    _log "Install rustup" sh rustup.sh --no-modify-path -y
     # Re-sourcing adds rusts paths
     _log "Update paths" source ~/.zshenv
     cd -
