@@ -1,0 +1,89 @@
+""" Map leader to space ---------------------
+let mapleader=" "
+
+""" Plugins  --------------------------------
+set NERDTree
+set ReplaceWithRegister
+set argtextobj
+set multiple-cursors
+set surround
+set textobj-entire
+set commentary
+set easymotion
+set indent-object
+set highlightedyank
+set paragraph-motion
+
+""" Plugin settings -------------------------
+let g:argtextobj_pairs="[:],(:),<:>"
+
+""" Common settings -------------------------
+set showmode
+set so=5 " scroll off
+set incsearch
+set nu
+
+""" Idea specific settings ------------------
+set ideajoin
+set ideastatusicon=gray
+set idearefactormode=keep
+
+""" Mappings --------------------------------
+map <leader>f <Plug>(easymotion-s)
+map <leader>e <Plug>(easymotion-f)
+
+"map <leader>d <Action>(Debug)
+map <leader>rn <Action>(RenameElement)
+map <leader>rf <Action>(RenameFile)
+"map <leader>c <Action>(Stop)
+"map <leader>z <Action>(ToggleDistractionFreeMode)
+
+" Navigation
+map <leader>ss <Action>(SelectInProjectView)
+map <leader>sa <Action>(SearchEverywhere)
+map <leader>sf <Action>(GotoFile)
+map <leader>sg <Action>(FindInPath)
+map <leader>sr <Action>(GotoSymbol)
+map <leader>si <Action>(GotoImplementation)
+map <leader>sb <Action>(RecentFiles)
+map <leader>sp <Action>(GotoAction)
+map <leader>so <Action>(FileStructurePopup)
+map <leader>sm <Action>(ShowBookmarks)
+
+map <leader>ta <Action>(Annotate)
+map <leader>h <Action>(Vcs.ShowTabbedFileHistory)
+
+" windows
+nmap <leader>w- :sp<CR>
+nmap <leader>w/ :vsp<CR>
+nmap <leader>w= <C-W>=
+nmap <leader>wc :q<CR>
+nmap <leader>wh <C-W>h
+nmap <leader>wj <C-W>j
+nmap <leader>wk <C-W>k
+nmap <leader>wl <C-W>l
+nmap <leader>ws <C-W>s
+nmap <leader>wv <C-W>v
+nmap <leader>ww <C-W><C-W>
+
+" bookmarks
+map <leader>m <Action>(ToggleBookmark)
+map <leader>M <Action>(BookmarksView.ChooseType)
+
+map <leader>ca <Action>(ShowIntentionActions))
+map <leader>ff <Action>(ReformatCode)
+nmap <silent> ]d <Action>(GotoNextError))
+nmap <silent> [d <Action>(GotoPreviousError)
+nmap <silent> ]c <Action>(VcsShowNextChangeMarker)
+nmap <silent> [c <Action>(VcsShowPrevChangeMarker)
+nmap <silent> ]m <Action>(GotoNextBookmarkInEditor)
+nmap <silent> [m <Action>(GotoPreviousBookmarkInEditor)
+nmap <silent> ]' <Action>(GotoNextBookmark)
+nmap <silent> [' <Action>(GotoPreviousBookmark)
+
+nmap gl <Action>(ShowErrorDescription)
+nmap gd <Action>(GotoDeclaration)
+nmap gr <Action>(ShowUsages)
+nmap gy <Action>(GotoTypeDeclaration)
+
+map <leader>b <Action>(ToggleLineBreakpoint)
