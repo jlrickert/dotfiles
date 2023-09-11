@@ -19,9 +19,9 @@
     openai_token = {{ $openai_token | quote }}
     openweather_key = {{ $openweather_key | quote }}
     openweather_city_id = {{ $openweather_city_id | quote }}
-    is_wsl = {{ .chezmoi.kernel.osrelease | regexMatch "WSL2$" }}
+    is_wsl = {{ and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | regexMatch "WSL2$") }}
     is_macos = {{ .chezmoi.os | regexMatch "darwin" }}
-    is_linux = {{ eq .chezmoi.os "linux" | default true }}
+    is_linux = {{ eq .chezmoi.os "linux" | default false }}
     is_ubuntu = {{ and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu") }}
     is_arch = {{ and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") }}
     workstation = {{ $workstation | default false }}
