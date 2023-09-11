@@ -1,3 +1,20 @@
+# [0.12.0](https://github.com/jlrickert/dotfiles/compare/v0.11.0...v0.12.0) (2023-09-11)
+
+
+### Bug Fixes
+
+* chezmoi init properly on MacOSX ([1c6b679](https://github.com/jlrickert/dotfiles/commit/1c6b679555b267eaca064d046a52a48698076484))
+* hugo installs properly on MacOSX ([8c91f05](https://github.com/jlrickert/dotfiles/commit/8c91f05b6abd827fc6d621890b83aaab0463f27f))
+* rust installs as expected ([f3f27d3](https://github.com/jlrickert/dotfiles/commit/f3f27d37f8b452ae1aca9870161e22087c593b2e))
+
+
+### Features
+
+* add ideavimrc config ([1438b0f](https://github.com/jlrickert/dotfiles/commit/1438b0f7357d4c844d65ec7a722fd4d247bf002c))
+* add spacemacs window hotkeys to vimrc ([47bdab4](https://github.com/jlrickert/dotfiles/commit/47bdab42901bbcbb3b39a0fcb8eb89a310d7f4a9))
+* disable mods installation ([9059810](https://github.com/jlrickert/dotfiles/commit/90598104f5b3e6fa9defd4f95ee00c2fcb484653))
+* install starship on MacOSX ([7d1533a](https://github.com/jlrickert/dotfiles/commit/7d1533a674dfdb4329ab36b42adf815ec3a9f375))
+
 # [0.11.0](https://github.com/jlrickert/dotfiles/compare/v0.10.0...v0.11.0) (2023-09-06)
 
 
