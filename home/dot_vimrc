@@ -372,6 +372,20 @@ nnoremap <silent><nowait> <leader>sp  :<C-u>Commands!<CR>
 
 nmap <space>e :<C-u>CocCommand explorer<CR>
 
+" windows
+nmap <leader>w- :sp<CR>
+nmap <leader>w/ :vsp<CR>
+nmap <leader>w= <C-W>=
+nmap <leader>wc :q<CR>
+nmap <leader>wh <C-W>h
+nmap <leader>wj <C-W>j
+nmap <leader>wk <C-W>k
+nmap <leader>wl <C-W>l
+nmap <leader>ws <C-W>s
+nmap <leader>wv <C-W>v
+nmap <leader>wm :MaximizerToggle<CR>
+nmap <leader>ww <C-W><C-W>
+
 " TODO: Add coc-snippets
 " TODO: Add @yaegassy/coc-ansible
 " TODO: add  coc-symbol-line
