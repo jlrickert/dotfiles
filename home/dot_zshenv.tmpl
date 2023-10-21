@@ -133,6 +133,9 @@ _pathappend \
 {{ if eq .chezmoi.os "darwin" }}
 if _have /opt/homebrew/bin/brew; then
 	source <(/opt/homebrew/bin/brew shellenv)
+
+	python_bin="$(find /Users/jlrickert/Library/Python -name "bin")"
+	[[ -d "${python_bin}" ]] && _pathappend "${python_bin}"
 fi
 {{ end }}
 
