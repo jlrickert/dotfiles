@@ -3,6 +3,7 @@ local vnoremap = require("user.keymap_utils").vnoremap
 local inoremap = require("user.keymap_utils").inoremap
 local tnoremap = require("user.keymap_utils").tnoremap
 local xnoremap = require("user.keymap_utils").xnoremap
+local onoremap = require("user.keymap_utils").onoremap
 local harpoon_ui = require("harpoon.ui")
 local harpoon_mark = require("harpoon.mark")
 local illuminate = require("illuminate")
@@ -153,9 +154,6 @@ end)
 
 nnoremap("[c", function()
 	require("gitsigns").prev_hunk()
-end)
-
-nnoremap("<leader>gs", function()
 end)
 
 nnoremap("<leader>gs", ":Gitsigns stage_hunk<CR>")
