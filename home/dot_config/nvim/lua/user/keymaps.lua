@@ -380,4 +380,15 @@ tnoremap("<C-l>", [[<Cmd>wincmd l<CR>]])
 -- Reenable default <space> functionality to prevent input delay
 tnoremap("<space>", "<space>")
 
+-- Map <leader>w to mimic Ctrl-W commands
+nnoremap("<leader>w", "<C-W>")
+nnoremap("<leader>wq", "<C-W>q")
+nnoremap("<leader>wh", "<C-W>h")
+nnoremap("<leader>wj", "<C-W>j")
+nnoremap("<leader>wk", "<C-W>k")
+nnoremap("<leader>wl", "<C-W>l")
+nnoremap("<leader>w=", "<C-W>=")
+nnoremap("<leader>ws", "<C-W>s")
+nnoremap("<leader>wv", "<C-W>v")
+
 return M
