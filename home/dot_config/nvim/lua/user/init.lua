@@ -1,6 +1,7 @@
 require("user.options")
 require("user.lazy")
 
+require("user.chezmoi")
 require("user.edit_text")
 require("user.format_on_save")
 require("user.highlight_yank")
