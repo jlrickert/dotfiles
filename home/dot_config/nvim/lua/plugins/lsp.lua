@@ -111,6 +111,7 @@ return {
 						),
 					},
 				},
+				svelte = {},
 				yamlls = {},
 			}
 
