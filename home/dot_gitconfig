@@ -3,7 +3,7 @@
 	name = Jared Rickert
 
 [core]
-	editor = vim
+	editor = nvim
 	autocrlf = input
 
 [color]
@@ -51,3 +51,9 @@
 
 [safe]
 	directory = /opt/flutter
+
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
