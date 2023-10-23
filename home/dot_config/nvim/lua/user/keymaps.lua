@@ -146,6 +146,36 @@ nnoremap("<leader>d", function()
 	})
 end)
 
+-- Gitsigns
+nnoremap("]c", function()
+	require("gitsigns").next_hunk()
+end)
+
+nnoremap("[c", function()
+	require("gitsigns").prev_hunk()
+end)
+
+nnoremap("<leader>gs", function()
+end)
+
+nnoremap("<leader>gs", ":Gitsigns stage_hunk<CR>")
+vnoremap("<leader>gs", ":Gitsigns stage_hunk<CR>")
+nnoremap("<leader>gr", ":Gitsigns reset_hunk<CR>")
+vnoremap("<leader>gr", ":Gitsigns reset_hunk<CR>")
+nnoremap("<leader>gS", "<cmd>Gitsigns stage_buffer<CR>")
+nnoremap("<leader>gu", "<cmd>Gitsigns undo_stage_hunk<CR>")
+nnoremap("<leader>gR", "<cmd>Gitsigns reset_buffer<CR>")
+nnoremap("<leader>gp", "<cmd>Gitsigns preview_hunk<CR>")
+nnoremap("<leader>gb", '<cmd>lua require"gitsigns".blame_line{full=true}<CR>')
+nnoremap("<leader>tb", "<cmd>Gitsigns toggle_current_line_blame<CR>")
+nnoremap("<leader>gd", "<cmd>Gitsigns diffthis<CR>")
+nnoremap("<leader>gD", '<cmd>lua require"gitsigns".diffthis("~")<CR>')
+
+-- hunk text objects
+
+onoremap("ih", ":<C-U>Gitsigns select_hunk<CR>")
+xnoremap("ih", ":<C-U>Gitsigns select_hunk<CR>")
+
 -- Place all dignostics into a qflist
 nnoremap("<leader>ld", vim.diagnostic.setqflist, { desc = "Quickfix [L]ist [D]iagnostics" })
 
