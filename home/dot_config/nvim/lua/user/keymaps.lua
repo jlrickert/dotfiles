@@ -1,3 +1,4 @@
+local cmap = require("user.keymap_utils").cmap
 local nnoremap = require("user.keymap_utils").nnoremap
 local vnoremap = require("user.keymap_utils").vnoremap
 local inoremap = require("user.keymap_utils").inoremap
@@ -203,6 +204,13 @@ nnoremap("<leader>rw", ":RotateWindows<cr>", { desc = "[R]otate [W]indows" })
 
 -- Press gx to open the link under the cursor
 nnoremap("gx", ":sil !open <cWORD><cr>", { silent = true })
+
+-- Save file with sudo
+cmap("w!!", function()
+	local cmd = "w !sudo tee % >/dev/null"
+	local keys = vim.api.nvim_replace_termcodes(cmd, true, false, true)
+	vim.api.nvim_feedkeys(keys, "n", false)
+end, { silent = true })
 
 -- TSC autocommand keybind to run TypeScripts tsc
 nnoremap("<leader>tc", ":TSC<cr>", { desc = "[T]ypeScript [C]ompile" })
