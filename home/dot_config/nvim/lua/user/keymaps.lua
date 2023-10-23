@@ -140,7 +140,7 @@ nnoremap("[w", function()
 	vim.api.nvim_feedkeys("zz", "n", false)
 end)
 
-nnoremap("<leader>d", function()
+nnoremap("gl", function()
 	vim.diagnostic.open_float({
 		border = "rounded",
 	})
