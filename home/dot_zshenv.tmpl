@@ -13,7 +13,6 @@ export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_STATE_HOME="${HOME}/.local/state"
-
 export XDG_DESKTOP_DIR="${HOME}/Desktop"
 export XDG_DOCUMENTS_DIR="${HOME}/Documents"
 export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
@@ -70,6 +69,7 @@ export LC_COLLATE=C
 #export CFLAGS="-Wall -Wextra -Werror -O0 -g -fsanitize=address -fno-omit-frame-pointer -finstrument-functions"
 export ZSH="${XDG_DATA_HOME}/oh-my-zsh"
 export FLYCTL_INSTALL=$XDG_DATA_HOME/.local/share/fly
+export PNPM_HOME="${XDG_DATA_HOME}/pnpm"
 
 ################################################################################
 # Fuzzy finder
@@ -116,6 +116,7 @@ _pathprepend \
 	"${CARGO_HOME}/bin" \
 	"${FNM_HOME}" \
     "${HOME}/.config/emacs/bin" \
+	"${PNPM_HOME}" \
 	"${XDG_DATA_HOME}/go/bin"
 
 _pathappend \
@@ -140,7 +141,7 @@ fi
 
 _have vi && export EDITOR=vi
 _have vim && export EDITOR=vim
-# _have nvim && export EDITOR=nvim
+_have nvim && export EDITOR=nvim
 _have vi && export VISUAL=vi
 _have vim && export VISUAL=vim
 # _have nvim && export VISUAL=nvim
@@ -148,6 +149,9 @@ _have vi && export EDITOR_PREFIX=vi
 _have vim && export EDITOR_PREFIX=vim
 # _have nvim && export EDITOR_PREFIX=nvim
 export GIT_EDITOR="${EDITOR}"
+export OPENAI_API_KEY={{- .openai_token }}
+export OPENWEATHER_KEY={{- .openweather_key }}
+export OPENWEATHER_CITY_ID={{- .openweather_city_id }}
 
-_source_if "${SECRETS}"
+_source_if "${SECRETS}" # secrets related to work
 
