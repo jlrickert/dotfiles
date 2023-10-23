@@ -21,6 +21,8 @@ plugins=(
 	golang
 	node
 	npm
+	poetry
+	rsync
 	rust
 	vi-mode
 	vscode
@@ -36,7 +38,7 @@ source $ZSH/oh-my-zsh.sh
 _source_if() { [[ -r "$1" ]] && source "$1"; }
 _have() { command -v "$1" &>/dev/null; }
 
-{{ if eq .chezmoi.os "darwin" }}
+{{ if .is_macos }}
 if _have /opt/homebrew/bin/brew; then
 	source <(/opt/homebrew/bin/brew shellenv)
 
@@ -50,6 +52,7 @@ if _have /opt/homebrew/bin/brew; then
 	fi
 
 	FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+	FPATH="$(brew --prefix)/share/zsh-completions:${FPATH}"
 
 	autoload -Uz compinit
 	compinit
@@ -61,7 +64,7 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # tabtab source for packages
 # uninstall by removing these lines
-[[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
+_source_if "${HOME}/tabtab/zsh/__tabtab.zsh"
 
 # bonzai style completions
 owncomp=(keg auth gocomplete chrome kn knp knw ku pomo dlcp qf regx sshkey vic tmpl build win ./build ppm)
@@ -74,9 +77,10 @@ _have hugo && source <(hugo completion zsh) && compdef _hugo hugo
 _have chezmoi && source <(chezmoi completion zsh)
 _have k3s && source <(k3s completion zsh)
 _have helm && source <(helm completion zsh)
-_have fnm && source <(fnm env --use-on-cd)
+_have fnm && source <(fnm completions --shell zsh)
 _have fzf && source "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh"
-_have bw && source <(bw completion --shell zsh); compdef _bw bw
+# TODO This is freaking slow
+#_have bw && source <(bw completion --shell zsh); compdef _bw bw
 
 # python argparse completions
 _argparse() {
@@ -105,7 +109,11 @@ _fzf_compgen_path() {
 }
 
 _fzf_compgen_dir() {
-	fdfind --color=never --type d --follow --exclude ".git"
+	BIN=fd
+	if _have fdfind; then
+		BIN=fdfind
+	fi
+	"${BIN}" --color=never --type d --follow --exclude ".git"
 }
 
 _fzf_comprun() {
