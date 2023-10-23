@@ -1,5 +1,11 @@
 require("user.options")
 require("user.lazy")
+
+require("user.edit_text")
+require("user.format_on_save")
 require("user.highlight_yank")
 require("user.keymaps")
 require("user.kitty_autocmds")
+require("user.rotate_windows")
+require("user.toggle_diagnostics")
+require("user.toggle_eslint")

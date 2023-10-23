@@ -50,15 +50,6 @@ end)
 -- Swap between last two buffers
 nnoremap("<leader>'", "<C-^>", { desc = "Switch to last buffer" })
 
--- -- Save with leader key
--- nnoremap("<leader>w", "<cmd>w<cr>", { silent = false })
-
--- -- Quit with leader key
--- nnoremap("<leader>q", "<cmd>q<cr>", { silent = false })
-
--- -- Save and Quit with leader key
--- nnoremap("<leader>z", "<cmd>wq<cr>", { silent = false })
-
 -- Map neo-tree to <leader>e
 nnoremap("<leader>e", "<cmd>Neotree toggle<cr>")
 -- Focus on current buffer in neo-tree
@@ -344,8 +335,8 @@ nnoremap("<leader>oc", function()
 end, { desc = "[O]pen [C]opilot panel" })
 
 -- nvim-ufo keybinds
-nnoremap("zR", require("ufo").openAllFolds)
-nnoremap("zM", require("ufo").closeAllFolds)
+nnoremap("zO", require("ufo").openAllFolds)
+nnoremap("zC", require("ufo").closeAllFolds)
 
 -- Insert --
 -- Map jj to <esc>
