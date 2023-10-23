@@ -1,3 +1,4 @@
+-- highlight hovered over words
 return {
 	{
 		"RRethy/vim-illuminate",
