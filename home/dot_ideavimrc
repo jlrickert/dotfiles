@@ -29,8 +29,8 @@ set ideastatusicon=gray
 set idearefactormode=keep
 
 """ Mappings --------------------------------
-map <leader>f <Plug>(easymotion-s)
-map <leader>e <Plug>(easymotion-f)
+" map <leader>f <Plug>(easymotion-s)
+" map <leader>e <Plug>(easymotion-f)
 
 "map <leader>d <Action>(Debug)
 map <leader>rn <Action>(RenameElement)
@@ -83,7 +83,9 @@ nmap <silent> [' <Action>(GotoPreviousBookmark)
 
 nmap gl <Action>(ShowErrorDescription)
 nmap gd <Action>(GotoDeclaration)
+nmap gi <Action>(GotoImplementation)
 nmap gr <Action>(ShowUsages)
 nmap gy <Action>(GotoTypeDeclaration)
 
-map <leader>b <Action>(ToggleLineBreakpoint)
+" Debugging
+nmap <leader>bb <Action>(ToggleLineBreakpoint)
