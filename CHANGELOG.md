@@ -1,3 +1,48 @@
+# [0.13.0](https://github.com/jlrickert/dotfiles/compare/v0.12.0...v0.13.0) (2023-10-25)
+
+
+### Bug Fixes
+
+* **nvim:** custom chezmoi plugin loading ([b947a83](https://github.com/jlrickert/dotfiles/commit/b947a83c8dc1946edbfdc55fbc857ef36fb0f5f1))
+* **nvim:** update lazy lock file ([08f6181](https://github.com/jlrickert/dotfiles/commit/08f618160d1c0b0a47af49e7af0029fa4d1efdf6))
+
+
+### Features
+
+* add telescope and keybindings ([d2b2776](https://github.com/jlrickert/dotfiles/commit/d2b277646adca49af2fd529bd9bd7f5b5c389cc2))
+* **kitty:** add config for kitty ([08116ec](https://github.com/jlrickert/dotfiles/commit/08116ec5766ff7054a206d00bfd391c58636d8a6))
+* **macosx:** add python user packages to path ([b324846](https://github.com/jlrickert/dotfiles/commit/b3248466c8eb6dba9a847d11eae70faf839a1faa))
+* nvim config with lazy ([1547a0c](https://github.com/jlrickert/dotfiles/commit/1547a0c30e9eeb10da5bc3573e3a81ca8849774b))
+* **nvim:** add async typescript checker ([96883e4](https://github.com/jlrickert/dotfiles/commit/96883e40ea313ab621ceeeee14f92a59caa744ed))
+* **nvim:** add autocomplete ([22015e6](https://github.com/jlrickert/dotfiles/commit/22015e640a865e89ff61f0d5999480bc1a0dd980))
+* **nvim:** add chezmoi support ([43dafb0](https://github.com/jlrickert/dotfiles/commit/43dafb063a6eaafa693b3a368bd801714a591a19))
+* **nvim:** add colored hex values ([0fcde9a](https://github.com/jlrickert/dotfiles/commit/0fcde9ae869d198e0fb6c6dd325322fcea5fc8b4))
+* **nvim:** add comment plugin and hotkeys ([a0163e5](https://github.com/jlrickert/dotfiles/commit/a0163e54fbce6aae1c8eb85c74edd3f97d33802c))
+* **nvim:** add customizations ([de62921](https://github.com/jlrickert/dotfiles/commit/de62921670a0755b97f75a008aa4fd7a79877b5c))
+* **nvim:** add file explorer ([be6d9a0](https://github.com/jlrickert/dotfiles/commit/be6d9a00f33792eeba6ede12276b32f81142d7fb))
+* **nvim:** add generic global search and replace ([094b8d2](https://github.com/jlrickert/dotfiles/commit/094b8d2981e04efc453708b21534b593024e62dd))
+* **nvim:** add gruvbox color theme ([8e7123b](https://github.com/jlrickert/dotfiles/commit/8e7123bdb1872ed07c7dde6add64d625b7daeeea))
+* **nvim:** add highlight on yank ([a210967](https://github.com/jlrickert/dotfiles/commit/a2109677ebb9304d48f644060c72d64b6afc210e))
+* **nvim:** add lsp ([2eb7580](https://github.com/jlrickert/dotfiles/commit/2eb75807dc8dc68bc1dfff2d79b69e5cd3f885e5))
+* **nvim:** add lualine ([3f02d9b](https://github.com/jlrickert/dotfiles/commit/3f02d9b23d5c6406cac3988aa0131aa75fa4d104))
+* **nvim:** add maximizer plugin ([30764a2](https://github.com/jlrickert/dotfiles/commit/30764a26ffa77434980639230cb6a1353ac5bfaf))
+* **nvim:** add notifications ([79354f1](https://github.com/jlrickert/dotfiles/commit/79354f113e0dfe54687485e2b4625fab3138e8e1))
+* **nvim:** add ocaml interface filetype ([c20d8b3](https://github.com/jlrickert/dotfiles/commit/c20d8b33182663ec659459287364d6e266cf9551))
+* **nvim:** add open diagnostic float with "gl" hotkey ([688b02d](https://github.com/jlrickert/dotfiles/commit/688b02d339ebd57d372cc730831bd14af250df05))
+* **nvim:** add progress bar ([8b0f93f](https://github.com/jlrickert/dotfiles/commit/8b0f93f1e412740ba3a467319cd64689139c1f00))
+* **nvim:** add sudo save short cut "w!!" ([40b6292](https://github.com/jlrickert/dotfiles/commit/40b62924eab55e76141db1eb24adf39bc6c6b2c9))
+* **nvim:** add svelte lsp ([9ab5074](https://github.com/jlrickert/dotfiles/commit/9ab5074adda24133e97368fa8bdc6cf9a18a8db7))
+* **nvim:** add symbols outline window ([75238d2](https://github.com/jlrickert/dotfiles/commit/75238d29e081910face685d6be70ffe0bb44e03f))
+* **nvim:** add vim surround ([bcf15d3](https://github.com/jlrickert/dotfiles/commit/bcf15d3237e4f0f876aaf27931275c65b9803569))
+* **nvim:** add window picker for file explorer ([3f2383b](https://github.com/jlrickert/dotfiles/commit/3f2383b1f0f24fb4680426604f38c1180dac3791))
+* **nvim:** better menu UI for commands ([f3aacff](https://github.com/jlrickert/dotfiles/commit/f3aacff2f6ede16ca9e1382d8ff67e695c2d4b22))
+* **nvim:** gitsigns hotkeys ([293234b](https://github.com/jlrickert/dotfiles/commit/293234b58d90afce4787766b7895c66f6eb54ed3))
+* **nvim:** improve menu UI looks ([0967390](https://github.com/jlrickert/dotfiles/commit/0967390b9e124cd29ede8dc0517e647b529e8732))
+* **nvim:** map leader w to c-w commands ([379ff51](https://github.com/jlrickert/dotfiles/commit/379ff51103bea72bbe27b3528d645fd453f1d698))
+* **vim:** add support for chezmoi ([9c01c9f](https://github.com/jlrickert/dotfiles/commit/9c01c9f64a00077cb9606b248ae1c3a015096a87))
+* **zsh:** update location of 3rd part environment keys ([6f845db](https://github.com/jlrickert/dotfiles/commit/6f845db0f0b446888a3f0baaef8055710913bcc9))
+* **zsh:** update zsh config ([41ea410](https://github.com/jlrickert/dotfiles/commit/41ea410b67302c25abc25240c5f239ec291b70dd))
+
 # [0.12.0](https://github.com/jlrickert/dotfiles/compare/v0.11.0...v0.12.0) (2023-09-11)
 
 
