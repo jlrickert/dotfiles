@@ -39,7 +39,7 @@ set nu
 " set relativenumber
 
 " Line wrap (number of cols)
-set wrap
+set nowrap
 set textwidth=80
 
 set encoding=utf-8
@@ -124,7 +124,10 @@ au bufnewfile,bufRead /tmp/psql.edit.* set syntax=sql
 au bufnewfile,bufRead *.go set spell spellcapcheck=0
 au bufnewfile,bufRead commands.yaml set spell
 au bufnewfile,bufRead *.md set tabstop=2 shiftwidth=2 textwidth=0 expandtab
+au bufnewfile,bufRead *.yaml set tabstop=2 shiftwidth=2 textwidth=0 expandtab
+au bufnewfile,bufRead *.yml set tabstop=2 shiftwidth=2 textwidth=0 expandtab
 au bufnewfile,bufRead pandoc set tabstop=2 shiftwidth=2 textwidth=0 expandtab
+au bufnewfile,bufRead *.sh.tmpl set filetype=sh
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " bash
