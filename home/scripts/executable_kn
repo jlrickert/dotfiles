@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export KEG_CURRENT="${GHREPOS}/zet"
+export KEG_CURRENT="${GHREPOS}/zet/docs"
 
 if test -n "${COMP_LINE}"; then
 	pre="${COMP_LINE#* }"

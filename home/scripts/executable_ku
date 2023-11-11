@@ -4,7 +4,7 @@
 set -e
 
 nodes() {
-	find docs -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
 }
 
 title() {
