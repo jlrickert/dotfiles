@@ -23,7 +23,7 @@ search() {
 		--files-with-matches \
 		--no-heading \
 		--smart-case \
-		--glob "docs/**/README.md" \
+		--glob "**/README.md" \
 		"$@" | grep -o -E '[0-9]+'
 }
 
