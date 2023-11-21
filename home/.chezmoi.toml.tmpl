@@ -3,6 +3,7 @@
 {{- $openai_token := promptStringOnce . "openai_token" "Chat GPT token" -}}
 {{- $openweather_key := promptStringOnce . "openweather_key" "Open weather api key" }}
 {{- $openweather_city_id := promptStringOnce . "openweather_city_id" "Open weather city id" }}
+{{- $npm_token := promptStringOnce . "npm_token" "NPMjs token"}}
 {{- $workstation := promptBoolOnce . "workstation" "Workstation" -}}
 {{- $setup_go := promptBoolOnce . "go" "Install go tools" -}}
 {{- $setup_hugo := promptBoolOnce . "hugo" "Install hugo" -}}
@@ -19,6 +20,7 @@
     openai_token = {{ $openai_token | quote }}
     openweather_key = {{ $openweather_key | quote }}
     openweather_city_id = {{ $openweather_city_id | quote }}
+	npm_token = {{ $npm_token | quote }}
     is_wsl = {{ and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | regexMatch "WSL2$") }}
     is_macos = {{ .chezmoi.os | regexMatch "darwin" }}
     is_linux = {{ eq .chezmoi.os "linux" | default false }}

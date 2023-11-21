@@ -152,6 +152,7 @@ export GIT_EDITOR="${EDITOR}"
 export OPENAI_API_KEY={{- .openai_token }}
 export OPENWEATHER_KEY={{- .openweather_key }}
 export OPENWEATHER_CITY_ID={{- .openweather_city_id }}
+export NPM_TOKEN={{- .npm_token }}
 
 _source_if "${SECRETS}" # secrets related to work
 
