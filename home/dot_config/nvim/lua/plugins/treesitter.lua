@@ -10,6 +10,9 @@ return {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 		},
 		config = function()
+			-- This suppresses a deprication message
+			vim.g.skip_ts_context_commentstring_module = true
+
 			---@diagnostic disable: missing-fields
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = {
