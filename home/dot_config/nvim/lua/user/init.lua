@@ -10,3 +10,6 @@ require("user.kitty_autocmds")
 require("user.rotate_windows")
 require("user.toggle_diagnostics")
 require("user.toggle_eslint")
+
+local keg = require("user.keg")
+keg.setup()
