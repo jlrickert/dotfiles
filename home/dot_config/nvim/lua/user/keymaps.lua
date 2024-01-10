@@ -288,8 +288,8 @@ end, { desc = "[S]earch [F]iles" })
 nnoremap("<leader>sh", require("telescope.builtin").help_tags, { desc = "[S]earch [H]elp" })
 nnoremap("<leader>sw", require("telescope.builtin").grep_string, { desc = "[S]earch current [W]ord" })
 nnoremap("<leader>sg", require("telescope.builtin").live_grep, { desc = "[S]earch by [G]rep" })
+nnoremap("<leader>sG", require("telescope.builtin").git_status, { desc = "[S]earch by [G]rep" })
 nnoremap("<leader>sd", require("telescope.builtin").diagnostics, { desc = "[S]earch [D]iagnostics" })
-nnoremap("<leader>sd", require("telescope.builtin").git_files, { desc = "[S]earch [D]iagnostics" })
 
 nnoremap("<leader>sc", function()
 	require("telescope.builtin").commands(require("telescope.themes").get_dropdown({
@@ -309,7 +309,8 @@ nnoremap("<leader>ss", function()
 	}))
 end, { desc = "[S]earch [S]pelling suggestions" })
 
--- LSP Keybinds (exports a function to be used in ../../after/plugin/lsp.lua b/c we need a reference to the current buffer) --
+-- LSP Keybinds (exports a function to be used in ../../after/plugin/lsp.lua
+-- b/c we need a reference to the current buffer) --
 M.map_lsp_keybinds = function(buffer_number)
 	nnoremap("<leader>rn", vim.lsp.buf.rename, { desc = "LSP: [R]e[n]ame", buffer = buffer_number })
 	nnoremap("<leader>ca", vim.lsp.buf.code_action, { desc = "LSP: [C]ode [A]ction", buffer = buffer_number })
