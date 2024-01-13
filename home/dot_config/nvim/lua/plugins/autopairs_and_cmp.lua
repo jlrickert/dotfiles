@@ -29,6 +29,7 @@ return {
 
 			-- Load snippets
 			require("luasnip.loaders.from_vscode").lazy_load()
+			require("luasnip.loaders.from_snipmate").lazy_load()
 
 			cmp.setup({
 				snippet = {
@@ -64,15 +65,15 @@ return {
 					["<C-u>"] = cmp.mapping.scroll_docs(4), -- scroll up preview
 					["<C-d>"] = cmp.mapping.scroll_docs(-4), -- scroll down preview
 					["<C-Space>"] = cmp.mapping.complete({}), -- show completion suggestions
-					["<C-c>"] = cmp.mapping.abort(), -- close completion window
+					["<C-c>"] = cmp.mapping.abort(),    -- close completion window
 					["<CR>"] = cmp.mapping.confirm({ select = true }), -- select suggestion
 				}),
 				-- sources for autocompletion
 				sources = cmp.config.sources({
-					{ name = "nvim_lsp" }, -- lsp
+					{ name = "nvim_lsp" },     -- lsp
 					{ name = "luasnip", max_item_count = 3 }, -- snippets
-					{ name = "buffer", max_item_count = 5 }, -- text within current buffer
-					{ name = "path", max_item_count = 3 }, -- file system paths
+					{ name = "buffer",  max_item_count = 5 }, -- text within current buffer
+					{ name = "path",    max_item_count = 3 }, -- file system paths
 				}),
 				-- Enable pictogram icons for lsp/autocompletion
 				formatting = {
