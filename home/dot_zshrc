@@ -23,6 +23,7 @@ plugins=(
 	npm
 	poetry
 	rsync
+	pac
 	rust
 	vi-mode
 	vscode
@@ -38,7 +39,6 @@ source $ZSH/oh-my-zsh.sh
 _source_if() { [[ -r "$1" ]] && source "$1"; }
 _have() { command -v "$1" &>/dev/null; }
 
-{{ if .is_macos }}
 if _have /opt/homebrew/bin/brew; then
 	source <(/opt/homebrew/bin/brew shellenv)
 
@@ -60,16 +60,19 @@ fi
 
 # iterm2 integration
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
-{{ end }}
 
 # tabtab source for packages
 # uninstall by removing these lines
 _source_if "${HOME}/tabtab/zsh/__tabtab.zsh"
 
 # bonzai style completions
-owncomp=(keg auth gocomplete chrome kn knp knw ku pomo dlcp qf regx sshkey vic tmpl build win ./build ppm)
+owncomp=(keg auth gocomplete chrome kn knp knw ku zet pomo dlcp qf regx sshkey vic tmpl build win ./build ppm)
 for i in "${owncomp[@]}"; do _have "$i" && complete -C "$i" "$i"; done
 
+##
+## _source_if /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+## _source_if /opt/homebrew/opt/chruby/share/chruby/auto.sh
+##
 _have flutter && source <(flutter zsh-completion)
 _have podman && source <(podman completion zsh)
 _have kubectl && source <(kubectl completion zsh)
@@ -77,8 +80,11 @@ _have hugo && source <(hugo completion zsh) && compdef _hugo hugo
 _have chezmoi && source <(chezmoi completion zsh)
 _have k3s && source <(k3s completion zsh)
 _have helm && source <(helm completion zsh)
-_have fnm && source <(fnm completions --shell zsh)
+_have fnm && source <(fnm env --use-on-cd)
+_have turbo && source <(turbo completion zsh)
 _have fzf && source "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh"
+_have ng && source <(ng completion script)
+
 # TODO This is freaking slow
 #_have bw && source <(bw completion --shell zsh); compdef _bw bw
 
@@ -163,3 +169,7 @@ _fzf_complete_vic() {
 }
 
 _have starship && eval "$(starship init zsh)"
+
+# tabtab source for packages
+# uninstall by removing these lines
+[[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true

@@ -77,7 +77,7 @@ keg current &>/dev/null || exit 1
 ######################### Tab Completion Context ########################
 if test -n "${COMP_LINE}"; then
 	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
-	pre="${COMP_LINE#* }"
+	pre="$(printf "%s" "${COMP_LINE}" | awk '{for(i=3; i<=NF; i++) printf $i" "; print ""}')"
 	case "${cmd}" in
 	edit | view | title | link)
 		nodes list
