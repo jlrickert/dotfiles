@@ -174,6 +174,7 @@ return {
 					formatting.prettier,
 					formatting.stylua,
 					formatting.ocamlformat,
+					formatting.shfmt,
 
 					-- diagnostics
 					diagnostics.eslint_d.with({
