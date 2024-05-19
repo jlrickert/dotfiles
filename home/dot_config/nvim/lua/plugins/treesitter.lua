@@ -36,6 +36,7 @@ return {
 					"html",
 					"javascript",
 					"json",
+					"kdl",
 					"lua",
 					"markdown",
 					"ocaml",
