@@ -117,8 +117,8 @@ keybinds clear-defaults=true {
         bind "Esc" { UndoRenamePane; SwitchToMode "Pane"; }
     }
     session {
-        bind "Ctrl o" { SwitchToMode "Normal"; }
-        bind "Ctrl s" { SwitchToMode "Scroll"; }
+        // bind "Ctrl o" { SwitchToMode "Normal"; }
+        // bind "Ctrl s" { SwitchToMode "Scroll"; }
         bind "d" { Detach; }
         bind "w" {
             LaunchOrFocusPlugin "session-manager" {
@@ -153,6 +153,10 @@ keybinds clear-defaults=true {
         bind "l" "Right" { MoveFocus "Right"; SwitchToMode "Normal"; }
         bind "j" "Down" { MoveFocus "Down"; SwitchToMode "Normal"; }
         bind "k" "Up" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        bind "H" "Left" { MovePane "Left"; SwitchToMode "Normal"; }
+        bind "J" "Down" { MovePane "Down"; SwitchToMode "Normal"; }
+        bind "K" "Up" { MovePane "Up"; SwitchToMode "Normal"; }
+        bind "L" "Right" { MovePane "Right"; SwitchToMode "Normal"; }
         bind "Space" { NextSwapLayout; }
         bind "x" { CloseFocus; }
         bind "1" { GoToTab 1; SwitchToMode "Normal"; }
