@@ -9,8 +9,12 @@ return {
 			"williamboman/mason-lspconfig.nvim",
 
 			"hrsh7th/cmp-nvim-lsp",
+
 			-- Install none-ls for diagnostics, code actions, and formatting
-			"nvimtools/none-ls.nvim",
+			{
+				"nvimtools/none-ls.nvim",
+				dependencies = { "nvimtools/none-ls-extras.nvim" }
+			},
 
 			-- Install neodev for better nvim configuration and plugin authoring via lsp configurations
 			"folke/neodev.nvim",
@@ -76,6 +80,7 @@ return {
 				dotls = {},
 				-- clangd = {},
 				omnisharp = {},
+				eslint = {},
 				cssls = {},
 				gopls = {},
 				graphql = {},
@@ -89,12 +94,14 @@ return {
 						},
 					},
 				},
+				nil_ls = {},
 				marksman = {},
 				ocamllsp = {},
 				prismals = {},
 				pyright = {},
 				solidity = {},
 				sqlls = {},
+				phpactor = {},
 				mdx_analyzer = {},
 				ruff_lsp = {}, -- python lsp
 				taplo = {},
@@ -176,19 +183,19 @@ return {
 					formatting.ocamlformat,
 					formatting.shfmt,
 
-					-- diagnostics
-					diagnostics.eslint_d.with({
-						condition = function(utils)
-							return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
-						end,
-					}),
-
-					-- code actions
-					code_actions.eslint_d.with({
-						condition = function(utils)
-							return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
-						end,
-					}),
+					-- -- diagnostics
+					-- diagnostics.eslint_d.with({
+					-- 	condition = function(utils)
+					-- 		return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
+					-- 	end,
+					-- }),
+					--
+					-- -- code actions
+					-- code_actions.eslint_d.with({
+					-- 	condition = function(utils)
+					-- 		return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
+					-- 	end,
+					-- }),
 				},
 			})
 
