@@ -16,39 +16,6 @@ local M = {}
 -- Disable Space bar since it'll be used as the leader key
 nnoremap("<space>", "<nop>")
 
--- Window +  better kitty navigation
-nnoremap("<C-j>", function()
-	if vim.fn.exists(":KittyNavigateDown") ~= 0 then
-		vim.cmd.KittyNavigateDown()
-	else
-		vim.cmd.wincmd("j")
-	end
-end)
-
-nnoremap("<C-k>", function()
-	if vim.fn.exists(":KittyNavigateUp") ~= 0 then
-		vim.cmd.KittyNavigateUp()
-	else
-		vim.cmd.wincmd("k")
-	end
-end)
-
-nnoremap("<C-l>", function()
-	if vim.fn.exists(":KittyNavigateRight") ~= 0 then
-		vim.cmd.KittyNavigateRight()
-	else
-		vim.cmd.wincmd("l")
-	end
-end)
-
-nnoremap("<C-h>", function()
-	if vim.fn.exists(":KittyNavigateLeft") ~= 0 then
-		vim.cmd.KittyNavigateLeft()
-	else
-		vim.cmd.wincmd("h")
-	end
-end)
-
 -- Swap between last two buffers
 nnoremap("<leader>'", "<C-^>", { desc = "Switch to last buffer" })
 
@@ -197,7 +164,7 @@ nnoremap("<leader>m", ":MaximizerToggle<cr>")
 nnoremap("<leader>=", "<C-w>=")
 
 -- Press leader f to format
-nnoremap("<leader>f", ":Format<cr>")
+-- nnoremap("<leader>f", ":Format<cr>")
 
 -- Press leader rw to rotate open windows
 nnoremap("<leader>rw", ":RotateWindows<cr>", { desc = "[R]otate [W]indows" })
@@ -314,6 +281,7 @@ end, { desc = "[S]earch [S]pelling suggestions" })
 M.map_lsp_keybinds = function(buffer_number)
 	nnoremap("<leader>rn", vim.lsp.buf.rename, { desc = "LSP: [R]e[n]ame", buffer = buffer_number })
 	nnoremap("<leader>ca", vim.lsp.buf.code_action, { desc = "LSP: [C]ode [A]ction", buffer = buffer_number })
+	nnoremap("<leader>f", vim.lsp.buf.format, { desc = "LSP: [F]ormat", buffer = buffer_number })
 
 	nnoremap("gd", vim.lsp.buf.definition, { desc = "LSP: [G]oto [D]efinition", buffer = buffer_number })
 

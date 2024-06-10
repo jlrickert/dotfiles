@@ -8,6 +8,9 @@ return {
 			"williamboman/mason.nvim",
 			"williamboman/mason-lspconfig.nvim",
 
+			-- add intellisense to yaml and json
+			"b0o/schemastore.nvim",
+
 			"hrsh7th/cmp-nvim-lsp",
 
 			-- Install none-ls for diagnostics, code actions, and formatting
@@ -23,7 +26,7 @@ return {
 			{ "j-hui/fidget.nvim", tag = "legacy" },
 		},
 		config = function()
-			local none_ls = require("null-ls")                       -- none-ls wasn't installing
+			local none_ls = require("null-ls")
 			local map_lsp_keybinds = require("user.keymaps").map_lsp_keybinds -- Has to load keymaps before pluginslsp
 
 			-- Use neodev to configure lua_ls in nvim directories - must load before lspconfig
@@ -78,6 +81,7 @@ return {
 				dockerls = {},
 				bashls = {},
 				dotls = {},
+				-- deno = {},
 				-- clangd = {},
 				omnisharp = {},
 				eslint = {},
@@ -85,7 +89,6 @@ return {
 				gopls = {},
 				graphql = {},
 				html = {},
-				jsonls = {},
 				lua_ls = {
 					settings = {
 						Lua = {
@@ -106,21 +109,42 @@ return {
 				ruff_lsp = {}, -- python lsp
 				taplo = {},
 				tailwindcss = {},
-				tsserver = {
+				-- tsserver = {
+				-- 	settings = {
+				-- 		experimental = {
+				-- 			enableProjectDiagnostics = true,
+				-- 		},
+				-- 	},
+				-- 	handlers = {
+				-- 		["textDocument/publishDiagnostics"] = vim.lsp.with(
+				-- 			tsserver_on_publish_diagnostics_override,
+				-- 			{}
+				-- 		),
+				-- 	},
+				-- },
+				svelte = {},
+				jsonls = {
 					settings = {
-						experimental = {
-							enableProjectDiagnostics = true,
+						json = {
+							schemas = require('schemastore').json.schemas(),
+							validate = { enable = true },
+						}
+					}
+				},
+				yamlls = {
+					settings = {
+						yaml = {
+							schemaStore = {
+								-- You must disable built-in schemaStore support if you want to use
+								-- this plugin and its advanced options like `ignore`.
+								enable = false,
+								-- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+								url = "",
+							},
+							schemas = require('schemastore').yaml.schemas(),
 						},
 					},
-					handlers = {
-						["textDocument/publishDiagnostics"] = vim.lsp.with(
-							tsserver_on_publish_diagnostics_override,
-							{}
-						),
-					},
 				},
-				svelte = {},
-				yamlls = {},
 			}
 
 			-- Default handlers for LSP
@@ -139,14 +163,14 @@ return {
 				map_lsp_keybinds(buffer_number)
 
 				-- Create a command `:Format` local to the LSP buffer
-				vim.api.nvim_buf_create_user_command(buffer_number, "Format", function(_)
-					vim.lsp.buf.format({
-						filter = function(format_client)
-							-- Use Prettier to format TS/JS if it's available
-							return format_client.name ~= "tsserver" or not none_ls.is_registered("prettier")
-						end,
-					})
-				end, { desc = "LSP: Format current buffer with LSP" })
+				-- vim.api.nvim_buf_create_user_command(buffer_number, "Format", function(_)
+				-- 	vim.lsp.buf.format({
+				-- 		filter = function(format_client)
+				-- 			-- Use Prettier to format TS/JS if it's available
+				-- 			return format_client.name ~= "tsserver" or not none_ls.is_registered("prettier")
+				-- 		end,
+				-- 	})
+				-- end, { desc = "LSP: Format current buffer with LSP" })
 
 				-- if client.server_capabilities.codeLensProvider then
 				-- 	vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave", "CursorHold" }, {
@@ -158,9 +182,11 @@ return {
 				-- end
 			end
 
+			local nvim_lsp = require('lspconfig')
+
 			-- Iterate over our servers and set them up
 			for name, config in pairs(servers) do
-				require("lspconfig")[name].setup({
+				nvim_lsp[name].setup({
 					capabilities = default_capabilities,
 					filetypes = config.filetypes,
 					handlers = vim.tbl_deep_extend("force", {}, default_handlers, config.handlers or {}),
@@ -168,6 +194,30 @@ return {
 					settings = config.settings,
 				})
 			end
+
+			-- setup deno
+			nvim_lsp.denols.setup({
+				on_attach = on_attach,
+				root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc")
+			})
+
+			-- setup tsserver
+			nvim_lsp.tsserver.setup({
+				on_attach = on_attach,
+				root_dir = nvim_lsp.util.root_pattern("package.json"),
+				single_file_support = false,
+				handlers = vim.tbl_deep_extend("force", {}, default_handlers, {
+					["textDocument/publishDiagnostics"] = vim.lsp.with(
+						tsserver_on_publish_diagnostics_override,
+						{}
+					),
+				}),
+				settings = {
+					experimental = {
+						enableProjectDiagnostics = true,
+					}
+				}
+			})
 
 			-- Congifure LSP linting, formatting, diagnostics, and code actions
 			local formatting = none_ls.builtins.formatting
