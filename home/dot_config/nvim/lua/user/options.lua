@@ -51,8 +51,24 @@ vim.opt.termguicolors = true
 -- Enable the sign column to prevent the screen from jumping
 vim.opt.signcolumn = "yes"
 
--- Enable access to System Clipboard
+-- Use system clipboard by default
 vim.opt.clipboard = "unnamed,unnamedplus"
+
+-- See https://neovim.io/doc/user/provider.html#clipboard-osc52 for docs
+-- Use OSC 52 if available. This is added to the core in neovim 0.10.0
+if vim.fn.has('nvim-0.10.0') == 0 then
+	-- vim.g.clipboard = {
+	-- 	name = 'OSC 52',
+	-- 	copy = {
+	-- 		['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+	-- 		['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+	-- 	},
+	-- 	paste = {
+	-- 		['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+	-- 		['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+	-- 	},
+	-- }
+end
 
 -- Enable cursor line highlight
 vim.opt.cursorline = true
@@ -69,7 +85,4 @@ vim.opt.foldenable = true
 vim.opt.scrolloff = 8
 
 -- Place a column line
-vim.opt.colorcolumn = "80"
-
--- Disable vim-kitty-navigator default mappings
-vim.g.kitty_navigator_no_mappings = 1
+vim.opt.colorcolumn = "120"
