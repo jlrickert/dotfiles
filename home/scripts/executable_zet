@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+CONFIG_FILE="${HOME}/.config/knut/config.yaml"
+
+keg_current() {
+	query="$(printf '.kegs[] | select(.alias == "%s") | .url' "$1")"
+	KEG_CURRENT=$(yq "${query}" "${CONFIG_FILE}")
+
+	if [[ "${KEG_CURRENT}" == '' ]]; then
+		echo ''
+		return
+	fi
+
+	KEG_CURRENT="${KEG_CURRENT/\~/"${HOME}"}"
+	if ! [[ "$KEG_CURRENT" = /* ]]; then
+		KEG_CURRENT="$(readlink -f "$(dirname "${CONFIG_FILE}")/${KEG_CURRENT}")"
+	fi
+
+	echo "$KEG_CURRENT"
+	return
+}
+
+if test -n "${COMP_LINE}"; then
+	KEGS="$(yq ".kegs[] | .alias" "${CONFIG_FILE}")"
+	cmd="$(printf "%s" "${COMP_LINE}" | awk '{print $2}')"
+
+	for k in ${KEGS}; do
+		if [[ "${cmd}" == "${k}" ]]; then
+			KEG_CURRENT=$(keg_current "${cmd}")
+			cd "${KEG_CURRENT}" || exit 1
+			pre="$(printf "%s" "${COMP_LINE}" | awk '{for(i=3; i<=NF; i++) printf $i" "; print ""}')"
+			COMP_LINE="ku ${pre}" ku
+			exit 0
+		fi
+
+		pre="${COMP_LINE##* }"
+		if test -z "${pre}" -o "${cmd}" != "${cmd#"${pre}"}"; then
+			printf "%s\n" "${k}"
+		fi
+	done
+	exit 0
+fi
+
+cmd="$1"
+test $# -gt 0 && shift
+KEG_CURRENT=$(keg_current "${cmd}")
+cd "${KEG_CURRENT}" || exit 1
+ku "$@"

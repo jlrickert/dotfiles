@@ -58,6 +58,14 @@ fzf() {
 	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
 }
 
+update() {
+	git pull
+}
+
+publish() {
+	keg publish
+}
+
 help() {
 	echo ""
 }
@@ -88,7 +96,7 @@ if test -n "${COMP_LINE}"; then
 		exit 0
 		;;
 	*)
-		for cmd in build create pwd edit link view keg nodes titles fzf search deploy sync help; do
+		for cmd in build create deploy edit fzf help keg link nodes publish pwd search sync titles update view; do
 			[[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
 		done
 		exit 0
@@ -108,6 +116,8 @@ k | keg) keg "$@" ;;
 c | create) keg c "$@" ;;
 b | build) make -f "${XDG_CONFIG_HOME:-$HOME/.config}/ku/makefile" "$@" ;;
 d | deploy) ./deploy "$@" ;;
+p | publish) keg publish ;;
+u | update) update "$@" ;;
 list) nodes "$@" ;;
 nodes) nodes "$@" ;;
 title) title "$@" ;;
