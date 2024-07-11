@@ -111,7 +111,7 @@ shift
 
 case "${CMD}" in
 e | edit) keg edit "$@" ;;
-v | view) keg edit "$@" ;;
+v | view) keg view "$@" ;;
 k | keg) keg "$@" ;;
 c | create) keg c "$@" ;;
 b | build) make -f "${XDG_CONFIG_HOME:-$HOME/.config}/ku/makefile" "$@" ;;

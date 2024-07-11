@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# open -a 'IntelliJ IDEA' "$@"
+open -a 'Webstorm' "$@"

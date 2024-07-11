@@ -8,33 +8,33 @@ typ=ed25519
 confd="$HOME/.ssh"
 
 gen() {
-    name=${1:-$(date -u +%Y%m%d%H%M%S)}
-    ssh-keygen -t "${typ}" -f "${confd}/id_${typ}_$name"
+	name=${1:-$(date -u +%Y%m%d%H%M%S)}
+	ssh-keygen -t "${typ}" -f "${confd}/id_${typ}_$name"
 }
 
 pub() {
-    name="${1:-id_ed25519}"
-    test -e "${confd}/${name}.pub" || return 1
-    cat "${confd}/${name}.pub"
+	name="${1:-id_ed25519}"
+	test -e "${confd}/${name}.pub" || return 1
+	ssh-keygen -y -f "${name}"
 }
 
 chpasswd() {
-    name="${1:-id_ed25519}"
-    test -e "${confd}/${name}.pub" || return 1
-    ssh-keygen -p -f "${confd}/${name}"
+	name="${1:-id_ed25519}"
+	test -e "${confd}/${name}.pub" || return 1
+	ssh-keygen -p -f "${confd}/${name}"
 }
 
 comment() {
-    name="${1:-id_ed25519}"
-    test -e "${confd}/${name}.pub" || return 1
-    ssh-keygen -c -f "${confd}/${name}"
+	name="${1:-id_ed25519}"
+	test -e "${confd}/${name}.pub" || return 1
+	ssh-keygen -c -f "${confd}/${name}"
 }
 
 list() {
-    while read -r line; do
-        line=${line##*/}
-        echo "${line%.pub}"
-    done <<EOF
+	while read -r line; do
+		line=${line##*/}
+		echo "${line%.pub}"
+	done <<EOF
 $(ls -1 "${confd}"/*.pub)
 EOF
 }
@@ -44,19 +44,19 @@ EOF
 # add `complete -S sshkey sshkey` to bashrc
 
 if test -n "${COMP_LINE}"; then
-    cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
-    pre="${COMP_LINE##* }"
-    case "${cmd}" in
-    chpasswd | comment)
-        list
-        ;;
-    *)
-        for c in gen pub chpasswd comment list; do
-            test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
-        done
-        ;;
-    esac
-    exit
+	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
+	pre="${COMP_LINE##* }"
+	case "${cmd}" in
+	chpasswd | comment | pub)
+		list
+		;;
+	*)
+		for c in gen chpasswd pub comment list; do
+			test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+		done
+		;;
+	esac
+	exit
 fi
 
 # ------------------------------- main -------------------------------
