@@ -8,9 +8,10 @@
 		"prettier": "prettier --write \"**/*.{md,yaml,json}\"",
 		"release": "changeset publish",
 		"version-packages": "changeset version && npm run prettier",
-		"publish": "changeset tag"
+		"publish": "changeset publish"
 	},
 	"devDependencies": {
+		"@changesets/changelog-git": "^0.2.0",
 		"@changesets/cli": "^2.27.7",
 		"prettier": "^3.3.3"
 	}
