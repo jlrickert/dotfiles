@@ -4,7 +4,8 @@ My personal dotfiles. Pilfer at your own peril!
 
 ## Installation
 
-Installation is simple. Just install git and curl, copy over the chezmoi config, and let chezmoi do the rest. Sudo access is assumed.
+Installation is simple. Just install git and curl, copy over the chezmoi
+config, and let chezmoi do the rest. Sudo access is assumed.
 
 Start by copying the following and updating.
 

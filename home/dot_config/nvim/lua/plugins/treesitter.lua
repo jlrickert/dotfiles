@@ -20,6 +20,7 @@ return {
 					"bash",
 					"c",
 					"css",
+					"csv",
 					"diff",
 					"dockerfile",
 					"dot",
@@ -42,6 +43,7 @@ return {
 					"ocaml",
 					"ocaml_interface",
 					"php",
+					"phpdoc",
 					"prisma",
 					"python",
 					"rust",
@@ -52,7 +54,7 @@ return {
 					"tsx",
 					"typescript",
 					"vim",
-					-- "yaml", This is currently borked see: https://github.com/ikatyang/tree-sitter-yaml/issues/53
+					"yaml", -- This is currently borked see: https://github.com/ikatyang/tree-sitter-yaml/issues/53
 				},
 				sync_install = false,
 				highlight = {
@@ -87,12 +89,28 @@ return {
 						lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
 						keymaps = {
 							-- You can use the capture groups defined in textobjects.scm
-							["aa"] = "@parameter.outer",
-							["ia"] = "@parameter.inner",
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							["ic"] = "@class.inner",
+							["a="] = { query = "@assignment.outer", desc = "Select outer part of an assignment" },
+							["i="] = { query = "@assignment.inner", desc = "Select inner part of an assignment" },
+							["l="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
+							["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
+
+							["aa"] = { query = "@parameter.outer", desc = "Select outer part of a parameter/argument" },
+							["ia"] = { query = "@parameter.inner", desc = "Select inner part of a parameter/argument" },
+
+							["ai"] = { query = "@conditional.outer", desc = "Select outer part of a conditional" },
+							["ii"] = { query = "@conditional.inner", desc = "Select inner part of a conditional" },
+
+							["al"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
+							["il"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
+
+							["af"] = { query = "@function.outer", desc = "Select outer part of a function" },
+							["if"] = { query = "@function.inner", desc = "Select inner part of a function" },
+
+							["am"] = { query = "@function.outer", desc = "Select outer part of a method/function definition" },
+							["im"] = { query = "@function.inner", desc = "Select inner part of a method/function definition" },
+
+							["ac"] = { query = "@class.outer", desc = "Select outer part of a class" },
+							["ic"] = { query = "@class.inner", desc = "Select inner part of a class" },
 						},
 					},
 					move = {

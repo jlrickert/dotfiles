@@ -197,12 +197,30 @@ return {
 
 			-- setup deno
 			nvim_lsp.denols.setup({
+				capabilities = default_capabilities,
 				on_attach = on_attach,
-				root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc")
+				root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc"),
+				handlers = vim.tbl_deep_extend("force", {}, default_handlers, {}),
+				settings = {
+					deno = {
+						enable = true,
+						lint = true,
+						unstable = true,
+						suggest = {
+							imports = {
+								hosts = {
+									-- ['https://deno.land'] = true,
+									["https://cdn.skypack.dev"] = true,
+								},
+							},
+						}
+					}
+				}
 			})
 
 			-- setup tsserver
 			nvim_lsp.tsserver.setup({
+				capabilities = default_capabilities,
 				on_attach = on_attach,
 				root_dir = nvim_lsp.util.root_pattern("package.json"),
 				single_file_support = false,
@@ -232,6 +250,7 @@ return {
 					formatting.stylua,
 					formatting.ocamlformat,
 					formatting.shfmt,
+					formatting.sqlfluff,
 
 					-- -- diagnostics
 					-- diagnostics.eslint_d.with({

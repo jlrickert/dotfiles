@@ -5,9 +5,9 @@ set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
 IFS=$'\n\t'
 
-# {{ if not (and .is_arch .setup_flutter) }}
-# exit 0
-# {{ end}}
+{{ if (and .is_arch (not .setup_flutter)) }}
+exit 0
+{{ end}}
 
 declare NOCOLOR=
 [[ -t 1 ]] || NOCOLOR=y
@@ -51,8 +51,6 @@ _log "Sourcing environment" source ~/.zshenv
 #     _log "Flutter found (Skipping)"
 #     exit 0
 # fi
-
-_log "Installing flutter"
 
 _log "Install flutter" yay --sync --refresh --needed android-file-transfer android-sdk android-studio android-tools android-udev android-sdk-cmdline-tools-latest android-sdk-build-tools android-sdk-platform-tools android-platform clang cmake dart flutter jdk-openjdk ninja
 _log "Create an android dev group" _sudo groupadd android-sdk

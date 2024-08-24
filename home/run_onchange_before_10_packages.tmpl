@@ -2,26 +2,42 @@
 
 _have() { type "$1" &>/dev/null; }
 
+if [[ -n "$NOCOLOR" ]] ; then
+    GOLD=
+    RED=
+    GREY=
+    CYAN=
+    GREEN=
+    RESET=
+fi
+
+_have() { type "$1" &>/dev/null; }
+
 _log() {
-    echo "$@"
+    local MSG="${1}"
+    shift
+    echo "${GREEN}${MSG}:${RESET} $@"
     "$@"
 }
 
 _sudo() {
     if [[ "$(whoami)" = "root" ]]; then
-        "$@"
+        _log "Running" $@
     else
-        sudo "$@"
+        _log "Running" sudo "$@"
     fi
 }
 
+_log "Bootstrapping enviornment"
+
+{{- if .is_wsl -}}
+_sudo add-apt-repository ppa:wslutilities/wslu --yes
+{{- end }}
+
 {{ if .is_ubuntu }}
-    {{- if .is_wsl -}}
-_log _sudo add-apt-repository ppa:wslutilities/wslu --yes
-    {{- end }}
-_log _sudo apt-get update --yes
-_log _sudo apt-get remove --yes fzf ## fzf is installed later
-_log _sudo apt-get install --yes \
+_sudo apt-get update --yes
+_sudo apt-get remove --yes fzf ## fzf is installed later
+_sudo apt-get install --yes \
     apt-transport-https apt-utils atool bash-completion bc bind9-dnsutils btop \
     build-essential ca-certificates cifs-utils curl dialog direnv ed entr \
     fd-find figlet gh git htop httpie iputils-ping jq less \
@@ -34,14 +50,14 @@ _log _sudo apt-get install --yes \
 
 {{ if .is_macos }}
 if ! _have /opt/homebrew/bin/brew; then
-    _log /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    _log source <(/opt/homebrew/bin/brew shellenv)
-    _log brew install ansible ripgrep yq jq yabai zsh-completions ranger watchman fnm exa entr bash bash-completion@2
+    _log "Installing homebrew" /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    _log "Sourcing homebrew environment" source <(/opt/homebrew/bin/brew shellenv)
+    _log "Install brew packages" brew install ansible ripgrep yq jq yabai zsh-completions ranger watchman fnm exa entr bash bash-completion@2
 fi
 {{ end }}
 
 {{ if .is_arch }}
-_log _sudo pacman --sync --refresh --needed --noconfirm \
+_sudo pacman --sync --refresh --needed --noconfirm \
     ansible-core bash-completion bc btop curl entr fd gcc git github-cli httpie jq \
     pandoc shellcheck patch pkgconf python ranger ripgrep tig \
     {{ if .workstation -}} gvim {{ else }} vim {{- end }} tmux yq zip zsh
@@ -49,6 +65,6 @@ _log _sudo pacman --sync --refresh --needed --noconfirm \
 
 if ! _have fdfind; then
     if _have fd; then
-        _log ln -sf "$(command -v fd)" "${HOME}/.local/bin/fdfind"
+        _log "Creating fdfind symlink" ln -sf "$(command -v fd)" "${HOME}/.local/bin/fdfind"
     fi
 fi
