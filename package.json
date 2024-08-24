@@ -4,7 +4,9 @@
 	"scripts": {
 		"commit": "changeset",
 		"changeset": "changeset --no-git-commit",
+		"prettier": "prettier --write \"**/*.{md,yaml,json}\"",
 		"release": "changeset publish",
+		"version-packages": "changeset version && npm run prettier",
 		"publish": "changeset version --no-git-tag"
 	},
 	"devDependencies": {

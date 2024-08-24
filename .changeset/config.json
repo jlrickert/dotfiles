@@ -1,7 +1,12 @@
 {
 	"$schema": "https://unpkg.com/@changesets/config@3.0.2/schema.json",
-	"changelog": "@changesets/cli/changelog-git",
-	"commit": true,
+	"changelog": [
+		"@changesets/cli/changelog-github",
+		{
+			"repo": "jlrickert/dotfiles"
+		}
+	],
+	"commit": false,
 	"fixed": [],
 	"linked": [],
 	"access": "restricted",
