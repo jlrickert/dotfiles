@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+PROJECT_ROOT=$(realpath "$SCRIPT_DIR/..")
+
+docker run -it --rm \
+	--mount "type=bind,source=${PROJECT_ROOT},target=/root/dotfiles" \
+	--workdir "/root" \
+	dotfiles-ubuntu "$@"
