@@ -6,7 +6,7 @@
 			"repo": "jlrickert/dotfiles"
 		}
 	],
-	"commit": true,
+	"commit": false,
 	"fixed": [],
 	"linked": [],
 	"access": "restricted",
