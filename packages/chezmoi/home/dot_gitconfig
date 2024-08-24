@@ -1,0 +1,61 @@
+[user]
+	email = jaredrickert52@gmail.com
+	name = Jared Rickert
+
+[core]
+	editor = nvim
+	autocrlf = input
+
+[color]
+	branch = auto
+	diff = auto
+	status = auto
+
+[color "branch"]
+	current = red reverse
+	local = blue
+	remote = green
+
+[color "diff"]
+	meta = yellow
+	frag = magenta
+	old = red bold
+	new = green
+	plain = white
+
+[push]
+	default = current
+
+[pull]
+	default = current
+
+[includeIf "gitdir:~/work/"]
+	path = ~/work/.gitconfig
+
+[includeIf "gitdir:~/repos/bitbucket.org/ecw-devel/"]
+	path = ~/repos/bitbucket.org/ecw-devel/.gitconfig
+
+[includeIf "gitdir:/Volumes/"]
+	path = ~/Volumes/.gitconfig
+
+[init]
+	defaultBranch = main
+
+[alias]
+	st = status
+	stat = status
+	cm = commit -m
+	cma = commit -a -m
+	amend = commit --amend
+	caa = commit -a --amend -C HEAD
+	filelog = log -u
+	fl = log -u
+	ch = checkout
+
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[gpg]
+	format = openpgp
