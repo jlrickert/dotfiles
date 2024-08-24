@@ -1,0 +1,5 @@
+---
+"neovim": patch
+---
+
+Bump dependencies
