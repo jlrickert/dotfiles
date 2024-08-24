@@ -1,0 +1,16 @@
+proseWrap: never
+printWidth: 120
+useTabs: true
+tabWidth: 4
+overrides:
+  - files: ["**/*.yml", "**/*.yaml"]
+    options:
+      tabWidth: 2
+      useTabs: false
+      parser: yaml
+  - files: "**/*.md"
+    options:
+      tabWidth: 2
+      useTabs: false
+      parser: markdown
+

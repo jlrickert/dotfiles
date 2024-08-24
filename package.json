@@ -1,0 +1,14 @@
+{
+	"name": "@jlrickert/dotfiles",
+	"private": true,
+	"scripts": {
+		"commit": "changeset",
+		"changeset": "changeset --no-git-commit",
+		"release": "changeset publish",
+		"publish": "changeset version --no-git-tag"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.27.7",
+		"prettier": "^3.3.3"
+	}
+}

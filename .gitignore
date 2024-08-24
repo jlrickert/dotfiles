@@ -1,0 +1,11 @@
+node_modules
+.config/nvim/spell/
+.vagrant
+venv
+.DS_Store
+.config/Code/
+!.config/Code/User/settings.json
+!.config/Code/User/keybindings.json
+home/.config/nvim/plugin/packer_compiled.lua
+vault.key
+home/.config/gh/hosts.yml
