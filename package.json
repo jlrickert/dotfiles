@@ -1,13 +1,14 @@
 {
-	"name": "@jlrickert/dotfiles",
+	"name": "dotfiles",
+	"version": "0.0.0",
 	"private": true,
 	"scripts": {
 		"commit": "changeset",
-		"changeset": "changeset --no-git-commit",
+		"changeset": "changeset",
 		"prettier": "prettier --write \"**/*.{md,yaml,json}\"",
 		"release": "changeset publish",
 		"version-packages": "changeset version && npm run prettier",
-		"publish": "changeset version --no-git-tag"
+		"publish": "changeset publish"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.27.7",

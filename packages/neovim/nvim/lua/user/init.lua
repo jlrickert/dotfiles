@@ -1,0 +1,15 @@
+require("user.options")
+require("user.lazy")
+
+require("user.chezmoi")
+require("user.edit_text")
+require("user.format_on_save")
+require("user.highlight_yank")
+require("user.keymaps")
+require("user.rotate_windows")
+require("user.toggle_diagnostics")
+require("user.toggle_eslint")
+-- require("backups")
+
+local keg = require("user.keg")
+keg.setup()
