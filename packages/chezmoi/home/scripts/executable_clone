@@ -1,0 +1,25 @@
+#!/bin/bash
+
+clone() {
+  local repo="$1" user
+  local repo="${repo#https://github.com/}"
+  local repo="${repo#git@github.com:}"
+  if [[ $repo =~ / ]]; then
+    user="${repo%%/*}"
+  else
+    user="$GITUSER"
+    [[ -z "$user" ]] && user="$USER"
+  fi
+  local name="${repo##*/}"
+  local userd="${REPOS:-$HOME/repos}/github.com/$user"
+  local path="$userd/$name"
+  [[ -d "$path" ]] && cd "$path" && return
+  mkdir -p "$userd"
+  cd "$userd" || return
+  echo gh repo clone "$user/$name" -- --recurse-submodule
+  gh repo clone "$user/$name" -- --recurse-submodule
+  cd "$name" || return
+}
+
+clone "$1"
+

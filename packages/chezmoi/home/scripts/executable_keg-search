@@ -1,0 +1,11 @@
+#!/usr/bin/env -S deno run --allow-read --allow-write --allow-env --ext=ts
+
+import x from "npm:@jlrickert/knutjs-core@0.4.0";
+
+const main = async () => {
+  // const knut = await Knut.fromBackend();
+  // const list = await knut.getKegList();
+  console.log(x);
+};
+
+await main();

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if test -n "${COMP_LINE}"; then
+pre="${COMP_LINE##* }"
+for c in ${cmds:+${cmds} dev prod}; do
+test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+done
+exit
+fi
+
+kitten icat "$@"

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+exec gh issue list "$@"
+

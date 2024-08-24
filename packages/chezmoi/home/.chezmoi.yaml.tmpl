@@ -1,0 +1,15 @@
+{{- $email               := promptStringOnce . "email" "Email address" -}}
+{{- $name                := promptStringOnce . "name" "Full name" -}}
+{{- $openai_token        := promptStringOnce . "openai_token" "Chat GPT token" -}}
+{{- $openweather_key     := promptStringOnce . "openweather_key" "Open weather api key" -}}
+{{- $openweather_city_id := promptStringOnce . "openweather_city_id" "Open weather city id" -}}
+{{- $npm_token           := promptStringOnce . "npm_token" "NPM token" -}}
+mode: symlink
+data:
+  chezmoi_managed: "Managed by chezmoi"
+  name: {{ $name | quote }}
+  email: {{ $email | quote }}
+  openai_token: {{ $openai_token | quote }}
+  openweather_key: {{ $openweather_key | quote }}
+  openweather_city_id: {{ $openweather_city_id | quote }}
+  npm_token: {{ $npm_token | quote }}

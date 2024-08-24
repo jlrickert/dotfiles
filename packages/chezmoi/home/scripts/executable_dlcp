@@ -1,0 +1,36 @@
+#!/bin/bash
+DOWNLOAD_DIR="${HOME}/Downloads"
+
+_cp() {
+    cp "${DOWNLOAD_DIR}/$1" "$2"
+}
+
+_list() {
+    cd "${DOWNLOAD_DIR}" || exit 1
+    find . -d 1 -exec printf "%s\n" {} +
+    # find . -d 1 -exec printf '"%s" ' {} +
+    # find . -d 1 -exec echo '{}' +
+}
+
+# ---------------------- bash completion context ---------------------
+
+# add `complete -S dlcp dlcp` to bashrc or zshrc
+
+cmds="list"
+if test -n "${COMP_LINE}"; then
+    pre="${COMP_LINE##* }"
+    for c in ${cmds:+${cmds} $(_list)}; do
+        test -z "${pre}" -o "${c}" != "${c#${pre}}" && echo "$c"
+    done
+    exit
+fi
+
+# ------------------------------- main -------------------------------
+
+cmd="${1}"
+test ${#} -gt 0 && shift
+
+case "$cmd" in
+ls | list) list "$@" ;;
+*) _cp "$cmd" "$@" ;;
+esac

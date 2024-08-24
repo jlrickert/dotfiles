@@ -1,0 +1,279 @@
+#!/usr/bin/env bash
+# ku or keg utils
+
+set -e
+
+filtered_list() {
+	TAGS_INDEX="$(pwd)/dex/tags"
+	tag=$1
+	awk "/^${tag} / {for (i=2; i<=NF; i++) print \$i}" "${TAGS_INDEX}" | while IFS= read -r id; do
+		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
+		echo "${id} ${title}"
+	done
+}
+
+list() {
+	tag=$1
+	if [ ! "${tag}" = "" ]; then
+		filtered_list "$@"
+		return
+	fi
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1 " " $3}' {} +
+}
+
+tags() {
+	tag="$1"
+	TAGS_INDEX="$(pwd)/dex/tags"
+	if [ "${tag}" = "" ]; then
+		awk '{print $1}' "${TAGS_INDEX}"
+		return
+	fi
+	awk "/^${tag} / {for (i=2; i<=NF; i++) print \$i}" "${TAGS_INDEX}" | while IFS= read -r id; do
+		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
+		echo "${id} ${title}"
+	done
+}
+
+nodes() {
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
+}
+
+backlinks() {
+	id="$1"
+	idlist=$(rg --glob '*/README.md' --files-with-matches "\[.*\]\((\.\./${id}|keg:.*/${id})\)|\[\]\:\.\.${id}$" | awk -F'/' '{print $1}')
+	for id in ${idlist}; do
+		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
+		echo "${id} ${title}"
+	done
+}
+
+title() {
+	HEADER="$(cat "docs/${1}/README")"
+	HEADER="${HEADER:2}"
+	echo "${HEADER}"
+}
+
+titles() {
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print "docs/"$1"/README.md:1:"$3}' {} +
+}
+
+search() {
+	rg \
+		--line-number \
+		--files-with-matches \
+		--no-heading \
+		--smart-case \
+		--glob "[0-9]*/README.md" \
+		"$@" | grep -o -E '[0-9]+'
+}
+
+search-qf() {
+	rg \
+		--line-number \
+		--files-with-matches \
+		--no-heading \
+		--smart-case \
+		--glob "docs/**/README.md" \
+		"$@" | awk '{ cmd = "head -n 1 " $1; cmd | getline $2; close(cmd); print $1":1:"$2}'
+}
+
+index() {
+	TAGS_INDEX="$(pwd)/dex/tags"
+	[ -f "${TAGS_INDEX}" ] && rm "${TAGS_INDEX}"
+
+	tmp_file=$(mktemp)
+	trap 'rm -f "${tmp_file}"' EXIT
+
+	while IFS= read -r id; do
+		local meta_file="${id}/meta.yaml"
+		if [ ! -f "${meta_file}" ]; then
+			echo "untagged ${id}" >>"${tmp_file}"
+			continue
+		fi
+		yq -r '.tags[] // "untagged"' "${meta_file}" | while IFS= read -r tag; do
+			echo "${tag} ${id}" >>"${tmp_file}"
+		done
+	done < <(ku nodes)
+
+	# Write sorted entries to file
+	sort -u "${tmp_file}" | awk '
+	{
+		arr[$1] = arr[$1] ? arr[$1] " " $2 : $2;
+	}
+	END {
+		for (key in arr) {
+			print key, arr[key]
+		}
+	}' >"${TAGS_INDEX}"
+	rm "${tmp_file}"
+
+	keg index update
+}
+
+changes() {
+	CHANGES_INDEX="$(pwd)/dex/changes.md"
+}
+
+fzf() {
+	ku nodes | _keg-node-complete "$@"
+	# RG_PREFIX='ku search'
+	# INITIAL_QUERY=""
+	# # shellcheck disable=SC2034
+	# FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
+	#     --bind "change:reload:$RG_PREFIX {q} || true" \
+	#     --sort \
+	#     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
+	#     --height=100% \
+	#     --width=80% \
+	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
+	#
+	# FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
+	#     --bind "change:reload:$RG_PREFIX {q} || true" \
+	#     --sort \
+	#     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
+	#     --height=100% \
+	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
+}
+
+update_tags() {
+	TAGS_INDEX="$(pwd)/dex/tags"
+	[ -f "${TAGS_INDEX}" ] && rm "${TAGS_INDEX}"
+
+	tmp_file=$(mktemp)
+	trap 'rm -f "${tmp_file}"' EXIT
+
+	while IFS= read -r id; do
+		local meta_file="${id}/meta.yaml"
+		if [ ! -f "${meta_file}" ]; then
+			continue
+		fi
+		yq -r '.tags[]' "${meta_file}" | while IFS= read -r tag; do
+			echo "${tag} ${id}" >>"${tmp_file}"
+		done
+	done < <(ku nodes)
+
+	# Write sorted entries to file
+	sort -u "${tmp_file}" | awk '
+	{
+		arr[$1] = arr[$1] ? arr[$1] " " $2 : $2;
+	}
+	END {
+		for (key in arr) {
+			print key, arr[key]
+		}
+	}' >"${TAGS_INDEX}"
+	sort -o "${TAGS_INDEX}" "${TAGS_INDEX}"
+}
+
+update() {
+	git pull
+	if [ -f "update.sh" ]; then
+		./update.sh "$@"
+	fi
+}
+
+publish() {
+	if [ -f "update.sh" ]; then
+		./update.sh "$@"
+	fi
+	keg publish
+}
+
+help() {
+	echo ""
+}
+
+# ensure we are in a keg
+keg current &>/dev/null || exit 1
+
+KEG_CURRENT="${KEG_CURRENT:-$(git rev-parse --show-toplevel &>/dev/null || echo '')}"
+cd "${KEG_CURRENT}" || exit 1
+
+# keg doesn't handle the context as expected.  Let keg refigure it out from here
+KEG_CURRENT=''
+
+# ensure we are in a keg
+keg current &>/dev/null || exit 1
+
+######################### Tab Completion Context ########################
+if test -n "${COMP_LINE}"; then
+	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
+	pre="$(printf "%s" "${COMP_LINE}" | awk '{for(i=3; i<=NF; i++) printf $i" "; print ""}')"
+	case "${cmd}" in
+	cat | changes | edit | view | title | link | backlinks)
+		nodes
+		exit 0
+		;;
+	keg)
+		COMP_LINE="${pre}" keg
+		exit 0
+		;;
+	tags)
+		tags
+		exit 0
+		;;
+	*)
+		for cmd in backlinks build cat create deploy edit fzf git grep help index keg link list nodes publish pwd rg search sync tags titles update view; do
+			[[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
+		done
+		exit 0
+		;;
+	esac
+fi
+
+###################### Regular Context Delegation ######################
+
+CMD="$(echo "$@" | awk '{print $1}')"
+shift
+
+case "${CMD}" in
+e | edit) keg edit "$@" ;;
+v | view) keg view "$@" ;;
+k | keg) keg "$@" ;;
+c | create) keg c "$@" ;;
+b | build) make -f "${XDG_CONFIG_HOME:-$HOME/.config}/ku/makefile" "$@" ;;
+d | deploy) ./deploy "$@" ;;
+p | publish) publish "$@" ;;
+u | update) update "$@" ;;
+i | index) index ;;
+cat) for x in "$@"; do cat "$x/README.md"; done ;;
+changes) changes "$@" ;;
+backlinks) backlinks "$@" ;;
+tags) tags "$@" ;;
+list) list "$@" ;;
+nodes) nodes "$@" ;;
+title) title "$@" ;;
+titles) titles "$@" ;;
+search) search "$@" ;;
+rg) rg --glob="*.md" "$@" ;;
+qf-search) search-qf "$@" ;;
+sync) git pull "$@" ;;
+l | link) keg link "$@" ;;
+git) git "$@" ;;
+grep)
+	files=()
+	while IFS= read -r line; do
+		files+=("$line")
+	done < <(rg -l --glob='[0-9]*/README.md' "$@")
+
+	for ((i = 0; i < ${#files[@]}; i++)); do
+		file="${files[$i]}"
+		dir="$(dirname "${file}")"
+		title="$(head -n 1 "${file}" | sed 's/^# //')"
+		echo "${dir} ${title}"
+		rg --glob='README.md' "$@" "$file"
+		if ((i < ${#files[@]} - 1)); then
+			echo
+		fi
+		IFS=' '
+	done
+	;;
+pwd)
+	if [ "$#" -gt 0 ]; then
+		cd "$@"
+	fi
+	pwd
+	;;
+fzf) zets "$@" ;;
+*) keg edit "$CMD" ;;
+esac
