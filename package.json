@@ -11,6 +11,8 @@
 		"publish": "changeset publish"
 	},
 	"devDependencies": {
+		"@actions/core": "^1.10.1",
+		"@actions/github": "^6.0.0",
 		"@changesets/changelog-git": "^0.2.0",
 		"@changesets/cli": "^2.27.7",
 		"prettier": "^3.3.3"
