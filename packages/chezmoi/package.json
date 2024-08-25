@@ -8,8 +8,12 @@
 		"noevim"
 	],
 	"files": [
-		"."
+		"./dist"
 	],
+	"scripts": {
+		"build": "./build.sh chezmoi",
+		"prepublishOnly": "pnpm run build"
+	},
 	"author": "Jared Rickert <jaredrickert52@gmail.com>",
 	"license": "MIT"
 }

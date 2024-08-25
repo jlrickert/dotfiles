@@ -12,6 +12,11 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
+      - name: install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
       - name: Checkout Repo
         uses: actions/checkout@v4
 
@@ -37,17 +42,17 @@ jobs:
           # for your packages and calls changeset publish
           version: pnpm run version-packages
           publish: pnpm run publish
-          createGithubReleases: false
+          # createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Release packages
-        # if: steps.changesets.outputs.hasChangesets == 'false'
-        # Set environment variables for the script
-        env:
-          PUBLISHED: ${{ steps.changesets.outputs.published }}
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
-          HAS_CHANGESETS: ${{ steps.changesets.outputs.hasChangesets }}
-          PULL_REQUEST_NUMBER: ${{ steps.changesets.outputs.pullRequestNumber }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node ./lib/release.mjs
+      # - name: Release packages
+      #   # if: steps.changesets.outputs.isPublished == 'false'
+      #   # Set environment variables for the script
+      #   env:
+      #     PUBLISHED: ${{ steps.changesets.outputs.published }}
+      #     PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+      #     HAS_CHANGESETS: ${{ steps.changesets.outputs.hasChangesets }}
+      #     PULL_REQUEST_NUMBER: ${{ steps.changesets.outputs.pullRequestNumber }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: node ./lib/release.mjs
