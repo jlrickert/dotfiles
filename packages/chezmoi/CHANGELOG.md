@@ -1,5 +1,11 @@
 # chezmoi
 
+## 0.2.0
+
+### Minor Changes
+
+- b3ad301: Add in install script
+
 ## 0.1.0
 
 ### Minor Changes
