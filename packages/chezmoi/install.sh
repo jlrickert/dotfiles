@@ -12,6 +12,7 @@ CHEZMOI_BIN=$(command -v chezmoi || echo ~/.local/bin/chezmoi)
 # Installs chezmoi to ~/.local/bin/chezmoi if it doesn't exist
 if [[ ! -x "${CHEZMOI_BIN}" ]]; then
 	sh -c "$(curl -fsLS get.chezmoi.io/lb)"
+	CHEZMOI_BIN="${HOME}/.local/bin/chezmoi"
 fi
 
-"${CHEZMOI_BIN}" init --apply --source "${PROJECT_DIR}" "$@"
+"${CHEZMOI_BIN}" init --apply --source "${PROJECT_DIR}" --destination "${HOME}/.local/share/dotfiles" "$@"

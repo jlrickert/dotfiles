@@ -28,9 +28,12 @@ Use `pnpm`
 >
 > Requires docker
 
+Quick get up and running in a docker environment
+
 ```bash
-./scripts/docker-build.sh
-./scripts/docker-start.sh
+./scripts/ubuntu-build.sh
+./scripts/ubuntu-start.sh
+./packages/chezmoi/install.sh
 ```
 
 ```bash
