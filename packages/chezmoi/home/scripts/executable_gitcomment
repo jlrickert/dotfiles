@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+buf="Create a git comment wrapped at 80 using conventional comments with no scope. Do not out markdown. Keep it brief. This is my diff:\n\n$(git diff --cached)\n\n"$'\n'$(</dev/stdin)
+gpt --raw "$@" <<<"${buf}"

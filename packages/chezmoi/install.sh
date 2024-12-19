@@ -6,13 +6,11 @@ set -o pipefail # exit if no-zero status code is returned in a pipeline
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 PROJECT_DIR=$(cd "${SCRIPT_DIR}/../.." &>/dev/null && pwd)
-
-CHEZMOI_BIN=$(command -v chezmoi || echo ~/.local/bin/chezmoi)
+CHEZMOI_BIN="${HOME}/.local/bin/chezmoi"
 
 # Installs chezmoi to ~/.local/bin/chezmoi if it doesn't exist
 if [[ ! -x "${CHEZMOI_BIN}" ]]; then
 	sh -c "$(curl -fsLS get.chezmoi.io/lb)"
-	CHEZMOI_BIN="${HOME}/.local/bin/chezmoi"
 fi
 
 "${CHEZMOI_BIN}" init --apply --source "${PROJECT_DIR}" --destination "${HOME}/.local/share/dotfiles" "$@"

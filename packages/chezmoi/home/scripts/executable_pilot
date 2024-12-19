@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+buf='Create code. Do not comment on it. no markdown. Do document the functions using docblock if they are public functions'
+if [ ! -t 0 ]; then
+	buf="${buf}"$'\n'$(cat)
+fi
+
+gpt --raw --role code "$@" <<<"${buf}"

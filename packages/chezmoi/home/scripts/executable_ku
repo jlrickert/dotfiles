@@ -8,7 +8,7 @@ filtered_list() {
 	tag=$1
 	awk "/^${tag} / {for (i=2; i<=NF; i++) print \$i}" "${TAGS_INDEX}" | while IFS= read -r id; do
 		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
-		echo "${id} ${title}"
+		printf "%s\t%s\n" "${id}" "${title}"
 	done
 }
 
@@ -18,7 +18,7 @@ list() {
 		filtered_list "$@"
 		return
 	fi
-	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1 " " $3}' {} +
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1 " \t " $3}' {} +
 }
 
 tags() {
@@ -30,8 +30,8 @@ tags() {
 	fi
 	awk "/^${tag} / {for (i=2; i<=NF; i++) print \$i}" "${TAGS_INDEX}" | while IFS= read -r id; do
 		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
-		echo "${id} ${title}"
-	done
+		printf "%s\t%s\n" "${id}" "${title}"
+	done | sort --numeric-sort
 }
 
 nodes() {
@@ -39,12 +39,26 @@ nodes() {
 }
 
 backlinks() {
-	id="$1"
-	idlist=$(rg --glob '*/README.md' --files-with-matches "\[.*\]\((\.\./${id}|keg:.*/${id})\)|\[\]\:\.\.${id}$" | awk -F'/' '{print $1}')
+	# Initialize an empty pattern string
+	local idl="("
+
+	# Loop through each argument and append to the pattern with pipe separation
+	for arg in "$@"; do
+		# Append the current argument to the pattern, prefixed with a pipe if needed
+		if [ "$idl" != "(" ]; then
+			idl+="|"
+		fi
+		idl+="${arg}"
+	done
+
+	# Close the pattern with parenthesis
+	idl+=")"
+
+	idlist=$(rg --glob '*/README.md' --files-with-matches "\[.*\]\((\.\./${idl}|keg:.*/${idl})\)|\[\]\:\.\.${idl}$" | awk -F'/' '{print $1}')
 	for id in ${idlist}; do
 		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
-		echo "${id} ${title}"
-	done
+		printf "%s\t%s\n" "${id}" "${title}"
+	done | sort -u
 }
 
 title() {
@@ -213,7 +227,7 @@ if test -n "${COMP_LINE}"; then
 		exit 0
 		;;
 	*)
-		for cmd in backlinks build cat create deploy edit fzf git grep help index keg link list nodes publish pwd rg search sync tags titles update view; do
+		for cmd in backlinks build cat cd chat create deploy edit fzf git grep help index keg link list nodes publish pwd rg search sync tags titles update view; do
 			[[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
 		done
 		exit 0
@@ -231,12 +245,48 @@ e | edit) keg edit "$@" ;;
 v | view) keg view "$@" ;;
 k | keg) keg "$@" ;;
 c | create) keg c "$@" ;;
+chat)
+	if [ ! -t 0 ]; then
+		gpt "$@" <<<$'\n'"$(buf)"
+	else
+		gpt "$@" <<<"$(buf)"
+	fi
+	exit
+	;;
 b | build) make -f "${XDG_CONFIG_HOME:-$HOME/.config}/ku/makefile" "$@" ;;
 d | deploy) ./deploy "$@" ;;
 p | publish) publish "$@" ;;
 u | update) update "$@" ;;
 i | index) index ;;
-cat) for x in "$@"; do cat "$x/README.md"; done ;;
+cat)
+	declare -a lines
+	if [ ! -t 0 ]; then
+		lines=()
+		while IFS=$'\n' read -r line; do
+			first_word=$(echo "$line" | awk '{print $1}')
+			lines+=("$first_word")
+		done
+	fi
+	for arg in "$@"; do
+		lines+=("$arg")
+	done
+
+	nodes=$(echo "${lines[@]}" | tr -s ' ' '\n' | sort -nu | tr '\n' ' ')
+
+	# shellcheck disable=SC2048
+	for x in ${nodes[*]}; do
+		echo "---"
+		echo ""
+		echo "Contents of keg node $x:"
+		echo ""
+		echo '```markdown'
+		cat "$x/README.md"
+		echo '```'
+	done
+	;;
+cd)
+	"${SHELL}"
+	;;
 changes) changes "$@" ;;
 backlinks) backlinks "$@" ;;
 tags) tags "$@" ;;
@@ -275,5 +325,16 @@ pwd)
 	pwd
 	;;
 fzf) zets "$@" ;;
-*) keg edit "$CMD" ;;
+*)
+	NODE=$CMD
+	SUB_CMD="$(echo "$@" | awk '{print $1}')"
+	if [[ "${SUB_CMD}" == "cd" ]]; then
+		cd "${NODE}" || exit 1
+		"${SHELL}"
+	elif [[ "${SUB_CMD}" == "edit" ]]; then
+		keg edit "${NODE}"
+	else
+		keg edit "${NODE}"
+	fi
+	;;
 esac
