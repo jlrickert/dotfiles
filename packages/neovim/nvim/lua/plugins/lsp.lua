@@ -16,7 +16,7 @@ return {
 			-- Install none-ls for diagnostics, code actions, and formatting
 			{
 				"nvimtools/none-ls.nvim",
-				dependencies = { "nvimtools/none-ls-extras.nvim" }
+				dependencies = { "nvimtools/none-ls-extras.nvim" },
 			},
 
 			-- Install neodev for better nvim configuration and plugin authoring via lsp configurations
@@ -26,7 +26,7 @@ return {
 			{ "j-hui/fidget.nvim", tag = "legacy" },
 		},
 		config = function()
-			local none_ls = require("null-ls")
+			local null_ls = require("null-ls")
 			local map_lsp_keybinds = require("user.keymaps").map_lsp_keybinds -- Has to load keymaps before pluginslsp
 
 			-- Use neodev to configure lua_ls in nvim directories - must load before lspconfig
@@ -42,6 +42,7 @@ return {
 			-- Configure mason to auto install servers
 			require("mason-lspconfig").setup({
 				automatic_installation = { exclude = { "ocamllsp" } },
+				ensure_installed = {},
 			})
 
 			-- Override tsserver diagnostics to filter out specific messages
@@ -81,11 +82,12 @@ return {
 				dockerls = {},
 				bashls = {},
 				dotls = {},
-				-- deno = {},
+				-- deno = {}, // configured below
 				-- clangd = {},
 				omnisharp = {},
-				eslint = {},
+				-- eslint = {},
 				cssls = {},
+				helm_ls = {},
 				gopls = {},
 				graphql = {},
 				html = {},
@@ -104,9 +106,10 @@ return {
 				pyright = {},
 				solidity = {},
 				sqlls = {},
-				phpactor = {},
+				-- phpactor = {},
+				intelephense = {},
 				mdx_analyzer = {},
-				ruff_lsp = {}, -- python lsp
+				ruff = {}, -- python lsp
 				taplo = {},
 				tailwindcss = {},
 				-- tsserver = {
@@ -126,10 +129,10 @@ return {
 				jsonls = {
 					settings = {
 						json = {
-							schemas = require('schemastore').json.schemas(),
+							schemas = require("schemastore").json.schemas(),
 							validate = { enable = true },
-						}
-					}
+						},
+					},
 				},
 				yamlls = {
 					settings = {
@@ -141,7 +144,7 @@ return {
 								-- Avoid TypeError: Cannot read properties of undefined (reading 'length')
 								url = "",
 							},
-							schemas = require('schemastore').yaml.schemas(),
+							schemas = require("schemastore").yaml.schemas(),
 						},
 					},
 				},
@@ -182,7 +185,7 @@ return {
 				-- end
 			end
 
-			local nvim_lsp = require('lspconfig')
+			local nvim_lsp = require("lspconfig")
 
 			-- Iterate over our servers and set them up
 			for name, config in pairs(servers) do
@@ -200,6 +203,7 @@ return {
 				capabilities = default_capabilities,
 				on_attach = on_attach,
 				root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc"),
+				single_file_support = true,
 				handlers = vim.tbl_deep_extend("force", {}, default_handlers, {}),
 				settings = {
 					deno = {
@@ -213,36 +217,33 @@ return {
 									["https://cdn.skypack.dev"] = true,
 								},
 							},
-						}
-					}
-				}
+						},
+					},
+				},
 			})
 
 			-- setup tsserver
-			nvim_lsp.tsserver.setup({
-				capabilities = default_capabilities,
-				on_attach = on_attach,
-				root_dir = nvim_lsp.util.root_pattern("package.json"),
-				single_file_support = false,
-				handlers = vim.tbl_deep_extend("force", {}, default_handlers, {
-					["textDocument/publishDiagnostics"] = vim.lsp.with(
-						tsserver_on_publish_diagnostics_override,
-						{}
-					),
-				}),
-				settings = {
-					experimental = {
-						enableProjectDiagnostics = true,
-					}
-				}
-			})
+			-- nvim_lsp.tsserver.setup({
+			-- 	capabilities = default_capabilities,
+			-- 	on_attach = on_attach,
+			-- 	root_dir = nvim_lsp.util.root_pattern("package.json"),
+			-- 	single_file_support = false,
+			-- 	handlers = vim.tbl_deep_extend("force", {}, default_handlers, {
+			-- 		["textDocument/publishDiagnostics"] = vim.lsp.with(tsserver_on_publish_diagnostics_override, {}),
+			-- 	}),
+			-- 	settings = {
+			-- 		experimental = {
+			-- 			enableProjectDiagnostics = true,
+			-- 		},
+			-- 	},
+			-- })
 
 			-- Congifure LSP linting, formatting, diagnostics, and code actions
-			local formatting = none_ls.builtins.formatting
-			local diagnostics = none_ls.builtins.diagnostics
-			local code_actions = none_ls.builtins.code_actions
+			local formatting = null_ls.builtins.formatting
+			local diagnostics = null_ls.builtins.diagnostics
+			local code_actions = null_ls.builtins.code_actions
 
-			none_ls.setup({
+			null_ls.setup({
 				border = "rounded",
 				sources = {
 					-- formatting
@@ -251,6 +252,28 @@ return {
 					formatting.ocamlformat,
 					formatting.shfmt,
 					formatting.sqlfluff,
+					code_actions.gitsigns,
+
+					-- PHP
+					formatting.pretty_php.with({
+						extra_args = { "-t" },
+					}),
+					diagnostics.phpstan,
+
+					-- Go
+					code_actions.gomodifytags,
+					code_actions.impl,
+
+					-- Markdown
+					-- FIXME: One of these may be causing python to segfault
+					-- diagnostics.proselint,
+					-- code_actions.proselint,
+					-- diagnostics.alex, -- catches bad language. Not useful
+
+					-- Ansible
+					diagnostics.ansiblelint,
+
+					diagnostics.zsh,
 
 					-- -- diagnostics
 					-- diagnostics.eslint_d.with({
