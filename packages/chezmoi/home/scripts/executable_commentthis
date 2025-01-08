@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+buf="Create a comment for this function wrapped at 100 preserving the initial indentation. Include the function immediately after with no blank line or commentary. Add square brackets around any symbol reference that could also have a comment except the function name itself. Keep it brief. Don not document how it does it. Comments should be a docblock for the appropriate programming language. For typescript don't put types in the comments as it is redundant"$'\n'$(cat)
+gpt --temp 0.3 --topp 0.85 --topk 20 --raw "$@" <<<"$buf"
