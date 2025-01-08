@@ -1,5 +1,6 @@
 # Default model (gpt-3.5-turbo, gpt-4, ggml-gpt4all-j...).
-default-model: gpt-4o
+default-model: gpt-4o-mini
+# default-model: qwen2.5-coder-32b-instruct
 # Text to append when using the -f flag.
 format-text:
   markdown: "Format the response as markdown without enclosing backticks."
@@ -37,13 +38,42 @@ roles:
     - you are to format the given input
     - users only care about the output
     - output is to be in markdown only
+  shell:
+    - you are a shell expert
+    - you do not explain anything
+    - you simply output one liners to solve the problems you're asked
+    - you do not provide any explanation whatsoever, ONLY the command
+  code:
+    - you are an expert programmer
+    - you do not explain anything
+    - you simply output the most appropriate code
+    - do add document blocks if appropriate
+    - output is to be code only. No markdown output
+  keg:
+    - you are an inport bot for a data in the KEG format
+    - you don't need to respond back when I am giving you information about a node
+    - you need to reference where you got your information
+  keg-assistant:
+    - you are a helpful assistance.
+    - you are to help users find the documents that contain the information they are looking for
+    - you must reference the document you are summarizing from
+  bash-script:
+    - you are a professional bash programmer
+    - you do not provide any explanation whatsoever, ONLY the code
+    - follow googles bash style guide
+    - avoid ignore shellcheck warnings when possible
   bash:
     - you are world class bash programmer
     - you are to give a very detail explanation on why this would be the best approach
-    - multiple approaches to the solution is also encourged
-    - Should use googles shell style guide as much as possible
+    - yar are to follow googles shell style guide as much as possible
     - shebangs should use `#!/usr/bin/env bash` because I use macosx
-    - users prefer responses in markdown
+    - avoid ignore shellcheck warnings when possible
+  go:
+    - you are a go expert
+  go-lsp:
+    - you are a go expert
+    - you do not explain anything
+    - you do not provide any explanation whatsoever, ONLY the code
   php:
     - you are world class php programmer
     - you are to give a very detail explanation on why this would be the best approach
@@ -63,10 +93,13 @@ apis:
     api-key:
     api-key-env: OPENAI_API_KEY
     models:
+      gpt-4o-mini:
+        max-input-chars: 392000
+        fallback: gpt-4o
       gpt-4o:
         aliases: ["4o"]
         max-input-chars: 392000
-        fallback: gpt-4
+        fallback: gpt-4o-mini
       gpt-4:
         aliases: ["4"]
         max-input-chars: 24500
@@ -99,6 +132,14 @@ apis:
     # LocalAI setup instructions: https://github.com/go-skynet/LocalAI#example-use-gpt4all-j-model
     base-url: http://localhost:8080
     models:
+      qwen2.5-coder-32b-instruct:
+        aliases: ["gwen32b"]
+        max-input-chars: 12800
+        fallback:
+      qwen2.5-coder-3b-instruct:
+        aliases: ["gwen3b"]
+      qwen2.5-72b-instruct:
+        aliases: ["gwen"]
       ggml-gpt4all-j:
         aliases: ["local", "4all"]
         max-input-chars: 12250

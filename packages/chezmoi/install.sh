@@ -14,3 +14,4 @@ if [[ ! -x "${CHEZMOI_BIN}" ]]; then
 fi
 
 "${CHEZMOI_BIN}" init --apply --source "${PROJECT_DIR}" --destination "${HOME}/.local/share/dotfiles" "$@"
+"${CHEZMOI_BIN}" apply --source "${PROJECT_DIR}" 

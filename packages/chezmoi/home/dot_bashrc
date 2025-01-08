@@ -32,7 +32,7 @@ _have nvim && export VISUAL=nvim
 _have vim && export EDITOR_PREFIX=vim
 #export CFLAGS="-Wall -Wextra -Werror -O0 -g -fsanitize=address -fno-omit-frame-pointer -finstrument-functions"
 
-export LESS="-R"
+# export LESS="-R"
 #export PAGER=""
 export MANPAGER="less -R --use-color -Dd+r -Du+b"
 
@@ -358,3 +358,7 @@ if [[ -d "${DOTFILES_CONFIG_HOME}/bash/includes" ]]; then
 		. "${file}"
 	done
 fi
+
+# The next line updates PATH for egcli command.
+if [ -f '/Users/jlrickert/Library/Group Containers/FELUD555VC.group.com.egnyte.DesktopApp/CLI/egcli.inc' ]; then . '/Users/jlrickert/Library/Group Containers/FELUD555VC.group.com.egnyte.DesktopApp/CLI/egcli.inc'; fi
+. "/Users/jlrickert/.local/share/deno/env"

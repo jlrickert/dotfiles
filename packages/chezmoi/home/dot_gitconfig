@@ -59,3 +59,20 @@
 	process = git-lfs filter-process
 [gpg]
 	format = openpgp
+[safe]
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/jaredr-labs.202410
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/jaredr-labs.202410
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/base-starling-11
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/base-starling-11
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/jaredr-labs.202410
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/jaredr-labs.202410
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/base-starling-11
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/base-starling-11
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/base-starling-11
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/base-starling-11
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/jaredr-labs.202410
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/jaredr-labs.202410
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/sackett.202407
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/sackett.202407
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/crouch-sales.202408
+	directory = /Users/jlrickert/repos/bitbucket.org/ecw-devel/crouch-sales.202408

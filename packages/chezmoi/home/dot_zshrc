@@ -10,7 +10,6 @@ ZSH_THEME=""
 plugins=(
 	command-not-found
 	cp
-	debian
 	direnv
 	docker
 	docker-compose
@@ -66,8 +65,10 @@ fi
 _source_if "${HOME}/tabtab/zsh/__tabtab.zsh"
 
 # bonzai style completions
-owncomp=(keg auth gocomplete chrome kn knp knw ku zet pomo dlcp qf regx sshkey vic tmpl build win mux ./build ppm wgkey)
-for i in "${owncomp[@]}"; do _have "$i" && complete -C "$i" "$i"; done
+owncomp=(./build auth dotz keg ${HOME}/scripts/*)
+for i in "${owncomp[@]}"; do 
+	_have "$(basename $i)" && complete -C "$i" "$i"
+done
 
 ##
 ## _source_if /opt/homebrew/opt/chruby/share/chruby/chruby.sh
@@ -76,6 +77,8 @@ for i in "${owncomp[@]}"; do _have "$i" && complete -C "$i" "$i"; done
 # _have flutter && source <(flutter zsh-completion)
 # _have podman && source <(podman completion zsh)
 _have kubectl && source <(kubectl completion zsh)
+_have gopass && source <(gopass completion bash)
+_have deno && source <(deno completions bash)
 # _have hugo && source <(hugo completion zsh) && compdef _hugo hugo
 # _have chezmoi && source <(chezmoi completion zsh)
 # _have k3s && source <(k3s completion zsh)
@@ -190,3 +193,7 @@ if [[ -d "${DOTFILES_CONFIG_HOME}/zsh/includes" ]]; then
 		. "${file}"
 	done
 fi
+
+# The next line updates PATH for egcli command.
+if [ -f '/Users/jlrickert/Library/Group Containers/FELUD555VC.group.com.egnyte.DesktopApp/CLI/egcli.inc' ]; then . '/Users/jlrickert/Library/Group Containers/FELUD555VC.group.com.egnyte.DesktopApp/CLI/egcli.inc'; fi
+. "/Users/jlrickert/.local/share/deno/env"

@@ -238,25 +238,25 @@ themes {
         black 0 0 0
         white 255 255 255
     }
- 	gruvbox-dark {
- 		fg "#d5c4a1"
- 		bg "#282828"
- 		black "#3c3836"
- 		red "#cc241d"
- 		green "#98971a"
- 		yellow "#d79921"
- 		blue "#3c8588"
- 		magenta "#b16286"
- 		cyan "#689d6a"
- 		white "#fbf1c7"
- 		orange "#d65d0e"
- 	}
+ 	// gruvbox-dark {
+ 	// 	fg "#d5c4a1"
+ 	// 	bg "#282828"
+ 	// 	black "#3c3836"
+ 	// 	red "#cc241d"
+ 	// 	green "#98971a"
+ 	// 	yellow "#d79921"
+ 	// 	blue "#3c8588"
+ 	// 	magenta "#b16286"
+ 	// 	cyan "#689d6a"
+ 	// 	white "#fbf1c7"
+ 	// 	orange "#d65d0e"
+ 	// }
 }
 
 // choose the theme that is specified in the themes section.
 // default: default
 //
-theme "default"
+theme "gruvbox-dark"
 
 // Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
 // eg. when terminal window with an active zellij session is closed
@@ -319,39 +319,39 @@ pane_frames true
 // For more examples, see: https://github.com/zellij-org/zellij/tree/main/example/themes
 // Once these themes are defined, one of them should to be selected in the "theme" section of this file
 //
-themes {
-    dracula {
-        fg 248 248 242
-        bg 40 42 54
-        red 255 85 85
-        green 80 250 123
-        yellow 241 250 140
-        blue 98 114 164
-        magenta 255 121 198
-        orange 255 184 108
-        cyan 139 233 253
-        black 0 0 0
-        white 255 255 255
-    }
- 	gruvbox-dark {
- 		fg "#d5c4a1"
- 		bg "#282828"
- 		black "#3c3836"
- 		red "#cc241d"
- 		green "#98971a"
- 		yellow "#d79921"
- 		blue "#3c8588"
- 		magenta "#b16286"
- 		cyan "#689d6a"
- 		white "#fbf1c7"
- 		orange "#d65d0e"
- 	}
-}
-
-// choose the theme that is specified in the themes section.
-// default: default
+// themes {
+//     dracula {
+//         fg 248 248 242
+//         bg 40 42 54
+//         red 255 85 85
+//         green 80 250 123
+//         yellow 241 250 140
+//         blue 98 114 164
+//         magenta 255 121 198
+//         orange 255 184 108
+//         cyan 139 233 253
+//         black 0 0 0
+//         white 255 255 255
+//     }
+//  	gruvbox-dark {
+//  		fg "#d5c4a1"
+//  		bg "#282828"
+//  		black "#3c3836"
+//  		red "#cc241d"
+//  		green "#98971a"
+//  		yellow "#d79921"
+//  		blue "#3c8588"
+//  		magenta "#b16286"
+//  		cyan "#689d6a"
+//  		white "#fbf1c7"
+//  		orange "#d65d0e"
+//  	}
+// }
 //
-theme "gruvbox-dark"
+// // choose the theme that is specified in the themes section.
+// // default: default
+// //
+// theme "gruvbox-dark"
 
 // The name of the default layout to load on startup
 // Default: "default"

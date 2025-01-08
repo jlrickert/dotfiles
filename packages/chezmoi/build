@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+PACKAGE=$1
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+PACKAGE_DIR="$(dirname "${SCRIPT_DIR}")/packages/${PACKAGE}"
+
+cd "${PACKAGE_DIR}" || exit
+
+VERSION=$(jq -r '.version' package.json)
+
+git archive \
+	--prefix="${PACKAGE}@${VERSION}" \
+	--format="tar.gz" \
+	--output "dist/${PACKAGE}@${VERSION}" \
+	.

@@ -50,6 +50,7 @@ export VIDEOS="${XDG_VIDEOS_DIR}"
 
 export BAT_THEME=gruvbox-dark
 export DENO_INSTALL="${XDG_DATA_HOME}/deno"
+export DENO_INSTALL_ROOT="${XDG_DATA_HOME}/deno/bin"
 export NVM_DIR="${XDG_DATA_HOME}/nvm"
 export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
 export CARGO_HOME="${XDG_DATA_HOME}/cargo"
@@ -116,6 +117,7 @@ _pathprepend \
 	"${HOME}/.local/bin" \
 	"${XDG_DATA_HOME}/flutter/bin" \
 	"${CARGO_HOME}/bin" \
+	"${DENO_INSTALL_ROOT}" \
 	"${FNM_HOME}" \
     "${HOME}/.config/emacs/bin" \
 	"${PNPM_HOME}" \
