@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
-buf="Create a git comment wrapped at 80 using conventional comments with no scope. Do not out markdown. Keep it brief. This is my diff:\n\n$(git diff --cached)\n\n"$'\n'$(</dev/stdin)
-gpt --raw "$@" <<<"${buf}"
+ROLE=git-commenter
+buf="$(printf "This is my diff:\n\n\`\`\`gitdiff\n%s\n\`\`\`" "$(git diff --cached)")"
+if [ ! -t 0 ]; then
+	buf="${buf}"$'\nadditional information:'$'\n'$'\n'$(cat)
+fi
+
+gpt --role "${ROLE}" --topk 20 --topp 0.85 --temp 0.3 --raw "$@" <<<"${buf}"

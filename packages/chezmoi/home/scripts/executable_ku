@@ -3,8 +3,22 @@
 
 set -e
 
+assistant() {
+	local API=openai
+	local MODEL=gpt-4o
+	local TEMP=0.3
+	local TOPP=0.85
+	local TOPK=20
+	# Check if any input is available
+	buf=""
+	if [ ! -t 0 ]; then
+		buf=$'\n'$(cat)
+	fi
+	mods --api ${API} --model ${MODEL} --temp ${TEMP} --topp ${TOPP} --topk ${TOPK} --continue "$(keg directory)" "$@" <<<"${buf}"
+}
+
 filtered_list() {
-	TAGS_INDEX="$(pwd)/dex/tags"
+	local TAGS_INDEX="${PWD}/dex/tags"
 	tag=$1
 	awk "/^${tag} / {for (i=2; i<=NF; i++) print \$i}" "${TAGS_INDEX}" | while IFS= read -r id; do
 		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
@@ -18,7 +32,7 @@ list() {
 		filtered_list "$@"
 		return
 	fi
-	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1 " \t " $3}' {} +
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1 "\t" $3}' {} +
 }
 
 tags() {
@@ -190,6 +204,10 @@ publish() {
 	if [ -f "update.sh" ]; then
 		./update.sh "$@"
 	fi
+
+	buf="$(zet pub cat 887 921)\n\nHere is my notes in the current KEG:\n\n$(list)"
+	echo -e "${buf}" | mods --api openai --role keg-assistant --model gpt-4o-mini --title "$(keg directory)--keg" "Keep this as a reference. No output at all" >/dev/null
+
 	keg publish
 }
 
@@ -227,7 +245,7 @@ if test -n "${COMP_LINE}"; then
 		exit 0
 		;;
 	*)
-		for cmd in backlinks build cat cd chat create deploy edit fzf git grep help index keg link list nodes publish pwd rg search sync tags titles update view; do
+		for cmd in assistant backlinks cat cd chat create deploy edit fzf git grep help index keg link list nodes publish pwd rg search sync tags titles update view; do
 			[[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
 		done
 		exit 0
@@ -241,19 +259,21 @@ CMD="$(echo "$@" | awk '{print $1}')"
 shift
 
 case "${CMD}" in
+a | assistant)
+	assistant "$@"
+	;;
 e | edit) keg edit "$@" ;;
 v | view) keg view "$@" ;;
 k | keg) keg "$@" ;;
 c | create) keg c "$@" ;;
 chat)
 	if [ ! -t 0 ]; then
-		gpt "$@" <<<$'\n'"$(buf)"
+		gpt "$@" <<<$'\n'"$(cat)"
 	else
-		gpt "$@" <<<"$(buf)"
+		gpt "$@"
 	fi
 	exit
 	;;
-b | build) make -f "${XDG_CONFIG_HOME:-$HOME/.config}/ku/makefile" "$@" ;;
 d | deploy) ./deploy "$@" ;;
 p | publish) publish "$@" ;;
 u | update) update "$@" ;;
@@ -277,10 +297,11 @@ cat)
 	for x in ${nodes[*]}; do
 		echo "---"
 		echo ""
-		echo "Contents of keg node $x:"
+		echo "Contents of keg node $(keg link "${x}"):"
 		echo ""
 		echo '```markdown'
-		cat "$x/README.md"
+		cat "${x}/README.md"
+		echo
 		echo '```'
 	done
 	;;

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+cd "$(keg directory)" || exit
+
+API=openai
+MODEL=gpt-4o-mini
+# Check if any input is available
+buf="Linkify the following contents with output only and no code fense:\n\n"
+if [ ! -t 0 ]; then
+	buf="${buf}\n\`\`\`\n$(cat)\n\`\`\`"
+fi
+echo -e "${buf}" | mods --role linkify --raw --continue "$(keg directory)--keg" --api "${API}" --model "${MODEL}" "$@"

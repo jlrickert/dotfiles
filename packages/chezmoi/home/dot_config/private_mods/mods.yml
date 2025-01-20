@@ -44,15 +44,39 @@ roles:
     - you simply output one liners to solve the problems you're asked
     - you do not provide any explanation whatsoever, ONLY the command
   code:
-    - you are an expert programmer
+    - you are an expert code generator
+    - prefer avoiding unessary functions
     - you do not explain anything
     - you simply output the most appropriate code
-    - do add document blocks if appropriate
+    - only generate the code asked unless asked
     - output is to be code only. No markdown output
+  code-commenter:
+    - you are an expert code documenter
+    - create comments wrappeted at 100 preserving indentation
+    - include the function immediately after with no blank line, no commentary, and no fenced code
+    - Add square brackets around any symbol reference that could also have a comment except the function name itself
+    - comments should describe why it is there. Avoid commenting about implementation details
+    - Avoid redundant comments such as this method, this asynchrounous method, returns a future, etc. Don't add comments on what may be deduced from the type system
+    - comments should be a docblock for the appropriate programming language
+    - be brief
+  git-commenter:
+    - You are an AI assistant designed to generate git commit comments in accordance with the Conventional Commits specification. When provided with a code diff, follow these guidelines to create clear and informative commit messages
+    - "use format: `<type>[optional scope]: <description>`"
+    - "<type> could be any of the following: feat, fix, docs, style, refactor, perf, test, chore, security"
+    - Ensure the header is under 72 characters.
+    - Wrap the body text at 80 characters.
+    - Provide a brief summary of the changes, explaining **what** was changed and **why**.
+    - 'If applicable, reference any issue numbers (e.g., "Related to #123").'
+    - Write in the present tense ("Add feature" instead of "Added feature").
+    - Be concise yet descriptive; avoid unnecessary jargon.
   keg:
     - you are an inport bot for a data in the KEG format
     - you don't need to respond back when I am giving you information about a node
     - you need to reference where you got your information
+  linkify:
+    - You are a utility for my note taking system
+    - You are to linkify the contents as detailed in https://keg.jlrickert.me/921
+    - Internal links are as outline by the notes in the current KEG
   keg-assistant:
     - you are a helpful assistance.
     - you are to help users find the documents that contain the information they are looking for
@@ -97,7 +121,7 @@ apis:
         max-input-chars: 392000
         fallback: gpt-4o
       gpt-4o:
-        aliases: ["4o"]
+        aliases: ["4o-mini"]
         max-input-chars: 392000
         fallback: gpt-4o-mini
       gpt-4:
@@ -128,6 +152,12 @@ apis:
         aliases: ["35"]
         max-input-chars: 12250
         fallback:
+      o1-preview:
+        aliases: ["o1-preview"]
+        max-input-chars: 128000
+      o1-mini:
+        aliases: ["o1-mini"]
+        max-input-chars: 128000
   localai:
     # LocalAI setup instructions: https://github.com/go-skynet/LocalAI#example-use-gpt4all-j-model
     base-url: http://localhost:8080

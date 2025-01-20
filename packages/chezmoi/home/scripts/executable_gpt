@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
 
 TITLE="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
-# Hack to fix work chatbot
-if [[ "${TITLE}" = "/Users/jlrickert/repos/bitbucket.org/jared52/zet" ]]; then
-	# TITLE=zet
-	TITLE=ecw
-fi
+API=openai
 MODEL=gpt-4o-mini
 # Check if any input is available
+buf=""
 if [ ! -t 0 ]; then
 	buf=$'\n'$(cat)
-else
-	buf=""
 fi
-if mods --api openai --model "${MODEL}" --list | grep -q "${TITLE}"; then
-	mods --api openai --model "${MODEL}" --continue "${TITLE}" "$@" <<<"${buf}"
+if mods --api "${API}" --model "${MODEL}" --list | grep -q "${TITLE}"; then
+	mods --api "${API}" --model "${MODEL}" --continue "${TITLE}" "$@" <<<"${buf}"
 else
-	mods --api openai --model "${MODEL}" --title "${TITLE}" "$@" <<<"${buf}"
+	mods --api "${API}" --model "${MODEL}" --title "${TITLE}" "$@" <<<"${buf}"
 fi
