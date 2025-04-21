@@ -2,11 +2,9 @@
 
 cd "$(keg directory)" || exit
 
-API=openai
-MODEL=gpt-4o-mini
 # Check if any input is available
-buf="Linkify the following contents with output only and no code fense:\n\n"
+buf="Linkify the following contents with output only and no code fense. Only add links to things that are in the current KEG:\n\n"
 if [ ! -t 0 ]; then
 	buf="${buf}\n\`\`\`\n$(cat)\n\`\`\`"
 fi
-echo -e "${buf}" | mods --role linkify --raw --continue "$(keg directory)--keg" --api "${API}" --model "${MODEL}" "$@"
+echo -e "${buf}" | mods --role keg-linkify --raw --continue "$(keg directory)-linkify" "$@"

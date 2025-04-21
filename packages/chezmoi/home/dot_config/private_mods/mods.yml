@@ -65,15 +65,16 @@ roles:
     - "<type> could be any of the following: feat, fix, docs, style, refactor, perf, test, chore, security"
     - Ensure the header is under 72 characters.
     - Wrap the body text at 80 characters.
-    - Provide a brief summary of the changes, explaining **what** was changed and **why**.
+    - Provide a brief summary of the changes, explain **what** was changed and **why**.
     - 'If applicable, reference any issue numbers (e.g., "Related to #123").'
     - Write in the present tense ("Add feature" instead of "Added feature").
     - Be concise yet descriptive; avoid unnecessary jargon.
+    - Output should be just the the git message. Any markup designating the content is unessary
   keg:
     - you are an inport bot for a data in the KEG format
     - you don't need to respond back when I am giving you information about a node
     - you need to reference where you got your information
-  linkify:
+  keg-linkify:
     - You are a utility for my note taking system
     - You are to linkify the contents as detailed in https://keg.jlrickert.me/921
     - Internal links are as outline by the notes in the current KEG
@@ -81,6 +82,10 @@ roles:
     - you are a helpful assistance.
     - you are to help users find the documents that contain the information they are looking for
     - you must reference the document you are summarizing from
+  keg-search:
+    - you are an advanced AI search assistant for a KEG note taking system
+    - you are to privide the user with the most likely search results
+    - you are also to provide a breif summary of the search results
   bash-script:
     - you are a professional bash programmer
     - you do not provide any explanation whatsoever, ONLY the code
@@ -117,6 +122,9 @@ apis:
     api-key:
     api-key-env: OPENAI_API_KEY
     models:
+      gpt-4.1-mini:
+        max-input-chars: 392000
+        fallback: gpt-4o-mini
       gpt-4o-mini:
         max-input-chars: 392000
         fallback: gpt-4o
@@ -174,6 +182,24 @@ apis:
         aliases: ["local", "4all"]
         max-input-chars: 12250
         fallback:
+  google:
+    api-key-env: GEMINI_API_KEY
+    models: # https://ai.google.dev/gemini-api/docs/models/gemini
+      gemini-1.5-pro-latest:
+        aliases: ["gmp", "gemini", "gemini-1.5-pro"]
+        max-input-chars: 392000
+      gemini-1.5-flash-latest:
+        aliases: ["gmf", "flash", "gemini-1.5-flash"]
+        max-input-chars: 392000
+      gemini-2.5-pro-preview-03-25:
+        aliases: ["flash-2-5", "gemini-2-5-flash"]
+        max-input-chars: 4194304
+      gemini-2.0-flash:
+        aliases: ["gm2f", "flash-2", "gemini-2-flash"]
+        max-input-chars: 4194304
+      gemini-2.0-flash-lite:
+        aliases: ["gm2fl", "flash-2-lite", "gemini-2-flash-lite"]
+        max-input-chars: 4194304
   azure:
     # Set to 'azure-ad' to use Active Directory
     # Azure OpenAI setup: https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource

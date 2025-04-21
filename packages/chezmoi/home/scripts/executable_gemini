@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-TITLE="$(git rev-parse --show-toplevel 2>/dev/null || pwd)-gpt"
-API=openai
-MODEL=gpt-4.1-mini
+TITLE="$(git rev-parse --show-toplevel 2>/dev/null || pwd)-gemini"
+API=google
+MODEL=gemini-2.0-flash
 # Check if any input is available
 buf=""
 if [ ! -t 0 ]; then
@@ -11,5 +11,5 @@ fi
 if mods --list | grep -q "${TITLE}"; then
 	mods --continue "${TITLE}" "$@" <<<"${buf}"
 else
-	mods --api "${API}" --model "${MODEL}" --title "${TITLE}" "$@" <<<"${buf}"
+	mods  --api "${API}" --model "${MODEL}" --title "${TITLE}" "$@" <<<"${buf}"
 fi

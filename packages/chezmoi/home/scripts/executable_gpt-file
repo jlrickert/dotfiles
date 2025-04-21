@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Script name: gpt-file
+
+# Description:
+# This script takes a list of files as arguments and sends them to a REST endpoint
+# if the file exists.
+
+if test -n "${COMP_LINE}"; then
+	n=$((COMP_CWORD + 1))
+	script=$(printf '{for(i=%s; i<=NF; i++) printf $i" "; print ""}' $n) 
+	pre="$(printf "%s" "${COMP_LINE}" | awk "${script}")"
+
+	if [ -n "${pre}" ]; then
+		fd .
+	else
+		fd --glob "*${pre}*"
+	fi
+	exit 0
+fi
+
+# Function to send a file to the REST endpoint
+send_file() {
+	if [ -f "$1" ]; then
+		gpt "This is the contents of file '${1}'. Keep this as a reference. No output" < "$1" >/dev/null
+		echo "File \"$1\" added to gemini"
+	else
+		echo "File ${1} is not a file"
+	fi
+}
+
+# Main script logic
+
+FILES="$@"
+if [ ! -t 0 ]; then
+	FILES="${FILES} $(cat)"
+fi
+
+# Check if any files were provided as arguments
+if [ -z "${FILES}" ]; then
+	echo "Usage: gpt-file file1 file2 file3 ..."
+	echo "       find . -name \"*.js\" | gemini-file"
+	exit 1
+fi
+
+for file in ${FILES}; do
+	send_file "$file"
+done
+
+exit 0

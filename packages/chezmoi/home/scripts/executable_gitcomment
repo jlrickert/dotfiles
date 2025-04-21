@@ -1,8 +1,26 @@
 #!/usr/bin/env bash
+
+# buf="$(printf "This is my diff:\n\n\`\`\`gitdiff\n%s\n\`\`\`" "$(git diff --cached)")"
+# if [ ! -t 0 ]; then
+# 	buf="${buf}"$'\nadditional information:'$'\n'$'\n'$(cat)
+# fi
+#
+# buf="${buf}"$'\n'"Write me a git comment. User conventional comments. Don't add a scope. Title should not exceed 72 characters. Body should be wrapped at 80 characters. Be very brief. Output only. No backticks"
+
+TITLE="$(git rev-parse --show-toplevel 2>/dev/null || pwd)-gemini-git"
+API=google
+MODEL=gemini-2.0-flash
 ROLE=git-commenter
+
 buf="$(printf "This is my diff:\n\n\`\`\`gitdiff\n%s\n\`\`\`" "$(git diff --cached)")"
 if [ ! -t 0 ]; then
-	buf="${buf}"$'\nadditional information:'$'\n'$'\n'$(cat)
+	buf="$(cat)\n\n${buf}"
 fi
 
-gpt --role "${ROLE}" --topk 20 --topp 0.85 --temp 0.3 --raw "$@" <<<"${buf}"
+# Check if any input is available
+if mods --list | grep -q "${TITLE}"; then
+	mods --continue "${TITLE}" --raw "$@" <<<"${buf}"
+else
+	# mods --api "${API}" --model "${MODEL}" --role "${ROLE}" --continue "${TITLE}" "Keep the following as a reference:\n\n\`\`\`md\n$(zet pub cat 936)\n\`\`\`\nNo Output." >/dev/null
+	mods --title "${TITLE}" --api "${API}" --model "${MODEL}" --role "${ROLE}" --topk 20 --topp 0.85 --temp 0.3 --raw "$@" <<<"${buf}"
+fi
