@@ -1,0 +1,422 @@
+#!/usr/bin/env bash
+# ku or keg utils
+
+set -e
+
+# API=openai
+# MODEL=gpt-4.1-mini
+API=google
+MODEL=gemini-2.5-flash-preview-04-17
+
+CONVO_TITLE_ASSISTANT="$(keg directory)--keg"
+CONVO_TITLE_LINKIFY="$(keg directory)--linkify"
+CONVO_TITLE_SEARCH="$(keg directory)--search"
+
+assistant() {
+	local TEMP=0.3
+	local TOPP=0.85
+	local TOPK=20
+	# Check if any input is available
+	buf=""
+	if [ ! -t 0 ]; then
+		buf="${buf}"$'\n'$'\n'$(cat)
+	fi
+	mods --raw -temp "${TEMP}" --topp "${TOPP}" --topk "${TOPK}" --continue "${CONVO_TITLE_ASSISTANT}" "$@" <<<"${buf}"
+}
+
+filtered_list() {
+	local TAGS_INDEX="${PWD}/dex/tags"
+	tag=$1
+	awk "/^${tag} / {for (i=2; i<=NF; i++) print \$i}" "${TAGS_INDEX}" | while IFS= read -r id; do
+		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
+		printf "%s\t%s\n" "${id}" "${title}"
+	done
+}
+
+list() {
+	tag=$1
+	if [ ! "${tag}" = "" ]; then
+		filtered_list "$@"
+		return
+	fi
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1 "\t" $3}' {} +
+}
+
+tags() {
+	tag="$1"
+	TAGS_INDEX="$(pwd)/dex/tags"
+	if [ "${tag}" = "" ]; then
+		awk '{print $1}' "${TAGS_INDEX}"
+		return
+	fi
+	awk "/^${tag} / {for (i=2; i<=NF; i++) print \$i}" "${TAGS_INDEX}" | while IFS= read -r id; do
+		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
+		printf "%s\t%s\n" "${id}" "${title}"
+	done | sort --numeric-sort
+}
+
+nodes() {
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
+}
+
+links() {
+	# list of note IDs
+	local idl="("
+
+	# Loop through each argument and append to the pattern with pipe separation
+	for arg in "$@"; do
+		# Append the current argument to the pattern, prefixed with a pipe if needed
+		if [ "$idl" != "(" ]; then
+			idl+="|"
+		fi
+		idl+="${arg}"
+	done
+
+	# Close the pattern with parenthesis
+	idl+=")"
+
+	# for id in ${idl}
+
+	# idlist=$(rg --glob '*/README.md' --files-with-matches "\[.*\]\((\.\./${idl}|keg:.*/${idl})\)|\[\]\:\.\.${idl}$" | awk -F'/' '{print $1}')
+	# idlist=$(cat | awk -F'/' '{print $1}')
+	# for id in ${idlist}; do
+	# 	title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
+	# 	printf "%s\t%s\n" "${id}" "${title}"
+	# done | sort -u
+}
+
+backlinks() {
+	# list of note IDs
+	local idl="("
+
+	# Loop through each argument and append to the pattern with pipe separation
+	for arg in "$@"; do
+		# Append the current argument to the pattern, prefixed with a pipe if needed
+		if [ "$idl" != "(" ]; then
+			idl+="|"
+		fi
+		idl+="${arg}"
+	done
+
+	# Close the pattern with parenthesis
+	idl+=")"
+
+	idlist=$(rg --glob '*/README.md' --files-with-matches "\[.*\]\((\.\./${idl}|keg:.*/${idl})\)|\[\]\:\.\.${idl}$" | awk -F'/' '{print $1}')
+	for id in ${idlist}; do
+		title=$(head -n 1 "${id}/README.md" | sed 's/^# //1')
+		printf "%s\t%s\n" "${id}" "${title}"
+	done | sort -u
+}
+
+title() {
+	HEADER="$(cat "docs/${1}/README")"
+	HEADER="${HEADER:2}"
+	echo "${HEADER}"
+}
+
+titles() {
+	find . -name "nodes.tsv" -exec awk -F'\t' '{print "docs/"$1"/README.md:1:"$3}' {} +
+}
+
+search() {
+	local TEMP=0.3
+	local TOPP=0.85
+	local TOPK=20
+	# Check if any input is available
+	buf=""
+	if [ ! -t 0 ]; then
+		buf="${buf}"$'\n'$'\n'$(cat)
+	fi
+	mods --raw --temp "${TEMP}" --topp "${TOPP}" --topk "${TOPK}" --continue "${CONVO_TITLE_SEARCH}" "$@" <<<"${buf}"
+}
+
+search-qf() {
+	rg \
+		--line-number \
+		--files-with-matches \
+		--no-heading \
+		--smart-case \
+		--glob "docs/**/README.md" \
+		"$@" | awk '{ cmd = "head -n 1 " $1; cmd | getline $2; close(cmd); print $1":1:"$2}'
+}
+
+retrain() {
+	index
+	# Setup keg assistant context
+	if mods --list | grep --quiet --fixed-string "${CONVO_TITLE_ASSISTANT}"; then
+		mods --delete "${CONVO_TITLE_ASSISTANT}"
+	fi
+	buf="$(zet pub cat 887 921)\n\nHere is my notes in the current KEG $(keg directory):\n\n$(list)"
+	echo -e "${buf}" | mods --api "${API}" --model "${MODEL}" --role keg-assistant --title "${CONVO_TITLE_ASSISTANT}" "Keep this as a reference. No output at all" >/dev/null
+
+	# Setup linkify context
+	if mods --list | grep --quiet --fixed-string "${CONVO_TITLE_LINKIFY}"; then
+		mods --delete "${CONVO_TITLE_LINKIFY}"
+	fi
+	buf="$(zet pub cat 887 921)\n\nHere is my notes in the current KEG $(keg directory):\n\n$(list)"
+	echo -e "${buf}" | mods --api "${API}" --model "${MODEL}" --role keg-linkify --title "${CONVO_TITLE_LINKIFY}" "Keep this as a reference. No output at all" >/dev/null
+
+	# Setup search context
+	if mods --list | grep --quiet --fixed-string "${CONVO_TITLE_SEARCH}"; then
+		mods --delete "${CONVO_TITLE_SEARCH}"
+	fi
+	buf="$(zet pub cat 887)\n\nHere is my notes in the current KEG $(keg directory):\n\n$(list)"
+	echo -e "${buf}" | mods --api "${API}" --model "${MODEL}" --role keg-search --title "${CONVO_TITLE_SEARCH}" "Keep this as a reference. No output at all" >/dev/null
+}
+
+index() {
+	keg index update
+	TAGS_INDEX="$(pwd)/dex/tags"
+	[ -f "${TAGS_INDEX}" ] && rm "${TAGS_INDEX}"
+
+	tmp_file=$(mktemp)
+	trap 'rm -f "${tmp_file}"' EXIT
+
+	while IFS= read -r id; do
+		local meta_file="${id}/meta.yaml"
+		if [ ! -f "${meta_file}" ]; then
+			echo "untagged ${id}" >>"${tmp_file}"
+			continue
+		fi
+		yq -r '.tags[] // "untagged"' "${meta_file}" | while IFS= read -r tag; do
+			echo "${tag} ${id}" >>"${tmp_file}"
+		done
+	done < <(ku nodes)
+
+	# Write sorted entries to file
+	sort -u "${tmp_file}" | awk '
+	{
+		arr[$1] = arr[$1] ? arr[$1] " " $2 : $2;
+	}
+	END {
+		for (key in arr) {
+			print key, arr[key]
+		}
+	}' >"${TAGS_INDEX}"
+	rm "${tmp_file}"
+
+	if [ -f "update.sh" ]; then
+		./update.sh "$@"
+	fi
+}
+
+changes() {
+	CHANGES_INDEX="$(pwd)/dex/changes.md"
+}
+
+fzf() {
+	ku nodes | _keg-node-complete "$@"
+	# RG_PREFIX='ku search'
+	# INITIAL_QUERY=""
+	# # shellcheck disable=SC2034
+	# FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
+	#     --bind "change:reload:$RG_PREFIX {q} || true" \
+	#     --sort \
+	#     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
+	#     --height=100% \
+	#     --width=80% \
+	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
+	#
+	# FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
+	#     --bind "change:reload:$RG_PREFIX {q} || true" \
+	#     --sort \
+	#     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
+	#     --height=100% \
+	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
+}
+
+update_tags() {
+	TAGS_INDEX="$(pwd)/dex/tags"
+	[ -f "${TAGS_INDEX}" ] && rm "${TAGS_INDEX}"
+
+	tmp_file=$(mktemp)
+	trap 'rm -f "${tmp_file}"' EXIT
+
+	while IFS= read -r id; do
+		local meta_file="${id}/meta.yaml"
+		if [ ! -f "${meta_file}" ]; then
+			continue
+		fi
+		yq -r '.tags[]' "${meta_file}" | while IFS= read -r tag; do
+			echo "${tag} ${id}" >>"${tmp_file}"
+		done
+	done < <(ku nodes)
+
+	# Write sorted entries to file
+	sort -u "${tmp_file}" | awk '
+	{
+		arr[$1] = arr[$1] ? arr[$1] " " $2 : $2;
+	}
+	END {
+		for (key in arr) {
+			print key, arr[key]
+		}
+	}' >"${TAGS_INDEX}"
+	sort -o "${TAGS_INDEX}" "${TAGS_INDEX}"
+}
+
+update() {
+	git pull
+	if [ -f "update.sh" ]; then
+		./update.sh "$@"
+	fi
+}
+
+publish() {
+	index
+	keg publish
+}
+
+help() {
+	echo ""
+}
+
+# ensure we are in a keg
+keg current &>/dev/null || exit 1
+
+KEG_CURRENT="${KEG_CURRENT:-$(git rev-parse --show-toplevel &>/dev/null || echo '')}"
+cd "${KEG_CURRENT}" || exit 1
+
+# keg doesn't handle the context as expected.  Let keg refigure it out from here
+KEG_CURRENT=''
+
+# ensure we are in a keg
+keg current &>/dev/null || exit 1
+
+######################### Tab Completion Context ########################
+if test -n "${COMP_LINE}"; then
+	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
+	pre="$(printf "%s" "${COMP_LINE}" | awk '{for(i=3; i<=NF; i++) printf $i" "; print ""}')"
+	case "${cmd}" in
+	cat | changes | edit | view | title | link | backlinks)
+		nodes
+		exit 0
+		;;
+	keg)
+		COMP_LINE="${pre}" keg
+		exit 0
+		;;
+	tags)
+		tags
+		exit 0
+		;;
+	*)
+		# for cmd in assistant backlinks cat cd chat create deploy edit fzf git grep help index keg link links list nodes publish pwd retrain rg search sync tags titles update view; do
+		# 	[[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
+		# done
+		for cmd in assistant backlinks cat cd chat create deploy edit fzf git \
+			grep help index keg link links list nodes publish pwd retrain rg \
+			search sync tags titles update view; do
+			[[ "${cmd}" =~ ^$pre ]] && echo "${cmd}"
+		done
+		exit 0
+		;;
+	esac
+fi
+
+###################### Regular Context Delegation ######################
+
+CMD="$(echo "$@" | awk '{print $1}')"
+shift
+
+case "${CMD}" in
+a | assistant) assistant "$@" ;;
+e | edit) keg edit "$@" ;;
+v | view) keg view "$@" ;;
+k | keg) keg "$@" ;;
+c | create) keg c "$@" ;;
+chat)
+	if [ ! -t 0 ]; then
+		gpt "$@" <<<$'\n'"$(cat)"
+	else
+		gpt "$@"
+	fi
+	exit
+	;;
+d | deploy) ./deploy "$@" ;;
+p | publish) publish "$@" ;;
+u | update) update "$@" ;;
+i | index) index "$@" ;;
+retrain) retrain "$@" ;;
+cat)
+	declare -a lines
+	if [ ! -t 0 ]; then
+		lines=()
+		while IFS=$'\n' read -r line; do
+			first_word=$(echo "$line" | awk '{print $1}')
+			lines+=("$first_word")
+		done
+	fi
+	for arg in "$@"; do
+		lines+=("$arg")
+	done
+
+	nodes=$(echo "${lines[@]}" | tr -s ' ' '\n' | sort -nu | tr '\n' ' ')
+
+	# shellcheck disable=SC2048
+	for x in ${nodes[*]}; do
+		echo "---"
+		echo ""
+		echo "Contents of keg node $(keg link "${x}"):"
+		echo ""
+		echo '```markdown'
+		cat "${x}/README.md"
+		echo
+		echo '```'
+	done
+	;;
+cd)
+	"${SHELL}"
+	;;
+changes) changes "$@" ;;
+links) links "$@" ;;
+backlinks) backlinks "$@" ;;
+tags) tags "$@" ;;
+list) list "$@" ;;
+nodes) nodes "$@" ;;
+title) title "$@" ;;
+titles) titles "$@" ;;
+search) search "$@" ;;
+rg) rg --glob="*.md" "$@" ;;
+qf-search) search-qf "$@" ;;
+sync) git pull "$@" ;;
+l | link) keg link "$@" ;;
+git) git "$@" ;;
+grep)
+	files=()
+	while IFS= read -r line; do
+		files+=("$line")
+	done < <(rg -l --glob='[0-9]*/README.md' "$@")
+
+	for ((i = 0; i < ${#files[@]}; i++)); do
+		file="${files[$i]}"
+		dir="$(dirname "${file}")"
+		title="$(head -n 1 "${file}" | sed 's/^# //')"
+		echo "${dir} ${title}"
+		rg --glob='README.md' "$@" "$file"
+		if ((i < ${#files[@]} - 1)); then
+			echo
+		fi
+		IFS=' '
+	done
+	;;
+pwd)
+	if [ "$#" -gt 0 ]; then
+		cd "$@"
+	fi
+	pwd
+	;;
+fzf) zets "$@" ;;
+*)
+	NODE=$CMD
+	SUB_CMD="$(echo "$@" | awk '{print $1}')"
+	if [[ "${SUB_CMD}" == "cd" ]]; then
+		cd "${NODE}" || exit 1
+		"${SHELL}"
+	elif [[ "${SUB_CMD}" == "edit" ]]; then
+		keg edit "${NODE}"
+	else
+		keg edit "${NODE}"
+	fi
+	;;
+esac

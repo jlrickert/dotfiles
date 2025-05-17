@@ -1,0 +1,11 @@
+#!/bin/bash
+export KEG_CURRENT="${GHREPOS}/zettel/docs"
+
+if test -n "${COMP_LINE}"; then
+	pre="${COMP_LINE#* }"
+	COMP_LINE="ku ${pre}" ku
+	exit 0
+fi
+
+cd "${KEG_CURRENT}" || exit 1
+ku "$@"

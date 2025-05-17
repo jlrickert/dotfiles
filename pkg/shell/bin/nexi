@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+CONFIG_FILE="${HOME}/.config/knut/config.yaml"
+AI_NAME=nexi
+TRAINING_MODEL=qwen2.5-coder-3b-instruct
+CRITICAL_MODEL=qwen2.5-coder-32b-instruct
+API=localai
+
+_list_kegs() {
+	yq ".kegs[] | .alias" "${CONFIG_FILE}"
+}
+
+_train_ai() {
+	local KEG_ALIAS=$1
+	local NODE_ID=$2
+	if [ -z "${NODE_ID}" ]; then
+		echo "Uploading keg:${KEG_ALIAS}/${NODE_ID} to ${AI_NAME}"
+		NODE_CONTENT=$(zet "${KEG_ALIAS}" cat "${NODE_ID}")
+		echo "${NODE_CONTENT}" | mods --api "${API}" --model "${TRAINING_MODEL}" -t "${AI_NAME}" --role keg -c "${AI_NAME}" "Training content from node 'keg:${KEG_ALIAS}/${NODE_ID}'"
+		return
+	fi
+	for NODE_ID in $(zet "${KEG_ALIAS}" list | awk '{print $1}'); do
+		echo "Uploading keg:${KEG_ALIAS}/${NODE_ID} to ${AI_NAME}"
+		NODE_CONTENT=$(zet "${KEG_ALIAS}" cat "${NODE_ID}")
+		echo "${NODE_CONTENT}" | mods --api "${API}" --model "${TRAINING_MODEL}" -t "${AI_NAME}" --role keg -c "${AI_NAME}" "Training content from node 'keg:${KEG_ALIAS}/${NODE_ID}'"
+	done
+}
+
+_search() {
+	mods -m "${CRITICAL_MODEL}" --role keg-assistant -t "${AI_NAME}" -c "${AI_NAME}" "$@"
+}
+
+_chat() {
+	mods -m "${CRITICAL_MODEL}" -t "${AI_NAME}" -c "${AI_NAME}" "$@"
+}
+
+_code() {
+	mods -m "${TRAINING_MODEL}" -t "${AI_NAME}" -c "${AI_NAME}" "$@"
+}
+
+_edit_logs() {
+	local KEG_ALIAS=$1
+	echo "Opening logs for KEG: ${KEG_ALIAS}"
+	"${EDITOR}" "${HOME}/.local/state/nexi/${KEG_ALIAS}.json"
+}
+
+_help() {
+	echo "Usage: nexi <command> [<args>]"
+	echo
+	echo "Commands:"
+	echo "  train <keg_alias> <node_id>  Train the AI model with data from specified KEG node."
+	echo "  log <keg_alias> edit         Open logs for the specified KEG for editing."
+	echo "  search                       Ask nexi about about you knowledge base"
+	echo "  chat                         Ask nexi about anything"
+	echo "  list                         List all available KEGs."
+	echo "  help                         Display this help text."
+}
+
+COMMAND="$1"
+shift
+
+if test -n "${COMP_LINE}"; then
+	pre="${COMP_LINE##* }"
+	for c in $(_list_kegs); do
+		test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+	done
+	exit
+fi
+
+case "${COMMAND}" in
+code)
+	_code "$@"
+	;;
+chat)
+	_chat "$@"
+	;;
+search)
+	_search "$@"
+	;;
+train)
+	_train_ai "$@"
+	;;
+log)
+	if [ "$1" == "edit" ]; then
+		shift
+		_edit_logs "$@"
+	else
+		_help
+	fi
+	;;
+list)
+	_list_kegs
+	;;
+help | *)
+	_help
+	;;
+esac

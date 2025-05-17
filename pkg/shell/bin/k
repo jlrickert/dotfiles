@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+if test -n "${COMP_LINE}"; then
+	echo "${COMP_LINE} ${COMP_POINT} ${COMP_CWORD}" >>/tmp/logs
+	deno task cli "$@" 2>/dev/null
+	exit
+fi
+
+if [ ! -t 0 ]; then
+	cat | deno task cli "$@" 2>/dev/null
+	exit
+fi
+
+deno task cli "$@" 2>/dev/null

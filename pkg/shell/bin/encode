@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+encode_base64url() {
+	local input="$1"
+	echo -n "$input" | base64 | tr '+/' '-_' | tr -d '='
+}
+
+url_encode() {
+	local length="${#1}"
+	for ((i = 0; i < length; i++)); do
+		local c="${1:i:1}"
+		case "${c}" in
+		[a-zA-Z0-9.~_-]) printf "$c" ;;
+		' ') printf + ;;
+		*) printf '%%%02X' "'$c" ;;
+		esac
+	done
+	echo
+}
+
+usage() {
+	echo "Usage: $0 [base64|base64url] <string>"
+	exit 1
+}
+
+if test -n "${COMP_LINE}"; then
+	pre="${COMP_LINE##* }"
+	for c in base64 base64url url; do
+		test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+	done
+	exit
+fi
+
+TYPE="$1"
+shift
+INPUT="$*"
+
+# write me a switch case
+case "${TYPE}" in
+base64url)
+	encode_base64url "${INPUT}"
+	;;
+base64)
+	echo -n "${INPUT}" | base64
+	;;
+url)
+	url_encode "${INPUT}"
+	;;
+*)
+	usage
+	;;
+esac

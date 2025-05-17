@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+url=$1
+test $# -gt 0 && shift
+TARGET=$1
+test $# -gt 0 && shift
+
+echo $URL $TARGET

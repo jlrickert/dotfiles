@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# RG_PREFIX='rg --color=always --line-number --files --no-heading --smart-case --glob "docs/**/README.md"'
+RG_PREFIX='_keg-node-search'
+INITIAL_QUERY=""
+# shellcheck disable=SC2034
+FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'"
+fzf \
+    --bind "change:reload:$RG_PREFIX {q} || true" \
+    --bind "enter:become($EDITOR {1}/README.md && CHOICE={1})" \
+    --sort \
+    --delimiter ':' \
+    --with-nth '1,2' \
+    --preview 'echo -n {1} " "; rg "^#" {1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never {1}/README.md' \
+    --preview-window 'right,90%' \
+    --ansi --phony --query "$INITIAL_QUERY"
+
+echo "$CHOICE"

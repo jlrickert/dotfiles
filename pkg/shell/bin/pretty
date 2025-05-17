@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+function pretty_php() {
+	# Check if pretty-php binary exists on the PATH
+	if ! command -v pretty-php &>/dev/null; then
+		echo "pretty-php is not installed or not found in PATH."
+		exit 1
+	fi
+
+	buf=""
+	if [ ! -t 0 ]; then
+		buf=$(cat)
+	fi
+
+	# Check if <?php is included in $buf
+	if [[ ! "$buf" == *"<?php"* ]]; then
+		buf="$(printf "<?php\n%s" "${buf}")"
+	else
+		# Strip <?php from the beginning of the output if it exists
+		buf="${buf/#<?php/}"
+	fi
+
+	output="$(echo "${buf}" | pretty-php -qqqq -)"
+
+	# Strip <?php from the beginning of the output if it exists
+	output="${output/#<?php/}"
+
+	echo "${output}"
+}
+
+function pretty_js() {
+	echo "NOT IMPLEMENTED"
+	exit 1
+	# Check if prettier binary exists on the PATH
+	if ! command -v prettier &>/dev/null; then
+		echo "prettier is not installed or not found in PATH."
+		exit 1
+	fi
+
+	buf=""
+	if [ ! -t 0 ]; then
+		buf=$(cat)
+	fi
+
+	temp_file="$(mktemp).js"
+
+	# Read piped input and write to the temp file
+	echo "${buf}" >"${temp_file}"
+
+	# Run prettier against the temp file
+	prettier --write "${temp_file}"
+
+	# Read the contents of the pretty-js output
+	output=$(cat "${temp_file}")
+
+	# Echo the output
+	echo "${output}"
+
+	# Clean up temporary files
+	rm "${temp_file}"
+}
+
+function pretty_ts() {
+	echo "NOT IMPLEMENTED"
+	# Check if prettier binary exists on the PATH
+	if ! command -v prettier &>/dev/null; then
+		echo "prettier is not installed or not found in PATH."
+		exit 1
+	fi
+
+	buf=""
+	if [ ! -t 0 ]; then
+		buf=$(cat)
+	fi
+
+	temp_file="$(mktemp).ts"
+
+	# Read piped input and write to the temp file
+	echo "${buf}" >"${temp_file}"
+
+	# Run prettier against the temp file
+	prettier --write "${temp_file}"
+
+	# Read the contents of the pretty-ts output
+	output=$(cat "${temp_file}")
+
+	# Echo the output
+	echo "${output}"
+
+	# Clean up temporary files
+	rm "${temp_file}"
+}
+
+if [[ $# -eq 0 ]]; then
+	echo "Usage: $0 {php|js|ts}"
+	exit 1
+fi
+
+case $1 in
+php)
+	pretty_php "$@"
+	;;
+js)
+	pretty_js "$@"
+	;;
+ts)
+	pretty_ts "$@"
+	;;
+*)
+	echo "Invalid subcommand. Use 'php', ts, or 'js'."
+	exit 1
+	;;
+esac

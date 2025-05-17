@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+buf=""
+if [ ! -t 0 ]; then
+	buf="${buf}"$'\n'$(cat)
+fi
+gemini-file "$(zet pub pwd 936)/README.md" >&/dev/null
+buf="create a comment for the following code block using the requirements outlined by KEG node 936. No markdown backticks:"$'\n'"---"$'\n'"${buf}"
+gemini --temp "0.3" --topp "0.85" --topk "20" --raw "$@" <<< "${buf}"

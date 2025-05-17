@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+header='{"alg":"RS256","typ":"JWT"}'
+iat=$(date +%s)
+exp=$((iat + 3600))
+payload=$(printf '{"admin_username":"admin@ecreativeworks.com","iss":"ecreativeworks.com","iat":"%s","exp":"%s"}' "${iat}" "${exp}")
+
+header_base64=$(echo -n "$header" | openssl base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+payload_base64=$(echo -n "$payload" | openssl base64 | tr -d '=' | tr '/+' '_- ' | tr -d '\n')
+
+signature=$(echo -n "${header_base64}.${payload_base64}" | openssl dgst -sha256 -sign private_key.pem | openssl base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+jwt="${header_base64}.${payload_base64}.${signature}"
+echo "${jwt}"

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+FILENAME=$1
+
+shift
+
+if [ ! -f "${FILENAME}" ]; then
+	echo "File \"${FILENAME}\" doesn't exist"
+	exit 1
+fi
+
+CONTENT=$(cat "${FILENAME}")
+
+echo "${CONTENT}" | mods $@ "This is the contents of the file \"${FILENAME}\"" 

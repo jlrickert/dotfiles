@@ -1,0 +1,100 @@
+#!/bin/bash
+#
+# Generate a quickfix list that vim may consume
+#
+# Here is an example:
+#
+#   `vim <(qf grep SYMBOL)`
+#   `vim <(qf modified)`
+#   `vim <(qf regex todo)`
+#   `vim <(qf regex phone)`
+#   `vim <(qf regex email)`
+
+set -e
+
+######################### Tab Completion Context ########################
+# add `complete -S qf qf` to bashrc
+
+if [[ -n "${COMP_LINE}" ]]; then
+	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
+	case "$cmd" in
+	help) ;;
+	grep) ;;
+	modified) ;;
+	regex)
+		COMP_LINE="" regx list
+		;;
+	util)
+		subcmd="$(echo "${COMP_LINE}" | awk '{print $3}')"
+		if [[ -z $subcmd ]]; then
+			for c in file col desc; do
+				[[ ${c:0:${#1}} == "$1" ]] && echo "$c"
+			done
+		fi
+		;;
+	*)
+		for c in help grep modified regex util; do
+			[[ ${c:0:${#1}} == "$1" ]] && echo "$c"
+		done
+		;;
+
+	esac
+	# if [[ $cmd == "regex" ]]; then
+	#     COMP_LINE="" regx list
+	#     exit
+	# fi
+	# for c in "${COMMANDS[@]}"; do
+	#     [[ ${c:0:${#1}} == "$1" ]] && echo "$c"
+	# done
+	exit
+fi
+
+###################### Regular Context Delegation ######################
+_help() {
+	echo "NAME"
+	echo
+	echo "    qf - create a quick fix list"
+	echo
+	echo "Synopsis"
+	echo
+	echo "    $(basename "$0") COMMAND"
+	echo
+	echo "COMMANDS"
+	echo
+	echo "    g|grep     - grep regular expression"
+	echo "    m|modified - all modified files"
+	echo "    r|regex    - pre baked regex codes"
+	echo "    h|help     - this help menu"
+	exit 0
+}
+
+_grep() {
+	rg --line-number --no-heading --column "${1:-}"
+}
+
+_regex() {
+	_grep "$(regx "${@}")"
+}
+
+_modified() {
+	git diff --name-only | awk -F: '{print $1 ":1:Modified"}'
+}
+
+_util() {
+	case "$1" in
+	file) echo "$1" | awk -F':' '{print $1}' ;;
+	col) echo "$1" | awk -F':' '{print $2}' ;;
+	desc) echo "$1" | awk -F':' '{print $3}' ;;
+	esac
+}
+
+CMD="${1}"
+shift # pops off first argument off of ${@}
+case "${CMD}" in
+g | grep) _grep "${@}" ;;
+r | regex) _regex "${@}" ;;
+m | modified) _modified "${@}" ;;
+h | help) _help "${@}" ;;
+u | util) _util "${@}" ;;
+*) _help "${@}" ;;
+esac

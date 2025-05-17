@@ -1,0 +1,163 @@
+#!/usr/bin/env -S deno run --allow-read --allow-env --allow-run --allow-net
+import Anthropic from "npm:@anthropic-ai/sdk";
+
+const DEFAULT_CONFIG_FILE = `${
+	Deno.env.get("HOME")
+}/.config/dotfiles/claude.yaml`;
+
+async function resolveConfigPath(filepath: string) {
+	try {
+		const fileInfo = await Deno.lstat(filepath);
+		if (fileInfo.isSymlink) {
+			return Deno.readLinkSync(filepath);
+		}
+		return filepath;
+	} catch (e) {
+		return filepath;
+	}
+}
+
+async function* getPipedInput() {
+	const decoder = new TextDecoder();
+	for await (const chunk of Deno.stdin.readable) {
+		const text = decoder.decode(chunk);
+		yield text;
+	}
+}
+
+const anthropic = new Anthropic({
+	apiKey: Deno.env.get("ANTHROPIC_API_KEY"),
+});
+const configFile = await resolveConfigPath(DEFAULT_CONFIG_FILE);
+
+
+// #
+// # #!/usr/bin/env bash
+// #
+// # # set -o errexit  # exit if non-zero status code is returned
+// # # set -o nounset  # exit if undefined variable is used
+// # # set -o pipefail # exit if no-zero status code is returned in a pipeline
+// #
+// # declare CONFIG_FILE="${HOME}/.config/dotfiles/claude.yaml"
+// #
+// # # Check if CONFIG_FILE is a symlink and set CONFIG_FILE to its target
+// # if [ -L "${CONFIG_FILE}" ]; then
+// # 	CONFIG_FILE=$(readlink -f "$CONFIG_FILE")
+// # fi
+// #
+// # declare NOCOLOR=
+// # [[ -t 1 ]] || NOCOLOR=y
+// # declare GOLD='[38;2;184;138;0m'
+// # declare RED='[38;2;255;0;0m'
+// # declare GREY='[38;2;100;100;100m'
+// # declare CYAN='[38;2;0;255;255m'
+// # declare GREEN='[38;2;0;255;0m'
+// # declare RESET='[0m'
+// #
+// # if [[ -n "${NOCOLOR}" ]]; then
+// # 	GOLD=
+// # 	RED=
+// # 	GREY=
+// # 	CYAN=
+// # 	GREEN=
+// # 	RESET=
+// # fi
+// #
+// # # set +o errexit  # exit if non-zero status code is returned
+// # # set +o nounset  # exit if undefined variable is used
+// # # set +o pipefail # exit if no-zero status code is returned in a pipeline
+// #
+// # if test -n "${COMP_LINE}"; then
+// # 	pre="${COMP_LINE##* }"
+// # 	for c in code config train help; do
+// # 		test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+// # 	done
+// # 	exit
+// # fi
+// #
+// # # set -o errexit  # exit if non-zero status code is returned
+// # # set -o nounset  # exit if undefined variable is used
+// # # set -o pipefail # exit if no-zero status code is returned in a pipeline
+// #
+// # # Function to handle Claude-related arguments
+// # handle_claude_args() {
+// # 	echo "Handling Claude arguments"
+// # 	# Insert logic here
+// # }
+// #
+// # # Function to handle Claude configuration using yq
+// # handle_claude_config_yq_args() {
+// # 	echo "Handling Claude configuration using yq"
+// # 	# Insert logic here
+// # }
+// #
+// # # Function to edit Claude configuration
+// # handle_claude_edit_config() {
+// # 	echo "Editing Claude configuration"
+// # 	# Insert logic here
+// # }
+// #
+// # # Function to handle Claude code-related arguments
+// # handle_claude_code_args() {
+// # 	echo "Handling Claude code-related arguments"
+// # 	# Insert logic here
+// # }
+// #
+// # help() {
+// # 	echo "help"
+// # }
+// #
+// # if read -t 0; then
+// # 	piped_input="$(cat)"
+// # fi
+// #
+// # case "$*" in
+// # "code")
+// # 	shift
+// # 	shift
+// # 	echo a
+// # 	;;
+// # "code "*)
+// # 	shift
+// # 	shift
+// # 	echo claude code "$@"
+// # 	;;
+// # "train")
+// # 	help
+// # 	;;
+// # "train "*) ;;
+// # "config")
+// # 	echo config b
+// # 	;;
+// # "config edit")
+// # 	echo "config edit"
+// # 	;;
+// # "config yq $*") ;;
+// # "help")
+// # 	help
+// # 	;;
+// # *)
+// # 	query='{
+// # 	"model": "claude-3-5-sonnet-20241022",
+// # 		"max_tokens": 1024,
+// # 		"system": [
+// # 		  {
+// # 			"type": "text",
+// # 			"text": "You are a code assistance"
+// # 		  },
+// # 		],
+// # 		"messages": [
+// # 		  {
+// # 			"role": "user",
+// # 			"content": "%s"
+// # 		  }
+// # 		]
+// # 	  }'
+// # 	curl https://api.anthropic.com/v1/messages \
+// # 		-H "content-type: application/json" \
+// # 		-H "x-api-key: ${ANTHROPIC_API_KEY}" \
+// # 		-H "anthropic-version: 2023-06-01" \
+// # 		-H "anthropic-beta: prompt-caching-2024-07-31" \
+// # 		-d "$(printf "${query}" "${piped_input}\n\n$*")"
+// # 	;;
+// # esac

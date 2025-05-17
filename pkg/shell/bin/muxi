@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+if ! command -v zellij >/dev/null 2>&1; then
+	echo "zellij needs to be installed" >&2
+	exit 1
+fi
+
+help() {
+	echo "Usage: $0 <session_name>" >&2
+}
+
+if test -n "${COMP_LINE}"; then
+	pre="${COMP_LINE##* }"
+
+	if [[ "${COMP_LINE}" != "$0 --delete" ]]; then
+		echo --delete
+	fi
+
+	if [[ "${COMP_LINE}" != "$0 --kill" ]]; then
+		echo --kill
+	fi
+
+	for c in $(zellij ls --no-formatting --short | awk '{print $1}'); do
+		path=$(basename "${c}")
+		if [ -z "${pre}" ] || [[ "${path}" == "${pre}"* ]]; then
+			echo "${path}"
+		fi
+	done
+	exit
+fi
+
+attach_session() {
+	for c in $(zellij ls --no-formatting --short | awk '{print $1}'); do
+		if [ "${c}" == "$1" ]; then
+			zellij a "$1"
+			exit
+		fi
+	done
+	zellij -s "$1"
+}
+
+delete_session() {
+	local SESSION_NAME="$1"
+	local SESSION_EXISTS=false
+	for c in $(zellij ls --no-formatting --short | awk '{print $1}'); do
+		if [ "${c}" == "${SESSION_NAME}" ]; then
+			SESSION_EXISTS=true
+			break
+		fi
+	done
+
+	if "${SESSION_EXISTS}"; then
+		zellij delete-session "${SESSION_NAME}"
+		echo "Session '${SESSION_NAME}' removed"
+	else
+		echo "Session '${SESSION_NAME}' not found" >&2
+	fi
+}
+
+kill_session() {
+	local SESSION_NAME="$1"
+	local SESSION_EXISTS=false
+	for c in $(zellij ls --no-formatting --short | awk '{print $1}'); do
+		if [ "${c}" == "${SESSION_NAME}" ]; then
+			SESSION_EXISTS=true
+			break
+		fi
+	done
+
+	if "${SESSION_EXISTS}"; then
+		zellij kill-session "${SESSION_NAME}"
+		echo "Session '${SESSION_NAME}' removed"
+	else
+		echo "Session '${SESSION_NAME}' not found" >&2
+	fi
+}
+
+if [ $# -eq 1 ]; then
+	attach_session "$@"
+elif [ "$1" == "--delete" ]; then
+	shift
+	delete_session "$@"
+elif [ "$1" == "--kill" ]; then
+	shift
+	kill_session "$@"
+else
+	help
+fi

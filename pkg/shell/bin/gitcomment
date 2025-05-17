@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+TITLE="$(git rev-parse --show-toplevel 2>/dev/null || pwd)--gemini-git"
+API=google
+# MODEL=gemini-2.0-flash
+MODEL=gemini-2.5-flash-preview-04-17
+ROLE=git-commenter
+
+TOPK="20"
+TOPP="0.85"
+TEMP="0.3"
+
+BUF="Generate a git comment"
+if [ ! -t 0 ]; then
+	BUF="$(cat)"$'\n'$'\n'"${BUF}"
+fi
+
+# Create initial context
+if ! mods --list | grep --quiet --fixed-strings "${TITLE}"; then
+	mods --title "${TITLE}" --api "${API}" --model "${MODEL}" --role "${ROLE}" "Start of context for \"${TITLE}\". No output" &>/dev/null
+fi
+
+mods --continue "${TITLE}" "Keep as a reference for next prompt. No output yet: $(git diff --cached)" &>/dev/null
+mods --continue "${TITLE}" --topk "${TOPK}" --topp "${TOPP}" --temp "${TEMP}" --raw "$@" <<< "${BUF}"

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+TITLE="$(git rev-parse --show-toplevel 2>/dev/null || pwd)-gpt"
+# Check if any input is available
+if mods --list | grep -q "${TITLE}"; then
+	mods --delete "${TITLE}"
+fi

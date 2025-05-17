@@ -1,0 +1,47 @@
+#!/usr/bin/python3
+# PYTHON_ARFCOMPLETE_OK
+import argparse
+import argcomplete
+import subprocess
+import os
+import platform
+
+# Find relevant playbook file
+project_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+default_password_file = os.path.join(project_path, "vault.key")
+playbook_file = os.path.join(project_path, "bootstrap.yml")
+
+# Create the parser
+parser = argparse.ArgumentParser(description="Run playbook")
+parser.add_argument("tags", nargs="*", help="play tasks tagged with passed values.")
+parser.add_argument(
+    "--skip",
+    action="store_true",
+    help="if present, will skip tagged tasks instead.",
+)
+parser.add_argument("--password-file", type=str, help="file to use as a become password")
+
+argcomplete.autocomplete(parser)
+args, unknown_args = parser.parse_known_args()
+
+# Generate the actuall command to give to ansible
+ansible_cmd = ["ansible-playbook", playbook_file]
+
+# Figure out how privilege escalation will be handled
+if args.password_file is not None:
+    with open(args.password_file, 'r') as h:
+        ansible_cmd.append("--extra-vars")
+        ansible_cmd.append("ansible_become_pass={}".format(h.read()))
+elif os.path.exists(default_password_file): 
+    with open(default_password_file, 'r') as h:
+        ansible_cmd.append("--extra-vars")
+        ansible_cmd.append("ansible_become_pass={}".format(h.read()))
+else:
+    ansible_cmd.append("--ask-become-password")
+
+if args.tags:
+    ansible_cmd.extend(["--skip-tags" if args.skip else "--tags", ",".join(args.tags)])
+
+ansible_cmd.extend(unknown_args)
+
+subprocess.run(ansible_cmd)

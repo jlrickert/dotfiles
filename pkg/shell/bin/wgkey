@@ -1,0 +1,48 @@
+#!/bin/sh
+# Author: Jared Rickert
+# License: Apache License 2.0
+set -e
+
+confd="${XDG_CONFIG_HOME:-$HOME/.config}/wg"
+
+gen() {
+	name=${1:-$(date -u +%Y%m%d%H%M%S)}
+	cd "${confd}"
+	wg genkey | (umask 0077 && tee "${name}.key") | wg pubkey >"${name}.pub"
+	wg genpsk | (umask 0077 && tee "${name}_preshared.key") >/dev/null
+}
+
+list() {
+	while read -r line; do
+		line=${line##*/}
+		echo "${line%.pub}"
+	done <<EOF
+$(ls -1 "${confd}"/*.pub)
+EOF
+}
+
+# ---------------------- bash completion context ---------------------
+
+# add `complete -S sshkey sshkey` to bashrc
+
+if test -n "${COMP_LINE}"; then
+	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
+	pre="${COMP_LINE##* }"
+	for c in gen list; do
+		test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+	done
+	exit
+fi
+
+# ------------------------------- main -------------------------------
+
+[ -d confd ] || mkdir -p "${confd}"
+
+cmd="$1"
+test $# -gt 0 && shift
+
+case "${cmd}" in
+gen) gen "$@" ;;
+ls | list) list "$@" ;;
+*) list "$@" ;;
+esac

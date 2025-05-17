@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+project=$1
+
+cd "$(ecw pwd "${project}")" || exit
+
+ecw clone "$project"
+git checkout production
+git pull origin production
+
+zet ecw assistant "Does this have the pipeline updated" < bitbucket-pipeline.yml

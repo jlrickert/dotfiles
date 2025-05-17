@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+
+declare NOCOLOR=
+[[ -t 1 ]] || NOCOLOR=y
+declare GOLD='[38;2;184;138;0m'
+declare RED='[38;2;255;0;0m'
+declare GREY='[38;2;100;100;100m'
+declare CYAN='[38;2;0;255;255m'
+declare GREEN='[38;2;0;255;0m'
+declare RESET='[0m'
+
+if [[ -n "$NOCOLOR" ]]; then
+	GOLD=
+	RED=
+	GREY=
+	CYAN=
+	GREEN=
+	RESET=
+fi
+
+# _log() {
+# 	local MSG="$1"
+# 	shift
+# 	echo "${GREEN}${MSG}:${RESET} $@"
+# 	"$@"
+# }
+
+log() {
+	echo "${GREEN}$*${RESET}"
+}
+log-err() {
+	echo "${RED}$*${RESET}"
+}
+
+if test -n "${COMP_LINE}"; then
+	pre="${COMP_LINE##* }"
+	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
+
+	case "${cmd}" in
+	convert | resize)
+		fd . -e jpg
+		fd . -e webp
+		fd . -e png
+		exit
+		;;
+	esac
+
+	for c in convert convert-all resize -resize -lossless -q -z -crop; do
+		test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+	done
+	exit
+fi
+
+# The actual script
+
+if ! command -v cwebp &>/dev/null; then
+	echo "cwebp is NOT found in the system's PATH. Please ensure cwebp is in your PATH."
+	exit 1 # Exit with an error code to indicate failure
+fi
+
+if ! command -v fd &>/dev/null; then
+	log-err "fd is NOT found in the system's PATH. Please ensure fd is in your PATH."
+	exit 1 # Exit with an error code to indicate failure
+fi
+
+CMD="$(echo "$@" | awk '{print $1}')"
+shift
+
+resize() {
+	FILE=$1
+	WIDTH=$2
+	HEIGHT=$3
+	shift 3
+
+	# Check if the file exists
+	if ! [ -f "${FILE}" ]; then
+		log-err "Error: File '${FILE}' does not exist."
+		return 1 # Indicate failure
+	fi
+
+	# Check if WIDTH and HEIGHT are numbers
+	if ! [[ "${WIDTH}" =~ ^[0-9]+$ ]]; then
+		log-err "Error: WIDTH '${WIDTH}' is not a valid number."
+		return 1 # Indicate failure
+	fi
+
+	if ! [[ "${HEIGHT}" =~ ^[0-9]+$ ]]; then
+		log-err "Error: HEIGHT '${HEIGHT}' is not a valid number."
+		return 1 # Indicate failure
+	fi
+
+	# Optional: Check if WIDTH and HEIGHT are positive numbers
+	if ((WIDTH < 0)); then
+		log-err "Error: WIDTH must be a positive number."
+		return 1
+	fi
+
+	if ((HEIGHT < 0)); then
+		log-err "Error: HEIGHT must be a positive number."
+		return 1
+	fi
+
+	BASENAME="${FILE%.*}"
+	EXT="${FILE##*.}"
+
+	TMP_OUTPUT="$(mktemp)__${FILE}"
+	cwebp -resize "${WIDTH}" "${HEIGHT}" "${FILE}" -o "${TMP_OUTPUT}" $*
+
+	if [[ "$OSTYPE" == darwin* ]]; then
+		# macOS (BSD sed)
+		dimensions=$(file "${TMP_OUTPUT}" | sed -En 's/.*, ([0-9]+x[0-9]+).*/\1/p' | head -n 1)
+	elif [[ "$OSTYPE" == linux* ]]; then
+		# Linux (GNU grep)
+		dimensions=$(file "${TMP_OUTPUT}" | grep -oP '(?<=, ).*?(?=x)' | head -n 1)
+	else
+		echo "Error: Unsupported operating system: $OSTYPE"
+		return 1 # Indicate failure
+	fi
+
+	OUTPUT="${BASENAME}"
+	if ((WIDTH == 0)); then
+		WIDTH=$(echo "$dimensions" | awk -F'x' '{print $1}')
+	fi
+	if ((HEIGHT == 0)); then
+		HEIGHT=$(echo "$dimensions" | awk -F'x' '{print $2}')
+	fi
+
+	OUTPUT="${OUTPUT}-w${WIDTH}-h${HEIGHT}.${EXT}"
+
+	cp "${TMP_OUTPUT}" "${OUTPUT}"
+	log "Successfully resized '${FILE}' to '${OUTPUT}'"
+}
+
+convert() {
+	FILE=$1
+
+	# Check if the file exists
+	if ! [ -f "${FILE}" ]; then
+		log-err "Error: File '${FILE}' does not exist."
+		return 1 # Indicate failure
+	fi
+
+	BASENAME="${FILE%.*}"
+	cwebp "${FILE}" -o "${BASENAME}.webp"
+
+	# Check if the conversion was successful
+	if [ $? -ne 0 ]; then
+		log-err "Error: Conversion to WebP failed."
+		return 1
+	fi
+
+	log "Successfully converted '${FILE}' to '${OUTPUT_FILE}'"
+
+}
+
+convert-all() {
+	fd . -e jpg -x cwebp "{}" -o "{.}.webp"
+	fd . -e png -x cwebp "{}" -o "{.}.webp"
+}
+
+case "${CMD}" in
+convert) convert "$@" ;;
+convert-all) convert-all "$@" ;;
+resize) resize "$@" ;;
+*) cwebp "$@" ;;
+esac

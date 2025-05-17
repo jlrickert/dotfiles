@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+# Configuration file location
+HOMELAB_CONFIG_FILE="${HOME}/.config/homelab/config.yaml"
+
+# Check if yq is available
+if ! command -v yq >/dev/null 2>&1; then
+	echo "yq is required for this script to function. Please install it."
+	exit 1
+fi
+
+# Function to print help information
+_help() {
+	echo "homelab - A tool for managing homelab resources."
+	echo
+	echo "Usage: homelab <command> [options]"
+	echo
+	echo "Commands:"
+	echo "  open <resource>   Open the URL associated with the given resource"
+	echo "  help              Display this help message"
+}
+
+# Function to handle the 'open' subcommand
+_open() {
+	local RESOURCE=$1
+
+	if [ -z "${RESOURCE}" ]; then
+		echo "Usage: homelab open <resource>"
+		return 1
+	fi
+
+	# Retrieve the link from the configuration
+	local LINK
+	LINK=$(yq ".resources.${RESOURCE}.link" "${HOMELAB_CONFIG_FILE}")
+
+	if [ -z "${LINK}" ] || [ "${LINK}" == "null" ]; then
+		echo "No link found for resource '${RESOURCE}'"
+		return 1
+	fi
+
+	echo "Opening link: ${LINK}"
+	# Open the link in the default web browser
+	if command -v xdg-open >/dev/null 2>&1; then
+		xdg-open "${LINK}"
+	elif command -v open >/dev/null 2>&1; then
+		open "${LINK}"
+	else
+		echo "Could not detect web browser opener command. Open the link manually: ${LINK}"
+	fi
+}
+
+# Main script logic
+COMMAND="$1"
+shift
+
+case "${COMMAND}" in
+open)
+	_open "$@"
+	;;
+help)
+	_help
+	;;
+*)
+	echo "Invalid command: ${COMMAND}"
+	_help
+	;;
+esac

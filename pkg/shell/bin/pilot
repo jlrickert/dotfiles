@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+BUF="Instructions: Generate code only. DO NOT add any code section markup such as php tag or markdown backticks. Preserve indentation. Do not give the complete example unless asked. Include the passed in code if required. Here is the code to update:"
+if [ ! -t 0 ]; then
+	BUF="${BUF}"$'\n'$'\n'$(cat)
+else
+	BUF='\n'
+fi
+
+gemini --raw --temp 0.3 --topp 0.85 --topk 20 "$@" <<<"${BUF}"

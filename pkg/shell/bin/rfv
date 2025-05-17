@@ -1,0 +1,15 @@
+#!/bin/bash
+
+RG_PREFIX='rg --color=always --line-number --no-heading --smart-case --hidden -g "!.git"'
+INITIAL_QUERY=""
+# shellcheck disable=SC2034
+FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'"
+fzf \
+    --bind "change:reload:$RG_PREFIX {q} || true" \
+    --bind "enter:become($EDITOR {1} +{2} && CHOICE={1})" \
+    --sort \
+    --delimiter ':' \
+    --preview "bat --color=always {1} --highlight-line {2} --paging never" \
+    --ansi --phony --query "$INITIAL_QUERY"
+
+echo -n "$CHOICE"

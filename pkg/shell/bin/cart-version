@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+project=$1
+
+if [ -z "${ECW_TEST_BASIC_AUTH_USERNAME}" ] && [ -z "${ECW_TEST_BASIC_AUTH_PASSWORD}" ]; then
+	echo "One or both variables are not defined."
+	exit
+fi
+
+credentials="${ECW_TEST_BASIC_AUTH_USERNAME}:${ECW_TEST_BASIC_AUTH_PASSWORD}"
+
+check_status() {
+	local url=$1
+	local status
+	status=$(
+		http --auth "${credentials}" --follow --check-status "${url}" --ignore-stdin >/dev/null 2>&1
+		echo $?
+	)
+
+	if [ "${status}" -eq 0 ]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+check() {
+	if check_status "$1"; then
+		echo "Project found: $1"
+		echo "$2"
+		return 0
+	fi
+	return 1
+}
+
+check "https://test5.ecreativeworks.com/${project}" "PHP56 cart"
+check "https://test7.ecreativeworks.com/${project}" "PHP71 cart"
+check "https://test5.ecreativeworks.com/${project}" "PHP74 cart"
+check "https://test5.ecreativeworks.com/${project}" "PHP81 cart"

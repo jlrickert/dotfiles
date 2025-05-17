@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -o nounset # exit if undefined variable is used
+
+cmds="e edit l list c create"
+
+_edit() {
+	FILE="$(which "$1")"
+	if ! [[ "$(file "${FILE}")" =~ ASCII ]]; then
+		exit
+	fi
+	chezmoi edit "${FILE}" --apply
+}
+
+_create() {
+	cd "$SCRIPT" || exit 1
+	create-bash-script "$@"
+	_edit "$@"
+}
+
+_list() {
+	ls "${SCRIPT:-$HOME/scripts}"
+}
+
+# ---------------------- bash completion context ---------------------
+set +o nounset # exit if undefined variable is used
+
+# add `complete -S vic vic` to bashrc or zshrc
+
+if test -n "${COMP_LINE}"; then
+	pre="${COMP_LINE##* }"
+	for c in ${cmds:+${cmds} $(_list)}; do
+		test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+	done
+	exit
+fi
+
+# ------------------------------- main -------------------------------
+
+cmd="${1}"
+test ${#} -gt 0 && shift
+
+case "$cmd" in
+c | create) _create "$cmd" ;;
+ls | list) _list "$@" ;;
+e | edit) _edit "$@" ;;
+*) _edit "$cmd" ;;
+esac

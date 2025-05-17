@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# set -o errexit  # exit if non-zero status code is returned
+# set -o nounset  # exit if undefined variable is used
+# set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+SOURCE="$1"
+TARGET="$2"
+
+# if test -n "${COMP_LINE}"; then
+# 	pre="${COMP_LINE##* }"
+# 	for c in $1/*; do
+# 		test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+# 	done
+# 	exit
+# fi
+
+help() {
+	echo "Usage: $(basename "$0") SOURCE TARGET"
+	echo
+	echo "A script to synchronize directories."
+	echo
+	echo "Arguments:"
+	echo "  SOURCE    The source directory to sync from"
+	echo "  TARGET    The target directory to sync to"
+	echo
+	echo "Options:"
+	echo "  -h, --help    Show this help message and exit"
+	echo
+	echo "Examples:"
+	echo "  $(basename "$0") /path/to/source /path/to/target"
+	echo "  $(basename "$0") -h"
+}
+
+cleanup() {
+	exit 0
+}
+
+trap cleanup SIGINT SIGTERM
+
+# Check if the help flag is provided
+if [ "$SOURCE" == "-h" ] || [ "$SOURCE" == "--help" ]; then
+	help
+	exit 0
+fi
+
+if [ -z "${SOURCE}" ] || [ -z "${TARGET}" ]; then
+	echo "Error: Missing required arguments."
+	echo
+	help
+	exit 1
+fi
+
+while true; do
+	fd "${SOURCE}" | entr -d rsync \
+		--human-readable --progress --archive --verbose --compress \
+		"${SOURCE}" "${TARGET}"
+done

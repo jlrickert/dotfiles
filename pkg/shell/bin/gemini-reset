@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+remove-conv() {
+	local TITLE=$1
+	if mods --list | grep --quiet --fixed-strings "${TITLE}"; then
+		mods --delete "${TITLE}"
+	fi
+}
+
+remove-conv "$(git rev-parse --show-toplevel 2>/dev/null || pwd)--gemini"
+remove-conv "$(git rev-parse --show-toplevel 2>/dev/null || pwd)--gemini-git"
