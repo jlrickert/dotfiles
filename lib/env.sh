@@ -40,6 +40,18 @@ export DOTFILES_CACHE_HOME="${DOTFILES_CACHE_HOME:-${HOME}/.cache/dotfiles}"
 # Defaults to a 'log' file within the DOTFILES_STATE directory if not already set.
 export DOTFILES_LOG_FILE="${DOTFILES_LOG_FILE:-${DOTFILES_STATE_HOME}/log}"
 
+# --- Ensure PROJECT_ROOT/bin is in PATH ---
+# This must be done here in env.sh because it's sourced early, before functions
+# like log_message are available. Use standard shell commands.
+export DOTFILES_BIN="${PROJECT_ROOT}/bin"
+
+# Remove existing instances of DOTFILES_BIN from PATH
+PATH=${PATH//:"${DOTFILES_BIN}":/:}
+PATH=${PATH/#"${DOTFILES_BIN}:"/}
+PATH=${PATH/%":${DOTFILES_BIN}"/}
+# Prepend DOTFILES_BIN to PATH
+export PATH="${DOTFILES_BIN}${PATH:+":${PATH}"}"
+
 if [ -f "${PROJECT_ROOT}/.env" ]; then
 	. "${PROJECT_ROOT}/.env"
 fi

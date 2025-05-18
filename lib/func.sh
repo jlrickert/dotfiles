@@ -56,6 +56,8 @@ function backup_item() {
 	fi
 }
 
+export -f backup_item
+
 # Ensures that core dotfiles directories and the log file location exist or can
 # be created based on environment variables from lib/env.sh. This function
 # first ensures the directory for the log file exists so that subsequent
@@ -149,6 +151,7 @@ function ensure_environment() {
 		return 1 # Failure
 	fi
 }
+export -f ensure_environment
 
 # log_message LEVEL MESSAGE
 # Logs a message to stdout (with colors) and appends it to the log file.
@@ -179,6 +182,7 @@ function log_message() {
 	# Use a simple timestamp format for the file
 	echo "[${timestamp}] [${level}] ${message}" >>"${DOTFILES_LOG_FILE}"
 }
+export -f log_message
 
 # install_symlink SOURCE TARGET
 # Creates a symlink from SOURCE to TARGET.
@@ -255,6 +259,7 @@ function install_symlink() {
 		return 1 # Failure
 	fi
 }
+export -f install_symlink
 
 # ensure_block: Ensures a block of text exists in a file, identified by a block name.
 # It can take the block content as a third argument or read it from standard input.
@@ -277,7 +282,7 @@ function install_symlink() {
 #   0: The block was successfully ensured (inserted or updated).
 #   1: An error occurred.
 #
-blockinfile() {
+function blockinfile() {
 	local file="$1"
 	local block_name="$2"
 	local block_content=""
@@ -393,3 +398,31 @@ blockinfile() {
 
 	return 0
 }
+export -f blockinfile
+
+# append to path if it exists
+function pathappend() {
+	declare arg
+	for arg in "$@"; do
+		test -d "$arg" || continue
+		PATH=${PATH//":$arg:"/:}
+		PATH=${PATH/#"$arg:"/}
+		PATH=${PATH/%":$arg"/}
+		export PATH="${PATH:+"$PATH:"}$arg"
+	done
+}
+export -f pathappend
+
+# prepend to path if it exists
+function pathprepend() {
+	for arg in "$@"; do
+		test -d "$arg" || continue
+		PATH=${PATH//:"$arg:"/:}
+		PATH=${PATH/#"$arg:"/}
+		PATH=${PATH/%":$arg"/}
+		export PATH="$arg${PATH:+":${PATH}"}"
+	done
+}
+export -f pathprepend
+
+

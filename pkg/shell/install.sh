@@ -1,17 +1,28 @@
 #!/usr/bin/env bash
-# Installs nvim configuration by symlink
 
-PKG_ROOT="$(dirname "$(readlink -f "$0")")"
-PROJECT_ROOT="$(cd "${PKG_ROOT}" && git rev-parse --show-toplevel)"
+install_symlink "${PACKAGE_ROOT}/bin" "${HOME}/bin"
 
-cd "${PKG_ROOT}" || return 1
+if ! command -v starship &>/dev/null; then
+	log_message INFO "starship not found. Installing..."
+	curl -sS https://starship.rs/install.sh | sh
+else
+	log_message INFO "starship is already installed."
+fi
 
-. "${PROJECT_ROOT}/lib/env.sh"
-. "${PROJECT_ROOT}/lib/func.sh"
+if command -v brew &>/dev/null; then
+	log_message INFO "Homebrew is installed."
+	if ! command -v fzf &>/dev/null; then
+		log_message INFO "fzf not found. Installing with Homebrew..."
+		brew install fzf
+	else
+		log_message INFO "fzf is already installed."
+	fi
+else
+	log_message INFO "Homebrew is not installed. Skipping fzf installation."
+	# Optionally, add instructions on how to install brew or handle this case
+	# log_message INFO "Please install Homebrew first: /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+fi
 
-ensure_environment
-
-install_symlink "${PKG_ROOT}/bin" "${HOME}/bin"
-
-blockinfile "${HOME}/.zshenv" zshenv ". ${PKG_ROOT}/lib/zshenv"
-blockinfile "${HOME}/.zshrc" zshrc ". ${PKG_ROOT}/lib/zshrc"
+blockinfile "${HOME}/.bashrc" bashrc ". ${PACKAGE_ROOT}/bashrc"
+blockinfile "${HOME}/.zshenv" zshenv ". ${PACKAGE_ROOT}/env.sh"
+blockinfile "${HOME}/.zshrc" zshrc ". ${PACKAGE_ROOT}/lib/zshrc"

@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+
+# Load environmental variables
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}" && git rev-parse --show-toplevel)"
+. "${PROJECT_ROOT}/lib/env.sh"
+. "${PROJECT_ROOT}/lib/func.sh"
+
+cd "${PROJECT_ROOT}"
+
+######################### Tab Completion Context ########################
+# Check if we are in a tab completion context
+if test -n "${COMP_LINE}"; then
+	# Parse the command line for the subcommand and preceding arguments
+	# COMP_LINE is the full command line being completed
+	# We want the word *after* the script name as the subcommand
+	# And words *after* the subcommand as arguments for completion
+	script_name="$(basename "${BASH_SOURCE[0]}")"
+	# Use awk to find the index of the script name and get the next word
+	script_index=$(echo "${COMP_LINE}" | awk -v name="${script_name}" '{ for(i=1; i<=NF; i++) if ($i == name) print i; }')
+	cmd_index=$((script_index + 1))
+	arg_start_index=$((cmd_index + 1))
+
+	cmd="$(echo "${COMP_LINE}" | awk -v idx="${cmd_index}" '{ print $idx }')"
+	pre="$(echo "${COMP_LINE}" | awk -v idx="${arg_start_index}" '{ for(i=idx; i<=NF; i++) printf $i" "; print "" }')"
+
+	# Debugging completion (optional)
+	# echo "COMP_LINE: ${COMP_LINE}" >&2
+	# echo "script_name: ${script_name}" >&2
+	# echo "script_index: ${script_index}" >&2
+	# echo "cmd: ${cmd}" >&2
+	# echo "pre: ${pre}" >&2
+
+	case "${cmd}" in
+	install)
+		# For the 'install' subcommand, list available packages (directories in pkg/)
+		pkg_dir="${PROJECT_ROOT}/pkg"
+		if [ -d "${pkg_dir}" ]; then
+			cd "${pkg_dir}" || exit 1 # Change to the directory to get relative names easily
+			# List all items, filter for directories, and print their names
+			for item in *; do
+				test -z "${pre}" -o "${item}" != "${item#"${pre}"}" && echo "$item"
+			done
+		fi
+		exit 0 # Exit after providing completions
+		;;
+
+	# Add cases for other subcommands that need specific completion
+	# example)
+	# setup)
+	#    # List setup options or files
+	#    echo "option1"
+	#    echo "option2"
+	#    exit 0
+	#    ;;
+
+	*)
+		# Default completion: list available subcommands
+		# Filter by the 'cmd' string if it exists (when completing the subcommand itself)
+		# Or filter by 'pre' if completing after the subcommand (though this case is handled above)
+		available_subcommands="install log shellenv" # List all top-level subcommands here
+
+		for sub in ${available_subcommands}; do
+			# If 'cmd' is empty (completing the first word) or matches the start of 'sub'
+			if [ -z "${cmd}" ] || [[ "${sub}" =~ ^${cmd} ]]; then
+				echo "${sub}"
+			fi
+		done
+		exit 0 # Exit after providing completions
+		;;
+	esac
+fi
+###################### End Tab Completion Context #######################
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+ensure_environment
+
+###
+## Command Handling
+###
+
+# Get the subcommand
+subcommand="$1"
+shift # Remove the subcommand from the arguments list
+
+case "${subcommand}" in
+install)
+	log_message INFO "Running 'install' subcommand."
+
+	# Check if any packages were specified
+	if [ "$#" -eq 0 ]; then
+		log_message ERROR "No packages specified for installation."
+		log_message INFO "Usage: $(basename "$0") install <package1> [package2 ...]"
+		exit 1
+	fi
+
+	install_packages_root="${PROJECT_ROOT}/pkg"
+	overall_success=0 # 0 for success, 1 for failure
+
+	ensure_environment
+
+	# Loop through the specified packages
+	for pkg_name in "$@"; do
+		export PACKAGE_ROOT="${install_packages_root}/${pkg_name}"
+		cd "${PROJECT_ROOT}"
+		pkg_dir="${install_packages_root}/${pkg_name}"
+		install_script="${pkg_dir}/install.sh"
+
+		log_message INFO "Attempting to install package: \`${pkg_name}\`"
+
+		# Check if the install script exists and is executable
+		if [ ! -f "${install_script}" ]; then
+			log_message ERROR "Install script not found or not executable: \`${install_script}\`" >&2
+			overall_success=1
+			continue # Skip to the next package
+		fi
+
+		if [ -f "${pkg_dir}/env.sh" ]; then
+			log_message INFO "Sourcing ${pkg_dir}/env.sh"
+			# shellcheck disable=SC1091
+			. "${pkg_dir}/env.sh"
+		fi
+
+		# Execute the install script
+		log_message INFO "Executing install script for \`${pkg_name}\`: \`${install_script}\`"
+		if "$(bash "${install_script}")"; then
+			log_message SUCCESS "Package \`${pkg_name}\` installed successfully."
+		else
+			log_message ERROR "Install script failed for package: \`${pkg_name}\`" >&2
+			overall_success=1
+			# Continue to the next package even if one fails
+		fi
+		cd -
+	done
+
+	# Report overall status
+	if [ "${overall_success}" -eq 0 ]; then
+		log_message SUCCESS "All specified packages processed."
+		exit 0
+	else
+		log_message ERROR "One or more package installations failed. See logs/output above."
+		exit 1
+	fi
+	;;
+
+# Add other subcommands here as needed
+# example)
+# setup)
+#    log_message INFO "Running 'setup' subcommand."
+#    # Call setup functions or scripts
+#    ;;
+
+log)
+	if [ -z "${DOTFILES_LOG_FILE:-}" ]; then
+		echo -e "${RED}Error: DOTFILES_LOG_FILE is not set. Cannot tail log.${RESET}" >&2
+		return 1
+	fi
+
+	if [ ! -f "${DOTFILES_LOG_FILE}" ]; then
+		echo -e "${YELLOW}Warning: Log file does not exist yet: \`${DOTFILES_LOG_FILE}\`.${RESET}" >&2
+		return 0 # Not an error if the file just doesn't exist yet
+	fi
+
+	log_message INFO "Tailing log file: \`${DOTFILES_LOG_FILE}\` with options: \`$*\`"
+	# Use exec to replace the current shell process with tail
+	exec tail "$@" "${DOTFILES_LOG_FILE}"
+	;;
+shellenv) ;;
+*)
+	# Default case for unknown subcommands or no subcommand
+	if [ -z "${subcommand}" ]; then
+		log_message ERROR "No subcommand provided." >&2
+	else
+		log_message ERROR "Unknown subcommand: \`${subcommand}\`" >&2
+	fi
+	log_message INFO "Usage: $(basename "$0") <subcommand> [args...]"
+	log_message INFO "Available subcommands: install" # List available commands
+	exit 1
+	;;
+esac

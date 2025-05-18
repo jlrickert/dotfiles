@@ -1,0 +1,18 @@
+complete () {
+	emulate -L zsh
+	local args void cmd print remove
+	args=("$@") 
+	zparseopts -D -a void o: A: G: W: C: F: P: S: X: a b c d e f g j k u v p=print r=remove
+	if [[ -n $print ]]
+	then
+		printf 'complete %2$s %1$s\n' "${(@kv)_comps[(R)_bash*]#* }"
+	elif [[ -n $remove ]]
+	then
+		for cmd
+		do
+			unset "_comps[$cmd]"
+		done
+	else
+		compdef _bash_complete\ ${(j. .)${(q)args[1,-1-$#]}} "$@"
+	fi
+}

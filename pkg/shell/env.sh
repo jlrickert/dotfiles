@@ -136,6 +136,7 @@ _pathappend \
 	/bin
 
 if _have /opt/homebrew/bin/brew; then
+	# shellcheck source=/opt/homebrew/bin/brew
 	source <(/opt/homebrew/bin/brew shellenv)
 
 	python_bin="$(find /Users/jlrickert/Library/Python -name "bin")"
@@ -157,9 +158,9 @@ _have vim && export EDITOR_PREFIX=vim
 _have nvim && export EDITOR_PREFIX=nvim
 export GIT_EDITOR="${EDITOR}"
 
-if [[ -d "${DOTFILES_DATA}/secrets" ]]; then
-	for file in "${DOTFILES_DATA}"/secrets/*; do
-		# shellcheck source=${DOTFILES_CONFIG}/*.sh
-		. "${file}"
+if [[ -d "${DOTFILES_DATA_HOME}/secrets" ]]; then
+	for file in ${DOTFILES_DATA_HOME}/secrets/*; do
+		# shellcheck source=${file}
+		source "${file}"
 	done
 fi
