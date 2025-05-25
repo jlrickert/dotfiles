@@ -9,12 +9,10 @@ ARG DEBIAN_FRONTEND=noninteractive
 # for ubuntu
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends \
-	apt-utils \
 	build-essential \
 	cmake \
 	curl \
 	fd-find \
-	fish \
 	fontconfig \
 	gcc \
 	git \
@@ -34,22 +32,8 @@ RUN apt-get update && \
 RUN rm -rf /var/lib/apt/lists/* && \
 	localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
+RUN chsh -s $(command -v zsh) root
+
 ENV LANG=en_US.utf8
 
 WORKDIR /root
-
-# Copy over the neovim configuration
-COPY . /root/.config/dotfiles
-
-RUN touch /.dockerenv
-
-RUN cd /root/.config/dotfiles && ./bin/dotsh bootstrap
-RUN cd /root/.config/dotfiles && ./bin/dotsh install shell
-RUN cd /root/.config/dotfiles && ./bin/dotsh install editor
-RUN cd /root/.config/dotfiles && ./bin/dotsh install go
-RUN cd /root/.config/dotfiles && ./bin/dotsh install deno
-RUN cd /root/.config/dotfiles && ./bin/dotsh install rust
-
-# Define the entry point command.  This is the command that will be executed
-# when the container starts.
-ENTRYPOINT ["zsh"]

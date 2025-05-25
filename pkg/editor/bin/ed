@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+##
+# Determine the type of editing context
+##
+
+export EDITOR_PROJECT_ROOT="$(cd "$(dirname "$1")" && git rev-parse --show-toplevel 2>/dev/null || echo "$(dirname "$1")")"
+
+# Editor is editing directory
+if [ -d "$1" ]; then
+	export EDITOR_EDIT_TYPE="directory"
+# Editor is editing a file
+elif [ -f "$1" ]; then
+	export EDITOR_EDIT_TYPE="file"
+	# No arguments
+elif [ -n "$1" ]; then
+	export EDITOR_EDIT_TYPE="directory"
+	# Unknown context
+else
+	export EDITOR_EDIT_TYPE="unknown"
+fi
+
+if [ -z "$1" ]; then
+	export EDITOR_PATH="$1"
+	export EDITOR_FILE_TYPE=$(file --mime-type -b "$1")
+fi
+
+# Determine the project type based on the presence of specific files or directories
+if [ -f "${EDITOR_PROJECT_ROOT}/composer.json" ]; then
+	export EDITOR_PROJECT_TYPE="php"
+elif [ -f "${EDITOR_PROJECT_ROOT}/version.php" ]; then
+	export EDITOR_PROJECT_TYPE="php"
+elif [ -f "${EDITOR_PROJECT_ROOT}/deno.json" ]; then
+	export EDITOR_PROJECT_TYPE="deno"
+elif [ -f "${EDITOR_PROJECT_ROOT}/package.json" ]; then
+	export EDITOR_PROJECT_TYPE="node"
+elif [ -f "${EDITOR_PROJECT_ROOT}/init.lua" ]; then
+	export EDITOR_PROJECT_TYPE="lua"
+else
+	# use the file command to figure out the file type
+	export EDITOR_PROJECT_TYPE="unknown"
+fi
+
+# Open the editor with the provided arguments
+$EDITOR "$@"

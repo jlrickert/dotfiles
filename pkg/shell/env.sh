@@ -9,27 +9,10 @@ _have() { type "$1" &>/dev/null; }
 # Variables
 ################################################################################
 
-export XDG_CACHE_HOME="${HOME}/.cache"
-export XDG_CONFIG_HOME="${HOME}/.config"
-export XDG_DATA_HOME="${HOME}/.local/share"
-export XDG_STATE_HOME="${HOME}/.local/state"
-export XDG_DESKTOP_DIR="${HOME}/Desktop"
-export XDG_DOCUMENTS_DIR="${HOME}/Documents"
-export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
-export XDG_MUSIC_DIR="${HOME}/Music"
-export XDG_PICTURES_DIR="${HOME}/Pictures"
-export XDG_PUBLICSHARE_DIR="${HOME}/Public"
-export XDG_TEMPLATES_DIR="${HOME}/Templates"
-export XDG_VIDEOS_DIR="${HOME}/Videos"
-
 export USER="${USER:-$(whoami)}"
 export GITUSER="${USER}"
 export REPOS="${HOME}/repos"
 export GHREPOS="${REPOS}/github.com/${GITUSER}"
-export DOTFILES_DATA="${XDG_DATA_HOME}/dotfiles"
-export DOTFILES_STATE="${XDG_STATE_HOME}/dotfiles"
-export DOTFILES_CONFIG="${XDG_CONFIG_HOME}/dotfiles"
-export DOTFILES_CACHE="${XDG_CACHE_HOME}/dotfiles"
 export SCRIPTS="${HOME}/scripts"
 export SNIPPETS="${HOME}/snippets"
 export HELP_BROWSER=lynx
@@ -37,15 +20,6 @@ export DOTNET_ROOT="${HOME}/.local/share/dotnet"
 export PYENV_ROOT="$HOME/.local/share/pyenv"
 
 export LANG=en_US.UTF-8
-
-export DESKTOP="${XDG_DESKTOP_DIR}"
-export DOCUMENTS="${XDG_DOCUMENTS_DIR}"
-export DOWNLOAD="${XDG_DOWNLOAD_DIR}"
-export MUSIC_DIR="${XDG_MUSIC_DIR}"
-export PICTURES="${XDG_PICTURES_DIR}"
-export PUBLIC="${XDG_PUBLICSHARE_DIR}"
-export TEMPLATES="${XDG_TEMPLATES_DIR}"
-export VIDEOS="${XDG_VIDEOS_DIR}"
 
 export BAT_THEME=gruvbox-dark
 export DENO_INSTALL="${XDG_DATA_HOME}/deno"
@@ -70,7 +44,7 @@ export ZSH="${XDG_DATA_HOME}/oh-my-zsh"
 export ZSH_CUSTOM="${XDG_CONFIG_HOME}/oh-my-custom"
 export FLYCTL_INSTALL=${XDG_DATA_HOME}/.local/share/fly
 export PNPM_HOME="${XDG_DATA_HOME}/pnpm"
-export CDPATH="${CDPATH}:${HOME}/repos/github.com/jlrickert/"
+export CDPATH="${CDPATH:-}:${HOME}/repos/github.com/${USER}/"
 
 ################################################################################
 # Fuzzy finder
@@ -88,7 +62,7 @@ export FZF_ALT_C_OPTS="--preview 'tree -C {}"
 # Path
 ################################################################################
 # append to path if it exists
-_pathappend() {
+function pathappend() {
 	for arg in "$@"; do
 		test -d "$arg" || continue
 		PATH=${PATH//":$arg:"/:} # remove all occuences of `:$arg:` from the PATH
@@ -99,7 +73,7 @@ _pathappend() {
 }
 
 # prepend to path if it exists
-_pathprepend() {
+function pathprepend() {
 	for arg in "$@"; do
 		test -d "$arg" || continue
 		PATH=${PATH//:"$arg:"/:}
@@ -110,57 +84,14 @@ _pathprepend() {
 }
 
 # remember last arg will be first in path. Precedence comes to the item that comes at the head of the list. Appended paths are pruned if they do not exist.
-_pathprepend \
-	/usr/local/go/bin \
-	/usr/local/bin \
-	"${SCRIPTS}" \
-	"${HOME}/.local/bin" \
-	"${XDG_DATA_HOME}/flutter/bin" \
-	"${CARGO_HOME}/bin" \
-	"${DENO_INSTALL_ROOT}" \
-	"${FNM_HOME}" \
-	"${HOME}/.config/emacs/bin" \
-	"${PNPM_HOME}" \
-	"${XDG_DATA_HOME}/go/bin" \
-	"${DOTNET_ROOT}"
+pathprepend \
+	"${HOME}/.local/share/fzf/bin"
 
-_pathappend \
-	/usr/local/bin \
-	/usr/local/sbin \
-	/usr/local/games \
-	/usr/games \
-	/usr/sbin \
-	/usr/bin \
-	/snap/bin \
-	/sbin \
-	/bin
-
-if _have /opt/homebrew/bin/brew; then
-	# shellcheck source=/opt/homebrew/bin/brew
-	source <(/opt/homebrew/bin/brew shellenv)
-
-	python_bin="$(find /Users/jlrickert/Library/Python -name "bin")"
-	[[ -d "${python_bin}" ]] && _pathappend "${python_bin}"
-
-	_pathappend /opt/homebrew/opt/mysql-client/bin
-fi
-
-_pathappend /Applications/kitty.app/Contents/MacOS
-
-_have vi && export EDITOR=vi
-_have vim && export EDITOR=vim
-_have nvim && export EDITOR=nvim
-_have vi && export VISUAL=vi
-_have vim && export VISUAL=vim
-_have nvim && export VISUAL=nvim
-_have vi && export EDITOR_PREFIX=vi
-_have vim && export EDITOR_PREFIX=vim
-_have nvim && export EDITOR_PREFIX=nvim
-export GIT_EDITOR="${EDITOR}"
+pathappend /Applications/kitty.app/Contents/MacOS
 
 if [[ -d "${DOTFILES_DATA_HOME}/secrets" ]]; then
 	for file in ${DOTFILES_DATA_HOME}/secrets/*; do
-		# shellcheck source=${file}
+		# shellcheck source=${file} dynamically load secrets
 		source "${file}"
 	done
 fi

@@ -1,5 +1,7 @@
 # Path to your oh-my-zsh installation.
 
+SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -29,7 +31,7 @@ plugins=(
 	z
 )
 
-source $ZSH/oh-my-zsh.sh
+source "$HOME/.local/share/oh-my-zsh/oh-my-zsh.sh"
 
 ################################################################################
 #                      personalized configuration
@@ -38,9 +40,7 @@ source $ZSH/oh-my-zsh.sh
 _source_if() { [[ -r "$1" ]] && source "$1"; }
 _have() { command -v "$1" &>/dev/null; }
 
-if _have /opt/homebrew/bin/brew; then
-	source <(/opt/homebrew/bin/brew shellenv)
-
+if _have brew; then
 	HOMEBREW_PREFIX="$(brew --prefix)"
 	if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
 		source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
@@ -57,15 +57,20 @@ if _have /opt/homebrew/bin/brew; then
 	compinit
 fi
 
+_have fzf && source <(fzf --zsh)
+
 # iterm2 integration
 # test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
 
 # tabtab source for packages
 # uninstall by removing these lines
 _source_if "${HOME}/tabtab/zsh/__tabtab.zsh"
+_source_if "${SCRIPT_DIR}/compgen"
+_source_if "${SCRIPT_DIR}/complete"
+_source_if "${SCRIPT_DIR}/_bash_complete"
 
 # bonzai style completions
-owncomp=(./build auth dotz keg ${HOME}/scripts/*)
+owncomp=(./build auth dotz keg ${HOME}/bin/*)
 for i in "${owncomp[@]}"; do 
 	_have "$(basename $i)" && complete -C "$i" "$i"
 done

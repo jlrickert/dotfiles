@@ -51,3 +51,6 @@ fi
 git checkout "${DOTFILES_VERSION}"
 
 cd "${DOTFILES_CONFIG_HOME}"
+
+source env
+dotsh boostrap
