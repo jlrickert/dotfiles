@@ -9,13 +9,28 @@ dotsh install rust
 # Use the reusable install_symlink function
 install_symlink "${SOURCE_DIR}" "${TARGET_DIR}"
 
-dotm install rust
-
-if ! command -v stylua &>/dev/null; then
-	log_message INFO "stylua not found. Installing..."
-	cargo install stylua --features luajit
+# Check if Rust (cargo) is installed, as stylua is installed via cargo
+if ! command -v cargo &>/dev/null; then
+	log_message INFO "Rust (cargo) is not installed. Skipping stylua installation."
+	# Skip the rest of this block if cargo is not available
 else
-	log_message INFO "stylua is already installed."
+	# Cargo is installed, now check for stylua
+	if ! command -v stylua &>/dev/null; then
+		log_message INFO "stylua not found. Installing via cargo..."
+		# Use the _sudo helper if necessary, though cargo install usually installs to user's home
+		# _sudo cargo install stylua --features luajit
+		cargo install stylua --features luajit
+		# Check if installation was successful
+		if [ $? -eq 0 ]; then
+			log_message SUCCESS "stylua installed successfully."
+		else
+			log_message ERROR "Failed to install stylua via cargo." >&2
+			# Decide whether to exit or continue if stylua installation fails
+			# exit 1
+		fi
+	else
+		log_message INFO "stylua is already installed."
+	fi
 fi
 
 log_message INFO "Neovim symlink installation script finished."

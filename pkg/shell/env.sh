@@ -13,37 +13,37 @@ export USER="${USER:-$(whoami)}"
 export GITUSER="${USER}"
 export REPOS="${HOME}/repos"
 export GHREPOS="${REPOS}/github.com/${GITUSER}"
-export SCRIPTS="${HOME}/scripts"
-export SNIPPETS="${HOME}/snippets"
-export HELP_BROWSER=lynx
-export DOTNET_ROOT="${HOME}/.local/share/dotnet"
-export PYENV_ROOT="$HOME/.local/share/pyenv"
+# export SCRIPTS="${HOME}/scripts"
+# export SNIPPETS="${HOME}/snippets"
+# export HELP_BROWSER=lynx
+# export DOTNET_ROOT="${HOME}/.local/share/dotnet"
+# export PYENV_ROOT="$HOME/.local/share/pyenv"
 
 export LANG=en_US.UTF-8
 
 export BAT_THEME=gruvbox-dark
-export DENO_INSTALL="${XDG_DATA_HOME}/deno"
-export DENO_INSTALL_ROOT="${XDG_DATA_HOME}/deno/bin"
-export NVM_DIR="${XDG_DATA_HOME}/nvm"
-export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
-export CARGO_HOME="${XDG_DATA_HOME}/cargo"
-export VOLTA_HOME="${HOME}/.volta"
-export FNM_HOME="${HOME}/.local/share/fnm"
-export ZSH_HOME="${HOME}/.local/share/zsh"
+# export DENO_INSTALL="${XDG_DATA_HOME}/deno"
+# export DENO_INSTALL_ROOT="${XDG_DATA_HOME}/deno/bin"
+# export NVM_DIR="${XDG_DATA_HOME}/nvm"
+# export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
+# export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+# export VOLTA_HOME="${HOME}/.volta"
+# export FNM_HOME="${HOME}/.local/share/fnm"
+# export ZSH_HOME="${HOME}/.local/share/zsh"
 export PPM_HOME="${HOME}/.local/share/ppm"
-export GOPRIVATE="github.com/${GITUSER}/*,gitlab.com/${GITUSER}/*"
-export GOPATH="${XDG_DATA_HOME}/go"
-export GOBIN="${HOME}/.local/bin"
-export GOPROXY=direct
-export KUBECONFIG="${HOME}/.kube/config"
-export CGO_ENABLED=0
-export PYTHONDONTWRITEBYTECODE=2
-export LC_COLLATE=C
-#export CFLAGS="-Wall -Wextra -Werror -O0 -g -fsanitize=address -fno-omit-frame-pointer -finstrument-functions"
-export ZSH="${XDG_DATA_HOME}/oh-my-zsh"
-export ZSH_CUSTOM="${XDG_CONFIG_HOME}/oh-my-custom"
-export FLYCTL_INSTALL=${XDG_DATA_HOME}/.local/share/fly
-export PNPM_HOME="${XDG_DATA_HOME}/pnpm"
+# export GOPRIVATE="github.com/${GITUSER}/*,gitlab.com/${GITUSER}/*"
+# export GOPATH="${XDG_DATA_HOME}/go"
+# export GOBIN="${HOME}/.local/bin"
+# export GOPROXY=direct
+# export KUBECONFIG="${HOME}/.kube/config"
+# export CGO_ENABLED=0
+# export PYTHONDONTWRITEBYTECODE=2
+# export LC_COLLATE=C
+# #export CFLAGS="-Wall -Wextra -Werror -O0 -g -fsanitize=address -fno-omit-frame-pointer -finstrument-functions"
+# export ZSH="${XDG_DATA_HOME}/oh-my-zsh"
+# export ZSH_CUSTOM="${XDG_CONFIG_HOME}/oh-my-custom"
+# export FLYCTL_INSTALL=${XDG_DATA_HOME}/.local/share/fly
+# export PNPM_HOME="${XDG_DATA_HOME}/pnpm"
 export CDPATH="${CDPATH:-}:${HOME}/repos/github.com/${USER}/"
 
 ################################################################################

@@ -38,17 +38,35 @@ ENV LANG=en_US.utf8
 
 WORKDIR /root
 
-# Copy over the neovim configuration
-COPY . /root/.config/dotfiles
-
+# Used to mark that this is a docker container
 RUN touch /.dockerenv
 
-RUN cd /root/.config/dotfiles && ./bin/dotsh bootstrap
-RUN cd /root/.config/dotfiles && ./bin/dotsh install shell
-RUN cd /root/.config/dotfiles && ./bin/dotsh install editor
-RUN cd /root/.config/dotfiles && ./bin/dotsh install go
-RUN cd /root/.config/dotfiles && ./bin/dotsh install deno
-RUN cd /root/.config/dotfiles && ./bin/dotsh install rust
+WORKDIR /root/.config/dotfiles
+
+# Copy over everything needed to boot strap
+COPY ./bin /root/.config/dotfiles/bin
+COPY ./env /root/.config/dotfiles/env
+RUN ./bin/dotsh bootstrap
+
+COPY ./pkg/editor /root/.config/dotfiles/pkg/editor
+RUN ./bin/dotsh install editor
+
+COPY ./pkg/go /root/.config/dotfiles/pkg/go
+RUN ./bin/dotsh install go
+
+COPY ./pkg/deno /root/.config/dotfiles/pkg/deno
+RUN ./bin/dotsh install deno
+
+COPY ./pkg/rust /root/.config/dotfiles/pkg/rust
+RUN ./bin/dotsh install rust
+
+COPY ./pkg/shell /root/.config/dotfiles/pkg/shell
+RUN ./bin/dotsh install shell
+
+# Copy the rest over. Doing this last for faster incremental builds
+COPY . /root/.config/dotfiles
+
+WORKDIR /root
 
 # Define the entry point command.  This is the command that will be executed
 # when the container starts.

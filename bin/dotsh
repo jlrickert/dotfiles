@@ -4,8 +4,8 @@ IMAGE_NAME=dotfiles
 DOCKERFILE_PATH="./Dockerfile"
 
 # Load environmental variables
-SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}" && git rev-parse --show-toplevel)"
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+PROJECT_ROOT="$(dirname "${SCRIPT_DIR}")"
 
 export NOCOLOR=
 [[ -t 1 ]] || NOCOLOR=y
@@ -25,7 +25,7 @@ if [[ -n "${NOCOLOR}" ]]; then
 	RESET=
 fi
 
-export DOTFILES_VERSION="$(git rev-parse --abbrev-ref HEAD)"
+# export DOTFILES_VERSION="$(cd "${SCRIPT_DIR}" && git rev-parse --abbrev-ref HEAD)"
 
 # This is where the user specific config should live that is private. This is
 # safe to sync between systems
@@ -545,8 +545,10 @@ case "${subcommand}" in
 bootstrap)
 	cd "${PROJECT_ROOT}"
 	ensure_environment
-	blockinfile "${HOME}/.bashrc" bashrc ". ${PROJECT_ROOT}/env"
-	blockinfile "${HOME}/.zshrc" zshrc ". ${PROJECT_ROOT}/env"
+	touch "${HOME}/.bashrc"
+	blockinfile "${HOME}/.bashrc" dotfiles ". ${PROJECT_ROOT}/env"
+	touch "${HOME}/.zshrc"
+	blockinfile "${HOME}/.zshrc" dotfiles ". ${PROJECT_ROOT}/env"
 	;;
 install)
 	log_message INFO "Running 'install' subcommand."
@@ -614,13 +616,6 @@ install)
 			overall_success=1
 			cd - >/dev/null # Return to original directory
 			continue        # Skip to the next package
-		fi
-
-		# Source the environment file if it exists in the symlinked location
-		if [ -f "${state_pkg_dir}/env.sh" ]; then
-			log_message INFO "Sourcing ${state_pkg_dir}/env.sh"
-			# shellcheck disable=SC1091 # Source command with dynamic path
-			. "${state_pkg_dir}/env.sh"
 		fi
 
 		# Execute the install script from the symlinked location
