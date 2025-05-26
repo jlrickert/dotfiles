@@ -22,7 +22,7 @@ if ! command -v fzf &>/dev/null; then
 		log_message INFO "Homebrew is not installed. Skipping fzf installation."
 		git clone --depth 1 https://github.com/junegunn/fzf.git "${HOME}/.local/share/fzf"
 		cd "${HOME}/.local/share/fzf" || exit 1
-		./install --no-update-rc
+		./install --bin
 	fi
 fi
 

@@ -108,13 +108,15 @@ function load_packages() {
 	if ! [ -d "${DOTFILES_STATE_HOME}/pkg" ]; then
 		return 0
 	fi
+
+	local installed_packages_root="${DOTFILES_STATE_HOME}/pkg"
 	# Find directories directly under ${HOME}/.local/state/pkg, output their basenames null-separated
-	find "${DOTFILES_STATE_HOME}/pkg" -mindepth 1 -maxdepth 1 -type d -print0 | while IFS= read -r -d '' full_path; do
+	for pkg_name in $(ls "${installed_packages_root}"); do
 		# pkg_name is now just the directory name (e.g., "some-package")
 
 		# Construct the paths based on PROJECT_ROOT and package name
-		local pkg_env_file="${PROJECT_ROOT}/${pkg_name}/env.sh"
-		local pkg_bin_path="${PROJECT_ROOT}/${pkg_name}/bin"
+		local pkg_env_file="${installed_packages_root}/${pkg_name}/env.sh"
+		local pkg_bin_path="${installed_packages_root}/${pkg_name}/bin"
 
 		# Source the environment file if it exists
 		if [ -f "${pkg_env_file}" ]; then
@@ -122,12 +124,7 @@ function load_packages() {
 			. "${pkg_env_file}"
 		fi
 
-		# Prepend package bin to path if the directory exists. It should check
-		# if the constructed pkg_bin_path exists.
-		if [ -d "${pkg_bin_path}" ]; then
-			echo $pkg_bin_path
-			pathappend "${pkg_bin_path}"
-		fi
+		pathprepend "${pkg_bin_path}"
 	done
 }
 
