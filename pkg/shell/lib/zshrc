@@ -65,15 +65,6 @@ _have fzf && source <(fzf --zsh)
 # tabtab source for packages
 # uninstall by removing these lines
 _source_if "${HOME}/tabtab/zsh/__tabtab.zsh"
-_source_if "${SCRIPT_DIR}/compgen"
-_source_if "${SCRIPT_DIR}/complete"
-_source_if "${SCRIPT_DIR}/_bash_complete"
-
-# bonzai style completions
-owncomp=(./build auth dotz keg ${HOME}/bin/*)
-for i in "${owncomp[@]}"; do 
-	_have "$(basename $i)" && complete -C "$i" "$i"
-done
 
 ##
 ## _source_if /opt/homebrew/opt/chruby/share/chruby/chruby.sh
