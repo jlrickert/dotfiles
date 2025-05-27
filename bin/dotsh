@@ -510,7 +510,7 @@ if test -n "${COMP_LINE}"; then
 		# Default completion: list available subcommands
 		# Filter by the 'cmd' string if it exists (when completing the subcommand itself)
 		# Or filter by 'pre' if completing after the subcommand (though this case is handled above)
-		available_subcommands="bootstrap install shell build docker docker-build" # List all top-level subcommands here
+		available_subcommands="bootstrap list list-installed install shell build docker docker-build" # List all top-level subcommands here
 
 		for sub in ${available_subcommands}; do
 			# If 'cmd' is empty (completing the first word) or matches the start of 'sub'
@@ -688,6 +688,12 @@ build)
 		log_message ERROR "Docker image build failed for ${IMAGE_NAME}"
 		exit 1
 	fi
+	;;
+list)
+	find "${DOTFILES_CONFIG_HOME}/pkg" -mindepth 1 -maxdepth 1
+	;;
+list-installed)
+	find "${DOTFILES_STATE_HOME}/pkg" -mindepth 1 -maxdepth 1
 	;;
 doctor)
 	echo "--- Running Doctor Checks ---"
