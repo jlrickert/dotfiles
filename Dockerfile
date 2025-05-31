@@ -26,6 +26,7 @@ RUN apt-get update && \
 	python3-pip \
 	ripgrep \
 	software-properties-common \
+	sudo \
 	unzip \
 	wget \
 	xclip \
@@ -34,39 +35,42 @@ RUN apt-get update && \
 RUN rm -rf /var/lib/apt/lists/* && \
 	localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-ENV LANG=en_US.utf8
+ARG APP_USER=jlrickert
+ARG APP_GROUP=jlrickert
+ARG APP_HOME=/home/${APP_USER}
+ARG APP_UID=1000
+ARG APP_GID=1000
 
-WORKDIR /root
+RUN groupadd -r ${APP_GROUP} && useradd -r -g ${APP_GROUP} ${APP_USER} \
+	&& echo "${APP_USER} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${APP_USER}-nopasswd \
+	&& chmod 0440 /etc/sudoers.d/${APP_USER}-nopasswd
+
+# RUN groupadd -r -g ${APP_GID} ${APP_GROUP} && useradd -r -u ${APP_UID} -g ${APP_GROUP} ${APP_USER} \
+#     && echo "${APP_USER} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${APP_USER}-nopasswd \
+#     && chmod 0440 /etc/sudoers.d/${APP_USER}-nopasswd
+
+ENV LANG=en_US.utf8
 
 # Used to mark that this is a docker container
 RUN touch /.dockerenv
 
-WORKDIR /root/.config/dotfiles
+USER ${APP_USER}
+WORKDIR ${APP_HOME}/dotfiles
 
 # Copy over everything needed to boot strap
-COPY ./bin /root/.config/dotfiles/bin
-COPY ./env /root/.config/dotfiles/env
+# COPY --chown=${APP_USER}:${APP_GROUP} . ${APP_HOME}/dotfiles
+COPY --chown=${APP_USER}:${APP_GROUP} . ${APP_HOME}/dotfiles
 RUN ./bin/dotsh bootstrap
 
-COPY ./pkg/editor /root/.config/dotfiles/pkg/editor
-RUN ./bin/dotsh install editor
-
-COPY ./pkg/go /root/.config/dotfiles/pkg/go
-RUN ./bin/dotsh install go
-
-COPY ./pkg/deno /root/.config/dotfiles/pkg/deno
-RUN ./bin/dotsh install deno
-
-COPY ./pkg/rust /root/.config/dotfiles/pkg/rust
-RUN ./bin/dotsh install rust
-
-COPY ./pkg/shell /root/.config/dotfiles/pkg/shell
 RUN ./bin/dotsh install shell
+RUN ./bin/dotsh install editor
+RUN ./bin/dotsh install go
+RUN ./bin/dotsh install deno
+RUN ./bin/dotsh install rust
+RUN ./bin/dotsh install knut
 
 # Copy the rest over. Doing this last for faster incremental builds
-COPY . /root/.config/dotfiles
-
-WORKDIR /root
+COPY --chown=${APP_USER}:${APP_GROUP} . ${APP_HOME}/dotfiles
 
 # Define the entry point command.  This is the command that will be executed
 # when the container starts.

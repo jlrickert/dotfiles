@@ -20,9 +20,33 @@ else
 	export EDITOR_EDIT_TYPE="unknown"
 fi
 
-if [ -z "$1" ]; then
+# Check if the first argument is provided (i.e., not empty)
+if [ -n "$1" ]; then
+	# Set EDITOR_PATH to the provided argument
 	export EDITOR_PATH="$1"
-	export EDITOR_FILE_TYPE=$(file --mime-type -b "$1")
+
+	# Check if the file specified by the argument exists before trying to get its mime type
+	if [ -f "$1" ]; then
+		# Get the mime type, suppressing errors from 'file' command if it fails
+		# Use || true to prevent the script from exiting if the 'file' command itself fails
+		local mime_type=$(file --mime-type -b "$1" 2>/dev/null || true)
+
+		# Check if the mime_type variable is not empty (meaning 'file' command succeeded)
+		if [ -n "${mime_type}" ]; then
+			export EDITOR_FILE_TYPE="${mime_type}"
+		else
+			# If file exists but mime type couldn't be determined (e.g., 'file' command failed or output was empty),
+			# ensure the variable is not set.
+			unset EDITOR_FILE_TYPE
+		fi
+	else
+		# If the file does not exist, ensure EDITOR_FILE_TYPE is not set
+		unset EDITOR_FILE_TYPE
+	fi
+else
+	# If no argument was provided ($1 is empty), ensure EDITOR_PATH and EDITOR_FILE_TYPE are unset
+	unset EDITOR_PATH
+	unset EDITOR_FILE_TYPE
 fi
 
 # Determine the project type based on the presence of specific files or directories

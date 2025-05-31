@@ -1,6 +1,6 @@
 # Path to your oh-my-zsh installation.
 
-SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -12,7 +12,7 @@ ZSH_THEME=""
 plugins=(
 	command-not-found
 	cp
-	direnv
+	# direnv
 	docker
 	docker-compose
 	fzf
@@ -24,7 +24,7 @@ plugins=(
 	# poetry
 	rsync
 	ssh
-	pac
+	# pac
 	rust
 	vi-mode
 	vscode
@@ -181,4 +181,6 @@ bindkey '^j' down-history
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
 
-eval $(ssh-agent) &>/dev/null
+if _have ssh-agent; then
+	eval $(ssh-agent) &>/dev/null
+fi

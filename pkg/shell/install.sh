@@ -29,6 +29,3 @@ fi
 if [ ! -d "${HOME}/.local/share/oh-my-zsh" ]; then
 	git clone https://github.com/ohmyzsh/ohmyzsh.git "${HOME}/.local/share/oh-my-zsh"
 fi
-
-blockinfile "${HOME}/.bashrc" bashrc ". ${PACKAGE_ROOT}/lib//bashrc"
-blockinfile "${HOME}/.zshrc" zshrc ". ${PACKAGE_ROOT}/lib/zshrc"

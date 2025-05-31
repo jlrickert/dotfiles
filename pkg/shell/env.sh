@@ -83,9 +83,10 @@ function pathprepend() {
 	done
 }
 
-# remember last arg will be first in path. Precedence comes to the item that comes at the head of the list. Appended paths are pruned if they do not exist.
-pathprepend \
-	"${HOME}/.local/share/fzf/bin"
+# remember last arg will be first in path. Precedence comes to the item that
+# comes at the head of the list. Appended paths are pruned if they do not
+# exist.
+pathprepend "${HOME}/.local/share/fzf/bin"
 
 pathappend /Applications/kitty.app/Contents/MacOS
 
@@ -95,3 +96,32 @@ if [[ -d "${DOTFILES_DATA_HOME}/secrets" ]]; then
 		source "${file}"
 	done
 fi
+
+case "$-" in
+*i*)
+	# This is an interactive shell (like when .zshrc is sourced)
+	if [[ -n "$BASH_VERSION" ]]; then
+		# This is Bash
+		_source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/bashrc"
+	elif [[ -n "$ZSH_VERSION" ]]; then
+		# This is Zsh
+		_source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/zshrc"
+	# Add checks for other shells if needed, e.g.:
+	# elif [[ -n "$KSH_VERSION" ]]; then
+	# 	# This is Ksh
+	# 	_source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/kshrc"
+	# elif [[ -n "$FISH_VERSION" ]]; then
+	# 	# This is Fish (Fish doesn't typically source files like this, but for completeness)
+	# 	_source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/fishrc"
+	else
+		# Unknown shell or a shell without a standard version variable
+		# Optional: log a warning or source a generic rc file
+		# log_message WARN "Unknown shell. Not sourcing shell-specific rc file." >&2
+		: # Do nothing
+	fi
+
+	;;
+*)
+	# This is a non-interactive shell (e.g., running a script)
+	;;
+esac

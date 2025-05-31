@@ -15,7 +15,7 @@ ensure_environment
 # Check if Go is already installed
 if command -v go &>/dev/null; then
 	log_message INFO "Go is already installed."
-	return 0 # Exit successfully if already present
+	exit 0 # Exit successfully if already present
 fi
 
 log_message INFO "Go not found. Attempting installation..."

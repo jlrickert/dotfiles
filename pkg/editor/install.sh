@@ -4,8 +4,6 @@
 SOURCE_DIR="${PACKAGE_ROOT}/src"
 TARGET_DIR="${HOME}/.config/nvim"
 
-dotsh install rust
-
 # Use the reusable install_symlink function
 install_symlink "${SOURCE_DIR}" "${TARGET_DIR}"
 

@@ -173,6 +173,7 @@ function ensure_environment() {
 		"${DOTFILES_DATA_HOME}"
 		"${DOTFILES_CONFIG_HOME}"
 		"${DOTFILES_CACHE_HOME}"
+		"${XDG_CONFIG_HOME:-${HOME}/.config}"
 	)
 
 	# Iterate through the list of directories
@@ -460,7 +461,151 @@ function pathprepend() {
 		export PATH="$arg${PATH:+":${PATH}"}"
 	done
 }
-export -f pathprepend
+
+function _dotsh_install() {
+	ensure_environment # Ensure DOTFILES_STATE_HOME is set and exists
+	source "${PROJECT_ROOT}/env"
+
+	log_message INFO "Running 'install' subcommand."
+
+	# Check if any packages were specified
+	if [ "$#" -eq 0 ]; then
+		log_message ERROR "No packages specified for installation."
+		log_message INFO "Usage: $(basename "$0") install <package_name_or_path1> [package_name_or_path2 ...]"
+		exit 1
+	fi
+
+	# Source location of packages relative to PROJECT_ROOT (fallback if arg is just a name)
+	local default_packages_root="${PROJECT_ROOT}/pkg"
+	local overall_success=0 # 0 for success, 1 for failure
+
+	# Loop through the specified package arguments (names or paths)
+	for package_arg in "$@"; do
+		local source_pkg_dir=""          # The determined source directory path
+		local resolved_source_pkg_dir="" # The absolute, resolved source directory path
+		local pkg_name=""                # The basename of the package, used for state dir
+		local state_pkg_dir=""           # Target symlink location in state dir
+		local install_script=""          # Install script path after symlinking
+
+		log_message INFO "Processing package argument: \`${package_arg}\`"
+
+		# --- Determine the source package directory ---
+		if [[ "${package_arg}" == *"/"* ]]; then
+			# Argument contains a slash, treat it as a path (relative or absolute)
+			source_pkg_dir="${package_arg}"
+			log_message INFO "Argument looks like a path. Using \`${source_pkg_dir}\` as source."
+		else
+			# Argument does not contain a slash, treat it as a package name in the default location
+			source_pkg_dir="${default_packages_root}/${package_arg}"
+			log_message INFO "Argument looks like a name. Assuming source is \`${source_pkg_dir}\`."
+		fi
+
+		# --- Resolve the source path to an absolute path ---
+		# Use readlink -f to get the absolute path and resolve symlinks
+		# Suppress errors if the path doesn't exist yet
+		resolved_source_pkg_dir="$(readlink -f "${source_pkg_dir}" 2>/dev/null)"
+
+		# Check if the resolved source package directory exists and is a directory
+		if [ -z "${resolved_source_pkg_dir}" ] || [ ! -d "${resolved_source_pkg_dir}" ]; then
+			log_message ERROR "Source package directory not found or is not a directory: \`${source_pkg_dir}\` (resolved to \`${resolved_source_pkg_dir}\`)" >&2
+			overall_success=1
+			continue # Skip to the next package argument
+		fi
+
+		# --- Determine the package name from the resolved source path ---
+		# This name is used for the symlink target in the state directory
+		pkg_name="$(basename "${resolved_source_pkg_dir}")"
+		state_pkg_dir="${DOTFILES_STATE_HOME}/pkg/${pkg_name}" # Target symlink location in state dir
+		install_script="${state_pkg_dir}/install.sh"           # Install script path after symlinking
+
+		log_message INFO "Resolved source: \`${resolved_source_pkg_dir}\`. Package name: \`${pkg_name}\`. State target: \`${state_pkg_dir}\`"
+
+		# Ensure the target state directory for packages exists
+		mkdir -p "${DOTFILES_STATE_HOME}/pkg" || {
+			log_message ERROR "Failed to ensure state package directory exists: \`${DOTFILES_STATE_HOME}/pkg\`" >&2
+			overall_success=1
+			continue # Skip to the next package
+		}
+
+		# Remove any existing symlink or directory at the target state location
+		if [ -e "${state_pkg_dir}" ]; then
+			log_message INFO "Removing existing state entry for \`${pkg_name}\`: \`${state_pkg_dir}\`"
+			rm -rf "${state_pkg_dir}" || {
+				log_message ERROR "Failed to remove existing state entry: \`${state_pkg_dir}\`" >&2
+				overall_success=1
+				continue # Skip to the next package
+			}
+		fi
+
+		# Create the symlink from resolved source to state directory
+		log_message INFO "Creating symlink: \`${resolved_source_pkg_dir}\` -> \`${state_pkg_dir}\`"
+		if ! ln -s "${resolved_source_pkg_dir}" "${state_pkg_dir}"; then
+			log_message ERROR "Failed to create symlink for package \`${pkg_name}\`: \`${resolved_source_pkg_dir}\` -> \`${state_pkg_dir}\`" >&2
+			overall_success=1
+			continue # Skip to the next package
+		fi
+
+		# Set PACKAGE_ROOT to the symlinked location for the install script
+		export PACKAGE_ROOT="${state_pkg_dir}"
+
+		# Change directory to the symlinked location before running install script
+		# This allows the install script to use relative paths correctly
+		log_message INFO "Changing directory to \`${state_pkg_dir}\`"
+		# Store current directory to return later
+		local original_dir="$(pwd)"
+		if ! cd "${state_pkg_dir}"; then
+			log_message ERROR "Failed to change directory to \`${state_pkg_dir}\`" >&2
+			overall_success=1
+			# No need to cd - if cd failed
+			continue # Skip to the next package
+		fi
+
+		# Check if the install script exists and is executable in the symlinked location
+		if [ ! -f "${install_script}" ] || [ ! -x "${install_script}" ]; then
+			log_message ERROR "Install script not found or not executable in state directory: \`${install_script}\`" >&2
+			overall_success=1
+			cd "${original_dir}" >/dev/null # Return to original directory
+			continue                        # Skip to the next package
+		fi
+
+		# Source the environment file if it exists in the symlinked location
+		# Note: Sourcing env.sh from the state directory symlink will effectively
+		# source the env.sh from the original source directory.
+		if [ -f "${state_pkg_dir}/env.sh" ]; then
+			log_message INFO "Sourcing ${state_pkg_dir}/env.sh"
+			# shellcheck disable=SC1091 # Source command with dynamic path
+			. "${state_pkg_dir}/env.sh"
+		fi
+
+		# Execute the install script from the symlinked location
+		log_message INFO "Executing install script for \`${pkg_name}\`: \`${install_script}\`"
+		# Execute directly, no need for 'bash' unless the script lacks a shebang
+		if "${install_script}"; then
+			log_message SUCCESS "Package \`${pkg_name}\` installed successfully."
+		else
+			log_message ERROR "Install script failed for package: \`${pkg_name}\`" >&2
+			overall_success=1
+			# Continue to the next package even if one fails
+		fi
+
+		# Change back to the original directory
+		cd "${original_dir}" >/dev/null
+
+		# Unset PACKAGE_ROOT to avoid leaking it to subsequent package installs
+		# unless explicitly set by their env.sh
+		unset PACKAGE_ROOT
+
+	done # End loop through package arguments
+
+	# Report overall status
+	if [ "${overall_success}" -eq 0 ]; then
+		log_message SUCCESS "All specified packages processed."
+		exit 0
+	else
+		log_message ERROR "One or more package installations failed. See logs/output above."
+		exit 1
+	fi
+}
 
 ######################### Tab Completion Context ########################
 # Check if we are in a tab completion context
@@ -546,107 +691,16 @@ bootstrap)
 	cd "${PROJECT_ROOT}"
 	ensure_environment
 	touch "${HOME}/.bashrc"
-	blockinfile "${HOME}/.bashrc" dotfiles ". ${PROJECT_ROOT}/env"
+	blockinfile "${HOME}/.bashrc" dotfiles "[[ -r \"${PROJECT_ROOT}/env\" ]] && source ${PROJECT_ROOT}/env"
 	touch "${HOME}/.zshrc"
-	blockinfile "${HOME}/.zshrc" dotfiles ". ${PROJECT_ROOT}/env"
+	blockinfile "${HOME}/.zshrc" dotfiles "[[ -r \"${PROJECT_ROOT}/env\" ]] && source ${PROJECT_ROOT}/env"
 	;;
 install)
-	log_message INFO "Running 'install' subcommand."
-
-	# Check if any packages were specified
-	if [ "$#" -eq 0 ]; then
-		log_message ERROR "No packages specified for installation."
-		log_message INFO "Usage: $(basename "$0") install <package1> [package2 ...]"
-		exit 1
-	fi
-
-	install_packages_root="${PROJECT_ROOT}/pkg" # Source location of packages
-	overall_success=0                           # 0 for success, 1 for failure
-
-	ensure_environment # Ensure DOTFILES_STATE_HOME is set and exists
-
-	# Loop through the specified packages
-	for pkg_name in "$@"; do
-		source_pkg_dir="${install_packages_root}/${pkg_name}"  # Original package directory
-		state_pkg_dir="${DOTFILES_STATE_HOME}/pkg/${pkg_name}" # Target symlink location in state dir
-		install_script="${state_pkg_dir}/install.sh"           # Install script path after symlinking
-
-		log_message INFO "Attempting to install package: \`${pkg_name}\`"
-
-		# Check if the source package directory exists
-		if [ ! -d "${source_pkg_dir}" ]; then
-			log_message ERROR "Source package directory not found: \`${source_pkg_dir}\`" >&2
-			overall_success=1
-			continue # Skip to the next package
-		fi
-
-		# Ensure the target state directory for packages exists
-		mkdir -p "${DOTFILES_STATE_HOME}/pkg"
-
-		# Remove any existing symlink or directory at the target state location
-		if [ -e "${state_pkg_dir}" ]; then
-			log_message INFO "Removing existing state entry for \`${pkg_name}\`: \`${state_pkg_dir}\`"
-			rm -rf "${state_pkg_dir}"
-		fi
-
-		# Create the symlink from source to state directory
-		log_message INFO "Creating symlink: \`${source_pkg_dir}\` -> \`${state_pkg_dir}\`"
-		if ! ln -s "${source_pkg_dir}" "${state_pkg_dir}"; then
-			log_message ERROR "Failed to create symlink for package: \`${pkg_name}\`" >&2
-			overall_success=1
-			continue # Skip to the next package
-		fi
-
-		# Set PACKAGE_ROOT to the symlinked location for the install script
-		export PACKAGE_ROOT="${state_pkg_dir}"
-
-		# Change directory to the symlinked location before running install script
-		# This allows the install script to use relative paths correctly
-		log_message INFO "Changing directory to \`${state_pkg_dir}\`"
-		cd "${state_pkg_dir}" || {
-			log_message ERROR "Failed to change directory to \`${state_pkg_dir}\`" >&2
-			overall_success=1
-			cd - >/dev/null # Attempt to return to original directory
-			continue        # Skip to the next package
-		}
-
-		# Check if the install script exists and is executable in the symlinked location
-		if [ ! -f "${install_script}" ] || [ ! -x "${install_script}" ]; then
-			log_message ERROR "Install script not found or not executable in state directory: \`${install_script}\`" >&2
-			overall_success=1
-			cd - >/dev/null # Return to original directory
-			continue        # Skip to the next package
-		fi
-
-		# Execute the install script from the symlinked location
-		log_message INFO "Executing install script for \`${pkg_name}\`: \`${install_script}\`"
-		# Execute directly, no need for 'bash' unless the script lacks a shebang
-		if "${install_script}"; then
-			log_message SUCCESS "Package \`${pkg_name}\` installed successfully."
-		else
-			log_message ERROR "Install script failed for package: \`${pkg_name}\`" >&2
-			overall_success=1
-			# Continue to the next package even if one fails
-		fi
-
-		# Change back to the original directory
-		cd - >/dev/null
-
-		# Unset PACKAGE_ROOT to avoid leaking it to subsequent package installs
-		# unless explicitly set by their env.sh
-		unset PACKAGE_ROOT
-	done
-
-	# Report overall status
-	if [ "${overall_success}" -eq 0 ]; then
-		log_message SUCCESS "All specified packages processed."
-		exit 0
-	else
-		log_message ERROR "One or more package installations failed. See logs/output above."
-		exit 1
-	fi
+	_dotsh_install "$@"
 	;;
 sh | shell)
+	ensure_environment
+
 	log_message INFO "Running 'shell' subcommand."
 
 	# Check if Docker is installed.
@@ -667,27 +721,58 @@ sh | shell)
 
 	log_message INFO "Starting Docker container..."
 	docker run -it \
-		--mount "type=bind,src=${PROJECT_ROOT},dst=/root/.config/dotfiles" \
-		--mount "type=bind,src=${DOTFILES_DATA_HOME},dst=/root/.local/share/dotfiles" \
-		--mount "type=bind,src=${DOTFILES_STATE_HOME},dst=/root/.local/state/dotfiles" \
-		--mount "type=bind,src=${DOTFILES_CACHE_HOME},dst=/root/.cache/dotfiles" \
+		--mount "type=bind,src=${PROJECT_ROOT},dst=/home/$(whoami)/dotfiles" \
+		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
+		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
+		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \
+		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
 		"${IMAGE_NAME}" \
 		"$@" # Pass remaining arguments to the container entrypoint
 	;;
 build)
+	cd "${PROJECT_ROOT}"
+
+	if [ -d "${PROJECT_ROOT}/tmp" ]; then
+		rm -r "${PROJECT_ROOT}/tmp"
+	fi
+	ensure_environment
 	log_message INFO "Running 'build' subcommand."
 	# Check if Docker is installed.
 	if ! command -v docker &>/dev/null; then
 		log_message ERROR "Docker is not installed. Please install Docker."
 		exit 1
 	fi
+
+	HOST_UID=$(id -u)
+	HOST_GID=$(id -g)
+
 	log_message INFO "Attempting to build Docker image: ${IMAGE_NAME} using Dockerfile ${DOCKERFILE_PATH}"
-	if docker build -t "${IMAGE_NAME}" -f "${DOCKERFILE_PATH}" "."; then
+	if docker build \
+		-t "${IMAGE_NAME}" \
+		-f "${DOCKERFILE_PATH}" \
+		--build-arg APP_UID="${HOST_UID}" \
+		--build-arg APP_GID="${HOST_GID}" \
+		--build-arg APP_USER="$(whoami)" \
+		--build-arg APP_GROUP="$(whoami)" \
+		--build-arg APP_HOME="/home/$(whoami)" \
+		"."; then
+
 		log_message SUCCESS "Docker image built successfully: ${IMAGE_NAME}"
 	else
 		log_message ERROR "Docker image build failed for ${IMAGE_NAME}"
 		exit 1
 	fi
+
+	docker run -it \
+		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
+		--mount "type=bind,src=${PROJECT_ROOT},dst=/home/$(whoami)/dotfiles" \
+		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
+		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
+		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \
+		--user "$(whoami):$(whoami)" \
+		--workdir "/home/$(whoami)/dotfiles" \
+		"${IMAGE_NAME}" \
+		"./lib/build.sh"
 	;;
 list)
 	find "${DOTFILES_CONFIG_HOME}/pkg" -mindepth 1 -maxdepth 1
@@ -749,8 +834,13 @@ docker)
 	log_message INFO "Executing docker command with arguments: \`$*\`"
 	# Execute the docker command with the remaining arguments
 	docker run -it \
-		--mount "type=bind,src=${PWD},dst=/root/.config/dotfiles" \
-		--workdir "/root" \
+		--mount "type=bind,src=${PROJECT_ROOT},dst=/home/$(whoami)/dotfiles" \
+		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
+		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
+		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
+		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \
+		--user "$(whoami):$(whoami)" \
+		--workdir "/home/$(whoami)" \
 		dotfiles-base \
 		"$@"
 	;;

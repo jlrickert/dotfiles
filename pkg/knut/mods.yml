@@ -1,0 +1,226 @@
+# Default model (gpt-3.5-turbo, gpt-4, ggml-gpt4all-j...).
+default-model: gpt-4o-mini
+# default-model: qwen2.5-coder-32b-instruct
+# Text to append when using the -f flag.
+format-text:
+  markdown: "Format the response as markdown without enclosing backticks."
+  json: "Format the response as json without enclosing backticks."
+# Ask for the response to be formatted as markdown unless otherwise set.
+format: false
+# Render output as raw text when connected to a TTY.
+raw: false
+# Quiet mode (hide the spinner while loading and stderr messages for success).
+quiet: false
+# Temperature (randomness) of results, from 0.0 to 2.0.
+temp: 1.0
+# TopP, an alternative to temperature that narrows response, from 0.0 to 1.0.
+topp: 1.0
+# Turn off the client-side limit on the size of the input into the model.
+no-limit: true
+# Wrap formatted output at specific width (default is 80)
+word-wrap: 80
+# Include the prompt from the arguments in the response.
+include-prompt-args: false
+# Include the prompt from the arguments and stdin, truncate stdin to specified number of lines.
+include-prompt: 0
+# Maximum number of times to retry API calls.
+max-retries: 5
+# Your desired level of fanciness.
+fanciness: 10
+# Text to show while generating.
+status-text: Generating
+# Default character limit on input to model.
+max-input-chars: 12250
+# Maximum number of tokens in response.
+# max-tokens: 100
+roles:
+  mdformat:
+    - you are to format the given input
+    - users only care about the output
+    - output is to be in markdown only
+  shell:
+    - you are a shell expert
+    - you do not explain anything
+    - you simply output one liners to solve the problems you're asked
+    - you do not provide any explanation whatsoever, ONLY the command
+  code:
+    - you are an expert code generator
+    - prefer avoiding unessary functions
+    - you do not explain anything
+    - you simply output the most appropriate code
+    - only generate the code asked unless asked
+    - output is to be code only. No markdown output
+  code-commenter:
+    - you are an expert code documenter
+    - create comments wrappeted at 100 preserving indentation
+    - include the function immediately after with no blank line, no commentary, and no fenced code
+    - Add square brackets around any symbol reference that could also have a comment except the function name itself
+    - comments should describe why it is there. Avoid commenting about implementation details
+    - Avoid redundant comments such as this method, this asynchrounous method, returns a future, etc. Don't add comments on what may be deduced from the type system
+    - comments should be a docblock for the appropriate programming language
+    - be brief
+  git-commenter:
+    - You are an AI assistant designed to generate git commit comments in accordance with the Conventional Commits specification. When provided with a code diff, follow these guidelines to create clear and informative commit messages
+    - "use format: `<type>[optional scope]: <description>`"
+    - "<type> could be any of the following: feat, fix, docs, style, refactor, perf, test, chore, security"
+    - Ensure the header is under 72 characters.
+    - Body text should be wrapped at or under 80 characters for readability
+    - Provide a brief summary of the changes, explain **what** was changed and **why**.
+    - Don't provide implementation details
+    - 'If applicable, reference any issue numbers (e.g., "Related to #123").'
+    - Write in the present tense ("Add feature" instead of "Added feature").
+    - Be concise yet descriptive; avoid unnecessary jargon.
+    - Output should be just the the git message. Any markup designating the content is unessary
+  keg:
+    - you are an inport bot for a data in the KEG format
+    - you don't need to respond back when I am giving you information about a node
+    - you need to reference where you got your information
+  keg-linkify:
+    - You are a utility for my note taking system
+    - You are to linkify the contents as detailed in https://keg.jlrickert.me/921
+    - Internal links are as outline by the notes in the current KEG
+    - If it makes sense that a note should exist but doesn't yet link it to note 0
+  keg-assistant:
+    - you are a helpful assistance.
+    - you are to help users find the documents that contain the information they are looking for
+    - you must reference the document you are summarizing from
+  keg-search:
+    - you are an advanced AI search assistant for a KEG note taking system
+    - you are to privide the user with the most likely search results
+    - you are also to provide a breif summary of the search results
+  bash-script:
+    - you are a professional bash programmer
+    - you do not provide any explanation whatsoever, ONLY the code
+    - follow googles bash style guide
+    - avoid ignore shellcheck warnings when possible
+  bash:
+    - you are world class bash programmer
+    - you are to give a very detail explanation on why this would be the best approach
+    - yar are to follow googles shell style guide as much as possible
+    - shebangs should use `#!/usr/bin/env bash` because I use macosx
+    - avoid ignore shellcheck warnings when possible
+  go:
+    - you are a go expert
+  go-lsp:
+    - you are a go expert
+    - you do not explain anything
+    - you do not provide any explanation whatsoever, ONLY the code
+  php:
+    - you are world class php programmer
+    - you are to give a very detail explanation on why this would be the best approach
+    - multiple approaches to the solution is also encourged
+    - users prefer responses in markdown
+  ecw:
+    - you are a professional developer at Ecreativeworks
+  typescript:
+    - you are world class typescript programmer
+    - you are to give a very detail explanation on why this would be the best approach
+    - multiple approaches to the solution is also encourged
+    - users prefer responses in markdown
+# Aliases and endpoints for OpenAI compatible REST API.
+apis:
+  openai:
+    base-url: https://api.openai.com/v1
+    api-key:
+    api-key-env: OPENAI_API_KEY
+    models:
+      gpt-4.1-mini:
+        max-input-chars: 392000
+        fallback: gpt-4o-mini
+      gpt-4o-mini:
+        max-input-chars: 392000
+        fallback: gpt-4o
+      gpt-4o:
+        aliases: ["4o-mini"]
+        max-input-chars: 392000
+        fallback: gpt-4o-mini
+      gpt-4:
+        aliases: ["4"]
+        max-input-chars: 24500
+        fallback: gpt-3.5-turbo
+      gpt-4-1106-preview:
+        aliases: ["128k"]
+        max-input-chars: 392000
+        fallback: gpt-4
+      gpt-4-32k:
+        aliases: ["32k"]
+        max-input-chars: 98000
+        fallback: gpt-4
+      gpt-3.5-turbo:
+        aliases: ["35t"]
+        max-input-chars: 12250
+        fallback: gpt-3.5
+      gpt-3.5-turbo-1106:
+        aliases: ["35t-1106"]
+        max-input-chars: 12250
+        fallback: gpt-3.5-turbo
+      gpt-3.5-turbo-16k:
+        aliases: ["35t16k"]
+        max-input-chars: 44500
+        fallback: gpt-3.5
+      gpt-3.5:
+        aliases: ["35"]
+        max-input-chars: 12250
+        fallback:
+      o1-preview:
+        aliases: ["o1-preview"]
+        max-input-chars: 128000
+      o1-mini:
+        aliases: ["o1-mini"]
+        max-input-chars: 128000
+  localai:
+    # LocalAI setup instructions: https://github.com/go-skynet/LocalAI#example-use-gpt4all-j-model
+    base-url: http://localhost:8080
+    models:
+      qwen2.5-coder-32b-instruct:
+        aliases: ["gwen32b"]
+        max-input-chars: 12800
+        fallback:
+      qwen2.5-coder-3b-instruct:
+        aliases: ["gwen3b"]
+      qwen2.5-72b-instruct:
+        aliases: ["gwen"]
+      ggml-gpt4all-j:
+        aliases: ["local", "4all"]
+        max-input-chars: 12250
+        fallback:
+  google:
+    api-key-env: GEMINI_API_KEY
+    models: # https://ai.google.dev/gemini-api/docs/models/gemini
+      gemini-1.5-pro-latest:
+        aliases: ["gmp", "gemini", "gemini-1.5-pro"]
+        max-input-chars: 392000
+      gemini-1.5-flash-latest:
+        aliases: ["gmf", "flash", "gemini-1.5-flash"]
+        max-input-chars: 392000
+      gemini-2.5-pro-preview-03-25:
+        aliases: ["flash-2-5", "gemini-2-5-flash"]
+        max-input-chars: 4194304
+      gemini-2.0-flash:
+        aliases: ["gm2f", "flash-2", "gemini-2-flash"]
+        max-input-chars: 4194304
+      gemini-2.0-flash-lite:
+        aliases: ["gm2fl", "flash-2-lite", "gemini-2-flash-lite"]
+        max-input-chars: 4194304
+      gemini-2.5-flash-preview-04-17:
+        alias: ["flash-2-5-flash"]
+        max-input-chars: 4194304
+  azure:
+    # Set to 'azure-ad' to use Active Directory
+    # Azure OpenAI setup: https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource
+    base-url: https://YOUR_RESOURCE_NAME.openai.azure.com
+    api-key:
+    api-key-env: AZURE_OPENAI_KEY
+    models:
+      gpt-4:
+        aliases: ["az4"]
+        max-input-chars: 24500
+        fallback: gpt-35-turbo
+      gpt-35-turbo:
+        aliases: ["az35t"]
+        max-input-chars: 12250
+        fallback: gpt-35
+      gpt-35:
+        aliases: ["az35"]
+        max-input-chars: 12250
+        fallback:
