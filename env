@@ -1,5 +1,84 @@
 #!/usr/bin/env bash
 
+########################################################################
+# Handy functions
+########################################################################
+# Sources one or more files, but only if all of them are readable.
+# First, it checks if each provided file is readable. If any check
+# fails, the function returns 1. If all files are readable, it
+# then sources each file in order.
+#
+# Arguments:
+#   $@: One or more file paths to source.
+#
+# Returns:
+#   0: If all files were readable and sourced successfully.
+#   1: If any file was not readable.
+#
+# Side Effects:
+#   Sources the specified files into the current shell environment.
+function source_if() {
+	local file
+	for file in "$@"; do
+		if [[ ! -r "$file" ]]; then
+			return 1 # Fail if any file is not readable
+		fi
+	done
+
+	# shellcheck disable=SC1090
+	for file in "$@"; do
+		source "$file"
+	done
+	return 0
+}
+export -f source_if &>/dev/null
+
+# Checks if one or more commands are available in the system's
+# PATH. Returns 0 if all commands are found, 1 otherwise.
+function have() {
+	local cmd
+	for cmd in "$@"; do
+		type "$cmd" &>/dev/null || return 1
+	done
+	return 0
+}
+export -f have &>/dev/null
+
+
+# Append to path if it exists
+function pathappend() {
+	local arg
+	for arg in "$@"; do
+		test -d "$arg" || continue
+		PATH=${PATH//":$arg:"/:} # remove all occuences of `:$arg:` from the PATH
+		PATH=${PATH/#"$arg:"/}   # remove `"$arg:"` from the the beginning of the string
+		PATH=${PATH/%":$arg"/}   # remove `":$arg` from the end of the string
+		export PATH="${PATH:+"$PATH:"}$arg"
+	done
+}
+export -f pathappend &>/dev/null
+
+# Prepend to path if it exists
+#
+# Remember, last arg will be first in path. Precedence comes to
+# the item that comes at the head of the list. Appended paths are
+# pruned if they do not exist.
+function pathprepend() {
+	local arg
+	for arg in "$@"; do
+		test -d "$arg" || continue
+		PATH=${PATH//:"$arg:"/:}
+		PATH=${PATH/#"$arg:"/}
+		PATH=${PATH/%":$arg"/}
+		export PATH="$arg${PATH:+":${PATH}"}"
+	done
+}
+export -f pathprepend &>/dev/null
+
+########################################################################
+# Environment setup
+########################################################################
+
 # Determine the directory of the currently executing script, handling both
 # direct execution and sourcing in Bash and Zsh. This is necessary because $0
 # behaves differently when sourced vs. executed, and $BASH_SOURCE is
@@ -19,13 +98,6 @@ else
 	# fully reliable in all shells when sourced.
 	script_path="$(readlink -f "$0")"
 fi
-
-# Get the directory containing the script path determined above.
-SCRIPT_DIR="$(dirname "${script_path}")"
-unset script_path
-
-# Load environmental variables
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}" && git rev-parse --show-toplevel)"
 
 export NOCOLOR=
 [[ -t 1 ]] || NOCOLOR=y
@@ -55,8 +127,10 @@ export DOTFILES_DATA_HOME="${HOME}/.local/share/dotfiles"
 # systems.
 export DOTFILES_STATE_HOME="${HOME}/.local/state/dotfiles"
 
-# This is where the publish shared configuration lives.  This is where
-export DOTFILES_CONFIG_HOME="${HOME}/.config/dotfiles"
+# This is where the publish shared configuration lives.
+# shellcheck disable=SC2155
+export DOTFILES_CONFIG_HOME="$(dirname "${script_path}")"
+unset script_path
 
 # This is where cache data lives. Safe to remove at anytime.
 export DOTFILES_CACHE_HOME="${HOME}/.cache/dotfiles"
@@ -65,10 +139,10 @@ export DOTFILES_CACHE_HOME="${HOME}/.cache/dotfiles"
 # Defaults to a 'log' file within the DOTFILES_STATE directory if not already set.
 export DOTFILES_LOG_FILE="${DOTFILES_STATE_HOME}/log"
 
-# --- Ensure PROJECT_ROOT/bin is in PATH ---
+# --- Ensure DOTFILES_CONFIG_HOME/bin is in PATH ---
 # This must be done here in env.sh because it's sourced early, before functions
 # like log_message are available. Use standard shell commands.
-export DOTFILES_BIN="${PROJECT_ROOT}/bin"
+export DOTFILES_BIN="${DOTFILES_CONFIG_HOME}/bin"
 
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
@@ -90,41 +164,6 @@ export PICTURES="${XDG_PICTURES_DIR}"
 export PUBLIC="${XDG_PUBLICSHARE_DIR}"
 export TEMPLATES="${XDG_TEMPLATES_DIR}"
 export VIDEOS="${XDG_VIDEOS_DIR}"
-
-function source_if() {
-	# shellcheck disable=SC1090
-	[[ -r "$1" ]] && source "$1"
-}
-
-function have() {
-	type "$1" &>/dev/null
-}
-
-# append to path if it exists
-function pathappend() {
-	for arg in "$@"; do
-		test -d "$arg" || continue
-		PATH=${PATH//":$arg:"/:} # remove all occuences of `:$arg:` from the PATH
-		PATH=${PATH/#"$arg:"/}   # remove `"$arg:"` from the the beginning of the string
-		PATH=${PATH/%":$arg"/}   # remove `":$arg` from the end of the string
-		export PATH="${PATH:+"$PATH:"}$arg"
-	done
-}
-
-# Prepend to path if it exists
-#
-# Remember, last arg will be first in path. Precedence comes to the item that
-# comes at the head of the list. Appended paths are pruned if they do not
-# exist.
-function pathprepend() {
-	for arg in "$@"; do
-		test -d "$arg" || continue
-		PATH=${PATH//:"$arg:"/:}
-		PATH=${PATH/#"$arg:"/}
-		PATH=${PATH/%":$arg"/}
-		export PATH="$arg${PATH:+":${PATH}"}"
-	done
-}
 
 function load_packages() {
 	if ! [ -d "${DOTFILES_STATE_HOME}/pkg" ]; then
@@ -150,83 +189,84 @@ function load_packages() {
 	done
 }
 
-function load_completions() {
-	# If in Zsh, load bashcompinit to enable sourcing Bash completion scripts,
-	# then source the Bash completion files.
-	# This allows Zsh to use completion defined in Bash format.
-	if [ -n "$ZSH_VERSION" ]; then
-		autoload -Uz bashcompinit
-		bashcompinit
-		source_if "${PROJECT_ROOT}/lib/compgen"
-		source_if "${PROJECT_ROOT}/lib/complete"
-		source_if "${PROJECT_ROOT}/lib/_bash_complete"
-	fi
+# function load_completions() {
+# 	# If in Zsh, load bashcompinit to enable sourcing Bash completion scripts,
+# 	# then source the Bash completion files.
+# 	# This allows Zsh to use completion defined in Bash format.
+# 	if [ -n "$ZSH_VERSION" ]; then
+# 		autoload -Uz bashcompinit
+# 		bashcompinit
+# 		source_if "${DOTFILES_CONFIG_HOME}/lib/compdef"
+# 		source_if "${DOTFILES_CONFIG_HOME}/lib/compgen"
+# 		source_if "${DOTFILES_CONFIG_HOME}/lib/complete"
+# 		source_if "${DOTFILES_CONFIG_HOME}/lib/_bash_complete"
+# 	fi
+#
+# 	# Check if 'complete' builtin is available (e.g., not Bash or completion disabled)
+# 	if ! have complete; then
+# 		return 0
+# 	fi
+#
+# 	# Iterate over each executable file found directly in the DOTFILES_BIN directory.
+# 	# Using find with -print0 and a while read loop is the safest way to handle
+# 	# filenames containing spaces or special characters, unlike parsing `ls` output.
+# 	# Find executable files (-type f) directly in the directory (-maxdepth 1).
+# 	# Use -perm /u+x to check for owner execute permission, which is portable
+# 	# across GNU (Linux) and BSD (macOS) find implementations.
+# 	find "${DOTFILES_BIN}" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' executable_path; do
+# 		# Extract the basename of the executable file. This is the command name.
+# 		local executable_name=$(basename "${executable_path}")
+#
+# 		# Set up bash completion for the command named "${executable_name}".
+# 		# The -C option specifies that the command itself
+# 		# ("${executable_name}") should be executed to generate the completion
+# 		# list.
+# 		complete -C "${executable_name}" "${executable_name}"
+# 	done
+#
+# 	# Check if the installed packages directory exists
+# 	if ! [ -d "${DOTFILES_STATE_HOME}/pkg" ]; then
+# 		return 0
+# 	fi
+#
+# 	local installed_packages_root="${DOTFILES_STATE_HOME}/pkg"
+#
+# 	# Find directories directly under ${DOTFILES_STATE_HOME}/pkg (these are the
+# 	# package symlinks/dirs) Use find with -print0 for safe handling of names
+# 	# with spaces or special characters
+# 	find "${installed_packages_root}" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' package_entry; do
+# 		# Check if the entry resolves to an actual directory (handles symlinks and real dirs)
+# 		if [ -d "${package_entry}" ]; then
+# 			# Construct the path to the 'bin' directory within this package entry
+# 			local pkg_bin_dir="${package_entry}/bin"
+#
+# 			# Check if the 'bin' directory exists and is a directory.
+# 			# Suppress error messages from the test command if path is invalid or doesn't exist.
+# 			if [ -d "${pkg_bin_dir}" ] 2>/dev/null; then
+#
+# 				# Now find executable files directly inside this 'bin' directory
+# 				# Use find here for robustness and -executable flag, and -print0 for safety
+# 				find "${pkg_bin_dir}" -maxdepth 1 -type f -executable -print0 | while IFS= read -r -d '' executable_path; do
+# 					# executable_path is the full path to the executable, e.g., /path/to/pkg/bin/my_command
+#
+# 					# Get the basename of the executable
+# 					local executable_name=$(basename "${executable_path}")
+#
+# 					# Attempt to set completion using the executable name for -C and basename for command name.
+# 					# This assumes the executable itself, when called by name (which must be in PATH),
+# 					# acts as the completion generator.
+# 					# Suppress potential errors from 'complete' itself if it fails for a specific binary.
+# 					complete -C "${executable_name}" "${executable_name}"
+#
+# 				done # End while loop for executables
+# 			fi    # End check for bin directory existence
+# 		fi     # End check if package_entry resolves to a directory
+# 	done    # End while loop for package entries
+#
+# 	# No explicit output to stdout is generated by this function now.
+# }
 
-	# Check if 'complete' builtin is available (e.g., not Bash or completion disabled)
-	if ! have complete; then
-		return 0
-	fi
-
-	# Iterate over each executable file found directly in the DOTFILES_BIN directory.
-	# Using find with -print0 and a while read loop is the safest way to handle
-	# filenames containing spaces or special characters, unlike parsing `ls` output.
-	# Find executable files (-type f) directly in the directory (-maxdepth 1).
-	# Use -perm /u+x to check for owner execute permission, which is portable
-	# across GNU (Linux) and BSD (macOS) find implementations.
-	find "${DOTFILES_BIN}" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' executable_path; do
-		# Extract the basename of the executable file. This is the command name.
-		local executable_name=$(basename "${executable_path}")
-
-		# Set up bash completion for the command named "${executable_name}".
-		# The -C option specifies that the command itself
-		# ("${executable_name}") should be executed to generate the completion
-		# list.
-		complete -C "${executable_name}" "${executable_name}"
-	done
-
-	# Check if the installed packages directory exists
-	if ! [ -d "${DOTFILES_STATE_HOME}/pkg" ]; then
-		return 0
-	fi
-
-	local installed_packages_root="${DOTFILES_STATE_HOME}/pkg"
-
-	# Find directories directly under ${DOTFILES_STATE_HOME}/pkg (these are the
-	# package symlinks/dirs) Use find with -print0 for safe handling of names
-	# with spaces or special characters
-	find "${installed_packages_root}" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' package_entry; do
-		# Check if the entry resolves to an actual directory (handles symlinks and real dirs)
-		if [ -d "${package_entry}" ]; then
-			# Construct the path to the 'bin' directory within this package entry
-			local pkg_bin_dir="${package_entry}/bin"
-
-			# Check if the 'bin' directory exists and is a directory.
-			# Suppress error messages from the test command if path is invalid or doesn't exist.
-			if [ -d "${pkg_bin_dir}" ] 2>/dev/null; then
-
-				# Now find executable files directly inside this 'bin' directory
-				# Use find here for robustness and -executable flag, and -print0 for safety
-				find "${pkg_bin_dir}" -maxdepth 1 -type f -executable -print0 | while IFS= read -r -d '' executable_path; do
-					# executable_path is the full path to the executable, e.g., /path/to/pkg/bin/my_command
-
-					# Get the basename of the executable
-					local executable_name=$(basename "${executable_path}")
-
-					# Attempt to set completion using the executable name for -C and basename for command name.
-					# This assumes the executable itself, when called by name (which must be in PATH),
-					# acts as the completion generator.
-					# Suppress potential errors from 'complete' itself if it fails for a specific binary.
-					complete -C "${executable_name}" "${executable_name}"
-
-				done # End while loop for executables
-			fi    # End check for bin directory existence
-		fi     # End check if package_entry resolves to a directory
-	done    # End while loop for package entries
-
-	# No explicit output to stdout is generated by this function now.
-}
-
-# remember last arg will be first in path. Precedence comes to the item that
+# Remember, last arg will be first in path. Precedence comes to the item that
 # comes at the head of the list. Appended paths are pruned if they do not
 # exist.
 pathprepend \
@@ -249,23 +289,38 @@ if have /opt/homebrew/bin/brew; then
 	# shellcheck disable=SC1090
 	source <(/opt/homebrew/bin/brew shellenv)
 
-	python_bin="$(find /Users/jlrickert/Library/Python -name "bin")"
-	[[ -d "${python_bin}" ]] && pathappend "${python_bin}"
+	# python_bin="$(find /Users/jlrickert/Library/Python -name "bin")"
+	# [[ -d "${python_bin}" ]] && pathappend "${python_bin}"
 
 	pathappend /opt/homebrew/opt/mysql-client/bin
 fi
 
 load_packages
+unset load_packages
+
+pathprepend /opt/homebrew/opt/gnu-sed/libexec/gnubin
 
 # Check if the shell is interactive.
 # If interactive, load shell completions.
 # Otherwise, skip loading completions.
 case "$-" in
 *i*)
-	load_completions
+	#load_completions
 	;;
 *)
 	# Not interactive, do not load completions
 	;;
 esac
 
+if [ -f "${DOTFILES_CONFIG_HOME}/.env" ]; then
+	# Check if running in Docker/LXC
+	# Condition is TRUE if /.dockerenv exists OR grep finds '(docker|lxc)'
+	if [ -f /.dockerenv ] || grep -qE '(docker|lxc)' /proc/self/cgroup 2>/dev/null; then
+		# Running in Docker/LXC environment, skipping sourcing .env
+		: # No-op
+	else
+		# Not in recognized container environment, sourcing .env
+		# shellcheck disable=SC1091 # Source command with dynamic path
+		source "${DOTFILES_CONFIG_HOME}/.env"
+	fi
+fi

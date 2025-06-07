@@ -1,11 +1,4 @@
 ################################################################################
-# Utils
-################################################################################
-
-_source_if() { [[ -r "$1" ]] && source "$1"; }
-_have() { type "$1" &>/dev/null; }
-
-################################################################################
 # Variables
 ################################################################################
 
@@ -30,7 +23,7 @@ export BAT_THEME=gruvbox-dark
 # export VOLTA_HOME="${HOME}/.volta"
 # export FNM_HOME="${HOME}/.local/share/fnm"
 # export ZSH_HOME="${HOME}/.local/share/zsh"
-export PPM_HOME="${HOME}/.local/share/ppm"
+# export PPM_HOME="${HOME}/.local/share/ppm"
 # export GOPRIVATE="github.com/${GITUSER}/*,gitlab.com/${GITUSER}/*"
 # export GOPATH="${XDG_DATA_HOME}/go"
 # export GOBIN="${HOME}/.local/bin"
@@ -58,37 +51,12 @@ export FZF_ALT_C_OPTS="--preview 'tree -C {}"
 # Options to fzf command
 # export FZF_COMPLETION_OPTS='--border --info=inline'
 
-################################################################################
-# Path
-################################################################################
-# append to path if it exists
-function pathappend() {
-	for arg in "$@"; do
-		test -d "$arg" || continue
-		PATH=${PATH//":$arg:"/:} # remove all occuences of `:$arg:` from the PATH
-		PATH=${PATH/#"$arg:"/}   # remove `"$arg:"` from the the beginning of the string
-		PATH=${PATH/%":$arg"/}   # remove `":$arg` from the end of the string
-		export PATH="${PATH:+"$PATH:"}$arg"
-	done
-}
-
-# prepend to path if it exists
-function pathprepend() {
-	for arg in "$@"; do
-		test -d "$arg" || continue
-		PATH=${PATH//:"$arg:"/:}
-		PATH=${PATH/#"$arg:"/}
-		PATH=${PATH/%":$arg"/}
-		export PATH="$arg${PATH:+":${PATH}"}"
-	done
-}
-
 # remember last arg will be first in path. Precedence comes to the item that
 # comes at the head of the list. Appended paths are pruned if they do not
 # exist.
 pathprepend "${HOME}/.local/share/fzf/bin"
 
-pathappend /Applications/kitty.app/Contents/MacOS
+# pathappend /Applications/kitty.app/Contents/MacOS
 
 if [[ -d "${DOTFILES_DATA_HOME}/secrets" ]]; then
 	for file in ${DOTFILES_DATA_HOME}/secrets/*; do
@@ -97,31 +65,31 @@ if [[ -d "${DOTFILES_DATA_HOME}/secrets" ]]; then
 	done
 fi
 
-case "$-" in
-*i*)
-	# This is an interactive shell (like when .zshrc is sourced)
-	if [[ -n "$BASH_VERSION" ]]; then
-		# This is Bash
-		_source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/bashrc"
-	elif [[ -n "$ZSH_VERSION" ]]; then
-		# This is Zsh
-		_source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/zshrc"
-	# Add checks for other shells if needed, e.g.:
-	# elif [[ -n "$KSH_VERSION" ]]; then
-	# 	# This is Ksh
-	# 	_source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/kshrc"
-	# elif [[ -n "$FISH_VERSION" ]]; then
-	# 	# This is Fish (Fish doesn't typically source files like this, but for completeness)
-	# 	_source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/fishrc"
-	else
-		# Unknown shell or a shell without a standard version variable
-		# Optional: log a warning or source a generic rc file
-		# log_message WARN "Unknown shell. Not sourcing shell-specific rc file." >&2
-		: # Do nothing
-	fi
-
-	;;
-*)
-	# This is a non-interactive shell (e.g., running a script)
-	;;
-esac
+# case "$-" in
+# *i*)
+# 	# This is an interactive shell (like when .zshrc is sourced)
+# 	if [[ -n "$BASH_VERSION" ]]; then
+# 		# This is Bash
+# 		source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/bashrc"
+# 	elif [[ -n "$ZSH_VERSION" ]]; then
+# 		# This is Zsh
+# 		source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/zshrc"
+# 	# Add checks for other shells if needed, e.g.:
+# 	# elif [[ -n "$KSH_VERSION" ]]; then
+# 	# 	# This is Ksh
+# 	# 	source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/kshrc"
+# 	# elif [[ -n "$FISH_VERSION" ]]; then
+# 	# 	# This is Fish (Fish doesn't typically source files like this, but for completeness)
+# 	# 	source_if "${DOTFILES_STATE_HOME}/pkg/shell/lib/fishrc"
+# 	else
+# 		# Unknown shell or a shell without a standard version variable
+# 		# Optional: log a warning or source a generic rc file
+# 		# log_message WARN "Unknown shell. Not sourcing shell-specific rc file." >&2
+# 		: # Do nothing
+# 	fi
+#
+# 	;;
+# *)
+# 	# This is a non-interactive shell (e.g., running a script)
+# 	;;
+# esac

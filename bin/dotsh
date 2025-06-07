@@ -3,65 +3,44 @@
 IMAGE_NAME=dotfiles
 DOCKERFILE_PATH="./Dockerfile"
 
-# Load environmental variables
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+########################################################################
+# Load environment
+########################################################################
+# Determine the directory of the currently executing script, handling both
+# direct execution and sourcing in Bash and Zsh. This is necessary because $0
+# behaves differently when sourced vs. executed, and $BASH_SOURCE is
+# Bash-specific.
+script_path=""
+if [ -n "${ZSH_VERSION:-}" ]; then
+	# In Zsh, $0 reliably gives the script path even when sourced.
+	# readlink -f resolves symlinks and gives the absolute path.
+	script_path="$(readlink -f "$0")"
+elif [ -n "${BASH_VERSION:-}" ]; then
+	# In Bash, $BASH_SOURCE[0] gives the script path when sourced or executed.
+	# readlink -f resolves symlinks and gives the absolute path.
+	script_path="$(readlink -f "${BASH_SOURCE[0]}")"
+else
+	# Fallback for other shells. $0 is the most common variable,
+	# but its behavior when sourced can vary. This might not be
+	# fully reliable in all shells when sourced.
+	script_path="$(readlink -f "$0")"
+fi
+
+# Get the directory containing the script path determined above.
+SCRIPT_DIR="$(dirname "${script_path}")"
+unset script_path
+
+# Load environmental variables. Assumes this script is in ./bin.
 PROJECT_ROOT="$(dirname "${SCRIPT_DIR}")"
 
-export NOCOLOR=
-[[ -t 1 ]] || NOCOLOR=y
-export GOLD='[38;2;184;138;0m'
-export RED='[38;2;255;0;0m'
-export GREY='[38;2;100;100;100m'
-export CYAN='[38;2;0;255;255m'
-export GREEN='[38;2;0;255;0m'
-export RESET='[0m'
-
-if [[ -n "${NOCOLOR}" ]]; then
-	GOLD=
-	RED=
-	GREY=
-	CYAN=
-	GREEN=
-	RESET=
+if [[ -r "${PROJECT_ROOT}/env" ]]; then
+	source "${PROJECT_ROOT}/env"
 fi
 
-# export DOTFILES_VERSION="$(cd "${SCRIPT_DIR}" && git rev-parse --abbrev-ref HEAD)"
+########################################################################
+# Custom functions
+########################################################################
 
-# This is where the user specific config should live that is private. This is
-# safe to sync between systems
-export DOTFILES_DATA_HOME="${HOME}/.local/share/dotfiles"
-
-# Dotfiles specific state for the machine. This is not safe to sync between
-# systems.
-export DOTFILES_STATE_HOME="${HOME}/.local/state/dotfiles"
-
-# This is where the publish shared configuration lives.  This is where
-export DOTFILES_CONFIG_HOME="${HOME}/.config/dotfiles"
-
-# This is where cache data lives. Safe to remove at anytime.
-export DOTFILES_CACHE_HOME="${HOME}/.cache/dotfiles"
-
-# Sets and exports the DOTFILES_LOG_FILE variable.
-# Defaults to a 'log' file within the DOTFILES_STATE directory if not already set.
-export DOTFILES_LOG_FILE="${DOTFILES_STATE_HOME}/log"
-
-# --- Ensure PROJECT_ROOT/bin is in PATH ---
-# This must be done here in env.sh because it's sourced early, before functions
-# like log_message are available. Use standard shell commands.
-export DOTFILES_BIN="${PROJECT_ROOT}/bin"
-
-if [ -f "${PROJECT_ROOT}/.env" ]; then
-	# Check if running in Docker/LXC
-	# Condition is TRUE if /.dockerenv exists OR grep finds '(docker|lxc)'
-	if [ -f /.dockerenv ] || grep -qE '(docker|lxc)' /proc/self/cgroup 2>/dev/null; then
-		# Running in Docker/LXC environment, skipping sourcing .env
-		: # No-op
-	else
-		# Not in recognized container environment, sourcing .env
-		# shellcheck disable=SC1091 # Source command with dynamic path
-		. "${PROJECT_ROOT}/.env"
-	fi
-fi
 # backup_item SOURCE_PATH
 # Backs up an item (file or directory) to the configured dotfiles backup location.
 # The backup location is derived from DOTFILES_STATE_HOME.
@@ -168,12 +147,15 @@ function ensure_environment() {
 	# List of other directories derived from env.sh variables that must exist
 	# We exclude the log directory path here as it's already handled above.
 	local dirs_to_ensure=(
+		"${XDG_CACHE_HOME:-${HOME}/.cache}"
+		"${XDG_CONFIG_HOME:-${HOME}/.config}"
+		"${XDG_DATA_HOME:-${HOME}/.local/share}"
+		"${XDG_STATE_HOME:-${HOME}/.local/state}"
+		"${DOTFILES_CACHE_HOME}"
+		"${DOTFILES_CONFIG_HOME}"
+		"${DOTFILES_DATA_HOME}"
 		"${DOTFILES_STATE_HOME}"
 		"${DOTFILES_STATE_HOME}/pkg"
-		"${DOTFILES_DATA_HOME}"
-		"${DOTFILES_CONFIG_HOME}"
-		"${DOTFILES_CACHE_HOME}"
-		"${XDG_CONFIG_HOME:-${HOME}/.config}"
 	)
 
 	# Iterate through the list of directories
@@ -462,9 +444,39 @@ function pathprepend() {
 	done
 }
 
+########################################################################
+# CLI sub commands
+########################################################################
+
+function _dotsh_bootstrap() {
+	cd "${DOTFILES_CONFIG_HOME}"
+	ensure_environment
+
+	touch "${HOME}/.profile"
+	blockinfile "${HOME}/.profile" profile "$(cat << EOM
+if [ -r "${HOME}/.bashrc" ]; then
+	source "${HOME}/.bashrc"
+fi
+EOM
+	)"
+
+	blockinfile "${HOME}/.bashrc" dotfiles "[[ -r \"${DOTFILES_CONFIG_HOME}/env\" ]] && source ${DOTFILES_CONFIG_HOME}/env"
+
+	touch "${HOME}/.zshenv"
+	blockinfile "${HOME}/.zshenv" profile "$(cat << EOM
+if [ -r "${HOME}/.zshrc" ]; then
+	source "${HOME}/.zshrc"
+fi
+EOM
+	)"
+
+	touch "${HOME}/.zshrc"
+	blockinfile "${HOME}/.zshrc" dotfiles "[[ -r \"${DOTFILES_CONFIG_HOME}/env\" ]] && source ${DOTFILES_CONFIG_HOME}/env"
+}
+
 function _dotsh_install() {
 	ensure_environment # Ensure DOTFILES_STATE_HOME is set and exists
-	source "${PROJECT_ROOT}/env"
+	source "${DOTFILES_CONFIG_HOME}/env"
 
 	log_message INFO "Running 'install' subcommand."
 
@@ -475,8 +487,8 @@ function _dotsh_install() {
 		exit 1
 	fi
 
-	# Source location of packages relative to PROJECT_ROOT (fallback if arg is just a name)
-	local default_packages_root="${PROJECT_ROOT}/pkg"
+	# Source location of packages relative to DOTFILES_CONFIG_HOME (fallback if arg is just a name)
+	local default_packages_root="${DOTFILES_CONFIG_HOME}/pkg"
 	local overall_success=0 # 0 for success, 1 for failure
 
 	# Loop through the specified package arguments (names or paths)
@@ -607,7 +619,10 @@ function _dotsh_install() {
 	fi
 }
 
-######################### Tab Completion Context ########################
+
+########################################################################
+# Tab Completion Context
+########################################################################
 # Check if we are in a tab completion context
 if test -n "${COMP_LINE}"; then
 	# Parse the command line for the subcommand and preceding arguments
@@ -641,7 +656,7 @@ if test -n "${COMP_LINE}"; then
 		;;
 	install)
 		# For the 'install' subcommand, list available packages (directories in pkg/)
-		pkg_dir="${PROJECT_ROOT}/pkg"
+		pkg_dir="${DOTFILES_CONFIG_HOME}/pkg"
 		if [ -d "${pkg_dir}" ]; then
 			cd "${pkg_dir}" || exit 1 # Change to the directory to get relative names easily
 			# List all items, filter for directories, and print their names
@@ -669,6 +684,10 @@ if test -n "${COMP_LINE}"; then
 fi
 ###################### End Tab Completion Context #######################
 
+########################################################################
+# Main entry point
+########################################################################
+
 set -o errexit  # exit if non-zero status code is returned
 set -o nounset  # exit if undefined variable is used
 set -o pipefail # exit if no-zero status code is returned in a pipeline
@@ -687,17 +706,8 @@ if [ "$#" -gt 0 ] && [ "$1" != "shell" ]; then
 fi
 
 case "${subcommand}" in
-bootstrap)
-	cd "${PROJECT_ROOT}"
-	ensure_environment
-	touch "${HOME}/.bashrc"
-	blockinfile "${HOME}/.bashrc" dotfiles "[[ -r \"${PROJECT_ROOT}/env\" ]] && source ${PROJECT_ROOT}/env"
-	touch "${HOME}/.zshrc"
-	blockinfile "${HOME}/.zshrc" dotfiles "[[ -r \"${PROJECT_ROOT}/env\" ]] && source ${PROJECT_ROOT}/env"
-	;;
-install)
-	_dotsh_install "$@"
-	;;
+bootstrap) _dotsh_bootstrap "$@" ;;
+install) _dotsh_install "$@" ;;
 sh | shell)
 	ensure_environment
 
@@ -721,7 +731,7 @@ sh | shell)
 
 	log_message INFO "Starting Docker container..."
 	docker run -it \
-		--mount "type=bind,src=${PROJECT_ROOT},dst=/home/$(whoami)/dotfiles" \
+		--mount "type=bind,src=${DOTFILES_CONFIG_HOME},dst=/home/$(whoami)/dotfiles" \
 		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
 		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
 		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \
@@ -730,10 +740,10 @@ sh | shell)
 		"$@" # Pass remaining arguments to the container entrypoint
 	;;
 build)
-	cd "${PROJECT_ROOT}"
+	cd "${DOTFILES_CONFIG_HOME}"
 
-	if [ -d "${PROJECT_ROOT}/tmp" ]; then
-		rm -r "${PROJECT_ROOT}/tmp"
+	if [ -d "${DOTFILES_CONFIG_HOME}/tmp" ]; then
+		rm -r "${DOTFILES_CONFIG_HOME}/tmp"
 	fi
 	ensure_environment
 	log_message INFO "Running 'build' subcommand."
@@ -765,7 +775,7 @@ build)
 
 	docker run -it \
 		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
-		--mount "type=bind,src=${PROJECT_ROOT},dst=/home/$(whoami)/dotfiles" \
+		--mount "type=bind,src=${DOTFILES_CONFIG_HOME},dst=/home/$(whoami)/dotfiles" \
 		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
 		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
 		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \
@@ -834,7 +844,7 @@ docker)
 	log_message INFO "Executing docker command with arguments: \`$*\`"
 	# Execute the docker command with the remaining arguments
 	docker run -it \
-		--mount "type=bind,src=${PROJECT_ROOT},dst=/home/$(whoami)/dotfiles" \
+		--mount "type=bind,src=${DOTFILES_CONFIG_HOME},dst=/home/$(whoami)/dotfiles" \
 		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
 		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
 		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \

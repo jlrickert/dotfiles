@@ -2,9 +2,9 @@
 
 ensure_environment
 
-if command -v deno &>/dev/null; then
+if have deno; then
 	log_message INFO "Deno is already installed."
-	exit 0
+	return
 fi
 
 # If we reach here, deno is not installed.

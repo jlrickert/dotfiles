@@ -23,7 +23,7 @@ sh -c "$(curl -fsLS https://raw.githubusercontent.com/jlrickert/dotfiles/main/se
 ### MacOSX
 
 ```bash
-brew install curl git # I am guessing here. Too lazy to look it up
+brew install curl git gnu-sed
 sh -c "$(curl -fsLS https://raw.githubusercontent.com/jlrickert/dotfiles/main/setup.sh)"
 ```
 
