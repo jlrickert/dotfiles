@@ -179,11 +179,13 @@ function load_packages() {
 		local pkg_env_file="${installed_packages_root}/${pkg_name}/env.sh"
 		local pkg_bin_path="${installed_packages_root}/${pkg_name}/bin"
 
+		export PACKAGE_PATH="${installed_packages_root}/${pkg_name}"
 		# Source the environment file if it exists
-		if [ -f "${pkg_env_file}" ]; then
+		if [ -r "${pkg_env_file}" ]; then
 			# shellcheck disable=SC1090 # Source command with dynamic path
-			. "${pkg_env_file}"
+			source "${pkg_env_file}"
 		fi
+		unset PACKAGE_PATH
 
 		pathprepend "${pkg_bin_path}"
 	done

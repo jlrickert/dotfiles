@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 install_symlink "${PACKAGE_ROOT}/bin" "${HOME}/bin"
+install_symlink "${PACKAGE_ROOT}/starship.toml" "${XDG_CONFIG_HOME}/starship.toml"
 
 if ! have starship && have brew; then
 	log_message INFO "starship not found. Installing with Homebrew..."

@@ -1,0 +1,4 @@
+command_timeout = 1000
+perl.disabled = true
+php.disabled = true
+aws.disabled = true

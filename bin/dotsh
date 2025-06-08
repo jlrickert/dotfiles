@@ -453,19 +453,28 @@ function _dotsh_bootstrap() {
 	ensure_environment
 
 	touch "${HOME}/.profile"
-	blockinfile "${HOME}/.profile" profile "$(cat << EOM
-if [ -r "${HOME}/.bashrc" ]; then
-	source "${HOME}/.bashrc"
+	blockinfile "${HOME}/.profile" dotfiles "$(
+		cat <<EOM
+if [[ -r "${DOTFILES_CONFIG_HOME}/env" ]]; then
+	case "\$-" in
+		*i*) ;;
+		*) source "${DOTFILES_CONFIG_HOME}/env";;
+	esac
 fi
 EOM
 	)"
 
+	touch "${HOME}/.bashrc"
 	blockinfile "${HOME}/.bashrc" dotfiles "[[ -r \"${DOTFILES_CONFIG_HOME}/env\" ]] && source ${DOTFILES_CONFIG_HOME}/env"
 
 	touch "${HOME}/.zshenv"
-	blockinfile "${HOME}/.zshenv" profile "$(cat << EOM
-if [ -r "${HOME}/.zshrc" ]; then
-	source "${HOME}/.zshrc"
+	blockinfile "${HOME}/.zshenv" dotfiles "$(
+		cat <<EOM
+if [[ -r "${DOTFILES_CONFIG_HOME}/env" ]]; then
+	case "\$-" in
+		*i*) ;;
+		*) source "${DOTFILES_CONFIG_HOME}/env" ;;
+	esac
 fi
 EOM
 	)"
@@ -492,6 +501,7 @@ function _dotsh_install() {
 	local overall_success=0 # 0 for success, 1 for failure
 
 	# Loop through the specified package arguments (names or paths)
+	local package_arg
 	for package_arg in "$@"; do
 		local source_pkg_dir=""          # The determined source directory path
 		local resolved_source_pkg_dir="" # The absolute, resolved source directory path
@@ -586,7 +596,7 @@ function _dotsh_install() {
 		if [ -f "${state_pkg_dir}/env.sh" ]; then
 			log_message INFO "Sourcing ${state_pkg_dir}/env.sh"
 			# shellcheck disable=SC1091 # Source command with dynamic path
-			. "${state_pkg_dir}/env.sh"
+			source "${state_pkg_dir}/env.sh"
 		fi
 
 		# Execute the install script from the symlinked location
