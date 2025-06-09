@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+# git checkout production
+# git pull origin production
+git remote add alpine-electronics git@bitbucket.org:ecwdevs/alpine-electronics.202211.git
+git remote add encapsulite git@bitbucket.org:ecwdevs/encapsulite.202207.git
+git fetch alpine-electronics
+git fetch encapsulite
+git checkout -b patch-2
+# git cherry-pick -x --edit 87b77cd 3f1d6c5
+
+git cherry-pick show d9909833dcd228fc8c131c7a30389eb7719d89e2 | git apply
+
+git checkout alpine-electronics/production includes/functions/custom_functions/html_output.php
+git reset includes/functions/custom_functions/html_output.php
+git checkout alpine-electronics/production includes/components/prescription/tags/form.php
+
+# # 2ad9718 is the big one
+#  
+# # git cherry-pick -x --edit 6b6578fd6 5111865db c99858be4 d18eb3519 6874e42cf 837382fe5
+# # git cherry-pick -x 2ad9718714ff77c4941b689c24d31cddef6bedc1
+# git cherry-pick --no-commit 837382f 6874e42 69ebc3b c1b340d c1b340d c99858b 033fd83
+# # git cherry-pick -x --strategy=theirs 033fd83
+# # git show d18eb35 includes # problematic
+#
+# # git cherry-pick -x --strategy=theirs d18eb35
+# # git checkout alpine-electronics/production includes/components/prescription/tags/form.php
+# # git add includes/components/prescription/tags/form.php
+# # git commit -m "fix: px:form tag"
+#
+# _rm() {
+# 	if [ -f "$1" ]; then
+# 	  rm "$@"
+# 	fi
+# }
+#
+# _rm includes/components/prescription/tags/image.php
+# _rm includes/components/prescription/tags/include.php
+# _rm thumb.php
+#
+# # echo "Apply round 2 security patch" > .git/MERGE_MSG
+# #
+# git checkout alpine-electronics/production includes/functions/custom_functions/html_output.php
+# git reset includes/functions/custom_functions/html_output.php
+# git checkout alpine-electronics/production includes/components/prescription/tags/form.php
+# # git commit -m "Apply packer security patch 2"
+#

@@ -38,6 +38,71 @@ if [[ -r "${PROJECT_ROOT}/env" ]]; then
 fi
 
 ########################################################################
+# Tab Completion Context
+########################################################################
+# Check if we are in a tab completion context
+if test -n "${COMP_LINE}"; then
+	# Parse the command line for the subcommand and preceding arguments
+	# COMP_LINE is the full command line being completed
+	# We want the word *after* the script name as the subcommand
+	# And words *after* the subcommand as arguments for completion
+	script_name="$(basename "${BASH_SOURCE[0]}")"
+
+	# Use awk to find the index of the script name and get the next word
+	script_index=$(echo "${COMP_LINE}" | awk -v name="${script_name}" '{ for(i=1; i<=NF; i++) if ($i == name) print i; }')
+	cmd_index=$((script_index + 1))
+	arg_start_index=$((cmd_index + 1))
+
+	cmd="$(echo "${COMP_LINE}" | awk -v idx="${cmd_index}" '{ print $idx }')"
+	pre="$(echo "${COMP_LINE}" | awk -v idx="${arg_start_index}" '{ for(i=idx; i<=NF; i++) printf $i" "; print "" }')"
+
+	# Debugging completion (optional)
+	# echo "COMP_LINE: ${COMP_LINE}" >&2
+	# echo "script_name: ${script_name}" >&2
+	# echo "script_index: ${script_index}" >&2
+	# echo "cmd: ${cmd}" >&2
+	# echo "pre: ${pre}" >&2
+
+	case "${cmd}" in
+	docker)
+		# Delegate completion to the standard docker completion function
+		# This assumes the standard bash completion for docker is available
+		if type _docker &>/dev/null; then
+			_docker
+		fi
+		exit 0
+		;;
+	install)
+		# For the 'install' subcommand, list available packages (directories in pkg/)
+		pkg_dir="${DOTFILES_CONFIG_HOME}/pkg"
+		if [ -d "${pkg_dir}" ]; then
+			cd "${pkg_dir}" || exit 1 # Change to the directory to get relative names easily
+			# List all items, filter for directories, and print their names
+			for item in *; do
+				echo "${item}"
+			done
+		fi
+		exit 0 # Exit after providing completions
+		;;
+	*)
+		# Default completion: list available subcommands
+		# Filter by the 'cmd' string if it exists (when completing the subcommand itself)
+		# Or filter by 'pre' if completing after the subcommand (though this case is handled above)
+		available_subcommands="bootstrap list list-installed install shell build docker docker-build" # List all top-level subcommands here
+
+		for sub in ${available_subcommands}; do
+			# If 'cmd' is empty (completing the first word) or matches the start of 'sub'
+			# if [ -z "${cmd}" ] || [[ "${sub}" =~ ^${cmd} ]]; then
+			# 	echo "${sub}"
+			# fi
+			test -z "${pre}" -o "${sub}" != "${sub#"${pre}"}" && echo "$sub"
+		done
+		exit 0 # Exit after providing completions
+		;;
+	esac
+fi
+
+########################################################################
 # Custom functions
 ########################################################################
 
@@ -455,6 +520,8 @@ function _dotsh_bootstrap() {
 	touch "${HOME}/.profile"
 	blockinfile "${HOME}/.profile" dotfiles "$(
 		cat <<EOM
+# Loads env only if not interactive shell. \`.bashrc\` will pick up the slack
+# if interactive
 if [[ -r "${DOTFILES_CONFIG_HOME}/env" ]]; then
 	case "\$-" in
 		*i*) ;;
@@ -470,6 +537,8 @@ EOM
 	touch "${HOME}/.zshenv"
 	blockinfile "${HOME}/.zshenv" dotfiles "$(
 		cat <<EOM
+# Loads env only if not interactive shell. \`.zshrc\` will pick up the slack if
+# interactive
 if [[ -r "${DOTFILES_CONFIG_HOME}/env" ]]; then
 	case "\$-" in
 		*i*) ;;
@@ -628,71 +697,6 @@ function _dotsh_install() {
 		exit 1
 	fi
 }
-
-
-########################################################################
-# Tab Completion Context
-########################################################################
-# Check if we are in a tab completion context
-if test -n "${COMP_LINE}"; then
-	# Parse the command line for the subcommand and preceding arguments
-	# COMP_LINE is the full command line being completed
-	# We want the word *after* the script name as the subcommand
-	# And words *after* the subcommand as arguments for completion
-	script_name="$(basename "${BASH_SOURCE[0]}")"
-	# Use awk to find the index of the script name and get the next word
-	script_index=$(echo "${COMP_LINE}" | awk -v name="${script_name}" '{ for(i=1; i<=NF; i++) if ($i == name) print i; }')
-	cmd_index=$((script_index + 1))
-	arg_start_index=$((cmd_index + 1))
-
-	cmd="$(echo "${COMP_LINE}" | awk -v idx="${cmd_index}" '{ print $idx }')"
-	pre="$(echo "${COMP_LINE}" | awk -v idx="${arg_start_index}" '{ for(i=idx; i<=NF; i++) printf $i" "; print "" }')"
-
-	# Debugging completion (optional)
-	# echo "COMP_LINE: ${COMP_LINE}" >&2
-	# echo "script_name: ${script_name}" >&2
-	# echo "script_index: ${script_index}" >&2
-	# echo "cmd: ${cmd}" >&2
-	# echo "pre: ${pre}" >&2
-
-	case "${cmd}" in
-	docker)
-		# Delegate completion to the standard docker completion function
-		# This assumes the standard bash completion for docker is available
-		if type _docker &>/dev/null; then
-			_docker
-		fi
-		exit 0
-		;;
-	install)
-		# For the 'install' subcommand, list available packages (directories in pkg/)
-		pkg_dir="${DOTFILES_CONFIG_HOME}/pkg"
-		if [ -d "${pkg_dir}" ]; then
-			cd "${pkg_dir}" || exit 1 # Change to the directory to get relative names easily
-			# List all items, filter for directories, and print their names
-			for item in *; do
-				test -z "${pre}" -o "${item}" != "${item#"${pre}"}" && echo "$item"
-			done
-		fi
-		exit 0 # Exit after providing completions
-		;;
-	*)
-		# Default completion: list available subcommands
-		# Filter by the 'cmd' string if it exists (when completing the subcommand itself)
-		# Or filter by 'pre' if completing after the subcommand (though this case is handled above)
-		available_subcommands="bootstrap list list-installed install shell build docker docker-build" # List all top-level subcommands here
-
-		for sub in ${available_subcommands}; do
-			# If 'cmd' is empty (completing the first word) or matches the start of 'sub'
-			if [ -z "${cmd}" ] || [[ "${sub}" =~ ^${cmd} ]]; then
-				echo "${sub}"
-			fi
-		done
-		exit 0 # Exit after providing completions
-		;;
-	esac
-fi
-###################### End Tab Completion Context #######################
 
 ########################################################################
 # Main entry point

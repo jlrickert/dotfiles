@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+if test -n "${COMP_LINE}"; then
+	pre="${COMP_LINE##* }"
+	for c in train help patch; do
+		test -z "${pre}" -o "${c}" != "${c#"${pre}"}" && echo "$c"
+	done
+	exit
+fi
+
+
+TITLE="breach patcher"
+PATCH_DIR=/Users/jlrickert/.config/ecw-shell/patches
+
+get_current_branch_name() {
+	git rev-parse --abbrev-ref HEAD
+}
+
+# Get the last commit hash of the remote production branch
+get_remote_last_commit() {
+	git fetch origin production
+	git rev-parse origin/production
+}
+
+# Get the last commit hash of the current local branch
+get_local_last_commit() {
+	local branch="$1"
+	git rev-parse "$branch"
+}
+
+# Check if the current branch is fresh on the production server
+is_fresh_production_branch() {
+	local current_branch
+	local remote_commit_hash
+	local local_commit_hash
+
+	current_branch=$(get_current_branch_name)
+	remote_commit_hash=$(get_remote_last_commit)
+	local_commit_hash=$(get_local_last_commit "$current_branch")
+
+	[[ "$remote_commit_hash" == "$local_commit_hash" ]]
+}
+
+function train() {
+	echo "Training the model..."
+	PATCH="$(cat "${PATCH_DIR}/breach-patch3.gitdiff")"
+	# PATCH="$(cat "${PATCH_DIR}/pipeline-whitelist.gitdiff")"
+	echo "${PATCH}" | mods --title "$TITLE" "Keep this as a reference. No output needed"
+
+	# Add training logic here
+}
+
+function chat() {
+	buf=""
+	if [ ! -t 0 ]; then
+		buf=$'\n'$(cat)
+	fi
+	mods --continue "${TITLE}" "$@" <<<"${buf}"
+}
+
+function help() {
+	echo "Available subcommands:"
+	echo "  train - Train the model"
+	echo "  patch - Apply patch updates"
+}
+
+function patch() {
+	if [[ $(get_current_branch_name) = "poduction" ]]; then
+		git pull origin production
+	else
+		git checkout production
+		git pull origin production
+	fi
+	if ! is_fresh_production_branch; then
+		exit
+	fi
+
+	PATCH="$(cat "${PATCH_DIR}/breach-patch3.gitdiff")"
+	echo "${PATCH}" | git apply -
+	echo "Applying patch updates..."
+	git commit -m "google constant js fix"
+	# Add patching logic here
+}
+
+CMD=$1
+shift
+case "${CMD}" in
+train)
+	train "$@"
+	;;
+help)
+	help "$@"
+	;;
+patch)
+	shift
+	patch "$@"
+	;;
+*)
+	help
+	;;
+esac
