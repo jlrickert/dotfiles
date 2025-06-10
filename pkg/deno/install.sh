@@ -4,12 +4,12 @@ ensure_environment
 
 if have deno; then
 	log_message INFO "Deno is already installed."
-	return
+	exit 0
 fi
 
 # If we reach here, deno is not installed.
 log_message INFO "Deno not found. Attempting installation..."
-if curl -fsSL https://deno.land/install.sh | DENO_INSTALL="$HOME/.local/share/deno" sh -s -- -y; then
+if curl -fsSL https://deno.land/install.sh | DENO_INSTALL="${HOME}/.local/share/deno" sh -s -- -y; then
 	log_message SUCCESS "Deno installed successfully."
 	exit 0
 else

@@ -56,6 +56,13 @@ function load_completions() {
 	done 
 }
 
+export ZSH_CACHE_DIR="${DOTFILES_CACHE_HOME}/zsh"
+export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zcompdump-${HOST}-${ZSH_VERSION}"
+
+fpath=("${ZSH_CACHE_DIR}/completions" $fpath)
+
+mkdir -p "${ZSH_CACHE_DIR}/completions"
+
 # Loads bash's complete function
 autoload -U +X bashcompinit && bashcompinit
 
