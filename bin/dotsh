@@ -733,16 +733,6 @@ function _dotsh_build() {
 		log_message ERROR "Docker image build failed for ${IMAGE_NAME}"
 		exit 1
 	fi
-
-	docker run -it \
-		--mount "type=bind,src=${DOTFILES_CONFIG_HOME},dst=/home/$(whoami)/dotfiles" \
-		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
-		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
-		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
-		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \
-		--user "$(whoami):$(whoami)" \
-		--workdir "/home/$(whoami)/dotfiles" \
-		"${IMAGE_NAME}"
 }
 
 function _dotsh_shell() {
@@ -769,6 +759,7 @@ function _dotsh_shell() {
 	log_message INFO "Starting Docker container..."
 	docker run -it \
 		--mount "type=bind,src=${DOTFILES_CONFIG_HOME},dst=/home/$(whoami)/dotfiles" \
+		--mount "type=bind,src=${DOTFILES_APP_BIN:-${HOME}/.local/bin},dst=/home/$(whoami)/.local/bin" \
 		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
 		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
 		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \

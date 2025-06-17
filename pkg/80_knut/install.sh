@@ -2,6 +2,9 @@
 
 dotsh install 20_go
 
+mkdir -p "${HOME}/.config/mods"
+install_symlink "${PACKAGE_ROOT}/mods.yml" "${HOME}/.config/mods/mods.yml"
+
 function _install_brew_package() {
 	local package=$1
 
@@ -65,6 +68,3 @@ function _install_yq() {
 
 _install_mods
 _install_yq
-
-mkdir -p "${HOME}/.config/mods"
-install_symlink "${PACKAGE_ROOT}/mods.yml" "${HOME}/.config/mods/mods.yml"

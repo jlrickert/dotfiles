@@ -205,6 +205,8 @@ apis:
       gemini-2.5-flash-preview-04-17:
         alias: ["flash-2-5-flash"]
         max-input-chars: 4194304
+      gemini-2.5-flash-preview-05-20:
+        max-input-chars: 4194304
   azure:
     # Set to 'azure-ad' to use Active Directory
     # Azure OpenAI setup: https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource
