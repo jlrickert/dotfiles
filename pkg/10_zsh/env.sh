@@ -73,11 +73,6 @@ autoload -U compaudit zrecompile
 autoload -Uz compinit
 compinit -u -d "${ZSH_COMPDUMP}"
 
-export ZSH_CACHE_DIR="${DOTFILES_CACHE_HOME}/zsh"
-export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zsh/zcompdump-${HOST}-${ZSH_VERSION}"
-
-mkdir -p "${ZSH_CACHE_DIR}"
-
 # zcompile the completion dump file if the .zwc is older or missing.
 if command mkdir "${ZSH_COMPDUMP}.lock" 2>/dev/null; then
   zrecompile -q -p "${ZSH_COMPDUMP}"
@@ -179,8 +174,31 @@ fi
 # Load third party applications
 ########################################################################
 
+eval "$(<"${PACKAGE_PATH}/lib/termsupport.zsh")"
+
 have starship && eval "$(starship init zsh)"
 have ssh-agen && eval "$(ssh-agen)" &>/dev/null
+
+setopt interactivecomments  # recognize comments
+
+########################################################################
+# History
+########################################################################
+
+mkdir -p "${DOTFILES_STATE_HOME}/zsh"
+
+## History file configuration
+export HISTFILE="${DOTFILES_STATE_HOME}/zsh/history"
+export HISTSIZE=50000
+export SAVEHIST=10000
+
+## History command configuration
+setopt extended_history       # record timestamp of command in HISTFILE
+setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
+setopt hist_ignore_dups       # ignore duplicated commands history list
+setopt hist_ignore_space      # ignore commands that start with space
+setopt hist_verify            # show command with history expansion to user before running it
+setopt share_history          # share command history data
 
 ########################################################################
 # Keybindings
@@ -190,8 +208,44 @@ have ssh-agen && eval "$(ssh-agen)" &>/dev/null
 # shellcheck disable=SC1094
 eval "$(<"${PACKAGE_PATH}/lib/zsh-vi-mode.zsh")"
 
-bindkey '^k' up-history
-bindkey '^j' down-history
+bindkey '^k' up-line-or-history
+bindkey '^j' down-line-or-history
+
+# [Shift-Tab] - move through the completion menu backwards
+if [[ -n "${terminfo[kcbt]}" ]]; then
+	bindkey -M emacs "${terminfo[kcbt]}" reverse-menu-complete
+	bindkey -M viins "${terminfo[kcbt]}" reverse-menu-complete
+	bindkey -M vicmd "${terminfo[kcbt]}" reverse-menu-complete
+fi
+
+# [Backspace] - delete backward
+bindkey -M emacs '^?' backward-delete-char
+bindkey -M viins '^?' backward-delete-char
+bindkey -M vicmd '^?' backward-delete-char
+# [Delete] - delete forward
+if [[ -n "${terminfo[kdch1]}" ]]; then
+	bindkey -M emacs "${terminfo[kdch1]}" delete-char
+	bindkey -M viins "${terminfo[kdch1]}" delete-char
+	bindkey -M vicmd "${terminfo[kdch1]}" delete-char
+else
+	bindkey -M emacs "^[[3~" delete-char
+	bindkey -M viins "^[[3~" delete-char
+	bindkey -M vicmd "^[[3~" delete-char
+
+	bindkey -M emacs "^[3;5~" delete-char
+	bindkey -M viins "^[3;5~" delete-char
+	bindkey -M vicmd "^[3;5~" delete-char
+fi
+
+bindkey '^r' history-incremental-search-backward      # [Ctrl-r] - Search backward incrementally for a specified string. The string may begin with ^ to anchor the search to the beginning of the line.
+bindkey ' ' magic-space                               # [Space] - don't do history expansion
+
+# zle -N insert-literal-newline self-insert
+# bindkey -M viins '^[^M' insert-literal-newline
+# bindkey -M viins '^M' self-insert
+# bindkey -M viins '^M' vi-add-eol
+# zle -N insert-literal-newline self-insert
+# bindkey -M viins '^M' insert-literal-newline
 
 ########################################################################
 # Alias

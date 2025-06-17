@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+
 # Check if Rust (cargo) is already installed
 if command -v cargo &>/dev/null; then
 	log_message SUCCESS "Rust (cargo) is already installed. Exiting installation script."

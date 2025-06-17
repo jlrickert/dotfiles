@@ -7,7 +7,8 @@ fi
 TITLE="$(git rev-parse --show-toplevel 2>/dev/null || pwd)--gemini"
 API=google
 # MODEL=gemini-2.0-flash
-MODEL=gemini-2.5-flash-preview-04-17
+# MODEL=gemini-2.5-flash-preview-04-17
+MODEL=gemini-2.5-flash-preview-05-20
 # Check if any input is available
 BUF=""
 
@@ -36,7 +37,7 @@ fi
 
 # Create the initial conversation
 if ! mods --list | grep --quiet --fixed-string "${TITLE}"; then
-	mods --raw --api "${API}" --model "${MODEL}" --title "${TITLE}" "Start of conversation for ${TITLE}. Not corporate humor. No output" &>/dev/null
+	mods --raw --api "${API}" --model "${MODEL}" --title "${TITLE}" "Start of conversation for ${TITLE}. Not corporate humor." &>/dev/null
 	"$0" "$@" <<<"${BUF}"
 	exit
 fi

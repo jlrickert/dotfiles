@@ -6,13 +6,10 @@ set -e
 # API=openai
 # MODEL=gpt-4.1-mini
 API=google
-MODEL=gemini-2.5-flash-preview-04-17
+# MODEL=gemini-2.5-flash-preview-04-17
+MODEL=gemini-2.5-flash-preview-05-20
 
-CONVO_TITLE_ASSISTANT="$(keg directory)--keg"
-CONVO_TITLE_LINKIFY="$(keg directory)--linkify"
-CONVO_TITLE_SEARCH="$(keg directory)--search"
-
-assistant() {
+_ku_assistant() {
 	local TEMP=0.3
 	local TOPP=0.85
 	local TOPK=20
@@ -33,7 +30,7 @@ filtered_list() {
 	done
 }
 
-list() {
+_ku_list() {
 	tag=$1
 	if [ ! "${tag}" = "" ]; then
 		filtered_list "$@"
@@ -42,7 +39,7 @@ list() {
 	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1 "\t" $3}' {} +
 }
 
-tags() {
+_ku_tags() {
 	tag="$1"
 	TAGS_INDEX="$(pwd)/dex/tags"
 	if [ "${tag}" = "" ]; then
@@ -55,11 +52,11 @@ tags() {
 	done | sort --numeric-sort
 }
 
-nodes() {
+_ku_nodes() {
 	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1}' {} +
 }
 
-links() {
+_ku_links() {
 	# list of note IDs
 	local idl="("
 
@@ -85,7 +82,7 @@ links() {
 	# done | sort -u
 }
 
-backlinks() {
+_ku_backlinks() {
 	# list of note IDs
 	local idl="("
 
@@ -108,17 +105,17 @@ backlinks() {
 	done | sort -u
 }
 
-title() {
+_ku_title() {
 	HEADER="$(cat "docs/${1}/README")"
 	HEADER="${HEADER:2}"
 	echo "${HEADER}"
 }
 
-titles() {
+_ku_titles() {
 	find . -name "nodes.tsv" -exec awk -F'\t' '{print "docs/"$1"/README.md:1:"$3}' {} +
 }
 
-search() {
+_ku_search() {
 	local TEMP=0.3
 	local TOPP=0.85
 	local TOPK=20
@@ -130,7 +127,7 @@ search() {
 	mods --raw --temp "${TEMP}" --topp "${TOPP}" --topk "${TOPK}" --continue "${CONVO_TITLE_SEARCH}" "$@" <<<"${buf}"
 }
 
-search-qf() {
+_ku_search-qf() {
 	rg \
 		--line-number \
 		--files-with-matches \
@@ -140,31 +137,31 @@ search-qf() {
 		"$@" | awk '{ cmd = "head -n 1 " $1; cmd | getline $2; close(cmd); print $1":1:"$2}'
 }
 
-retrain() {
-	index
+_ku_retrain() {
+	_ku_index
 	# Setup keg assistant context
 	if mods --list | grep --quiet --fixed-string "${CONVO_TITLE_ASSISTANT}"; then
 		mods --delete "${CONVO_TITLE_ASSISTANT}"
 	fi
-	buf="$(zet pub cat 887 921)\n\nHere is my notes in the current KEG $(keg directory):\n\n$(list)"
+	buf="$(zet pub cat 887 921)\n\nHere is my notes in the current KEG $(keg directory):\n\n$(_ku_list)"
 	echo -e "${buf}" | mods --api "${API}" --model "${MODEL}" --role keg-assistant --title "${CONVO_TITLE_ASSISTANT}" "Keep this as a reference. No output at all" >/dev/null
 
 	# Setup linkify context
 	if mods --list | grep --quiet --fixed-string "${CONVO_TITLE_LINKIFY}"; then
 		mods --delete "${CONVO_TITLE_LINKIFY}"
 	fi
-	buf="$(zet pub cat 887 921)\n\nHere is my notes in the current KEG $(keg directory):\n\n$(list)"
+	buf="$(zet pub cat 887 921)\n\nHere is my notes in the current KEG $(keg directory):\n\n$(_ku_list)"
 	echo -e "${buf}" | mods --api "${API}" --model "${MODEL}" --role keg-linkify --title "${CONVO_TITLE_LINKIFY}" "Keep this as a reference. No output at all" >/dev/null
 
 	# Setup search context
 	if mods --list | grep --quiet --fixed-string "${CONVO_TITLE_SEARCH}"; then
 		mods --delete "${CONVO_TITLE_SEARCH}"
 	fi
-	buf="$(zet pub cat 887)\n\nHere is my notes in the current KEG $(keg directory):\n\n$(list)"
+	buf="$(zet pub cat 887)\n\nHere is my notes in the current KEG $(keg directory):\n\n$(_ku_list)"
 	echo -e "${buf}" | mods --api "${API}" --model "${MODEL}" --role keg-search --title "${CONVO_TITLE_SEARCH}" "Keep this as a reference. No output at all" >/dev/null
 }
 
-index() {
+_ku_index() {
 	keg index update
 	TAGS_INDEX="$(pwd)/dex/tags"
 	[ -f "${TAGS_INDEX}" ] && rm "${TAGS_INDEX}"
@@ -200,7 +197,7 @@ index() {
 	fi
 }
 
-changes() {
+_ku_changes() {
 	CHANGES_INDEX="$(pwd)/dex/changes.md"
 }
 
@@ -255,15 +252,15 @@ update_tags() {
 	sort -o "${TAGS_INDEX}" "${TAGS_INDEX}"
 }
 
-update() {
+_ku_update() {
 	git pull
 	if [ -f "update.sh" ]; then
 		./update.sh "$@"
 	fi
 }
 
-publish() {
-	index
+_ku_publish() {
+	_ku_index
 	keg publish
 }
 
@@ -283,13 +280,17 @@ KEG_CURRENT=''
 # ensure we are in a keg
 keg current &>/dev/null || exit 1
 
+CONVO_TITLE_ASSISTANT="$(keg directory)--keg"
+CONVO_TITLE_LINKIFY="$(keg directory)--linkify"
+CONVO_TITLE_SEARCH="$(keg directory)--search"
+
 ######################### Tab Completion Context ########################
 if test -n "${COMP_LINE}"; then
 	cmd="$(echo "${COMP_LINE}" | awk '{print $2}')"
 	pre="$(printf "%s" "${COMP_LINE}" | awk '{for(i=3; i<=NF; i++) printf $i" "; print ""}')"
 	case "${cmd}" in
 	cat | changes | edit | view | title | link | backlinks)
-		nodes
+		_ku_nodes
 		exit 0
 		;;
 	keg)
@@ -297,7 +298,7 @@ if test -n "${COMP_LINE}"; then
 		exit 0
 		;;
 	tags)
-		tags
+		_ku_tags
 		exit 0
 		;;
 	*)
@@ -320,7 +321,7 @@ CMD="$(echo "$@" | awk '{print $1}')"
 shift
 
 case "${CMD}" in
-a | assistant) assistant "$@" ;;
+a | assistant) _ku_assistant "$@" ;;
 e | edit) keg edit "$@" ;;
 v | view) keg view "$@" ;;
 k | keg) keg "$@" ;;
@@ -334,10 +335,10 @@ chat)
 	exit
 	;;
 d | deploy) ./deploy "$@" ;;
-p | publish) publish "$@" ;;
-u | update) update "$@" ;;
-i | index) index "$@" ;;
-retrain) retrain "$@" ;;
+p | publish) _ku_publish "$@" ;;
+u | update) _ku_update "$@" ;;
+i | index) _ku_index "$@" ;;
+retrain) _ku_retrain "$@" ;;
 cat)
 	declare -a lines
 	if [ ! -t 0 ]; then
@@ -368,17 +369,17 @@ cat)
 cd)
 	"${SHELL}"
 	;;
-changes) changes "$@" ;;
-links) links "$@" ;;
-backlinks) backlinks "$@" ;;
-tags) tags "$@" ;;
-list) list "$@" ;;
-nodes) nodes "$@" ;;
-title) title "$@" ;;
-titles) titles "$@" ;;
-search) search "$@" ;;
+changes) _ku_changes "$@" ;;
+links) _ku_links "$@" ;;
+backlinks) _ku_backlinks "$@" ;;
+tags) _ku_tags "$@" ;;
+list) _ku_list "$@" ;;
+nodes) _ku_nodes "$@" ;;
+title) _ku_title "$@" ;;
+titles) _ku_titles "$@" ;;
+search) _ku_search "$@" ;;
 rg) rg --glob="*.md" "$@" ;;
-qf-search) search-qf "$@" ;;
+qf-search) _ku_search-qf "$@" ;;
 sync) git pull "$@" ;;
 l | link) keg link "$@" ;;
 git) git "$@" ;;

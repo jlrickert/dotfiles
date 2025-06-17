@@ -659,15 +659,6 @@ function _dotsh_install() {
 			continue                        # Skip to the next package
 		fi
 
-		# Source the environment file if it exists in the symlinked location
-		# Note: Sourcing env.sh from the state directory symlink will effectively
-		# source the env.sh from the original source directory.
-		if [ -f "${state_pkg_dir}/env.sh" ]; then
-			log_message INFO "Sourcing ${state_pkg_dir}/env.sh"
-			# shellcheck disable=SC1091 # Source command with dynamic path
-			source "${state_pkg_dir}/env.sh"
-		fi
-
 		# Execute the install script from the symlinked location
 		log_message INFO "Executing install script for \`${pkg_name}\`: \`${install_script}\`"
 		# Execute directly, no need for 'bash' unless the script lacks a shebang
@@ -677,6 +668,15 @@ function _dotsh_install() {
 			log_message ERROR "Install script failed for package: \`${pkg_name}\`" >&2
 			overall_success=1
 			# Continue to the next package even if one fails
+		fi
+
+		# Source the environment file if it exists in the symlinked location
+		# Note: Sourcing env.sh from the state directory symlink will effectively
+		# source the env.sh from the original source directory.
+		if [ -f "${state_pkg_dir}/env.sh" ]; then
+			log_message INFO "Sourcing ${state_pkg_dir}/env.sh"
+			# shellcheck disable=SC1091 # Source command with dynamic path
+			source "${state_pkg_dir}/env.sh"
 		fi
 
 		# Change back to the original directory
@@ -698,68 +698,15 @@ function _dotsh_install() {
 	fi
 }
 
-########################################################################
-# Main entry point
-########################################################################
-
-set -o errexit  # exit if non-zero status code is returned
-set -o nounset  # exit if undefined variable is used
-set -o pipefail # exit if no-zero status code is returned in a pipeline
-
-###
-## Command Handling
-###
-
-# Get the subcommand
-# Default to 'shell' if no argument is provided
-subcommand="${1:-shell}"
-
-# Shift the subcommand off the arguments list if it was explicitly provided
-if [ "$#" -gt 0 ] && [ "$1" != "shell" ]; then
-	shift
-fi
-
-case "${subcommand}" in
-bootstrap) _dotsh_bootstrap "$@" ;;
-install) _dotsh_install "$@" ;;
-sh | shell)
-	ensure_environment
-
-	log_message INFO "Running 'shell' subcommand."
-
-	# Check if Docker is installed.
-	if ! command -v docker &>/dev/null; then
-		log_message ERROR "Docker is not installed. Please install Docker."
-		exit 1
-	fi
-
-	# Check if the image exists, and set it up if it doesn't.
-	if ! docker image inspect "${IMAGE_NAME}" &>/dev/null; then
-		log_message INFO "Docker image '${IMAGE_NAME}' not found. Building..."
-		./bin/docker-build
-	else
-		log_message INFO "Docker image '${IMAGE_NAME}' found."
-	fi
-
-	ensure_environment
-
-	log_message INFO "Starting Docker container..."
-	docker run -it \
-		--mount "type=bind,src=${DOTFILES_CONFIG_HOME},dst=/home/$(whoami)/dotfiles" \
-		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
-		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
-		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \
-		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
-		"${IMAGE_NAME}" \
-		"$@" # Pass remaining arguments to the container entrypoint
-	;;
-build)
+function _dotsh_build() {
 	cd "${DOTFILES_CONFIG_HOME}"
 
 	if [ -d "${DOTFILES_CONFIG_HOME}/tmp" ]; then
 		rm -r "${DOTFILES_CONFIG_HOME}/tmp"
 	fi
+
 	ensure_environment
+
 	log_message INFO "Running 'build' subcommand."
 	# Check if Docker is installed.
 	if ! command -v docker &>/dev/null; then
@@ -788,22 +735,84 @@ build)
 	fi
 
 	docker run -it \
-		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
 		--mount "type=bind,src=${DOTFILES_CONFIG_HOME},dst=/home/$(whoami)/dotfiles" \
+		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
 		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
 		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
 		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \
 		--user "$(whoami):$(whoami)" \
 		--workdir "/home/$(whoami)/dotfiles" \
+		"${IMAGE_NAME}"
+}
+
+function _dotsh_shell() {
+	ensure_environment
+
+	log_message INFO "Running 'shell' subcommand."
+
+	# Check if Docker is installed.
+	if ! command -v docker &>/dev/null; then
+		log_message ERROR "Docker is not installed. Please install Docker."
+		exit 1
+	fi
+
+	# Check if the image exists, and set it up if it doesn't.
+	if ! docker image inspect "${IMAGE_NAME}" &>/dev/null; then
+		log_message INFO "Docker image '${IMAGE_NAME}' not found. Building..."
+		dotsh build
+	else
+		log_message INFO "Docker image '${IMAGE_NAME}' found."
+	fi
+
+	ensure_environment
+
+	log_message INFO "Starting Docker container..."
+	docker run -it \
+		--mount "type=bind,src=${DOTFILES_CONFIG_HOME},dst=/home/$(whoami)/dotfiles" \
+		--mount "type=bind,src=${XDG_DATA_HOME:-${HOME}/.local/share},dst=/home/$(whoami)/.local/share" \
+		--mount "type=bind,src=${XDG_STATE_HOME:-${HOME}/.local/state},dst=/home/$(whoami)/.local/state" \
+		--mount "type=bind,src=${XDG_CACHE_HOME:-${HOME}/.cache},dst=/home/$(whoami)/.cache" \
+		--mount "type=bind,src=${XDG_CONFIG_HOME:-${HOME}/.config},dst=/home/$(whoami)/.config" \
 		"${IMAGE_NAME}" \
-		"./lib/build.sh"
-	;;
-list)
+		"$@" # Pass remaining arguments to the container entrypoint
+}
+
+function _dotsh_list() {
 	find "${DOTFILES_CONFIG_HOME}/pkg" -mindepth 1 -maxdepth 1
-	;;
-list-installed)
+}
+
+function _dotsh_list_installed() {
 	find "${DOTFILES_STATE_HOME}/pkg" -mindepth 1 -maxdepth 1
-	;;
+}
+
+########################################################################
+# Main entry point
+########################################################################
+
+set -o errexit  # exit if non-zero status code is returned
+set -o nounset  # exit if undefined variable is used
+set -o pipefail # exit if no-zero status code is returned in a pipeline
+
+###
+## Command Handling
+###
+
+# Get the subcommand
+# Default to 'shell' if no argument is provided
+subcommand="${1:-shell}"
+
+# Shift the subcommand off the arguments list if it was explicitly provided
+if [ "$#" -gt 0 ] && [ "$1" != "shell" ]; then
+	shift
+fi
+
+case "${subcommand}" in
+bootstrap) _dotsh_bootstrap "$@" ;;
+build) _dotsh_build "$@" ;;
+install) _dotsh_install "$@" ;;
+sh | shell) _dotsh_shell "$@" ;;
+list) _dotsh_list "$@" ;;
+"list-installed") _dotsh_list_installed "$@" ;;
 doctor)
 	echo "--- Running Doctor Checks ---"
 

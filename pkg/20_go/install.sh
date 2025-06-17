@@ -1,24 +1,50 @@
 #!/usr/bin/env bash
 
-GO_VERSION="1.24.3"
+GO_VERSION="1.24.4"
 GO_OS="linux"
 GO_ARCH="amd64"
 GO_TARBALL="go${GO_VERSION}.${GO_OS}-${GO_ARCH}.tar.gz"
 GO_URL="https://go.dev/dl/${GO_TARBALL}"
-GO_EXPECTED_HASH="3333f6ea53afa971e9078895eaa4ac7204a8c6b5c68c10e6bc9a33e8e391bdd8"
 # Target installation directory
-GO_INSTALL_DIR="${HOME}/.local/go"
+GO_INSTALL_DIR="${HOME}/.local/share/go"
 GO_TEMP_DIR=$(mktemp -d)
 
 ensure_environment
 
 # Check if Go is already installed
-if command -v go &>/dev/null; then
-	log_message INFO "Go is already installed."
-	exit 0 # Exit successfully if already present
-fi
+if have go; then
 
-log_message INFO "Go not found. Attempting installation..."
+	# Get the full Go version output (e.g., "go version go1.21.5 linux/amd64")
+	# Capture stderr to avoid polluting output if 'go version' prints warnings,
+	# though it's less common for 'go version'.
+	GO_FULL_OUTPUT=$(go version 2>/dev/null)
+
+	# Extract the version string (e.g., "go1.21.5")
+	GO_RAW_VERSION=$(echo "${GO_FULL_OUTPUT}" | awk '{print $3}' 2>/dev/null)
+
+	# Remove the leading "go" prefix (e.g., "1.21.5")
+	GO_VERSION_NUMBERS=$(echo "$GO_RAW_VERSION" | sed 's/^go//')
+
+	# Split the version string into major, minor, and patch
+	# Using bash string manipulation for clarity if version is like "1.21.5"
+	# Alternative: echo "$GO_VERSION_NUMBERS" | cut -d. -f1,2,3
+	GO_MAJOR=$(echo "${GO_VERSION_NUMBERS}" | cut -d. -f1)
+	GO_MINOR=$(echo "${GO_VERSION_NUMBERS}" | cut -d. -f2)
+	GO_PATCH=$(echo "${GO_VERSION_NUMBERS}" | cut -d. -f3)
+
+	# No need to continue as brew will handling updating versions
+	if have brew; then
+		log_message INFO "Go is already installed and managed by brew."
+		exit 0
+	fi
+
+	if [ "${GO_MAJOR}.${GO_MINOR}.${GO_PATCH}" == ${GO_VERSION} ]; then
+		log_message INFO "Go version ${GO_MAJOR}.${GO_MINOR}.${GO_PATCH} found. Removing for later reinstallation of newer version"
+		rm -r "${XDG_DATA_HOME}/go"
+	fi
+else
+	log_message INFO "Go not found. Attempting installation..."
+fi
 
 # Detect OS
 case "$(uname -s)" in
@@ -26,7 +52,7 @@ Darwin)
 	# macOS
 	log_message INFO "Detected macOS. Installing Go via Homebrew..."
 	# Check if Homebrew is installed
-	if ! command -v brew &>/dev/null; then
+	if ! have brew; then
 		log_message ERROR "Homebrew is not installed. Please install Homebrew first to install Go on macOS." >&2
 		log_message INFO "See https://brew.sh/ for installation instructions."
 		exit 1
@@ -52,7 +78,7 @@ Linux)
 	fi
 
 	# Source os-release to get ID
-	. /etc/os-release
+	source /etc/os-release
 
 	# Use bouncer pattern: If not Ubuntu/Debian, exit early
 	if [[ "${ID}" != "ubuntu" && "${ID}" != "debian" ]]; then
@@ -87,16 +113,6 @@ Linux)
 			exit 1
 		fi
 
-		# Verify the hash
-		log_message INFO "Verifying checksum..."
-		GO_DOWNLOADED_HASH=$(sha256sum "${GO_TEMP_DIR}/${GO_TARBALL}" | awk '{print $1}')
-		if [ "${GO_DOWNLOADED_HASH}" != "${GO_EXPECTED_HASH}" ]; then
-			log_message ERROR "Checksum mismatch! Expected ${GO_EXPECTED_HASH}, got ${GO_DOWNLOADED_HASH}" >&2
-			rm -rf "${GO_TEMP_DIR}"
-			exit 1
-		fi
-		log_message SUCCESS "Checksum verified."
-
 		# Create the installation directory
 		log_message INFO "Creating installation directory: ${GO_INSTALL_DIR}"
 		mkdir -p "${GO_INSTALL_DIR}"
@@ -130,11 +146,6 @@ Linux)
 	# Clean up temporary directory
 	log_message INFO "Cleaning up temporary directory: ${GO_TEMP_DIR}"
 	rm -rf "${GO_TEMP_DIR}"
-
-	# Note: Setting GOPATH and adding ${GO_INSTALL_DIR}/bin to PATH should be handled
-	# by your shell's environment setup (e.g., in .bashrc, .zshrc, or a sourced env.sh file).
-	# This script only handles the installation of the Go distribution files.
-
 	;;
 
 *)

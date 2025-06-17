@@ -39,6 +39,8 @@ export BAT_THEME=gruvbox-dark
 # export PNPM_HOME="${XDG_DATA_HOME}/pnpm"
 export CDPATH="${CDPATH:-}:${HOME}/repos/github.com/${USER}/"
 
+pathappend "${HOME}/.local/bin"
+
 ################################################################################
 # Fuzzy finder
 ################################################################################

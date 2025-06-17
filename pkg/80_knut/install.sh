@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-dotsh install go
+dotsh install 20_go
 
 function _install_brew_package() {
 	local package=$1
