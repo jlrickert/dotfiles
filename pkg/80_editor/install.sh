@@ -6,6 +6,8 @@ TARGET_DIR="${HOME}/.config/nvim"
 
 # Use the reusable install_symlink function
 install_symlink "${SOURCE_DIR}" "${TARGET_DIR}"
+# install_symlink "${PACKAGE_ROOT}/nvim-beta" "${HOME}/.config/nvim-beta"
+install_git_package "git@github.com:jlrickert/kickstart.nvim.git" "${HOME}/.config/nvim-beta"
 
 # Check if Rust (cargo) is installed, as stylua is installed via cargo
 if ! command -v cargo &>/dev/null; then

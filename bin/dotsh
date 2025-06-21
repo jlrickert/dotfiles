@@ -135,6 +135,7 @@ function backup_item() {
 		log_message ERROR "backup_item requires a source path." >&2
 		return 1
 	fi
+
 	# Ensure DOTFILES_STATE_HOME is set (basic check for backup location)
 	if [ -z "${DOTFILES_STATE_HOME:-}" ]; then
 		log_message ERROR "DOTFILES_STATE_HOME is not set. Cannot perform backup." >&2
@@ -152,7 +153,7 @@ function backup_item() {
 	fi
 
 	# Perform the backup (move the item)
-	if cp "${source_path}" "${backup_target_path}"; then
+	if cp -r "${source_path}" "${backup_target_path}"; then
 		log_message SUCCESS "Backed up item: \`${source_path}\` to \`${backup_target_path}\`"
 		return 0 # Success
 	else
@@ -345,6 +346,73 @@ function install_symlink() {
 	fi
 }
 export -f install_symlink
+
+install_git_package() {
+	local repo_url="$1"
+	local target_dir="$2"
+
+	# Ensure parent directory for target_dir exists
+	local parent_dir="$(dirname "${target_dir}")"
+	if [ ! -d "${parent_dir}" ]; then
+		log_message INFO "Creating parent directory for git package: \`${parent_dir}\`"
+		if ! mkdir -p "${parent_dir}"; then
+			log_message ERROR "Failed to create parent directory: \`${parent_dir}\`" >&2
+			return 1
+		fi
+	fi
+
+	if [ -d "${target_dir}" ] && [ ! -d "${target_dir}/.git" ]; then
+		log_message INFO "Non git project located at \"${target_dir}\". Backing up..."
+		if backup_item "${target_dir}"; then
+			log_message INFO "Removing non-git directory: \`${target_dir}\`"
+			if ! rm -rf "${target_dir}"; then
+				log_message ERROR "Failed to remove non-git directory \`${target_dir}\` after backup." >&2
+				return 1
+			fi
+		else
+			log_message ERROR "Failed to backup \`${target_dir}\`. Cannot proceed with cloning." >&2
+			return 1
+		fi
+	fi
+
+	log_message INFO "Processing Git package: \`${repo_url}\` to \`${target_dir}\`"
+	if [ ! -d "${target_dir}" ]; then
+		log_message INFO "Target directory \`${target_dir}\` does not exist. Cloning \`${repo_url}\`."
+		if git clone "${repo_url}" "${target_dir}"; then
+			log_message SUCCESS "Successfully cloned \`${repo_url}\` to \`${target_dir}\`."
+			return 0
+		else
+			log_message ERROR "Failed to clone \`${repo_url}\` to \`${target_dir}\`." >&2
+			return 1
+		fi
+	fi
+
+	if [ -d "${target_dir}/.git" ]; then
+		# It's a Git repository, check for dirty state and pull
+		log_message INFO "Directory \`${target_dir}\` is an existing Git repository."
+		local original_dir="$(pwd)"
+		if ! cd "${target_dir}"; then
+			log_message ERROR "Failed to change directory to \`${target_dir}\`." >&2
+			return 1
+		fi
+
+		if git diff --quiet --exit-code && git diff --quiet --exit-code --cached; then
+			log_message INFO "Repository \`${target_dir}\` is clean. Pulling latest changes..."
+			if git pull; then
+				log_message SUCCESS "Pulled latest changes for \`${target_dir}\`."
+			else
+				log_message ERROR "Failed to pull changes for \`${target_dir}\`." >&2
+				cd "${original_dir}" >/dev/null
+				return 1
+			fi
+		else
+			log_message WARN "Repository \`${target_dir}\` is dirty (uncommitted changes). Skipping pull."
+		fi
+		cd "${original_dir}" >/dev/null
+	fi
+	return 0
+}
+export -f install_git_package
 
 # ensure_block: Ensures a block of text exists in a file, identified by a block name.
 # It can take the block content as a third argument or read it from standard input.
