@@ -71,15 +71,12 @@ autoload -U compaudit zrecompile
 
 # no clue what this is either
 autoload -Uz compinit
-compinit -u -d "${ZSH_COMPDUMP}"
 
 # zcompile the completion dump file if the .zwc is older or missing.
 if command mkdir "${ZSH_COMPDUMP}.lock" 2>/dev/null; then
   zrecompile -q -p "${ZSH_COMPDUMP}"
   command rm -rf "${ZSH_COMPDUMP}.zwc.old" "${ZSH_COMPDUMP}.lock"
 fi
-
-load_completions
 
 if have brew; then
 	HOMEBREW_PREFIX="$(brew --prefix)"
@@ -92,7 +89,14 @@ if have brew; then
 			[[ -r "${COMPLETION}" ]] && eval "$(<"${COMPLETION}")"
 		done
 	fi
+
+	fpath=("${HOMEBREW_PREFIX}/share/zsh-completions" $fpath)
 fi
+
+# compinit -u -d "${ZSH_COMPDUMP}"
+compinit
+
+load_completions
 
 # fixme - the load process here seems a bit bizarre
 zmodload -i zsh/complist
