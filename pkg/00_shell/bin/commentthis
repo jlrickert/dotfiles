@@ -1,9 +1,71 @@
 #!/usr/bin/env bash
 
-buf=""
+API=openai
+MODEL=gpt-4.1-mini
+# API=google
+# MODEL=gemini-2.5-flash
+
+PROJECT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+CONTEXT_SCRIPT="${PROJECT_DIR}/knut-context"
+
+cd "$(dirname "${CONTEXT_SCRIPT}")" &>/dev/null || exit
+
+# ---- Piped content ----
+PIPED_CONTENT=
 if [ ! -t 0 ]; then
-	buf="${buf}"$'\n'$(cat)
+	PIPED_CONTENT="---
+
+Piped content:
+
+\`\`\`\`\`\`
+$(cat -)
+\`\`\`\`\`\`
+
+"
 fi
-gemini-file "$(zet pub pwd 936)/README.md" >&/dev/null
-buf="create a comment for the following code block using the requirements outlined by KEG node 936. No markdown backticks:"$'\n'"---"$'\n'"${buf}"
-gemini --temp "0.3" --topp "0.85" --topk "20" --raw "$@" <<< "${buf}"
+
+# ---- Context ----
+CONTEXT="---
+
+Additional context:
+
+\`\`\`\`\`\`\`\`\`yaml
+pwd: $(pwd)
+dns:
+  jared: $(dump-ip vpn.jlrickert.me)
+\`\`\`\`\`\`\`\`\`
+
+Gitdiff:
+
+\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`gitdiff
+$(git diff --cached)
+\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`
+"
+if [ -x "${CONTEXT_SCRIPT}" ]; then
+	CONTEXT="---
+Additional context:
+
+\`\`\`\`\`\`\`\`\`\`
+$("${CONTEXT_SCRIPT}")
+\`\`\`\`\`\`\`\`\`\`
+"
+
+elif [ -f "${CONTEXT_SCRIPT}" ]; then
+	echo "Warning: '${CONTEXT_SCRIPT}' exists but is not executable." >&2
+fi
+
+# If something is being piped in, generate the content and then append the piped input
+(
+	echo "${CONTEXT}"
+	echo "---"
+	echo
+	echo "${PIPED_CONTENT}"
+	echo
+) | mods --raw \
+	--role "code-commenter" \
+	--api "${API}" \
+	--model "${MODEL}" \
+	--temp 0.3 \
+	--topp 0.85 \
+	--topk 20 \
+	"$@"

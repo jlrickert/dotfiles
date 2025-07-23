@@ -1,24 +1,78 @@
 #!/usr/bin/env bash
 
-TITLE="$(git rev-parse --show-toplevel 2>/dev/null || pwd)--gemini-git"
-API=google
-# MODEL=gemini-2.0-flash
-MODEL=gemini-2.5-flash-preview-04-17
-ROLE=git-commenter
+API=openai
+MODEL=gpt-4.1-mini
+# API=google
+# MODEL=gemini-2.5-flash
 
-TOPK="20"
-TOPP="0.85"
-TEMP="0.3"
+PROJECT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+CONTEXT_SCRIPT="${PROJECT_DIR}/knut-context"
 
-BUF="Generate a git comment"
+cd "$(dirname "${CONTEXT_SCRIPT}")" &>/dev/null || exit
+
+# ---- Piped content ----
+PIPED_CONTENT="---
+
+Piped content:
+
+\`\`\`\`\`\`
+\`\`\`\`\`\`
+"
 if [ ! -t 0 ]; then
-	BUF="$(cat)"$'\n'$'\n'"${BUF}"
+	PIPED_CONTENT="---
+
+Piped content:
+
+\`\`\`\`\`\`
+$(cat -)
+\`\`\`\`\`\`
+
+"
 fi
 
-# Create initial context
-if ! mods --list | grep --quiet --fixed-strings "${TITLE}"; then
-	mods --title "${TITLE}" --api "${API}" --model "${MODEL}" --role "${ROLE}" "Start of context for \"${TITLE}\". No output" &>/dev/null
+# ---- Context ----
+CONTEXT="---
+
+Additional context:
+
+\`\`\`\`\`\`\`\`\`yaml
+pwd: $(pwd)
+dns:
+  jared: $(dump-ip vpn.jlrickert.me)
+\`\`\`\`\`\`\`\`\`
+
+"
+if [ -x "${CONTEXT_SCRIPT}" ]; then
+	CONTEXT="---
+Additional context:
+
+\`\`\`\`\`\`\`\`\`\`
+$("${CONTEXT_SCRIPT}")
+\`\`\`\`\`\`\`\`\`\`
+"
+
+elif [ -f "${CONTEXT_SCRIPT}" ]; then
+	echo "Warning: '${CONTEXT_SCRIPT}' exists but is not executable." >&2
 fi
 
-mods --continue "${TITLE}" "Keep as a reference for next prompt. No output yet: $(git diff --cached)" &>/dev/null
-mods --continue "${TITLE}" --topk "${TOPK}" --topp "${TOPP}" --temp "${TEMP}" --raw "$@" <<< "${BUF}"
+# If something is being piped in, generate the content and then append the piped input
+(
+	echo "${CONTEXT}"
+	echo "${PIPED_CONTENT}"
+	echo
+	echo "---
+Gitdiff:
+
+\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`gitdiff
+$(git diff --cached)
+\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`
+"
+	echo
+) | mods --raw \
+	--role "git-commenter" \
+	--api "${API}" \
+	--model "${MODEL}" \
+	--temp 0.3 \
+	--topp 0.85 \
+	--topk 20 \
+	"$@"

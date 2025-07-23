@@ -66,7 +66,7 @@ fi
 CMD="$(echo "$@" | awk '{print $1}')"
 shift
 
-resize() {
+_img_resize() {
 	FILE=$1
 	WIDTH=$2
 	HEIGHT=$3
@@ -131,7 +131,7 @@ resize() {
 	log "Successfully resized '${FILE}' to '${OUTPUT}'"
 }
 
-convert() {
+_img_convert() {
 	FILE=$1
 
 	# Check if the file exists
@@ -153,14 +153,14 @@ convert() {
 
 }
 
-convert-all() {
+_img_convert-all() {
 	fd . -e jpg -x cwebp "{}" -o "{.}.webp"
 	fd . -e png -x cwebp "{}" -o "{.}.webp"
 }
 
 case "${CMD}" in
-convert) convert "$@" ;;
-convert-all) convert-all "$@" ;;
-resize) resize "$@" ;;
+convert) _img_convert "$@" ;;
+convert-all) _img_convert-all "$@" ;;
+resize) _img_resize "$@" ;;
 *) cwebp "$@" ;;
 esac

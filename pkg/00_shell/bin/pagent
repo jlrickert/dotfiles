@@ -1,52 +1,45 @@
 #!/usr/bin/env bash
 
+# API=google
+# MODEL=gemini-2.5-flash
+# MODEL=gemini-2.5-flash-preview-05-20
+
 API=openai
 MODEL=gpt-4.1-mini
 # API=google
 # MODEL=gemini-2.5-flash
 
-PROJECT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+PROJECT_DIR="${PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
 CONTEXT_SCRIPT="${PROJECT_DIR}/knut-context"
 
 cd "$(dirname "${CONTEXT_SCRIPT}")" &>/dev/null || exit
 
 # ---- Piped content ----
-PIPED_CONTENT="---
-
-Piped content:
-
-\`\`\`\`\`\`
-\`\`\`\`\`\`
-"
+# This needs to be first as the context script does something screwy that
+# breaks pipes. Haven't figured it out yet
+PIPED_CONTENT=
 if [ ! -t 0 ]; then
 	PIPED_CONTENT="---
 
 Piped content:
-
-\`\`\`\`\`\`
+\`\`\`\`\`\`\`\`\`\`text
 $(cat -)
-\`\`\`\`\`\`
+\`\`\`\`\`\`\`\`\`\`
 
 "
 fi
 
 # ---- Context ----
-CONTEXT="---
+CONTEXT=
+if [ -x "${CONTEXT_SCRIPT}" ]; then
+	CONTEXT="---
 
 Additional context:
 
-\`\`\`\`\`\`\`\`\`yaml
-pwd: $(pwd)
-dns:
-  jared: $(dump-ip vpn.jlrickert.me)
-\`\`\`\`\`\`\`\`\`
-
-"
-if [ -x "${CONTEXT_SCRIPT}" ]; then
-	CONTEXT="---
 \`\`\`\`\`\`\`\`\`\`
 $("${CONTEXT_SCRIPT}")
 \`\`\`\`\`\`\`\`\`\`
+
 "
 
 elif [ -f "${CONTEXT_SCRIPT}" ]; then
@@ -56,15 +49,8 @@ fi
 # If something is being piped in, generate the content and then append the piped input
 (
 	echo "${CONTEXT}"
-	echo "---"
-	echo
 	echo "${PIPED_CONTENT}"
 	echo
-) | mods --raw \
-	--role "shell-filter" \
-	--api "${API}" \
-	--model "${MODEL}" \
-	--temp 0.3 \
-	--topp 0.85 \
-	--topk 20 \
-	"$@"
+	echo "---"
+	echo
+) | mods --raw --api "${API}" --model "${MODEL}" "$@"

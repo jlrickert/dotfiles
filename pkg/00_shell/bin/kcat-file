@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+if test -n "${COMP_LINE}"; then
+	n=$((COMP_CWORD + 1))
+	script=$(printf '{for(i=%s; i<=NF; i++) printf $i" "; print ""}' $n)
+	pre="$(printf "%s" "${COMP_LINE}" | awk "${script}")"
+
+	if [ -n "${pre}" ]; then
+		fd .
+	else
+		fd --glob "*${pre}*"
+	fi
+	exit 0
+fi
+
+for file in $*; do
+	if [ ! -f "$file" ]; then
+		continue
+	fi
+
+	# loop through each file in $@
+	echo "---
+
+Contents of file \`$file\`:
+
+\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`text
+$(cat "$file")
+\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`
+
+"
+done
