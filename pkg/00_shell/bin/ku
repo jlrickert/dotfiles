@@ -291,10 +291,20 @@ help() {
 	echo ""
 }
 
-# ensure we are in a keg
-keg current &>/dev/null || exit 1
+KEG_CURRENT="${KEG_CURRENT:-""}"
+# Try KEG_CURRENT if defined
+if [ -n "$KEG_CURRENT" ]; then
+	:
+# Try fd to find the keg docs directory
+elif KEG_CURRENT="$(fd keg --absolute-path)"; then
+	KEG_CURRENT="$(dirname $KEG_CURRENT)"
+# Try git project docs directory
+elif KEG_CURRENT="$(git rev-parse --show-toplevel)"; then
+	KEG_CURRENT="${KEG_CURRENT}/docs"
+else
+	echo "No KEG found"
+fi
 
-KEG_CURRENT="${KEG_CURRENT:-$(git rev-parse --show-toplevel &>/dev/null || echo '')}"
 cd "${KEG_CURRENT}" || exit 1
 
 # keg doesn't handle the context as expected.  Let keg refigure it out from here

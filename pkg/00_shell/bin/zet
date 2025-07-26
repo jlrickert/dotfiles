@@ -2,7 +2,7 @@
 
 CONFIG_FILE="${HOME}/.config/knut/config.yaml"
 
-keg_current() {
+_zet_keg_current() {
 	query="$(printf '.kegs[] | select(.alias == "%s") | .url' "$1")"
 	KEG_CURRENT=$(yq "${query}" "${CONFIG_FILE}")
 
@@ -26,7 +26,7 @@ if test -n "${COMP_LINE}"; then
 
 	for k in ${KEGS}; do
 		if [[ "${cmd}" == "${k}" ]]; then
-			KEG_CURRENT=$(keg_current "${cmd}")
+			KEG_CURRENT=$(_zet_keg_current "${cmd}")
 			cd "${KEG_CURRENT}" || exit 1
 			pre="$(printf "%s" "${COMP_LINE}" | awk '{for(i=3; i<=NF; i++) printf $i" "; print ""}')"
 			COMP_LINE="ku ${pre}" ku
@@ -43,6 +43,6 @@ fi
 
 cmd="$1"
 test $# -gt 0 && shift
-KEG_CURRENT=$(keg_current "${cmd}")
+KEG_CURRENT=$(_zet_keg_current "${cmd}")
 cd "${KEG_CURRENT}" || exit 1
 ku "$@"
