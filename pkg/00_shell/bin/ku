@@ -229,21 +229,16 @@ _ku_edit() {
 	keg edit "$@"
 }
 
-	# # shellcheck disable=SC2034
-	# FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
-	#     --bind "change:reload:$RG_PREFIX {q} || true" \
-	#     --sort \
-	#     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
-	#     --height=100% \
-	#     --width=80% \
-	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
-	#
-	# FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
-	#     --bind "change:reload:$RG_PREFIX {q} || true" \
-	#     --sort \
-	#     --preview 'echo -n {1} " "; rg "^#" docs/{1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never docs/{1}/README.md' \
-	#     --height=100% \
-	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
+_ku_fzf() {
+	local item_list=$(_ku_list | awk '{print $1}')
+	local item
+	item=$(
+		_ku_list | fzf \
+			--bind "change:reload:ku list" \
+			--preview 'echo -n {1} " "; rg "^#" {1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never {1}/README.md'
+
+	)
+	_ku_edit "$(echo "${item}" | awk '{print $1}')"
 }
 
 _ku_update_tags() {
@@ -415,7 +410,7 @@ pwd)
 	fi
 	pwd
 	;;
-fzf) zets "$@" ;;
+fzf) _ku_fzf "$@" ;;
 *)
 	NODE=$CMD
 	SUB_CMD="$(echo "$@" | awk '{print $1}')"
