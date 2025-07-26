@@ -21,7 +21,7 @@ _ku_assistant() {
 	mods --raw -temp "${TEMP}" --topp "${TOPP}" --topk "${TOPK}" --continue "${CONVO_TITLE_ASSISTANT}" "$@" <<<"${buf}"
 }
 
-filtered_list() {
+_ku_filtered_list() {
 	local TAGS_INDEX="${PWD}/dex/tags"
 	tag=$1
 	awk "/^${tag} / {for (i=2; i<=NF; i++) print \$i}" "${TAGS_INDEX}" | while IFS= read -r id; do
@@ -31,12 +31,7 @@ filtered_list() {
 }
 
 _ku_list() {
-	tag=$1
-	if [ ! "${tag}" = "" ]; then
-		filtered_list "$@"
-		return
-	fi
-	find . -name "nodes.tsv" -exec awk -F'\t' '{print $1 "\t" $3}' {} +
+	find dex -name "nodes.tsv" -exec awk -F'\t' '{print $1 "\t" $3}' {} \+
 }
 
 _ku_tags() {
@@ -137,6 +132,34 @@ _ku_search-qf() {
 		"$@" | awk '{ cmd = "head -n 1 " $1; cmd | getline $2; close(cmd); print $1":1:"$2}'
 }
 
+_ku_cat() {
+	declare -a lines
+	if [ ! -t 0 ]; then
+		lines=()
+		while IFS=$'\n' read -r line; do
+			first_word=$(echo "$line" | awk '{print $1}')
+			lines+=("$first_word")
+		done
+	fi
+	for arg in "$@"; do
+		lines+=("$arg")
+	done
+
+	nodes=$(echo "${lines[@]}" | tr -s ' ' '\n' | sort -nu | tr '\n' ' ')
+
+	# shellcheck disable=SC2048
+	for x in ${nodes[*]}; do
+		echo "---"
+		echo ""
+		echo "Contents of keg node $(keg link "${x}"):"
+		echo ""
+		echo '`````markdown'
+		cat "${x}/README.md"
+		echo
+		echo '`````'
+	done
+}
+
 _ku_retrain() {
 	_ku_index
 	# Setup keg assistant context
@@ -201,10 +224,10 @@ _ku_changes() {
 	CHANGES_INDEX="$(pwd)/dex/changes.md"
 }
 
-fzf() {
-	ku nodes | _keg-node-complete "$@"
-	# RG_PREFIX='ku search'
-	# INITIAL_QUERY=""
+_ku_edit() {
+	keg edit "$@"
+}
+
 	# # shellcheck disable=SC2034
 	# FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" fzf \
 	#     --bind "change:reload:$RG_PREFIX {q} || true" \
@@ -222,7 +245,7 @@ fzf() {
 	#     --ansi --phony --query "$INITIAL_QUERY" "$@"
 }
 
-update_tags() {
+_ku_update_tags() {
 	TAGS_INDEX="$(pwd)/dex/tags"
 	[ -f "${TAGS_INDEX}" ] && rm "${TAGS_INDEX}"
 
@@ -322,7 +345,7 @@ shift
 
 case "${CMD}" in
 a | assistant) _ku_assistant "$@" ;;
-e | edit) keg edit "$@" ;;
+e | edit) _ku_edit "$@" ;;
 v | view) keg view "$@" ;;
 k | keg) keg "$@" ;;
 c | create) keg c "$@" ;;
@@ -339,33 +362,7 @@ p | publish) _ku_publish "$@" ;;
 u | update) _ku_update "$@" ;;
 i | index) _ku_index "$@" ;;
 retrain) _ku_retrain "$@" ;;
-cat)
-	declare -a lines
-	if [ ! -t 0 ]; then
-		lines=()
-		while IFS=$'\n' read -r line; do
-			first_word=$(echo "$line" | awk '{print $1}')
-			lines+=("$first_word")
-		done
-	fi
-	for arg in "$@"; do
-		lines+=("$arg")
-	done
-
-	nodes=$(echo "${lines[@]}" | tr -s ' ' '\n' | sort -nu | tr '\n' ' ')
-
-	# shellcheck disable=SC2048
-	for x in ${nodes[*]}; do
-		echo "---"
-		echo ""
-		echo "Contents of keg node $(keg link "${x}"):"
-		echo ""
-		echo '```markdown'
-		cat "${x}/README.md"
-		echo
-		echo '```'
-	done
-	;;
+cat) _ku_cat "$@";;
 cd)
 	"${SHELL}"
 	;;
