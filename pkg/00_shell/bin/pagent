@@ -3,13 +3,16 @@
 # API=google
 # MODEL=gemini-2.5-flash
 # MODEL=gemini-2.5-flash-preview-05-20
-
+# API=anthropic
+# MODEL=sonnet-4
 API=openai
-MODEL=gpt-4.1-mini
+# MODEL=gpt-4.1-mini
+MODEL=gpt-5-mini
+# MODEL=gpt-5
 # API=google
 # MODEL=gemini-2.5-flash
 
-PROJECT_DIR="${PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+PROJECT_DIR="${PROJECT_DIR:-$(git rev-parse --show-toplevel || pwd)}"
 CONTEXT_SCRIPT="${PROJECT_DIR}/knut-context"
 
 cd "$(dirname "${CONTEXT_SCRIPT}")" &>/dev/null || exit
@@ -21,7 +24,8 @@ PIPED_CONTENT=
 if [ ! -t 0 ]; then
 	PIPED_CONTENT="---
 
-Piped content:
+# Piped content:
+
 \`\`\`\`\`\`\`\`\`\`text
 $(cat -)
 \`\`\`\`\`\`\`\`\`\`
@@ -32,12 +36,42 @@ fi
 # ---- Context ----
 CONTEXT=
 if [ -x "${CONTEXT_SCRIPT}" ]; then
+	FILE_CONTENT=
+	if [ -n "$NVIM_FILEPATH" ]; then
+		# include the file content
+		FILE_CONTENT="
+		$(kcat-file "$NVIM_FILEPATH")"
+
+		# If this looks like a Go file, try to run `gopls check` and include its output.
+		if [[ "${NVIM_FILEPATH##*.}" = "go" ]]; then
+			if command -v gopls >/dev/null 2>&1; then
+				# run gopls check and capture output (don't let it fail the script)
+				GOPLS_OUT="$(gopls check "$NVIM_FILEPATH" 2>&1 || true)"
+				# append gopls output as its own fenced block in the FILE_CONTENT
+				FILE_CONTENT="${FILE_CONTENT}
+
+# gopls check output:
+
+\`\`\`\`\`\`\`\`\`\`text
+${GOPLS_OUT}
+\`\`\`\`\`\`\`\`\`\`
+"
+			fi
+		fi
+	fi
 	CONTEXT="---
 
-Additional context:
+# Context:
 
-\`\`\`\`\`\`\`\`\`\`
-$("${CONTEXT_SCRIPT}")
+\`\`\`\`\`\`\`\`\`\`text
+$(kcat-yaml "
+env:
+  CURRENT_IP: $(dump-ip vpn.jlrickert.me)
+  JARED_IP_HISTORY: "$(zet pub cat 1136)"
+  NVIM_FILELINE: $NVIM_FILELINE
+  NVIM_FILEPATH: $NVIM_FILEPATH
+")
+$("${CONTEXT_SCRIPT}")${FILE_CONTENT}
 \`\`\`\`\`\`\`\`\`\`
 
 "

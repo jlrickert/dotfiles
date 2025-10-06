@@ -135,13 +135,6 @@ _ku_search-qf() {
 
 _ku_cat() {
 	declare -a lines
-	if [ ! -t 0 ]; then
-		lines=()
-		while IFS=$'\n' read -r line; do
-			first_word=$(echo "$line" | awk '{print $1}')
-			lines+=("$first_word")
-		done
-	fi
 	for arg in "$@"; do
 		lines+=("$arg")
 	done
@@ -155,6 +148,11 @@ _ku_cat() {
 		echo "Contents of keg node $(keg link "${x}"):"
 		echo ""
 		echo '`````markdown'
+		echo ---
+		if [ -f "${x}/meta.yaml" ]; then
+			cat "${x}/meta.yaml"
+		fi
+		echo ---
 		cat "${x}/README.md"
 		echo
 		echo '`````'
@@ -216,8 +214,44 @@ _ku_index() {
 	}' >"${TAGS_INDEX}"
 	rm "${tmp_file}"
 
-	if [ -f "update.sh" ]; then
-		./update.sh "$@"
+	if [ -f "update" ]; then
+		./update "$@"
+	fi
+}
+
+_ku_index() {
+	keg index update
+	TAGS_INDEX="$(pwd)/dex/tags"
+	[ -f "${TAGS_INDEX}" ] && rm "${TAGS_INDEX}"
+
+	tmp_file=$(mktemp)
+	trap 'rm -f "${tmp_file}"' EXIT
+
+	while IFS= read -r id; do
+		local meta_file="${id}/meta.yaml"
+		if [ ! -f "${meta_file}" ]; then
+			echo "untagged ${id}" >>"${tmp_file}"
+			continue
+		fi
+		yq -r '.tags[] // "untagged"' "${meta_file}" | while IFS= read -r tag; do
+			echo "${tag} ${id}" >>"${tmp_file}"
+		done
+	done < <(ku nodes)
+
+	# Write sorted entries to file
+	sort -u "${tmp_file}" | awk '
+	{
+		arr[$1] = arr[$1] ? arr[$1] " " $2 : $2;
+	}
+	END {
+		for (key in arr) {
+			print key, arr[key]
+		}
+	}' >"${TAGS_INDEX}"
+	rm "${tmp_file}"
+
+	if [ -f "update" ]; then
+		./update "$@"
 	fi
 }
 
@@ -281,6 +315,9 @@ _ku_update() {
 _ku_publish() {
 	_ku_index
 	keg publish
+	if [ -x "./publish" ]; then
+		./publish
+	fi
 }
 
 help() {
@@ -368,7 +405,7 @@ p | publish) _ku_publish "$@" ;;
 u | update) _ku_update "$@" ;;
 i | index) _ku_index "$@" ;;
 retrain) _ku_retrain "$@" ;;
-cat) _ku_cat "$@";;
+cat) _ku_cat "$@" ;;
 cd)
 	"${SHELL}"
 	;;
