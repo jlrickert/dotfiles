@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if test -n "${COMP_LINE}"; then
+	exit 0
+fi
+
+printf -- '---\n```yaml\n%s\n```\n' "$1"

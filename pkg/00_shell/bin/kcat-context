@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+if test -n "${COMP_LINE}"; then
+	exit 0
+fi
+
+CONTEXT_FILE_NAME="${1:-knut-context}"
+
+# _find_context_file() {
+# 	local file="${CONTEXT_FILE_NAME}"
+# 	if [ -x "$file" ]; then
+# 		echo $file
+# 		return 0
+# 	fi
+#
+# 	project="$(git rev-parse --show-toplevel)"
+# 	if [ -d "$project" ]; then
+# 		file="${project}/${CONTEXT_FILE_NAME}"
+# 		if [ -x "${}" ]
+# 		echo "${file}/${}"
+# 	fi
+# }
+
+KEG_ALIAS=$1
+shift
+
+for nodeid in $@; do
+	CONTEXT="$(zet $KEG_ALIAS pwd $nodeid)/context"
+	# if [ ! -x "$CONTEXT" ]; then
+	# 	continue
+	# fi
+
+	echo $CONTEXT
+	# loop through each file in $@
+	echo "---
+
+Context id \`$nodeid\`:
+
+\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`text
+$(${CONTEXT})
+\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`
+
+"
+done

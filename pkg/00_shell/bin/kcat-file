@@ -13,7 +13,13 @@ if test -n "${COMP_LINE}"; then
 	exit 0
 fi
 
-for file in $*; do
+files=$*
+## FIXME: This breaks if used within another file that uses pipes as well
+# if [ ! -t 0 ]; then
+# 	files="$(cat)"
+# fi
+
+for file in $files; do
 	if [ ! -f "$file" ]; then
 		continue
 	fi
