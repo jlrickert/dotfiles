@@ -260,6 +260,10 @@ _ku_changes() {
 }
 
 _ku_edit() {
+	if [ ! -t 0 ]; then
+		keg edit "$(cat -)"
+		exit
+	fi
 	keg edit "$@"
 }
 
