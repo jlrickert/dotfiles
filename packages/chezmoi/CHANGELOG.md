@@ -1,5 +1,11 @@
 # chezmoi
 
+## 0.2.2
+
+### Patch Changes
+
+- 7b75005: base installer now works
+
 ## 0.2.1
 
 ### Patch Changes
