@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# Detect system theme (dark/light)
+detect_system_theme() {
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+		# macOS: check system appearance
+		local theme
+		theme=$(defaults read -g AppleInterfaceStyle 2>/dev/null || echo "Light")
+		if [[ "$theme" == "Dark" ]]; then
+			echo "dark"
+		else
+			echo "light"
+		fi
+	elif command -v gsettings &>/dev/null; then
+		# Linux: check GTK theme
+		local theme
+		theme=$(gsettings get org.gnome.desktop.interface gtk-application-prefer-dark-style 2>/dev/null || echo "false")
+		if [[ "$theme" == "true" ]]; then
+			echo "dark"
+		else
+			echo "light"
+		fi
+	else
+		# Default fallback
+		echo "dark"
+	fi
+}
+
+# Get appropriate zellij theme
+get_zellij_theme() {
+	local system_theme
+	system_theme=$(detect_system_theme)
+
+	if [[ "$system_theme" == "dark" ]]; then
+		echo "gruvbox-dark"
+	else
+		echo "gruvbox-light"
+	fi
+}
+
+# Update zellij config file
+update_config_theme() {
+	local theme=$1
+	local config_file="${XDG_CONFIG_HOME:-$HOME/.config}/zellij/config.kdl"
+
+	if [[ ! -f "$config_file" ]]; then
+		return 1
+	fi
+
+	# Update theme line in config
+	sed -i.bak "s/^theme .*/theme \"${theme}\"/" "$config_file"
+	rm -f "${config_file}.bak"
+}
+
+# Update running zellij sessions
+update_running_sessions() {
+	local theme=$1
+
+	# List all zellij sessions
+	if ! command -v zellij &>/dev/null; then
+		return 1
+	fi
+
+	while IFS= read -r session; do
+		zellij --session "$session" action "ChangeTheme" "$theme" 2>/dev/null || true
+	done < <(zellij list-sessions 2>/dev/null | awk '{print $1}')
+}
+
+main() {
+	local theme
+	theme=$(get_zellij_theme)
+
+	# Update config file for new sessions
+	update_config_theme "$theme"
+
+	# Update running sessions
+	update_running_sessions "$theme"
+}
+
+main "$@"
