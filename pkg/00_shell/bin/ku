@@ -117,10 +117,7 @@ _ku_search() {
 	local TOPK=20
 	# Check if any input is available
 	buf=""
-	if [ ! -t 0 ]; then
-		buf="${buf}"$'\n'$'\n'$(cat)
-	fi
-	mods --raw --temp "${TEMP}" --topp "${TOPP}" --topk "${TOPK}" --continue "${CONVO_TITLE_SEARCH}" "$@" <<<"${buf}"
+	_ku_list | mods --role keg-search "$@"
 }
 
 _ku_search-qf() {
@@ -276,7 +273,7 @@ _ku_fzf() {
 			--preview 'echo -n {1} " "; rg "^#" {1}/README.md --no-heading | head -n 1;bat --style "grid,numbers,snip" --color=always --paging never {1}/README.md'
 
 	)
-	_ku_edit "$(echo "${item}" | awk '{print $1}')"
+	echo "${item}" | awk '{print $1}'
 }
 
 _ku_update_tags() {
