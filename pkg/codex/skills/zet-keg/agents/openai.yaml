@@ -1,0 +1,4 @@
+interface:
+  display_name: "Zet KEG Notes"
+  short_description: "Query and navigate zet KEG notes quickly"
+  default_prompt: "Use $zet-keg to inspect notes, tags, and node details in a KEG."
