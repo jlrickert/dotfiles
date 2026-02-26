@@ -7,6 +7,25 @@ skills_source_root="${PACKAGE_ROOT:-${script_dir}}/skills"
 codex_home="${CODEX_HOME:-${HOME}/.codex}"
 skills_target_root="${codex_home}/skills"
 
+if have brew; then
+	for formula in python pipx; do
+		if brew list --formula "${formula}" >/dev/null 2>&1; then
+			log_message INFO "Homebrew formula already installed: \`${formula}\`"
+			continue
+		fi
+
+		log_message INFO "Installing Homebrew formula: \`${formula}\`..."
+		if brew install "${formula}"; then
+			log_message SUCCESS "Installed Homebrew formula: \`${formula}\`"
+		else
+			log_message ERROR "Failed to install Homebrew formula: \`${formula}\`" >&2
+			exit 1
+		fi
+	done
+else
+	log_message WARN "Homebrew not found; skipping installation of python3 and pipx."
+fi
+
 if have codex; then
 	log_message INFO "Codex is already installed."
 else

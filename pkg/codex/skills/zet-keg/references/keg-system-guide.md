@@ -8,7 +8,8 @@ Core characteristics:
 - Version controlled in Git
 - Numbered node directories: `docs/1/`, `docs/2/`, ...
 - Node files: `README.md`, `stats.yaml`, and `meta.yaml`
-- `meta.yaml` stores user-edited metadata; `stats.yaml` stores operational fields managed by tools
+- `stats.yaml` stores canonical metadata fields (`created`, `updated`, `title`, `entity`, `tags`)
+- `meta.yaml` mirrors compatibility fields and may include optional user-managed metadata
 - Stats tooling is not yet available; maintain `stats.yaml` manually for now
 - Auto-generated indices under `docs/dex/`
 - Discovery via tags, backlinks, and text search
@@ -70,6 +71,7 @@ Use `keg:KEG/NODEID` to reference notes in another KEG:
 
 - `keg:project-notes/42`
 - `keg:keg-system-guide/108`
+- `keg:pub/123`
 
 ### Typical H2 Sections
 
@@ -84,28 +86,7 @@ Use applicable sections:
 
 ## stats.yaml Rules
 
-`stats.yaml` is the source of truth for `created`, `updated`, `title`, and `entity`. Tooling is expected to manage this file, but update it manually until those tools are available.
-
-Required fields:
-
-```yaml
-created: 2024-01-15T10:30:00Z
-updated: 2024-01-15T10:30:00Z
-title: "Task: Database migration - Customer Platform"
-entity: task
-```
-
-Field rules:
-- `created`: set once at creation; never change
-- `updated`: set to current UTC ISO 8601 timestamp for meaningful edits
-- `title`: must match README H1 exactly (including checkbox status if present)
-- `entity`: lowercase category
-
-## meta.yaml Rules (User-Edited Data)
-
-Use it for user-edited metadata (for example `tags` and optional user-managed fields).
-
-Keep fields `created`, `updated`, `title`, and `entity` present for compatibility, but treat those four fields as deprecated within `meta.yaml` and source them from `stats.yaml`.
+`stats.yaml` is the source of truth for `created`, `updated`, `title`, `entity`, and `tags`. Tooling is expected to manage this file, but update it manually until those tools are available.
 
 Required fields:
 
@@ -121,11 +102,37 @@ tags:
 ```
 
 Field rules:
-- `created`: deprecated in `meta.yaml`; keep for compatibility and mirror `stats.yaml` exactly
-- `updated`: deprecated in `meta.yaml`; keep for compatibility and mirror `stats.yaml` exactly
-- `title`: deprecated in `meta.yaml`; keep for compatibility and mirror `stats.yaml` exactly
-- `entity`: deprecated in `meta.yaml`; keep for compatibility and mirror `stats.yaml` exactly
+- `created`: set once at creation; never change
+- `updated`: set to current UTC ISO 8601 timestamp for meaningful edits
+- `title`: must match README H1 exactly (including checkbox status if present)
+- `entity`: lowercase category
 - `tags`: lowercase, hyphen-separated discovery tokens
+
+## meta.yaml Rules (Compatibility + User-Managed Data)
+
+Use `meta.yaml` as a compatibility mirror for key fields from `stats.yaml` plus optional user-managed metadata fields.
+
+Keep fields `created`, `updated`, `title`, `entity`, and `tags` present for compatibility, and mirror those values from `stats.yaml`.
+
+Required fields:
+
+```yaml
+created: 2024-01-15T10:30:00Z
+updated: 2024-01-15T10:30:00Z
+title: "Task: Database migration - Customer Platform"
+entity: task
+tags:
+  - task
+  - database
+  - migration
+```
+
+Field rules:
+- `created`: compatibility field in `meta.yaml`; mirror `stats.yaml` exactly
+- `updated`: compatibility field in `meta.yaml`; mirror `stats.yaml` exactly
+- `title`: compatibility field in `meta.yaml`; mirror `stats.yaml` exactly
+- `entity`: compatibility field in `meta.yaml`; mirror `stats.yaml` exactly
+- `tags`: compatibility field in `meta.yaml`; mirror `stats.yaml` exactly
 
 Optional fields may be added (for example: `owner`, `priority`, `date`).
 
@@ -165,8 +172,8 @@ Use consistent categories such as:
 - `stats.yaml` includes all required fields
 - `stats.yaml` title matches README H1 exactly
 - `stats.yaml` is updated manually until tooling is available
-- `meta.yaml` includes all required fields
-- `meta.yaml` compatibility fields (`created`, `updated`, `title`, `entity`) mirror `stats.yaml`
+- `meta.yaml` includes all required compatibility fields
+- `meta.yaml` compatibility fields (`created`, `updated`, `title`, `entity`, `tags`) mirror `stats.yaml`
 - Tags are lowercase and hyphen-separated
 - `created`/`updated` are ISO 8601 UTC with trailing `Z`
 - Content excludes credentials or sensitive values
@@ -176,6 +183,8 @@ Use consistent categories such as:
 Use these as available in your environment:
 
 ```bash
+zet KEG pwd
+zet KEG pwd NODEID
 zet KEG list
 zet KEG tags
 zet KEG tags TAG
@@ -189,7 +198,7 @@ zet KEG index
 
 1. Create node directory: `docs/NODEID/`
 2. Write `README.md` with H1 + lead paragraph + sections
-3. Write `stats.yaml` with required fields (`created`, `updated`, `title`, `entity`) and update it manually for now
-4. Write `meta.yaml` with required fields, keeping deprecated compatibility fields mirrored from `stats.yaml`
+3. Write `stats.yaml` with required fields (`created`, `updated`, `title`, `entity`, `tags`) and update it manually for now
+4. Write `meta.yaml` with required compatibility fields, mirroring `created`, `updated`, `title`, `entity`, and `tags` from `stats.yaml`
 5. Commit node files
 6. Rebuild index (`zet index`) when needed and commit index outputs
