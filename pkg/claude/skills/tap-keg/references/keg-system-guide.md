@@ -73,6 +73,13 @@ Use `keg:KEG/NODEID` to reference notes in another KEG:
 - `keg:keg-system-guide/108`
 - `keg:pub/123`
 
+### Interlinking Best Practices
+
+When adding or revising links, follow the canonical guides:
+
+- [Guide: Best practices for interlinking a KEG](keg:pub/921) — linking conventions and anti-patterns
+- [Guide: Interlink nodes in a KEG](keg:pub/1257) — step-by-step interlinking workflow
+
 ### Typical H2 Sections
 
 Use applicable sections:
@@ -136,9 +143,14 @@ Field rules:
 
 Optional fields may be added (for example: `owner`, `priority`, `date`).
 
+## System Notes
+
+System notes are internal KEG infrastructure nodes (indexes, entity definitions, config-related nodes). They must be tagged with `system`. Exclude them from normal discovery with `tap list --query "not system"`. Do not create system notes unless explicitly requested.
+
 ## Tag Strategy
 
 Use consistent categories such as:
+- Special: `system` (reserved for internal KEG infrastructure nodes)
 - Entity/type: `task`, `pr`, `patch`, `reference`, `meeting`, `project`, `client`, `issue`, `article`, `spike`, `concept`, `plan`, `hardware`, `gear`, `software`
 - Technology: `python`, `javascript`, `database`, `api`, `frontend`, `backend`, `devops`, `golang`
 - Work type: `bugfix`, `feature`, `refactor`, `documentation`, `testing`, `infrastructure`
@@ -180,25 +192,33 @@ Use consistent categories such as:
 
 ## Useful Commands
 
-Use these as available in your environment:
+All file access and editing must go through `tap`. Do not directly read or write node files. Add `-k KEG` when targeting a non-default keg.
 
 ```bash
-zet KEG pwd
-zet KEG pwd NODEID
-zet KEG list
-zet KEG tags
-zet KEG tags TAG
-zet KEG cat NODEID
-zet KEG backlinks NODEID
-zet KEG grep QUERY
-zet KEG index
+tap repo list
+tap list
+tap list --query EXPR
+tap tags
+tap tags TAG
+tap cat NODEID
+tap backlinks NODEID
+tap grep QUERY
+CONTENT | tap create
+tap edit NODEID
+tap meta NODEID --edit
+tap config
+tap config edit
+tap reindex
 ```
+
+## Query Expressions
+
+Several commands accept `--query EXPR` to filter nodes with boolean expressions. Run `tap docs query-expressions` for full syntax and examples.
 
 ## Node Creation Workflow
 
-1. Create node directory: `docs/NODEID/`
-2. Write `README.md` with H1 + lead paragraph + sections
-3. Write `stats.yaml` with required fields (`created`, `updated`, `title`, `entity`, `tags`) and update it manually for now
-4. Write `meta.yaml` with required compatibility fields, mirroring `created`, `updated`, `title`, `entity`, and `tags` from `stats.yaml`
-5. Commit node files
-6. Rebuild index (`zet index`) when needed and commit index outputs
+1. Prepare content with H1 title, lead paragraph, and frontmatter tags, then `CONTENT | tap create`
+2. Use `tap edit NODEID` to refine content (H1 + lead paragraph + sections)
+3. Use `tap meta NODEID --edit` to adjust metadata if needed
+4. Commit node files
+5. Rebuild index (`tap reindex`) when needed and commit index outputs

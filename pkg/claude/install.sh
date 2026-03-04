@@ -29,6 +29,14 @@ fi
 if [ -d "${skills_source_root}" ]; then
 	mkdir -p "${skills_target_root}"
 
+	# Clean up dangling symlinks from removed skills
+	for link in "${skills_target_root}"/*; do
+		[ -L "${link}" ] && [ ! -e "${link}" ] && {
+			log_message INFO "Removing dangling skill symlink: \`$(basename "${link}")\`"
+			rm -f "${link}"
+		}
+	done
+
 	skills_count=0
 	while IFS= read -r -d '' skill_file; do
 		skills_count=$((skills_count + 1))
@@ -64,6 +72,14 @@ fi
 if [ -d "${agents_source_root}" ]; then
 	mkdir -p "${agents_target_root}"
 
+	# Clean up dangling symlinks from removed agents
+	for link in "${agents_target_root}"/*; do
+		[ -L "${link}" ] && [ ! -e "${link}" ] && {
+			log_message INFO "Removing dangling agent symlink: \`$(basename "${link}")\`"
+			rm -f "${link}"
+		}
+	done
+
 	agents_count=0
 	while IFS= read -r -d '' agent_file; do
 		agents_count=$((agents_count + 1))
@@ -96,4 +112,28 @@ if [ -d "${agents_source_root}" ]; then
 	fi
 else
 	log_message WARN "No packaged Claude agents found at \`${agents_source_root}\`. Skipping agent symlinks."
+fi
+
+# Statusline command script
+statusline_source="${script_dir}/statusline-command.sh"
+statusline_target="${claude_home}/statusline-command.sh"
+
+if [ -f "${statusline_source}" ]; then
+	if [ -L "${statusline_target}" ]; then
+		current_link_target="$(readlink "${statusline_target}")"
+		if [ "${current_link_target}" = "${statusline_source}" ]; then
+			log_message INFO "Statusline script already linked."
+		else
+			rm -f "${statusline_target}"
+			ln -s "${statusline_source}" "${statusline_target}"
+			log_message SUCCESS "Updated statusline script symlink."
+		fi
+	elif [ -e "${statusline_target}" ]; then
+		rm -f "${statusline_target}"
+		ln -s "${statusline_source}" "${statusline_target}"
+		log_message SUCCESS "Replaced statusline script with symlink."
+	else
+		ln -s "${statusline_source}" "${statusline_target}"
+		log_message SUCCESS "Linked statusline script."
+	fi
 fi
