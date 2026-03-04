@@ -61,6 +61,14 @@ fi
 
 mkdir -p "${skills_target_root}"
 
+# Clean up dangling symlinks from removed skills
+for link in "${skills_target_root}"/*; do
+	[ -L "${link}" ] && [ ! -e "${link}" ] && {
+		log_message INFO "Removing dangling skill symlink: \`$(basename "${link}")\`"
+		rm -f "${link}"
+	}
+done
+
 skills_count=0
 while IFS= read -r -d '' skill_file; do
 	skills_count=$((skills_count + 1))

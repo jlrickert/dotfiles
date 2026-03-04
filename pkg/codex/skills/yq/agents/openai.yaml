@@ -1,0 +1,4 @@
+interface:
+  display_name: "yq YAML Processing"
+  short_description: "Query, transform, and convert YAML with yq v4"
+  default_prompt: "Use $yq to read, update, merge, or convert YAML/JSON/TOML/XML files using yq expressions."
