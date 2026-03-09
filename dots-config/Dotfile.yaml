@@ -1,0 +1,9 @@
+package:
+  name: dots-config
+  description: dots package manager configuration
+  version: 0.1.0
+  tags:
+    - dots
+    - meta
+links:
+  config.yaml: '@config/dots/config.yaml'

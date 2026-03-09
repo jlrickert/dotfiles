@@ -1,0 +1,7 @@
+core:
+    conflict_strategy: prompt
+    backup: true
+    link_strategy: symlink
+git:
+    default_branch: main
+    protocol: ssh
