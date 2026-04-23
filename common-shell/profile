@@ -1,0 +1,28 @@
+# Shared POSIX login profile. Sourced by bash (via .bash_profile) and by
+# any other POSIX shell started as a login shell. zsh does not source this
+# directly -- zsh reads .zshenv/.zprofile instead.
+
+# XDG base directory defaults.
+: "${XDG_CONFIG_HOME:=$HOME/.config}"
+: "${XDG_DATA_HOME:=$HOME/.local/share}"
+: "${XDG_STATE_HOME:=$HOME/.local/state}"
+: "${XDG_CACHE_HOME:=$HOME/.cache}"
+export XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME
+
+# Locale.
+: "${LANG:=en_US.UTF-8}"
+export LANG
+
+# User-local bin directory.
+case ":$PATH:" in
+	*":$HOME/.local/bin:"*) ;;
+	*) PATH="$HOME/.local/bin:$PATH" ;;
+esac
+export PATH
+
+# Homebrew shellenv on macOS when present.
+if [ -x /opt/homebrew/bin/brew ]; then
+	eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+	eval "$(/usr/local/bin/brew shellenv)"
+fi

@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: common-shell
+  description: Shared POSIX shell environment (PATH, XDG, locale)
+  version: 0.1.0
+  tags:
+    - shell
+    - common
+  platforms:
+    - darwin
+    - linux
+
+links:
+  profile: .profile
+
+hooks:
+  post_install: hooks/install-tools.sh

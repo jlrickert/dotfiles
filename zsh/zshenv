@@ -1,0 +1,4 @@
+# zsh reads .zshenv for every invocation (login, interactive, script).
+# Keep this lightweight -- shared env only.
+
+[ -r "$HOME/.profile" ] && . "$HOME/.profile"

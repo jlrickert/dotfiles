@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: bash
+  description: Bash shell configuration (defers to zsh when available)
+  version: 0.1.0
+  requires:
+    - jlrickert/common-shell
+  tags:
+    - shell
+    - bash
+  platforms:
+    - darwin
+    - linux
+
+links:
+  bashrc: .bashrc
+  bash_profile: .bash_profile
+
+hooks:
+  post_install: hooks/install-bash.sh

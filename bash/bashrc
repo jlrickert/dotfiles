@@ -1,0 +1,24 @@
+# Non-interactive bail-out.
+case $- in
+	*i*) ;;
+	*) return ;;
+esac
+
+# Pull shared env in. .bashrc is sourced for non-login interactive shells
+# where .bash_profile does not run.
+[ -r "$HOME/.profile" ] && . "$HOME/.profile"
+
+HISTCONTROL=ignoredups:erasedups
+HISTSIZE=50000
+HISTFILESIZE=100000
+shopt -s histappend
+shopt -s checkwinsize
+
+PS1='\u@\h:\w\$ '
+
+alias ls='ls --color=auto 2>/dev/null || ls'
+alias ll='ls -lh'
+alias la='ls -lAh'
+alias l='ls -lah'
+
+command -v starship >/dev/null 2>&1 && eval "$(starship init bash)"

@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: zsh
+  description: Zsh shell configuration (installs zsh if missing)
+  version: 0.1.0
+  requires:
+    - jlrickert/common-shell
+  tags:
+    - shell
+    - zsh
+  platforms:
+    - darwin
+    - linux
+
+links:
+  zshenv: .zshenv
+  zshrc: .zshrc
+
+hooks:
+  post_install: hooks/install-zsh.sh

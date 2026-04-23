@@ -1,0 +1,17 @@
+# Login bash entry point. Responsibilities:
+#   1. Load shared POSIX env via .profile
+#   2. If zsh is available and we're interactive, hand off to zsh
+#   3. Otherwise fall through to .bashrc for interactive bash
+
+[ -r "$HOME/.profile" ] && . "$HOME/.profile"
+
+case $- in
+*i*)
+	if [ -z "${ZSH_VERSION:-}" ] && command -v zsh >/dev/null 2>&1; then
+		export SHELL
+		SHELL="$(command -v zsh)"
+		exec "$SHELL" -l
+	fi
+	[ -r "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+	;;
+esac
