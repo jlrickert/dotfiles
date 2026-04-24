@@ -1,0 +1,15 @@
+services:
+  ubuntu:
+    build:
+      context: .
+      dockerfile: docker/ubuntu/Dockerfile
+      tags:
+        - dotfiles:ubuntu
+        - ghcr.io/jlrickert/dotfiles:ubuntu
+        - ghcr.io/jlrickert/dotfiles:ubuntu-${DOTFILES_REF:-latest}
+    image: ghcr.io/jlrickert/dotfiles:ubuntu
+
+  ubuntu-test:
+    extends:
+      service: ubuntu
+    entrypoint: ["/opt/dotfiles-src/tests/e2e/verify.sh"]

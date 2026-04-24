@@ -1,0 +1,7 @@
+node_modules/
+tmp/
+pkg.bak/
+docker/
+Dockerfile
+Dockerfile.base
+.dockerignore

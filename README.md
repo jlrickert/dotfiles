@@ -2,66 +2,30 @@
 
 My personal dotfiles. Pilfer at your own peril 😈
 
-## Installation
+## Bootstrap a fresh machine
 
-### Docker
-
-Docker installation required. See pkg/docker for more details.
+Install `dots` (see https://github.com/jlrickert/dots#installation), then:
 
 ```bash
-. env
-dotsh boostrap
+dots init --from git@github.com:jlrickert/dotfiles.git --path dots-config --name jlrickert
 ```
 
-### Ubuntu
+Or skip the local install entirely and try the prebuilt container:
 
 ```bash
-sudo apt install -y git curl zsh
-sh -c "$(curl -fsLS https://raw.githubusercontent.com/jlrickert/dotfiles/main/setup.sh)"
+docker run -it --rm ghcr.io/jlrickert/dotfiles:ubuntu
 ```
 
-### MacOSX
+## Testing
+
+End-to-end installs are exercised in containers via [Task](https://taskfile.dev), Docker, and Docker Compose. From the repo root:
 
 ```bash
-brew install curl git gnu-sed
-sh -c "$(curl -fsLS https://raw.githubusercontent.com/jlrickert/dotfiles/main/setup.sh)"
+task build:ubuntu     # build the prebuilt image
+task test             # build + run the e2e verify script in-container
+task shell:ubuntu     # drop into the prebuilt container interactively
+task push:ubuntu      # publish to ghcr.io/jlrickert/dotfiles:ubuntu (needs `task login`)
+task clean            # remove built images and compose state
 ```
 
-### Manual
-
-```bash
-git clone https://github.com/jlrickert/dotfiles "${HOME}/.config/dotfiles"
-cd "${HOME}/.config/dotfiles"
-./setup.sh
-source env
-```
-
-## Architecture
-
-Project has a few core directories:
-
-- **Project specific scripts:** Scripts located in `bin`. This is scripts intended for boot strapping and testing.
-- **Reusable code:** Scripts in `lib` intended to be used as reusable code
-- **Module directories:** This isolated things located in the `pkg` directory. Each should at least have the following
-  - **Global binaries:** Will have exported scripts in a `bin` directory
-  - **install.sh:** Installation script for the specific module. This should be idempotent
-  - **env.sh:** This will be automatically sourced
-
-### Modules
-
-- **nvim:** My neovim setup
-- **shell:** My current shell setup. This makes up the base of my setup
-- **Docker:** TODO
-- **go:** Golang things
-
-## Installation testing
-
-Make sure you are in the project directory
-
-```bash
-. bin/env # setup dev environment
-docker run -it \
-	--mount "type=bind,src=${PWD},dst=/root/.config/dotfiles" \
-	ubuntu \
-	"$@"
-```
+The verify script lives at `tests/e2e/verify.sh` and asserts that the expected symlinks, CLI tools, and shells all come up cleanly inside the image.

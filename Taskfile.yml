@@ -1,0 +1,84 @@
+version: "3"
+
+vars:
+  REGISTRY: ghcr.io/jlrickert/dotfiles
+  DOTFILES_REF:
+    sh: git rev-parse --short HEAD 2>/dev/null || echo latest
+  # The repo's .env is a shell script meant to be `source`-d, not a
+  # docker-compose env file. Every compose call goes through this alias so
+  # compose ignores it.
+  COMPOSE: docker compose --env-file /dev/null
+
+env:
+  DOTFILES_REF: "{{.DOTFILES_REF}}"
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  build:
+    desc: Build all prebuilt images
+    cmds:
+      - "{{.COMPOSE}} build"
+
+  build:ubuntu:
+    desc: Build the Ubuntu prebuilt image
+    cmds:
+      - "{{.COMPOSE}} build ubuntu"
+
+  test:
+    desc: Build and run end-to-end verification for all variants
+    deps: [build]
+    cmds:
+      - "{{.COMPOSE}} run --rm ubuntu-test"
+
+  test:ubuntu:
+    desc: Run end-to-end verification for the Ubuntu variant
+    deps: [build:ubuntu]
+    cmds:
+      - "{{.COMPOSE}} run --rm ubuntu-test"
+
+  shell:ubuntu:
+    desc: Drop into an interactive shell in the Ubuntu prebuilt image
+    deps: [build:ubuntu]
+    cmds:
+      - "{{.COMPOSE}} run --rm ubuntu"
+
+  login:
+    desc: Log in to ghcr.io (requires a PAT with write:packages scope)
+    cmds:
+      - echo "Use a GitHub Personal Access Token with write:packages scope."
+      - docker login ghcr.io
+
+  push:
+    desc: Push all built variants to ghcr.io (gated on test passing and clean tree)
+    deps: [test]
+    cmds:
+      - task: _check-clean
+      - task: push:ubuntu
+
+  push:ubuntu:
+    desc: Push the Ubuntu variant tags to ghcr.io
+    deps: [build:ubuntu]
+    cmds:
+      - task: _check-clean
+      - docker push {{.REGISTRY}}:ubuntu
+      - docker push {{.REGISTRY}}:ubuntu-{{.DOTFILES_REF}}
+
+  clean:
+    desc: Remove built images and compose state
+    cmds:
+      - "{{.COMPOSE}} down --rmi local --volumes --remove-orphans"
+
+  _check-clean:
+    internal: true
+    desc: Refuse to push if the working tree has uncommitted changes
+    cmds:
+      - |
+        if ! git diff --quiet || ! git diff --cached --quiet; then
+          echo "Working tree is dirty; refusing to push so the SHA tag stays meaningful." >&2
+          echo "Commit or stash, rebuild, then re-run." >&2
+          exit 1
+        fi
