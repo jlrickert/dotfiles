@@ -6,4 +6,4 @@ package:
     - dots
     - meta
 links:
-  config.yaml: '@config/dots/config.yaml'
+  config.yaml: "@config/dots/config.yaml"

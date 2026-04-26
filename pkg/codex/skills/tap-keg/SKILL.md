@@ -93,6 +93,7 @@ Use `tap config` to read the `entities:` section as canonical for structure requ
 - Entity notes: notes that define structure requirements for an entity type.
 
 When asked to create or update notes of a type:
+
 1. Read `tap config` and find `entities.<type>.id`.
 2. Open that entity note with `tap cat <id>`.
 3. Apply those requirements to the target note.

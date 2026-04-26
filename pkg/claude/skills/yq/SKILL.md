@@ -85,18 +85,18 @@ yq -p xml file.xml
 
 ## Useful Flags
 
-| Flag | Purpose |
-|------|---------|
-| `-i` | Edit file in place |
-| `-n` | Null input — start from scratch |
-| `-o FORMAT` | Output format: `yaml`, `json`, `toml`, `xml`, `csv`, `tsv`, `props` |
-| `-p FORMAT` | Parse input as format (same options as `-o`) |
-| `-P` | Pretty print |
-| `-N` | No colors |
-| `-e` | Exit with error on missing key |
-| `-f FILE` | Read expression from file |
-| `--header-preprocess` | Pre-process headers (enabled by default) |
-| `--front-matter` | Extract/process YAML front-matter (`extract`, `process`) |
+| Flag                  | Purpose                                                             |
+| --------------------- | ------------------------------------------------------------------- |
+| `-i`                  | Edit file in place                                                  |
+| `-n`                  | Null input — start from scratch                                     |
+| `-o FORMAT`           | Output format: `yaml`, `json`, `toml`, `xml`, `csv`, `tsv`, `props` |
+| `-p FORMAT`           | Parse input as format (same options as `-o`)                        |
+| `-P`                  | Pretty print                                                        |
+| `-N`                  | No colors                                                           |
+| `-e`                  | Exit with error on missing key                                      |
+| `-f FILE`             | Read expression from file                                           |
+| `--header-preprocess` | Pre-process headers (enabled by default)                            |
+| `--front-matter`      | Extract/process YAML front-matter (`extract`, `process`)            |
 
 ## Expression Syntax
 
@@ -168,8 +168,7 @@ yq -i '.key line_comment = "beside"' file.yaml
 
 ## KEG Configuration through `tap config edit`
 
-KEG config output from `tap config` can be large. Dump it to a temp file, use
-yq to manipulate it, then pipe the result back through `tap config edit`:
+KEG config output from `tap config` can be large. Dump it to a temp file, use yq to manipulate it, then pipe the result back through `tap config edit`:
 
 ```bash
 # Dump current config to a temp file

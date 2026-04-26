@@ -4,7 +4,7 @@ package:
   description: Zsh shell configuration (installs zsh if missing)
   version: 0.2.0
   requires:
-    - '@self/common-shell'
+    - "@self/common-shell"
   tags:
     - shell
     - zsh
@@ -14,7 +14,7 @@ package:
 links:
   stub-zshenv: .zshenv
   stub-zshrc: .zshrc
-  zshenv: '@config/zsh/zshenv'
-  zshrc: '@config/zsh/zshrc'
+  zshenv: "@config/zsh/zshenv"
+  zshrc: "@config/zsh/zshrc"
 hooks:
   post_install: hooks/install-zsh.sh
