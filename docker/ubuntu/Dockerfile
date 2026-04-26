@@ -7,8 +7,11 @@ ARG DOTS_VERSION
 # undefaulted here so the auto value isn't shadowed; fall back to dpkg below.
 ARG TARGETARCH
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=America/Chicago
 
+# tzdata reads $TZ during postinst under noninteractive frontend, so it
+# configures /etc/localtime and /etc/timezone without dpkg-reconfigure.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         bash \
         build-essential \
@@ -17,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         locales \
         sudo \
+        tzdata \
         zsh \
     && rm -rf /var/lib/apt/lists/* \
     && locale-gen en_US.UTF-8
