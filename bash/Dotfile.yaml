@@ -4,7 +4,7 @@ package:
   description: Bash shell configuration (defers to zsh when available)
   version: 0.2.0
   requires:
-    - '@self/common-shell'
+    - "@self/common-shell"
   tags:
     - shell
     - bash

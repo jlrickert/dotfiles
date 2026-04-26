@@ -5,6 +5,7 @@
 A KEG (Knowledge Exchange Graph) is a zettelkasten-style note repository in Git. Each node is a numbered directory with markdown content and YAML metadata.
 
 Core characteristics:
+
 - Version controlled in Git
 - Numbered node directories: `docs/1/`, `docs/2/`, ...
 - Node files: `README.md`, `stats.yaml`, and `meta.yaml`
@@ -43,6 +44,7 @@ Use one H1 first line in this shape:
 ```
 
 Examples:
+
 - `# Task: Database migration - Customer Platform`
 - `# PR: Authentication refactor - Auth Service`
 - `# Reference: REST API Best Practices (rest-api-best-practices)`
@@ -61,6 +63,7 @@ Use relative links for KEG-local references:
 ```
 
 Rules:
+
 - Use `../NODEID` for internal links
 - Avoid absolute URLs for internal KEG references
 - Prefer descriptive link text
@@ -76,6 +79,7 @@ Use `keg:KEG/NODEID` to reference notes in another KEG:
 ### Typical H2 Sections
 
 Use applicable sections:
+
 - `## Overview` / `## Summary` / `## Purpose`
 - `## Details` / `## Requirements` / `## Changes`
 - `## Subtasks` / `## Steps` / `## Actions`
@@ -102,6 +106,7 @@ tags:
 ```
 
 Field rules:
+
 - `created`: set once at creation; never change
 - `updated`: set to current UTC ISO 8601 timestamp for meaningful edits
 - `title`: must match README H1 exactly (including checkbox status if present)
@@ -128,6 +133,7 @@ tags:
 ```
 
 Field rules:
+
 - `created`: compatibility field in `meta.yaml`; mirror `stats.yaml` exactly
 - `updated`: compatibility field in `meta.yaml`; mirror `stats.yaml` exactly
 - `title`: compatibility field in `meta.yaml`; mirror `stats.yaml` exactly
@@ -143,6 +149,7 @@ System notes are internal KEG infrastructure nodes (indexes, entity definitions,
 ## Tag Strategy
 
 Use consistent categories such as:
+
 - Special: `system` (reserved for internal KEG infrastructure nodes)
 - Entity/type: `task`, `pr`, `patch`, `reference`, `meeting`, `project`, `client`, `issue`, `article`, `spike`, `concept`, `plan`, `hardware`, `gear`, `software`
 - Technology: `python`, `javascript`, `database`, `api`, `frontend`, `backend`, `devops`, `golang`
