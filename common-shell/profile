@@ -13,6 +13,10 @@ export XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME
 : "${LANG:=en_US.UTF-8}"
 export LANG
 
+# Pager.
+: "${PAGER:=less}"
+export PAGER
+
 # User-local bin directory.
 case ":$PATH:" in
 	*":$HOME/.local/bin:"*) ;;
@@ -25,4 +29,14 @@ if [ -x /opt/homebrew/bin/brew ]; then
 	eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [ -x /usr/local/bin/brew ]; then
 	eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# Bun runtime, when installed.
+if [ -d "$HOME/.bun" ]; then
+	export BUN_INSTALL="$HOME/.bun"
+	case ":$PATH:" in
+		*":$BUN_INSTALL/bin:"*) ;;
+		*) PATH="$BUN_INSTALL/bin:$PATH" ;;
+	esac
+	export PATH
 fi

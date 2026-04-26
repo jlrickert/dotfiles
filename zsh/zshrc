@@ -1,8 +1,4 @@
-# Interactive zsh configuration.
-case $- in
-	*i*) ;;
-	*) return ;;
-esac
+# zsh only sources .zshrc for interactive shells, so no bail-out needed.
 
 HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 HISTSIZE=50000
@@ -32,3 +28,6 @@ bindkey -e
 bindkey '^r' history-incremental-search-backward
 
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
+
+# bun completions, when installed.
+[ -r "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"

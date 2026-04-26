@@ -1,0 +1,2 @@
+# Stub. Real config lives at ~/.config/zsh/zshenv.
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/zshenv" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/zshenv"

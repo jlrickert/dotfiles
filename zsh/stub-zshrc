@@ -1,0 +1,5 @@
+# Stub. Real config lives at ~/.config/zsh/zshrc.
+# Some installers (nvm, fnm, bun, conda, gcloud, ...) append to ~/.zshrc;
+# keeping the real config elsewhere means those appends land here, below
+# this source line, so they can't clobber it.
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/zshrc" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/zshrc"

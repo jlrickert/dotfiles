@@ -2,19 +2,17 @@
 package:
   name: bash
   description: Bash shell configuration (defers to zsh when available)
-  version: 0.1.0
+  version: 0.2.0
   requires:
-    - jlrickert/common-shell
+    - '@self/common-shell'
   tags:
     - shell
     - bash
   platforms:
     - darwin
     - linux
-
 links:
   bashrc: .bashrc
   bash_profile: .bash_profile
-
 hooks:
   post_install: hooks/install-bash.sh

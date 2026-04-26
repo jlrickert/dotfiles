@@ -2,19 +2,19 @@
 package:
   name: zsh
   description: Zsh shell configuration (installs zsh if missing)
-  version: 0.1.0
+  version: 0.2.0
   requires:
-    - jlrickert/common-shell
+    - '@self/common-shell'
   tags:
     - shell
     - zsh
   platforms:
     - darwin
     - linux
-
 links:
-  zshenv: .zshenv
-  zshrc: .zshrc
-
+  stub-zshenv: .zshenv
+  stub-zshrc: .zshrc
+  zshenv: '@config/zsh/zshenv'
+  zshrc: '@config/zsh/zshrc'
 hooks:
   post_install: hooks/install-zsh.sh

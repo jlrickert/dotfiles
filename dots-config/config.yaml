@@ -1,7 +1,11 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dots-config.json
 core:
-    conflict_strategy: prompt
-    backup: true
-    link_strategy: symlink
+  conflict_strategy: prompt
+  backup: true
+  link_strategy: copy
 git:
-    default_branch: main
-    protocol: ssh
+  default_branch: main
+  protocol: ssh
+work_mode:
+  private: /Users/jlrickert/repos/github.com/jlrickert/dot-personal
+  public: /Users/jlrickert/repos/github.com/jlrickert/dotfiles
