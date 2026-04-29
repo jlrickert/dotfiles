@@ -1,7 +1,7 @@
 package:
   name: dots-config
   description: dots package manager configuration
-  version: 0.1.0
+  version: 0.1.1
   tags:
     - dots
     - meta

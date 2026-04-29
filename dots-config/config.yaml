@@ -6,6 +6,3 @@ core:
 git:
   default_branch: main
   protocol: ssh
-work_mode:
-  private: /Users/jlrickert/repos/github.com/jlrickert/dot-personal
-  public: /Users/jlrickert/repos/github.com/jlrickert/dotfiles
