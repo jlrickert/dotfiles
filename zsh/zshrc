@@ -46,6 +46,9 @@ if command -v brew >/dev/null 2>&1; then
 	fpath=("${HOMEBREW_PREFIX}/share/zsh/site-functions" $fpath)
 fi
 
+# User-installed completion functions (mux et al.).
+fpath=("${XDG_CONFIG_HOME:-$HOME/.config}/zsh/completions" $fpath)
+
 autoload -Uz compinit
 compinit -d "${ZSH_CACHE_DIR}/zcompdump"
 

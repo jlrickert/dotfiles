@@ -14,6 +14,8 @@ links:
   config.kdl: "@config/zellij/config.kdl"
   bin/mux: "@bin/mux"
   bin/set-zellij-colorscheme: "@bin/set-zellij-colorscheme"
+  completions/mux.bash: "@config/bash/completions/mux.bash"
+  completions/_mux: "@config/zsh/completions/_mux"
 
 # The launchd plist that periodically syncs the zellij theme to the macOS
 # system appearance is darwin-only.

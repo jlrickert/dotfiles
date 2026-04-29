@@ -4,10 +4,6 @@ vars:
   REGISTRY: ghcr.io/jlrickert/dotfiles
   DOTFILES_REF:
     sh: git rev-parse --short HEAD 2>/dev/null || echo latest
-  # The repo's .env is a shell script meant to be `source`-d, not a
-  # docker-compose env file. Every compose call goes through this alias so
-  # compose ignores it.
-  COMPOSE: docker compose --env-file /dev/null
 
 env:
   DOTFILES_REF: "{{.DOTFILES_REF}}"
@@ -21,30 +17,30 @@ tasks:
   build:
     desc: Build all prebuilt images
     cmds:
-      - "{{.COMPOSE}} build"
+      - docker compose build
 
   build:ubuntu:
     desc: Build the Ubuntu prebuilt image
     cmds:
-      - "{{.COMPOSE}} build ubuntu"
+      - docker compose build ubuntu
 
   test:
     desc: Build and run end-to-end verification for all variants
     deps: [build]
     cmds:
-      - "{{.COMPOSE}} run --rm ubuntu-test"
+      - docker compose run --rm ubuntu-test
 
   test:ubuntu:
     desc: Run end-to-end verification for the Ubuntu variant
     deps: [build:ubuntu]
     cmds:
-      - "{{.COMPOSE}} run --rm ubuntu-test"
+      - docker compose run --rm ubuntu-test
 
   shell:ubuntu:
     desc: Drop into an interactive shell in the Ubuntu prebuilt image
     deps: [build:ubuntu]
     cmds:
-      - "{{.COMPOSE}} run --rm ubuntu"
+      - docker compose run --rm ubuntu
 
   login:
     desc: Log in to ghcr.io (requires a PAT with write:packages scope)
@@ -68,9 +64,12 @@ tasks:
       - docker push {{.REGISTRY}}:ubuntu-{{.DOTFILES_REF}}
 
   clean:
-    desc: Remove built images and compose state
+    desc: Remove images, compose state, and BuildKit cache (next build is from scratch)
     cmds:
-      - "{{.COMPOSE}} down --rmi local --volumes --remove-orphans"
+      - docker compose down --rmi local --volumes --remove-orphans
+      # BuildKit's layer cache lives outside images. Without this prune,
+      # `clean` followed by `build` still hits cache from the prior build.
+      - docker builder prune --force --all
 
   _check-clean:
     internal: true

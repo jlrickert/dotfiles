@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         locales \
         sudo \
         tzdata \
+        vim \
         zsh \
     && rm -rf /var/lib/apt/lists/* \
     && locale-gen en_US.UTF-8
@@ -49,6 +50,16 @@ WORKDIR /home/jlrickert
 # dash, which chokes on the bash-isms in this repo's install hooks. Pick bash
 # explicitly for the install step.
 ENV SHELL=/bin/bash
+
+# `dots init --from file://` reads the committed git tree, not the working
+# directory. Snapshot any uncommitted working-tree state into a local commit
+# inside the container so iterative dev builds pick up edits without
+# requiring a host-side commit. The snapshot lives only in the image.
+RUN cd /opt/dotfiles-src \
+    && git config user.email build@dotfiles.local \
+    && git config user.name Build \
+    && git add -A \
+    && (git diff --cached --quiet || git commit -m 'build: snapshot working tree')
 
 # `dots init --from` registers the source as a tap (named via --name) and
 # installs the package given by --path (here: dots-config). `requires:` is

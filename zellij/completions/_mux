@@ -1,0 +1,43 @@
+#compdef mux
+# zsh completion for mux (zellij session helper).
+#
+# Autoloaded when this file lives on $fpath as `_mux` and `compinit` has run.
+
+_mux_sessions() {
+	local -a sessions
+	sessions=(${(f)"$(zellij ls --no-formatting --short 2>/dev/null)"})
+	# _describe paginates and aligns the candidate list, so very long session
+	# names do not overflow the completion menu.
+	_describe -t sessions 'session' sessions
+}
+
+_mux_subcommands() {
+	local -a subs
+	subs=(
+		'ls:list active sessions'
+		'rm:delete persistent session storage'
+		'kill:kill a running session'
+		'-h:show help'
+		'--help:show help'
+	)
+	_describe -t subcommands 'subcommand' subs
+}
+
+_mux() {
+	case "$CURRENT" in
+	2)
+		_alternative \
+			'subcommands:subcommand:_mux_subcommands' \
+			'sessions:session:_mux_sessions'
+		;;
+	3)
+		case "${words[2]}" in
+		rm | kill)
+			_mux_sessions
+			;;
+		esac
+		;;
+	esac
+}
+
+_mux "$@"

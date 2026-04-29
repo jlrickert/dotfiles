@@ -1,5 +1,9 @@
 services:
   ubuntu:
+    # The image tag is local-only so `compose run` never tries to pull from
+    # ghcr.io — these services exist to test the working tree. The build
+    # still tags the registry names so `task push:ubuntu` works.
+    image: dotfiles:ubuntu
     build:
       context: .
       dockerfile: docker/ubuntu/Dockerfile
@@ -7,7 +11,6 @@ services:
         - dotfiles:ubuntu
         - ghcr.io/jlrickert/dotfiles:ubuntu
         - ghcr.io/jlrickert/dotfiles:ubuntu-${DOTFILES_REF:-latest}
-    image: ghcr.io/jlrickert/dotfiles:ubuntu
 
   ubuntu-test:
     extends:

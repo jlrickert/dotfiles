@@ -28,6 +28,10 @@ assert_file "${HOME}/.config/zsh/zshenv"
 assert_file "${HOME}/.config/zsh/zshrc"
 assert_file "${HOME}/.config/zsh/lib/termsupport.zsh"
 assert_file "${HOME}/.config/zsh/lib/zsh-vi-mode.zsh"
+# Per-tool completions are installed by their packages into shared dirs that
+# bash and zsh discover automatically.
+assert_file "${HOME}/.config/zsh/completions/_mux"
+assert_file "${HOME}/.config/bash/completions/mux.bash"
 # ~/.zshrc and ~/.zshenv are NOT package files -- the install hook injects
 # a marker block that sources ~/.config/zsh/. Verify the block is present.
 assert_grep "${HOME}/.zshrc" "BEGIN dotfiles-zsh"

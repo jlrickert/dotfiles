@@ -22,3 +22,15 @@ alias la='ls -lAh'
 alias l='ls -lah'
 
 command -v starship >/dev/null 2>&1 && eval "$(starship init bash)"
+
+# Auto-source any *.bash completion files installed under
+# $XDG_CONFIG_HOME/bash/completions. Each completion is responsible for its
+# own `complete` registration. Mirrors the zsh fpath convention so packages
+# can install completions without bashrc ever knowing about them.
+_bash_completions_dir="${XDG_CONFIG_HOME:-$HOME/.config}/bash/completions"
+if [ -d "$_bash_completions_dir" ]; then
+	for _f in "$_bash_completions_dir"/*.bash; do
+		[ -r "$_f" ] && . "$_f"
+	done
+fi
+unset _bash_completions_dir _f
