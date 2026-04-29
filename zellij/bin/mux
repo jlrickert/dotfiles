@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# mux: thin zellij session helper.
+#
+# Originally named "muxi" to dodge a collision; the alternate is gone, so
+# back to "mux".
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+PROG="${0##*/}"
+
+usage() {
+	cat <<EOF
+Usage: ${PROG} <session>           Attach to <session>, creating it if missing
+       ${PROG} ls                  List active sessions
+       ${PROG} rm <session>        Delete persistent session storage
+       ${PROG} kill <session>      Kill a running session
+       ${PROG} -h | --help         Show this help
+
+Examples:
+    ${PROG} work                   # attach (or create) "work"
+    ${PROG} ls                     # list sessions
+    ${PROG} kill work              # kill the "work" session
+EOF
+}
+
+require_zellij() {
+	command -v zellij >/dev/null 2>&1 || {
+		echo "${PROG}: zellij not on PATH" >&2
+		exit 1
+	}
+}
+
+list_sessions() {
+	# --short returns one name per line, no formatting; nothing to awk.
+	zellij ls --no-formatting --short 2>/dev/null || true
+}
+
+session_exists() {
+	list_sessions | grep -Fxq -- "$1"
+}
+
+attach_or_create() {
+	local name="$1"
+	if session_exists "${name}"; then
+		exec zellij attach "${name}"
+	fi
+	exec zellij --session "${name}"
+}
+
+remove_session() {
+	local name="$1"
+	if ! session_exists "${name}"; then
+		echo "${PROG}: session '${name}' not found" >&2
+		exit 1
+	fi
+	zellij delete-session "${name}"
+	echo "${PROG}: removed session '${name}'"
+}
+
+kill_running_session() {
+	local name="$1"
+	if ! session_exists "${name}"; then
+		echo "${PROG}: session '${name}' not found" >&2
+		exit 1
+	fi
+	zellij kill-session "${name}"
+	echo "${PROG}: killed session '${name}'"
+}
+
+# Tab completion. Bash sets COMP_LINE when invoking the script as a
+# completer (`complete -C mux mux`). Print one candidate per line.
+if [ -n "${COMP_LINE:-}" ]; then
+	require_zellij
+	pre="${COMP_LINE##* }"
+	candidates=(ls rm kill --help -h)
+	while IFS= read -r s; do
+		[ -n "${s}" ] && candidates+=("${s}")
+	done < <(list_sessions)
+	for c in "${candidates[@]}"; do
+		[[ -z "${pre}" || "${c}" == "${pre}"* ]] && printf '%s\n' "${c}"
+	done
+	exit 0
+fi
+
+require_zellij
+
+case "${1:-}" in
+"" | -h | --help)
+	usage
+	;;
+ls)
+	list_sessions
+	;;
+rm)
+	shift
+	if [ $# -ne 1 ]; then
+		echo "${PROG}: rm needs a session name" >&2
+		exit 1
+	fi
+	remove_session "$1"
+	;;
+kill)
+	shift
+	if [ $# -ne 1 ]; then
+		echo "${PROG}: kill needs a session name" >&2
+		exit 1
+	fi
+	kill_running_session "$1"
+	;;
+-*)
+	echo "${PROG}: unknown flag '$1'" >&2
+	usage >&2
+	exit 1
+	;;
+*)
+	if [ $# -ne 1 ]; then
+		echo "${PROG}: too many arguments; pass just a session name" >&2
+		exit 1
+	fi
+	attach_or_create "$1"
+	;;
+esac

@@ -7,6 +7,11 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 
 cd "${HOME}"
 
+# Verify scripts and ~/.local/bin-installed tools (zellij on linux,
+# set-zellij-colorscheme via @bin) need this on PATH; the test entrypoint
+# does not source a login shell.
+export PATH="${HOME}/.local/bin:${PATH}"
+
 # link_strategy=copy (set in dots-config/config.yaml), so installed
 # dotfiles land as regular files.
 assert_file "${HOME}/.bashrc"
@@ -14,6 +19,10 @@ assert_file "${HOME}/.bash_profile"
 assert_file "${HOME}/.profile"
 assert_file "${HOME}/.config/dots/config.yaml"
 assert_file "${HOME}/.config/starship.toml"
+assert_file "${HOME}/.config/zellij/config.kdl"
+assert_cmd zellij
+assert_cmd mux
+assert_cmd set-zellij-colorscheme
 # Real zsh configs live under ~/.config/zsh/.
 assert_file "${HOME}/.config/zsh/zshenv"
 assert_file "${HOME}/.config/zsh/zshrc"

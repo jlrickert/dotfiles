@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: zellij
+  description: Zellij terminal multiplexer with system-theme-aware colorscheme
+  version: 0.1.0
+  tags:
+    - terminal
+    - multiplexer
+  platforms:
+    - darwin
+    - linux
+
+links:
+  config.kdl: "@config/zellij/config.kdl"
+  bin/mux: "@bin/mux"
+  bin/set-zellij-colorscheme: "@bin/set-zellij-colorscheme"
+
+# The launchd plist that periodically syncs the zellij theme to the macOS
+# system appearance is darwin-only.
+platform:
+  darwin:
+    links:
+      local.zellij-theme-switcher.plist: "@home/Library/LaunchAgents/local.zellij-theme-switcher.plist"
+
+hooks:
+  post_install: hooks/install-zellij.sh

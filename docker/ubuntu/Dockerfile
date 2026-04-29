@@ -57,6 +57,7 @@ ENV SHELL=/bin/bash
 RUN dots init --from "file:///opt/dotfiles-src" --path dots-config --name jlrickert \
     && dots install jlrickert/common-shell \
     && dots install jlrickert/bash \
-    && dots install jlrickert/zsh
+    && dots install jlrickert/zsh \
+    && dots install jlrickert/zellij
 
 ENTRYPOINT ["zsh", "-l"]
