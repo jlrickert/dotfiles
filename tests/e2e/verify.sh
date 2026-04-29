@@ -7,13 +7,17 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 
 cd "${HOME}"
 
-assert_link "${HOME}/.zshrc"
-assert_link "${HOME}/.zshenv"
-assert_link "${HOME}/.bashrc"
-assert_link "${HOME}/.bash_profile"
-assert_link "${HOME}/.profile"
-# dots 0.4.0 copies (rather than symlinks) the bootstrap dots-config into place.
+# link_strategy=copy (set in dots-config/config.yaml), so installed
+# dotfiles land as regular files.
+assert_file "${HOME}/.zshrc"
+assert_file "${HOME}/.zshenv"
+assert_file "${HOME}/.bashrc"
+assert_file "${HOME}/.bash_profile"
+assert_file "${HOME}/.profile"
 assert_file "${HOME}/.config/dots/config.yaml"
+# zsh stubs redirect to ~/.config/zsh/, where the real configs live.
+assert_file "${HOME}/.config/zsh/zshenv"
+assert_file "${HOME}/.config/zsh/zshrc"
 
 assert_cmd starship
 assert_cmd fzf
