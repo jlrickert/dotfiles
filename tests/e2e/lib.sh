@@ -36,6 +36,19 @@ assert_file() {
     pass "$path is a regular file"
 }
 
+assert_grep() {
+    local path="$1" needle="$2"
+    if [ ! -f "$path" ]; then
+        fail "$path missing (looking for '$needle')"
+        return
+    fi
+    if grep -qF "$needle" "$path"; then
+        pass "$path contains '$needle'"
+    else
+        fail "$path missing '$needle'"
+    fi
+}
+
 assert_cmd() {
     local cmd="$1"
     if command -v "$cmd" >/dev/null 2>&1; then

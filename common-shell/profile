@@ -17,6 +17,36 @@ export LANG
 : "${PAGER:=less}"
 export PAGER
 
+# Identity / repo conventions.
+: "${USER:=$(id -un 2>/dev/null || whoami)}"
+: "${GITUSER:=$USER}"
+: "${REPOS:=$HOME/repos}"
+: "${GHREPOS:=$REPOS/github.com/$GITUSER}"
+export USER GITUSER REPOS GHREPOS
+
+# Make `cd <repo>` work from anywhere for repos under the GitHub user dir.
+case ":${CDPATH:-}:" in
+	*":$GHREPOS:"*) ;;
+	*) CDPATH="${CDPATH:+$CDPATH:}$GHREPOS" ;;
+esac
+export CDPATH
+
+# bat (modern cat) theme.
+: "${BAT_THEME:=gruvbox-dark}"
+export BAT_THEME
+
+# fzf defaults. The Debian/Ubuntu binary for fd is fdfind; on darwin/brew
+# it's just fd. The repo installs both flavors via the install hook, so
+# pick whichever is on PATH.
+: "${FZF_DEFAULT_COMMAND:=rg --files --hidden --color=never}"
+if command -v fdfind >/dev/null 2>&1; then
+	: "${FZF_ALT_C_COMMAND:=fdfind --color=never --type d}"
+elif command -v fd >/dev/null 2>&1; then
+	: "${FZF_ALT_C_COMMAND:=fd --color=never --type d}"
+fi
+: "${FZF_ALT_C_OPTS:=--preview 'tree -C {}'}"
+export FZF_DEFAULT_COMMAND FZF_ALT_C_COMMAND FZF_ALT_C_OPTS
+
 # User-local bin directory.
 case ":$PATH:" in
 	*":$HOME/.local/bin:"*) ;;

@@ -2,9 +2,9 @@
 package:
   name: zsh
   description: Zsh shell configuration (installs zsh if missing)
-  version: 0.2.0
+  version: 0.3.0
   requires:
-    - '@self/common-shell'
+    - "@self/common-shell"
   tags:
     - shell
     - zsh
@@ -12,9 +12,13 @@ package:
     - darwin
     - linux
 links:
-  stub-zshenv: .zshenv
-  stub-zshrc: .zshrc
-  zshenv: '@config/zsh/zshenv'
-  zshrc: '@config/zsh/zshrc'
+  zshenv: "@config/zsh/zshenv"
+  zshrc: "@config/zsh/zshrc"
+  lib/termsupport.zsh: "@config/zsh/lib/termsupport.zsh"
+  lib/zsh-vi-mode.zsh: "@config/zsh/lib/zsh-vi-mode.zsh"
+# ~/.zshrc and ~/.zshenv are NOT in `links:`. Replacing them on install would
+# clobber installer-appends from bun, fnm, conda, Egnyte egcli, etc. Instead
+# the post_install hook injects a marker block that sources the real config.
 hooks:
   post_install: hooks/install-zsh.sh
+  pre_remove: hooks/uninstall-zsh.sh

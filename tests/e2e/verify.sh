@@ -9,15 +9,19 @@ cd "${HOME}"
 
 # link_strategy=copy (set in dots-config/config.yaml), so installed
 # dotfiles land as regular files.
-assert_file "${HOME}/.zshrc"
-assert_file "${HOME}/.zshenv"
 assert_file "${HOME}/.bashrc"
 assert_file "${HOME}/.bash_profile"
 assert_file "${HOME}/.profile"
 assert_file "${HOME}/.config/dots/config.yaml"
-# zsh stubs redirect to ~/.config/zsh/, where the real configs live.
+# Real zsh configs live under ~/.config/zsh/.
 assert_file "${HOME}/.config/zsh/zshenv"
 assert_file "${HOME}/.config/zsh/zshrc"
+assert_file "${HOME}/.config/zsh/lib/termsupport.zsh"
+assert_file "${HOME}/.config/zsh/lib/zsh-vi-mode.zsh"
+# ~/.zshrc and ~/.zshenv are NOT package files -- the install hook injects
+# a marker block that sources ~/.config/zsh/. Verify the block is present.
+assert_grep "${HOME}/.zshrc" "BEGIN dotfiles-zsh"
+assert_grep "${HOME}/.zshenv" "BEGIN dotfiles-zsh"
 
 assert_cmd starship
 assert_cmd fzf

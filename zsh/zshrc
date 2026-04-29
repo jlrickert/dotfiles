@@ -1,5 +1,12 @@
+# Real zsh interactive config. Sourced by ~/.zshrc (the stub).
+#
 # zsh only sources .zshrc for interactive shells, so no bail-out needed.
 
+ZSH_LIB="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/lib"
+ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+mkdir -p "${ZSH_CACHE_DIR}"
+
+#--- History -----------------------------------------------------------------
 HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 HISTSIZE=50000
 SAVEHIST=10000
@@ -12,21 +19,112 @@ setopt hist_ignore_space
 setopt hist_verify
 setopt share_history
 setopt interactivecomments
+
+#--- Directory navigation ----------------------------------------------------
 setopt auto_cd
 setopt auto_pushd
 setopt pushd_ignore_dups
+setopt pushdminus
+
+alias -- -='cd -'
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+
+#--- ls aliases --------------------------------------------------------------
+alias ls='ls --color=auto 2>/dev/null || ls'
+alias l='ls -lah'
+alias la='ls -lAh'
+alias ll='ls -lh'
+alias lsa='ls -lah'
+
+#--- Completion --------------------------------------------------------------
+# Brew's zsh-completions and site-functions, when available.
+if command -v brew >/dev/null 2>&1; then
+	HOMEBREW_PREFIX="$(brew --prefix)"
+	fpath=("${HOMEBREW_PREFIX}/share/zsh-completions" $fpath)
+	fpath=("${HOMEBREW_PREFIX}/share/zsh/site-functions" $fpath)
+fi
 
 autoload -Uz compinit
-compinit
+compinit -d "${ZSH_CACHE_DIR}/zcompdump"
 
-alias ls='ls --color=auto 2>/dev/null || ls'
-alias ll='ls -lh'
-alias la='ls -lAh'
-alias l='ls -lah'
+# bashcompinit so bash-style completion scripts (kubectl, gcloud, etc.) work.
+autoload -U +X bashcompinit && bashcompinit
 
+WORDCHARS=''
+unsetopt menu_complete
+unsetopt flowcontrol
+setopt auto_menu
+setopt complete_in_word
+setopt always_to_end
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' use-cache yes
+zstyle ':completion:*' cache-path "${ZSH_CACHE_DIR}"
+zstyle ':completion:*' special-dirs true
+zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
+zstyle ':completion:*:*:*:users' ignored-patterns \
+	adm amanda apache at avahi avahi-autoipd beaglidx bin cacti canna \
+	clamav daemon dbus distcache dnsmasq dovecot fax ftp games gdm \
+	gkrellmd gopher hacluster haldaemon halt hsqldb ident junkbust kdm \
+	ldap lp mail mailman mailnull man messagebus mldonkey mysql nagios \
+	named netdump news nfsnobody nobody nscd ntp nut nx obsrun openvpn \
+	operator pcap polkitd postfix postgres privoxy pulse pvm quagga radvd \
+	rpc rpcuser rpm rtkit scard shutdown squid sshd statd svn sync tftp \
+	usbmux uucp vcsa wwwrun xfs '_*'
+zstyle '*' single-ignored show
+
+zmodload -i zsh/complist
+bindkey -M menuselect '^o' accept-and-infer-next-history
+
+#--- Vendored libs -----------------------------------------------------------
+# termsupport: terminal title + OSC 7 cwd notifications.
+[ -r "${ZSH_LIB}/termsupport.zsh" ] && . "${ZSH_LIB}/termsupport.zsh"
+# zsh-vi-mode: jeffreytse/zsh-vi-mode plugin (vendored).
+[ -r "${ZSH_LIB}/zsh-vi-mode.zsh" ] && . "${ZSH_LIB}/zsh-vi-mode.zsh"
+
+#--- Keybindings (after vi-mode so they layer on top) ------------------------
 bindkey -e
+bindkey '^k' up-line-or-history
+bindkey '^j' down-line-or-history
 bindkey '^r' history-incremental-search-backward
+bindkey ' ' magic-space
 
+# Backspace + delete-forward across keymaps.
+bindkey -M emacs '^?' backward-delete-char
+bindkey -M viins '^?' backward-delete-char
+bindkey -M vicmd '^?' backward-delete-char
+if [[ -n "${terminfo[kdch1]}" ]]; then
+	bindkey -M emacs "${terminfo[kdch1]}" delete-char
+	bindkey -M viins "${terminfo[kdch1]}" delete-char
+	bindkey -M vicmd "${terminfo[kdch1]}" delete-char
+fi
+# Shift-Tab walks completion menu backwards.
+if [[ -n "${terminfo[kcbt]}" ]]; then
+	bindkey -M emacs "${terminfo[kcbt]}" reverse-menu-complete
+	bindkey -M viins "${terminfo[kcbt]}" reverse-menu-complete
+	bindkey -M vicmd "${terminfo[kcbt]}" reverse-menu-complete
+fi
+
+#--- ssh-agent ---------------------------------------------------------------
+# macOS launchd already wires up SSH_AUTH_SOCK; this is the Linux fallback.
+# Reuses a cached agent across shell sessions instead of spawning a new one
+# per terminal.
+if [ -z "${SSH_AUTH_SOCK:-}" ] && command -v ssh-agent >/dev/null 2>&1; then
+	SSH_AGENT_ENV="${XDG_RUNTIME_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}}/ssh-agent.env"
+	[ -r "${SSH_AGENT_ENV}" ] && . "${SSH_AGENT_ENV}" >/dev/null
+	if ! ssh-add -l >/dev/null 2>&1; then
+		mkdir -p "$(dirname "${SSH_AGENT_ENV}")"
+		ssh-agent -s >"${SSH_AGENT_ENV}"
+		. "${SSH_AGENT_ENV}" >/dev/null
+	fi
+fi
+
+#--- Prompt + integrations ---------------------------------------------------
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
 # bun completions, when installed.
