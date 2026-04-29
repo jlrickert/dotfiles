@@ -13,6 +13,7 @@ assert_file "${HOME}/.bashrc"
 assert_file "${HOME}/.bash_profile"
 assert_file "${HOME}/.profile"
 assert_file "${HOME}/.config/dots/config.yaml"
+assert_file "${HOME}/.config/starship.toml"
 # Real zsh configs live under ~/.config/zsh/.
 assert_file "${HOME}/.config/zsh/zshenv"
 assert_file "${HOME}/.config/zsh/zshrc"
