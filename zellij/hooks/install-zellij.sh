@@ -6,7 +6,7 @@ set -o pipefail
 ZELLIJ_VERSION="${ZELLIJ_VERSION:-0.44.1}"
 
 install_linux() {
-	local arch_raw arch
+	local arch_raw arch url tmp
 	arch_raw="$(uname -m)"
 	case "${arch_raw}" in
 	x86_64 | amd64) arch="x86_64" ;;
@@ -17,10 +17,8 @@ install_linux() {
 		;;
 	esac
 
-	local url tmp
 	url="https://github.com/zellij-org/zellij/releases/download/v${ZELLIJ_VERSION}/zellij-${arch}-unknown-linux-musl.tar.gz"
 	tmp="$(mktemp -d)"
-	trap 'rm -rf "${tmp}"' EXIT
 
 	echo "zellij: downloading ${url}"
 	curl -fsSL "${url}" -o "${tmp}/zellij.tar.gz"
@@ -28,6 +26,7 @@ install_linux() {
 
 	mkdir -p "${HOME}/.local/bin"
 	install -m 0755 "${tmp}/zellij" "${HOME}/.local/bin/zellij"
+	rm -rf "${tmp}"
 }
 
 ensure_zellij_installed() {
