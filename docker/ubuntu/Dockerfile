@@ -1,4 +1,4 @@
-ARG DOTS_VERSION=0.4.0
+ARG DOTS_VERSION=0.6.0
 
 FROM ubuntu:24.04
 
@@ -68,8 +68,6 @@ RUN cd /opt/dotfiles-src \
 RUN dots init --from "file:///opt/dotfiles-src" --path dots-config --name jlrickert \
     && dots install jlrickert/common-shell \
     && dots install jlrickert/bash \
-    && dots install jlrickert/zsh \
-    && dots install jlrickert/zellij \
-    && dots install jlrickert/go
+    && dots install jlrickert/zsh
 
 ENTRYPOINT ["zsh", "-l"]
