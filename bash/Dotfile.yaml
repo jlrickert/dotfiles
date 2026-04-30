@@ -2,7 +2,7 @@
 package:
   name: bash
   description: Bash shell configuration (defers to zsh when available)
-  version: 0.1.1
+  version: 0.1.2
   requires:
     - "@self/common-shell"
   tags:

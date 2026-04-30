@@ -102,3 +102,19 @@ inject_stub() {
 ensure_zsh_installed
 inject_stub "${HOME}/.zshenv" "zsh/zshenv"
 inject_stub "${HOME}/.zshrc" "zsh/zshrc"
+
+# Generate dots completion into the shared completions dir that zsh's
+# fpath/compinit setup already discovers. Mirrors the install pattern used
+# by the zellij package's mux completion. Idempotent: cobra output is
+# deterministic per dots version, so unconditional overwrite is fine.
+install_dots_completion() {
+	if ! command -v dots >/dev/null 2>&1; then
+		echo "zsh: dots not on PATH; skipping completion install" >&2
+		return 0
+	fi
+	local target="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/completions/_dots"
+	mkdir -p "$(dirname "$target")"
+	dots completion zsh >"$target"
+	echo "zsh: wrote $target"
+}
+install_dots_completion

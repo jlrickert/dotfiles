@@ -42,6 +42,14 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_file "${HOME}/.config/zsh/completions/_mux"
 	assert_file "${HOME}/.config/bash/completions/mux.bash"
 fi
+# dots completions are installed by the bash and zsh packages themselves
+# (slim profile + every superset). Sanity-check the head sentinel to catch
+# truncated/empty writes -- cobra V2 bash output starts with a "# bash
+# completion V2" banner; zsh output starts with "#compdef dots".
+assert_file "${HOME}/.config/bash/completions/dots.bash"
+assert_file "${HOME}/.config/zsh/completions/_dots"
+assert_grep "${HOME}/.config/bash/completions/dots.bash" "bash completion V2 for dots"
+assert_grep "${HOME}/.config/zsh/completions/_dots" "#compdef dots"
 # ~/.zshrc and ~/.zshenv are NOT package files -- the install hook injects
 # a marker block that sources ~/.config/zsh/. Verify the block is present.
 assert_grep "${HOME}/.zshrc" "BEGIN dotfiles-zsh"

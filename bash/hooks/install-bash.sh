@@ -55,3 +55,19 @@ Linux)
 	echo "bash: unsupported OS '$(uname -s)'; skipping install." >&2
 	;;
 esac
+
+# Generate dots completion into the shared completions dir that bash/bashrc
+# already auto-discovers. Mirrors the install pattern used by the zellij
+# package's mux completion. Idempotent: cobra output is deterministic per
+# dots version, so unconditional overwrite is fine.
+install_dots_completion() {
+	if ! command -v dots >/dev/null 2>&1; then
+		echo "bash: dots not on PATH; skipping completion install" >&2
+		return 0
+	fi
+	local target="${XDG_CONFIG_HOME:-$HOME/.config}/bash/completions/dots.bash"
+	mkdir -p "$(dirname "$target")"
+	dots completion bash >"$target"
+	echo "bash: wrote $target"
+}
+install_dots_completion
