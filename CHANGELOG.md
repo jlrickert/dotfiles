@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## v0.15.0 - 2026-04-30
+
+
+
+### 🚀 Features
+- **ci:** build multi-arch docker images (amd64 + arm64)
+
+
 ## v0.14.0 - 2026-04-30
 
 
