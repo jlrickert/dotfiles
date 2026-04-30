@@ -1,0 +1,6 @@
+# Static `go env` config. Read by the Go toolchain from $HOME/.config/go/env.
+# PATH-sensitive bits (GOROOT, GOBIN) live in profile.d/go.sh because this
+# file does not expand $HOME or other shell variables.
+GOPRIVATE=github.com/jlrickert/*,gitlab.com/jlrickert/*
+GOPROXY=direct
+CGO_ENABLED=0

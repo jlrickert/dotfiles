@@ -69,6 +69,7 @@ RUN dots init --from "file:///opt/dotfiles-src" --path dots-config --name jlrick
     && dots install jlrickert/common-shell \
     && dots install jlrickert/bash \
     && dots install jlrickert/zsh \
-    && dots install jlrickert/zellij
+    && dots install jlrickert/zellij \
+    && dots install jlrickert/go
 
 ENTRYPOINT ["zsh", "-l"]

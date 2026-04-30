@@ -57,6 +57,10 @@ fi
 # their distro-renamed names.
 assert_cmd batcat
 assert_cmd fdfind
+# go package: toolchain on PATH (via profile.d/go.sh), static go env config.
+assert_cmd go
+assert_file "${HOME}/.config/go/env"
+assert_file "${HOME}/.config/dots/profile.d/go.sh"
 
 assert_shell_loads bash
 assert_shell_loads zsh
