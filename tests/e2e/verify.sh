@@ -54,6 +54,17 @@ assert_grep "${HOME}/.config/zsh/completions/_dots" "#compdef dots"
 # a marker block that sources ~/.config/zsh/. Verify the block is present.
 assert_grep "${HOME}/.zshrc" "BEGIN dotfiles-zsh"
 assert_grep "${HOME}/.zshenv" "BEGIN dotfiles-zsh"
+# History reliability under terminal multiplexers: per-command writes via
+# inc_append_history_time, with SAVEHIST matching HISTSIZE so saves aren't
+# silently truncated. The mkdir in zshrc must create the HISTFILE parent.
+assert_grep "${HOME}/.config/zsh/zshrc" "inc_append_history"
+assert_grep "${HOME}/.config/zsh/zshrc" "SAVEHIST=50000"
+zsh -i -c 'echo ok' >/dev/null 2>&1 || true
+if [ -d "${HOME}/.local/state/zsh" ]; then
+	pass "${HOME}/.local/state/zsh exists (HISTFILE parent)"
+else
+	fail "${HOME}/.local/state/zsh missing (HISTFILE parent not created)"
+fi
 
 assert_cmd starship
 assert_cmd fzf

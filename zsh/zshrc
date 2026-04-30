@@ -9,7 +9,7 @@ mkdir -p "${ZSH_CACHE_DIR}"
 #--- History -----------------------------------------------------------------
 HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 HISTSIZE=50000
-SAVEHIST=10000
+SAVEHIST=50000
 mkdir -p "${HISTFILE%/*}"
 
 setopt extended_history
@@ -18,6 +18,9 @@ setopt hist_ignore_dups
 setopt hist_ignore_space
 setopt hist_verify
 setopt share_history
+# Robustness under zellij/tmux: per-command timestamped writes + fcntl locking.
+setopt inc_append_history_time
+setopt hist_fcntl_lock
 setopt interactivecomments
 
 #--- Directory navigation ----------------------------------------------------

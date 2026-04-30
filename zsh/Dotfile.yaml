@@ -2,7 +2,7 @@
 package:
   name: zsh
   description: Zsh shell configuration (installs zsh if missing)
-  version: 0.1.2
+  version: 0.2.0
   requires:
     - "@self/common-shell"
   tags:
