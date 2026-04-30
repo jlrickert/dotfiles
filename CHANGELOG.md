@@ -26,6 +26,7 @@ All notable changes to this project are documented in this file.
 - resolve keg detection issue by improving KEG_CURRENT assignment
 - **shell:** install starship.toml so theme survives in fresh containers
 - **zellij:** drop EXIT trap that referenced out-of-scope local var
+- **ci:** merge release-publish into release to avoid GITHUB_TOKEN trigger gap
 
 
 ### 🚀 Features
