@@ -2,7 +2,7 @@
 package:
   name: common-shell
   description: Shared POSIX shell environment (PATH, XDG, locale, EDITOR, profile.d drop dir)
-  version: 0.3.0
+  version: 0.3.1
   tags:
     - shell
     - common

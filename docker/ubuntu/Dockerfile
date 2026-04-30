@@ -44,30 +44,43 @@ RUN useradd --create-home --shell /usr/bin/zsh jlrickert \
 
 COPY --chown=jlrickert:jlrickert . /opt/dotfiles-src
 
-USER jlrickert
 WORKDIR /home/jlrickert
 # dots invokes hook scripts via $SHELL (else /bin/sh). On Ubuntu /bin/sh is
 # dash, which chokes on the bash-isms in this repo's install hooks. Pick bash
 # explicitly for the install step.
-ENV SHELL=/bin/bash
+ENV SHELL=/bin/bash \
+    HOME=/home/jlrickert
 
 # `dots init --from file://` reads the committed git tree, not the working
 # directory. Snapshot any uncommitted working-tree state into a local commit
 # inside the container so iterative dev builds pick up edits without
-# requiring a host-side commit. The snapshot lives only in the image.
+# requiring a host-side commit. The snapshot lives only in the image. Run as
+# the jlrickert user so the snapshot commit's git config matches the file
+# ownership set by COPY --chown above.
+USER jlrickert
 RUN cd /opt/dotfiles-src \
     && git config user.email build@dotfiles.local \
     && git config user.name Build \
     && git add -A \
     && (git diff --cached --quiet || git commit -m 'build: snapshot working tree')
 
+# Run as root so install-hook apt-get calls work under qemu-user emulation
+# (multi-arch buildx). Hooks are sudo-free when EUID=0; see hooks/install-*.sh.
 # `dots init --from` registers the source as a tap (named via --name) and
 # installs the package given by --path (here: dots-config). `requires:` is
 # parsed but not auto-resolved by dots 0.4.0, so the rest install in
 # dependency order.
-RUN dots init --from "file:///opt/dotfiles-src" --path dots-config --name jlrickert \
-    && dots install jlrickert/common-shell \
-    && dots install jlrickert/bash \
-    && dots install jlrickert/zsh
+USER root
+# `dots init` clones file:///opt/dotfiles-src via git. Running as root against
+# a worktree owned by uid 1000 (jlrickert) trips git's safe.directory check;
+# whitelist all paths system-wide for this ephemeral build container so both
+# the source clone and any subsequent dots-managed tap clones are trusted.
+RUN git config --system --add safe.directory '*' \
+    && HOME=/home/jlrickert dots init --from "file:///opt/dotfiles-src" --path dots-config --name jlrickert \
+    && HOME=/home/jlrickert dots install jlrickert/common-shell \
+    && HOME=/home/jlrickert dots install jlrickert/bash \
+    && HOME=/home/jlrickert dots install jlrickert/zsh \
+    && chown -R jlrickert:jlrickert /home/jlrickert
 
+USER jlrickert
 ENTRYPOINT ["zsh", "-l"]

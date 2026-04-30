@@ -3,6 +3,16 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+# Run a command as root. When already root (e.g. multi-arch buildx under
+# qemu-user emulation, where setuid sudo is unusable on the nosuid layer),
+# exec directly. Otherwise prefer passwordless sudo. Last resort: fail loudly.
+run_as_root() {
+	if [ "$(id -u)" -eq 0 ]; then "$@"; return; fi
+	if command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then sudo "$@"; return; fi
+	echo "ERROR: need root for: $*" >&2
+	return 1
+}
+
 BEGIN_MARKER="# BEGIN dotfiles-zsh"
 END_MARKER="# END dotfiles-zsh"
 
@@ -30,8 +40,8 @@ ensure_zsh_installed() {
 		fi
 		case "${ID:-}" in
 		debian | ubuntu)
-			sudo apt-get update
-			sudo apt-get install -y zsh
+			run_as_root apt-get update
+			run_as_root apt-get install -y zsh
 			;;
 		*)
 			echo "zsh: unsupported Linux distro '${ID:-unknown}'; install manually." >&2
