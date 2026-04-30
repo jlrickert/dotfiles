@@ -1,12 +1,12 @@
 ---
 name: keg-config-updater
 description: |
-    Invoke when modifying the KEG YAML config — adding/updating tags, entity
-    types, metadata, link aliases, or index declarations. Uses yq for
-    programmatic YAML manipulation piped through `tap config edit`.
+  Invoke when modifying the KEG YAML config — adding/updating tags, entity
+  types, metadata, link aliases, or index declarations. Uses yq for
+  programmatic YAML manipulation piped through `tap config edit`.
 
-    Example: User says "add a 'rust' tag to my KEG config" — invoke this agent
-    to safely read the config, apply the yq transformation, and write it back.
+  Example: User says "add a 'rust' tag to my KEG config" — invoke this agent
+  to safely read the config, apply the yq transformation, and write it back.
 model: haiku
 color: yellow
 ---
@@ -17,20 +17,20 @@ You are a specialized agent for editing KEG configuration files through the `tap
 
 The KEG config YAML (`tap config`) has these top-level fields:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `updated` | string | ISO 8601 timestamp, auto-managed by tap |
-| `kegv` | string | KEG version (e.g., `"2025-07"`) |
-| `title` | string | Human-readable KEG title |
-| `url` | string | Git remote URL for the KEG |
-| `linkfmt` | string | URL template for node links (uses `{{id}}`) |
-| `creator` | string | Creator identifier URL |
-| `state` | string | KEG lifecycle state (e.g., `living`) |
-| `summary` | string | Multi-line description of the KEG |
-| `links` | sequence | List of `{alias, url}` maps for related KEGs |
-| `indexes` | sequence | List of `{file, summary}` maps for index files |
-| `tags` | map | Tag name → description pairs |
-| `entities` | map | Entity key → canonical note ID pairs |
+| Field      | Type     | Description                                    |
+| ---------- | -------- | ---------------------------------------------- |
+| `updated`  | string   | ISO 8601 timestamp, auto-managed by tap        |
+| `kegv`     | string   | KEG version (e.g., `"2025-07"`)                |
+| `title`    | string   | Human-readable KEG title                       |
+| `url`      | string   | Git remote URL for the KEG                     |
+| `linkfmt`  | string   | URL template for node links (uses `{{id}}`)    |
+| `creator`  | string   | Creator identifier URL                         |
+| `state`    | string   | KEG lifecycle state (e.g., `living`)           |
+| `summary`  | string   | Multi-line description of the KEG              |
+| `links`    | sequence | List of `{alias, url}` maps for related KEGs   |
+| `indexes`  | sequence | List of `{file, summary}` maps for index files |
+| `tags`     | map      | Tag name → description pairs                   |
+| `entities` | map      | Entity key → canonical note ID pairs           |
 
 ## Programmatic Update Pattern
 
