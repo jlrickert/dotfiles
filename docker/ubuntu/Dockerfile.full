@@ -1,0 +1,91 @@
+ARG DOTS_VERSION=0.6.0
+
+FROM ubuntu:24.04
+
+ARG DOTS_VERSION
+# TARGETARCH is auto-injected by BuildKit (amd64, arm64, ...). Leave it
+# undefaulted here so the auto value isn't shadowed; fall back to dpkg below.
+ARG TARGETARCH
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=America/Chicago
+
+# tzdata reads $TZ during postinst under noninteractive frontend, so it
+# configures /etc/localtime and /etc/timezone without dpkg-reconfigure.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        bash \
+        build-essential \
+        ca-certificates \
+        curl \
+        git \
+        locales \
+        sudo \
+        tzdata \
+        vim \
+        zsh \
+    && rm -rf /var/lib/apt/lists/* \
+    && locale-gen en_US.UTF-8
+
+ENV LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8
+
+RUN set -eux; \
+    arch="${TARGETARCH:-$(dpkg --print-architecture)}"; \
+    tmp="$(mktemp -d)"; \
+    curl -fsSL "https://github.com/jlrickert/dots/releases/download/v${DOTS_VERSION}/dots_${DOTS_VERSION}_linux_${arch}.tar.gz" -o "${tmp}/dots.tgz"; \
+    tar -xzf "${tmp}/dots.tgz" -C "${tmp}"; \
+    install -m 0755 "${tmp}/dots" /usr/local/bin/dots; \
+    rm -rf "${tmp}"; \
+    dots --version
+
+RUN useradd --create-home --shell /usr/bin/zsh jlrickert \
+    && echo 'jlrickert ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/jlrickert \
+    && chmod 0440 /etc/sudoers.d/jlrickert
+
+COPY --chown=jlrickert:jlrickert . /opt/dotfiles-src
+
+WORKDIR /home/jlrickert
+# dots invokes hook scripts via $SHELL (else /bin/sh). On Ubuntu /bin/sh is
+# dash, which chokes on the bash-isms in this repo's install hooks. Pick bash
+# explicitly for the install step.
+ENV SHELL=/bin/bash \
+    HOME=/home/jlrickert
+
+# `dots init --from file://` reads the committed git tree, not the working
+# directory. Snapshot any uncommitted working-tree state into a local commit
+# inside the container so iterative dev builds pick up edits without
+# requiring a host-side commit. The snapshot lives only in the image. Run as
+# the jlrickert user so the snapshot commit's git config matches the file
+# ownership set by COPY --chown above.
+USER jlrickert
+RUN cd /opt/dotfiles-src \
+    && git config user.email build@dotfiles.local \
+    && git config user.name Build \
+    && git add -A \
+    && (git diff --cached --quiet || git commit -m 'build: snapshot working tree')
+
+# Run as root so install-hook apt-get calls work under qemu-user emulation
+# (multi-arch buildx). Hooks are sudo-free when EUID=0; see hooks/install-*.sh.
+# `dots init --from` registers the source as a tap (named via --name) and
+# installs the package given by --path (here: dots-config). `requires:` is
+# parsed but not auto-resolved by dots 0.4.0, so the rest install in
+# dependency order.
+#
+# Full image: installs every package the slim image installs, plus zellij and
+# go. Verify suite asserts the additional artifacts when VERIFY_PROFILE=full.
+USER root
+# `dots init` clones file:///opt/dotfiles-src via git. Running as root against
+# a worktree owned by uid 1000 (jlrickert) trips git's safe.directory check;
+# whitelist all paths system-wide for this ephemeral build container so both
+# the source clone and any subsequent dots-managed tap clones are trusted.
+RUN git config --system --add safe.directory '*' \
+    && HOME=/home/jlrickert dots init --from "file:///opt/dotfiles-src" --path dots-config --name jlrickert \
+    && HOME=/home/jlrickert dots install jlrickert/common-shell \
+    && HOME=/home/jlrickert dots install jlrickert/bash \
+    && HOME=/home/jlrickert dots install jlrickert/zsh \
+    && HOME=/home/jlrickert dots install jlrickert/zellij \
+    && HOME=/home/jlrickert dots install jlrickert/go \
+    && chown -R jlrickert:jlrickert /home/jlrickert
+
+USER jlrickert
+ENTRYPOINT ["zsh", "-l"]

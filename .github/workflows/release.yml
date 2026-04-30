@@ -127,7 +127,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push Ubuntu image
+      - name: Build and push Ubuntu image (slim)
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -138,3 +138,15 @@ jobs:
             ghcr.io/jlrickert/dotfiles:${{ steps.version.outputs.version }}
             ghcr.io/jlrickert/dotfiles:${{ steps.tags.outputs.major_minor }}
             ghcr.io/jlrickert/dotfiles:latest
+
+      - name: Build and push Ubuntu image (full)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          file: docker/ubuntu/Dockerfile.full
+          push: true
+          tags: |
+            ghcr.io/jlrickert/dotfiles:${{ steps.version.outputs.version }}-full
+            ghcr.io/jlrickert/dotfiles:${{ steps.tags.outputs.major_minor }}-full
+            ghcr.io/jlrickert/dotfiles:full

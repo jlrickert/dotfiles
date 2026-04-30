@@ -7,6 +7,11 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 
 cd "${HOME}"
 
+# VERIFY_PROFILE selects which package set was installed. "slim" (default)
+# = common-shell + bash + zsh; "full" = slim + zellij + go. Assertions for
+# packages outside the active profile are skipped.
+VERIFY_PROFILE="${VERIFY_PROFILE:-slim}"
+
 # Source the shared profile so package-contributed PATH bits are visible
 # (~/.local/bin, ~/.local/share/go/bin via profile.d/go.sh, brew/bun, etc.).
 # This also exercises the profile.d drop-dir loop.
@@ -20,19 +25,23 @@ assert_file "${HOME}/.bash_profile"
 assert_file "${HOME}/.profile"
 assert_file "${HOME}/.config/dots/config.yaml"
 assert_file "${HOME}/.config/starship.toml"
-assert_file "${HOME}/.config/zellij/config.kdl"
-assert_cmd zellij
-assert_cmd mux
-assert_cmd set-zellij-colorscheme
+if [ "${VERIFY_PROFILE}" = full ]; then
+	assert_file "${HOME}/.config/zellij/config.kdl"
+	assert_cmd zellij
+	assert_cmd mux
+	assert_cmd set-zellij-colorscheme
+fi
 # Real zsh configs live under ~/.config/zsh/.
 assert_file "${HOME}/.config/zsh/zshenv"
 assert_file "${HOME}/.config/zsh/zshrc"
 assert_file "${HOME}/.config/zsh/lib/termsupport.zsh"
 assert_file "${HOME}/.config/zsh/lib/zsh-vi-mode.zsh"
 # Per-tool completions are installed by their packages into shared dirs that
-# bash and zsh discover automatically.
-assert_file "${HOME}/.config/zsh/completions/_mux"
-assert_file "${HOME}/.config/bash/completions/mux.bash"
+# bash and zsh discover automatically. mux ships with the zellij package.
+if [ "${VERIFY_PROFILE}" = full ]; then
+	assert_file "${HOME}/.config/zsh/completions/_mux"
+	assert_file "${HOME}/.config/bash/completions/mux.bash"
+fi
 # ~/.zshrc and ~/.zshenv are NOT package files -- the install hook injects
 # a marker block that sources ~/.config/zsh/. Verify the block is present.
 assert_grep "${HOME}/.zshrc" "BEGIN dotfiles-zsh"
@@ -58,9 +67,11 @@ fi
 assert_cmd batcat
 assert_cmd fdfind
 # go package: toolchain on PATH (via profile.d/go.sh), static go env config.
-assert_cmd go
-assert_file "${HOME}/.config/go/env"
-assert_file "${HOME}/.config/dots/profile.d/go.sh"
+if [ "${VERIFY_PROFILE}" = full ]; then
+	assert_cmd go
+	assert_file "${HOME}/.config/go/env"
+	assert_file "${HOME}/.config/dots/profile.d/go.sh"
+fi
 
 assert_shell_loads bash
 assert_shell_loads zsh

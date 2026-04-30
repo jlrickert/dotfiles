@@ -20,27 +20,45 @@ tasks:
       - docker compose build
 
   build:ubuntu:
-    desc: Build the Ubuntu prebuilt image
+    desc: Build the Ubuntu prebuilt image (slim — common-shell, bash, zsh)
     cmds:
       - docker compose build ubuntu
+
+  build:ubuntu:full:
+    desc: Build the Ubuntu prebuilt image (full — slim + zellij + go)
+    cmds:
+      - docker compose build ubuntu-full
 
   test:
     desc: Build and run end-to-end verification for all variants
     deps: [build]
     cmds:
       - docker compose run --rm ubuntu-test
+      - docker compose run --rm ubuntu-full-test
 
   test:ubuntu:
-    desc: Run end-to-end verification for the Ubuntu variant
+    desc: Run end-to-end verification for the Ubuntu slim variant
     deps: [build:ubuntu]
     cmds:
       - docker compose run --rm ubuntu-test
 
+  test:ubuntu:full:
+    desc: Run end-to-end verification for the Ubuntu full variant
+    deps: [build:ubuntu:full]
+    cmds:
+      - docker compose run --rm ubuntu-full-test
+
   shell:ubuntu:
-    desc: Drop into an interactive shell in the Ubuntu prebuilt image
+    desc: Drop into an interactive shell in the Ubuntu slim image
     deps: [build:ubuntu]
     cmds:
       - docker compose run --rm ubuntu
+
+  shell:ubuntu:full:
+    desc: Drop into an interactive shell in the Ubuntu full image
+    deps: [build:ubuntu:full]
+    cmds:
+      - docker compose run --rm ubuntu-full
 
   login:
     desc: Log in to ghcr.io (requires a PAT with write:packages scope)
@@ -54,15 +72,24 @@ tasks:
     cmds:
       - task: _check-clean
       - task: push:ubuntu
+      - task: push:ubuntu:full
 
   push:ubuntu:
-    desc: Push the Ubuntu variant tags (:ubuntu, :ubuntu-<sha>) to ghcr.io for local pre-release validation; release tags (:vX.Y.Z, :X.Y, :latest) are CI's responsibility (.github/workflows/release-publish.yml)
+    desc: Push the Ubuntu slim variant tags (:ubuntu, :ubuntu-<sha>) to ghcr.io for local pre-release validation; release tags (:vX.Y.Z, :X.Y, :latest) are CI's responsibility (.github/workflows/release-publish.yml)
     deps: [build:ubuntu]
     # CI owns :latest, :vX.Y.Z, :X.Y — do not push them from here
     cmds:
       - task: _check-clean
       - docker push {{.REGISTRY}}:ubuntu
       - docker push {{.REGISTRY}}:ubuntu-{{.DOTFILES_REF}}
+
+  push:ubuntu:full:
+    desc: Push the Ubuntu full variant tags (:ubuntu-full, :ubuntu-full-<sha>) to ghcr.io for local pre-release validation
+    deps: [build:ubuntu:full]
+    cmds:
+      - task: _check-clean
+      - docker push {{.REGISTRY}}:ubuntu-full
+      - docker push {{.REGISTRY}}:ubuntu-full-{{.DOTFILES_REF}}
 
   clean:
     desc: Remove images, compose state, and BuildKit cache (next build is from scratch)

@@ -16,3 +16,20 @@ services:
     extends:
       service: ubuntu
     entrypoint: ["/opt/dotfiles-src/tests/e2e/verify.sh"]
+
+  ubuntu-full:
+    image: dotfiles:ubuntu-full
+    build:
+      context: .
+      dockerfile: docker/ubuntu/Dockerfile.full
+      tags:
+        - dotfiles:ubuntu-full
+        - ghcr.io/jlrickert/dotfiles:ubuntu-full
+        - ghcr.io/jlrickert/dotfiles:ubuntu-full-${DOTFILES_REF:-latest}
+
+  ubuntu-full-test:
+    extends:
+      service: ubuntu-full
+    environment:
+      VERIFY_PROFILE: full
+    entrypoint: ["/opt/dotfiles-src/tests/e2e/verify.sh"]
