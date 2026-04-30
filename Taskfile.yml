@@ -56,8 +56,9 @@ tasks:
       - task: push:ubuntu
 
   push:ubuntu:
-    desc: Push the Ubuntu variant tags to ghcr.io
+    desc: Push the Ubuntu variant tags (:ubuntu, :ubuntu-<sha>) to ghcr.io for local pre-release validation; release tags (:vX.Y.Z, :X.Y, :latest) are CI's responsibility (.github/workflows/release-publish.yml)
     deps: [build:ubuntu]
+    # CI owns :latest, :vX.Y.Z, :X.Y — do not push them from here
     cmds:
       - task: _check-clean
       - docker push {{.REGISTRY}}:ubuntu

@@ -1,0 +1,105 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version override (e.g. v1.2.3). Leave empty to auto-detect via git-cliff."
+        required: false
+        default: ""
+permissions:
+  contents: write
+concurrency: release
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Ensure tags are available
+        run: git fetch --force --tags
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version via git-cliff
+        id: cliff
+        continue-on-error: true
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --bumped-version
+
+      - name: Resolve release version
+        id: version
+        env:
+          CLIFF_OUTPUT: ${{ steps.cliff.outputs.content }}
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          DETECTED_VERSION="$(echo "$CLIFF_OUTPUT" | tr -d '[:space:]')"
+          if [ -z "$DETECTED_VERSION" ]; then
+            LAST_TAG="$(git tag --list 'v*' --sort=-version:refname | head -n1)"
+            if [[ -z "$LAST_TAG" ]]; then
+              DETECTED_VERSION="v0.1.0"
+              echo "git-cliff returned empty; no prior tags found. Falling back to $DETECTED_VERSION"
+            elif [[ "$LAST_TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              MAJOR="${BASH_REMATCH[1]}"
+              MINOR="${BASH_REMATCH[2]}"
+              PATCH="${BASH_REMATCH[3]}"
+              DETECTED_VERSION="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+              echo "git-cliff returned empty; falling back to patch bump from $LAST_TAG -> $DETECTED_VERSION"
+            else
+              echo "Error: latest tag '$LAST_TAG' is not semver (vX.Y.Z). Set workflow input 'version'." >&2
+              exit 1
+            fi
+          fi
+
+          VERSION="$INPUT_VERSION"
+          if [ -z "$VERSION" ]; then
+            VERSION="$DETECTED_VERSION"
+          fi
+          if [ -z "$VERSION" ]; then
+            echo "Error: could not determine version. git-cliff returned nothing (no prior tags?). Use the version override input." >&2
+            exit 1
+          fi
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: resolved version '$VERSION' is not semver (vX.Y.Z)." >&2
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null; then
+            echo "Error: tag '$VERSION' already exists. Set workflow input 'version' to a new value." >&2
+            exit 1
+          fi
+
+          echo "Releasing $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Generate changelog
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --tag ${{ steps.version.outputs.version }} -o CHANGELOG.md
+
+      - name: Commit release on main
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git add CHANGELOG.md
+          if git diff --staged --quiet; then
+            echo "Error: no release artifacts staged. Expected CHANGELOG to change." >&2
+            exit 1
+          fi
+          git commit -m "chore: release $VERSION"
+          git push origin main
+
+      - name: Tag and push
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git tag -a "$VERSION" -m "$VERSION"
+          git push origin "refs/tags/$VERSION"
