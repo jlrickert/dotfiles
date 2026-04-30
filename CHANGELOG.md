@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented in this file.
 
+## v0.17.0 - 2026-04-30
+
+
+
+### 🚀 Features
+- **shell:** install dots completions in bash and zsh packages
+- make zsh history reliable under terminal multiplexers
+
+
 ## v0.16.0 - 2026-04-30
 
 
