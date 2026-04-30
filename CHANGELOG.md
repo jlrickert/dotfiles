@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## v0.16.0 - 2026-04-30
+
+
+
+### 🐛 Bug Fixes
+- **docker:** make ubuntu image build cleanly under qemu (multi-arch)
+
+
+### 🚀 Features
+- **docker:** add full ubuntu image variant (zellij + go)
+
+
 ## v0.15.0 - 2026-04-30
 
 
