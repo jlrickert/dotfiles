@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
 package:
   name: common-shell
-  description: Shared POSIX shell environment (PATH, XDG, locale)
-  version: 0.1.0
+  description: Shared POSIX shell environment (PATH, XDG, locale, EDITOR, profile.d drop dir)
+  version: 0.3.0
   tags:
     - shell
     - common

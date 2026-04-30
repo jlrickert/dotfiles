@@ -7,10 +7,11 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 
 cd "${HOME}"
 
-# Verify scripts and ~/.local/bin-installed tools (zellij on linux,
-# set-zellij-colorscheme via @bin) need this on PATH; the test entrypoint
-# does not source a login shell.
-export PATH="${HOME}/.local/bin:${PATH}"
+# Source the shared profile so package-contributed PATH bits are visible
+# (~/.local/bin, ~/.local/share/go/bin via profile.d/go.sh, brew/bun, etc.).
+# This also exercises the profile.d drop-dir loop.
+# shellcheck source=/dev/null
+[ -r "${HOME}/.profile" ] && . "${HOME}/.profile"
 
 # link_strategy=copy (set in dots-config/config.yaml), so installed
 # dotfiles land as regular files.
@@ -40,6 +41,18 @@ assert_grep "${HOME}/.zshenv" "BEGIN dotfiles-zsh"
 assert_cmd starship
 assert_cmd fzf
 assert_cmd rg
+# common-shell exports EDITOR / VISUAL from a preference chain (nvim, vim,
+# nano). The Ubuntu image installs vim, so EDITOR should resolve to 'vim'.
+if [ -n "${EDITOR:-}" ]; then
+	pass "EDITOR set to $EDITOR"
+else
+	fail "EDITOR not set"
+fi
+if [ -n "${VISUAL:-}" ]; then
+	pass "VISUAL set to $VISUAL"
+else
+	fail "VISUAL not set"
+fi
 # Debian/Ubuntu rename these binaries; the install hook installs them under
 # their distro-renamed names.
 assert_cmd batcat

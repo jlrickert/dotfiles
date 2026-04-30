@@ -70,3 +70,30 @@ if [ -d "$HOME/.bun" ]; then
 	esac
 	export PATH
 fi
+
+# Default editor: prefer nvim, then vim, then nano. Pre-existing EDITOR /
+# VISUAL win so per-machine overrides stay intact.
+for _ed in nvim vim nano; do
+	if command -v "$_ed" >/dev/null 2>&1; then
+		: "${EDITOR:=$_ed}"
+		: "${VISUAL:=$_ed}"
+		break
+	fi
+done
+unset _ed
+[ -n "${EDITOR:-}" ] && export EDITOR
+[ -n "${VISUAL:-}" ] && export VISUAL
+
+# Per-package env fragments. Packages drop *.sh files here via their
+# Dotfile.yaml links: entries. Must be POSIX-portable. Runs last so
+# fragments can react to brew/bun PATH already being set. Fragments that
+# want to override EDITOR/VISUAL must use plain assignment, not the
+# `: "${VAR:=...}"` idiom, since the EDITOR block above already populated
+# them.
+_profile_d="${XDG_CONFIG_HOME:-$HOME/.config}/dots/profile.d"
+if [ -d "$_profile_d" ]; then
+	for _f in "$_profile_d"/*.sh; do
+		[ -r "$_f" ] && . "$_f"
+	done
+fi
+unset _profile_d _f
