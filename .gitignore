@@ -11,3 +11,6 @@ vault.key
 home/.config/gh/hosts.yml
 tmp
 .env
+deno.lock
+*.tsbuildinfo
+.idea/

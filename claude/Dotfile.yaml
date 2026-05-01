@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: claude
+  description: Claude Code CLI install
+  version: 0.1.0
+  tags:
+    - ai
+    - claude
+  platforms:
+    - darwin
+    - linux
+links: {}
+hooks:
+  post_install: hooks/install-claude.sh

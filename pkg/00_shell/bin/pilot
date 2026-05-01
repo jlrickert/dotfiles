@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-OUTPUT=$(pagent --role shell-filter "$@")
-(
-	echo "BEGIN PILOT OUTPUT"
-	echo "${OUTPUT}"
-	echo "END PILOT OUTPUT"
-)

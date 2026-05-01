@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: rust
+  description: Rust toolchain via rustup, with CARGO_HOME/RUSTUP_HOME under XDG_DATA_HOME
+  version: 0.1.0
+  requires:
+    - "@self/common-shell"
+  tags:
+    - language
+    - rust
+  platforms:
+    - darwin
+    - linux
+links:
+  profile.d/rust.sh: "@config/dots/profile.d/rust.sh"
+hooks:
+  post_install: hooks/install-rust.sh

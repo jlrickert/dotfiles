@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: homebrew
+  description: Homebrew package manager (darwin only) + brew shellenv loader
+  version: 0.1.0
+  tags:
+    - package-manager
+  platforms:
+    - darwin
+links: {}
+# Links and hooks live under platform.darwin so installers on linux silently
+# noop instead of failing. Mirrors the launchd-plist pattern in zellij/.
+platform:
+  darwin:
+    links:
+      profile.d/homebrew.sh: "@config/dots/profile.d/homebrew.sh"
+    hooks:
+      post_install: hooks/install-homebrew.sh

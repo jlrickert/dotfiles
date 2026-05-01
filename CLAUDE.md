@@ -8,11 +8,9 @@ This repo is being migrated from two legacy layouts to the `dots` package manage
 
 | Status | Directories | Notes |
 | --- | --- | --- |
-| **Current** (dots packages) | `dots-config/`, `bash/`, `zsh/`, `common-shell/`, `zellij/`, `go/` | Each has a `Dotfile.yaml` manifest plus config files |
-| **Legacy — do not extend** | `pkg/` (numbered: `00_shell/`, `10_bash/`, `80_editor/`, …), `packages/` (npm-style: `brew/`, `chezmoi/`, `neovim/`), `pkg.bak/` | Migration targets per keg:dev/889. `pkg.bak/` is slated for deletion. |
-| **Under audit** | `src/`, `tmp/`, `node_modules/`, parts of `lib/` and `bin/` | See keg:dev/889 Phase 2 |
+| **Current** (dots packages) | `dots-config/`, `bash/`, `zsh/`, `common-shell/`, `zellij/`, `go/`, `claude/`, `codex/`, `editor/`, `knut/`, `rust/`, `homebrew/`, `bun/` | Each has a `Dotfile.yaml` manifest plus config files |
 
-When adding new functionality, create a new top-level `<name>/` package directory with a `Dotfile.yaml`. Don't touch `pkg/`, `pkg.bak/`, or `packages/`.
+When adding new functionality, create a new top-level `<name>/` package directory with a `Dotfile.yaml`.
 
 ## Dots package shape
 
@@ -56,13 +54,14 @@ task clean             # remove images + BuildKit cache (next build is from scra
 
 The verify script (`tests/e2e/verify.sh`) is the source of truth for "did the install succeed" — it asserts symlinks/files land at expected paths, CLI tools resolve, both bash and zsh load cleanly, and the zsh marker block is in place. When you add a new package, extend `verify.sh` with assertions for its outputs.
 
-## Docker layout: two Dockerfiles
+## Docker layout
 
-There are two Dockerfiles — `Dockerfile` / `Dockerfile.base` at the root and `docker/ubuntu/Dockerfile`. **`docker-compose.yml` and `Taskfile.yml` use `docker/ubuntu/Dockerfile`** — that's the live one. The root Dockerfiles are part of the reconciliation work in keg:dev/889 and may be removed; don't edit them assuming they ship.
+End-to-end testing uses two images, both built from `docker/ubuntu/`:
 
-## Bootstrap entry points (unresolved)
+- `docker/ubuntu/Dockerfile` — slim image (common-shell + bash + zsh)
+- `docker/ubuntu/Dockerfile.full` — full image (slim + zellij + go)
 
-Three bootstrap entry points exist: `setup.sh`, `bin/dotsh`, and the `dots` CLI itself. The README says `dots init …`. keg:dev/889 Phase 4 calls out that the README needs to declare the chosen one — until that's resolved, **don't add a fourth entry point**. New install logic goes in a package's `hooks/` script, not in another root-level bootstrap.
+`docker-compose.yml` and `Taskfile.yml` reference these directly. There are no root-level Dockerfiles.
 
 ## Pending rename
 

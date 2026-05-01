@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: bun
+  description: Bun JS runtime (brew on darwin, curl installer on linux)
+  version: 0.1.0
+  requires:
+    - "@self/common-shell"
+  tags:
+    - language
+    - javascript
+    - bun
+  platforms:
+    - darwin
+    - linux
+links:
+  profile.d/bun.sh: "@config/dots/profile.d/bun.sh"
+hooks:
+  post_install: hooks/install-bun.sh

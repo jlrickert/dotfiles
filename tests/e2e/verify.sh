@@ -24,6 +24,16 @@ assert_file "${HOME}/.bashrc"
 assert_file "${HOME}/.bash_profile"
 assert_file "${HOME}/.profile"
 assert_file "${HOME}/.config/dots/config.yaml"
+# Phase-3 dev/889 migrations: claude/, codex/, editor/, knut/, rust/,
+# homebrew/, bun/. The Ubuntu test images don't install these packages
+# yet (see docker/ubuntu/Dockerfile), so we only assert the manifests
+# exist in the source tree — proof the migration landed without trying
+# to verify runtime side effects. Add runtime assertions here once the
+# image installs them.
+DOTFILES_SRC="${DOTFILES_SRC:-/opt/dotfiles-src}"
+for pkg in claude codex editor knut rust homebrew bun; do
+	assert_file "${DOTFILES_SRC}/${pkg}/Dotfile.yaml"
+done
 assert_file "${HOME}/.config/starship.toml"
 if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_file "${HOME}/.config/zellij/config.kdl"

@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-ROLE=code
-buf=""
-if [ ! -t 0 ]; then
-	buf=$'\n'$(cat)
-fi
-
-gpt --raw --temp 0.3 --topp 0.85 --topk 20 --role "${ROLE}" "$@" <<<"${buf}"
