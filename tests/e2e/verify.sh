@@ -31,7 +31,7 @@ assert_file "${HOME}/.config/dots/config.yaml"
 # to verify runtime side effects. Add runtime assertions here once the
 # image installs them.
 DOTFILES_SRC="${DOTFILES_SRC:-/opt/dotfiles-src}"
-for pkg in claude codex editor knut rust homebrew bun; do
+for pkg in claude codex editor knut rust homebrew bun python; do
 	assert_file "${DOTFILES_SRC}/${pkg}/Dotfile.yaml"
 done
 assert_file "${HOME}/.config/starship.toml"
@@ -100,6 +100,17 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_cmd go
 	assert_file "${HOME}/.config/go/env"
 	assert_file "${HOME}/.config/dots/profile.d/go.sh"
+	# python package: python3 (>=3.11 floor) and pip3 on PATH. The package
+	# has no user config to link, so only runtime assertions are exercised.
+	assert_cmd python3
+	if python3 -c 'import sys; assert sys.version_info >= (3, 11)' >/dev/null 2>&1; then
+		pass "python3 >= 3.11 ($(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'))"
+	else
+		fail "python3 below 3.11 floor"
+	fi
+	assert_cmd pip3
+	assert_cmd uv
+
 fi
 
 assert_shell_loads bash

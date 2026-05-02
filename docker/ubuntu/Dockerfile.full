@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
         git \
         locales \
+        python3 \
+        python3-pip \
         sudo \
         tzdata \
         vim \
@@ -71,8 +73,9 @@ RUN cd /opt/dotfiles-src \
 # parsed but not auto-resolved by dots 0.4.0, so the rest install in
 # dependency order.
 #
-# Full image: installs every package the slim image installs, plus zellij and
-# go. Verify suite asserts the additional artifacts when VERIFY_PROFILE=full.
+# Full image: installs every package the slim image installs, plus python,
+# clone, zellij, editor, rust, and go. Verify suite asserts the additional
+# artifacts when VERIFY_PROFILE=full.
 USER root
 # `dots init` clones file:///opt/dotfiles-src via git. Running as root against
 # a worktree owned by uid 1000 (jlrickert) trips git's safe.directory check;
@@ -83,6 +86,7 @@ RUN git config --system --add safe.directory '*' \
     && HOME=/home/jlrickert dots install jlrickert/common-shell \
     && HOME=/home/jlrickert dots install jlrickert/bash \
     && HOME=/home/jlrickert dots install jlrickert/zsh \
+    && HOME=/home/jlrickert dots install jlrickert/python \
     && HOME=/home/jlrickert dots install jlrickert/zellij \
     && HOME=/home/jlrickert dots install jlrickert/go \
     && chown -R jlrickert:jlrickert /home/jlrickert

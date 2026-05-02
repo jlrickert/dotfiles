@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
         git \
         locales \
+        python3 \
+        python3-pip \
         sudo \
         tzdata \
         vim \
