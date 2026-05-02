@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: clone
+  description: Supply-chain-gated git clone helpers (gh-clone, bb-clone) for GitHub and Bitbucket
+  version: 0.1.0
+  requires:
+    - "@self/common-shell"
+    - "@self/python"
+  tags:
+    - git
+    - clone
+    - supply-chain
+  platforms:
+    - darwin
+    - linux
+
+links:
+  bin/gh-clone: "@bin/gh-clone"
+  bin/bb-clone: "@bin/bb-clone"
+  bin/_clone_lib.py: "@bin/_clone_lib.py"
+
+hooks:
+  post_install: hooks/install-clone.sh

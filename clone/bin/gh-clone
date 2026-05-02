@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""Clone a GitHub repo into $REPOS/github.com/<owner>/<name> and run the
+post-clone supply-chain gate."""
+
+import argparse
+import os
+import shutil
+import subprocess
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+import _clone_lib as lib  # noqa: E402
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        prog="gh-clone",
+        description="Clone a GitHub repo and run a post-clone gate.",
+    )
+    parser.add_argument(
+        "repo",
+        help="<owner>/<name>, full URL (https/ssh), or bare <name> "
+             "(uses $GITUSER, falls back to $USER).",
+    )
+    args = parser.parse_args(argv)
+
+    spec = args.repo
+    repos_root = lib.repos_root()
+
+    # file:// is fixture-only — used by tests/e2e/verify.sh.
+    if spec.startswith("file://"):
+        owner, name = lib.parse_file_url(spec)
+        clone_url = spec
+    else:
+        try:
+            owner, name, clone_url = lib.parse_github(spec)
+        except ValueError as exc:
+            print(f"gh-clone: {exc}", file=sys.stderr)
+            return 2
+
+    target = repos_root / "github.com" / owner / name
+    if target.exists():
+        print(f"gh-clone: already cloned at {target}", file=sys.stderr)
+        return 0
+    target.parent.mkdir(parents=True, exist_ok=True)
+
+    # Prefer `gh repo clone` when available — it picks up GitHub auth from the
+    # user's gh session. The legacy shell `clone` script passed
+    # `--recurse-submodule` (singular), which `git clone` silently ignored;
+    # we use the correct plural here. See
+    # ~/.local/state/dotfiles/pkg/00_shell/bin/clone for the legacy reference.
+    if shutil.which("gh") and not spec.startswith("file://"):
+        cmd = [
+            "gh", "repo", "clone", f"{owner}/{name}", str(target),
+            "--", "--recurse-submodules",
+        ]
+    else:
+        cmd = [
+            "git", "clone", "--recurse-submodules", clone_url, str(target),
+        ]
+
+    rc = subprocess.call(cmd)
+    if rc != 0:
+        # Surface the underlying clone failure verbatim — do not run the gate
+        # against an incomplete or absent worktree.
+        return rc
+
+    return lib.run_post_clone_gate(target, owner, name, repos_root)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

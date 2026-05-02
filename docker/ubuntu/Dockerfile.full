@@ -87,6 +87,7 @@ RUN git config --system --add safe.directory '*' \
     && HOME=/home/jlrickert dots install jlrickert/bash \
     && HOME=/home/jlrickert dots install jlrickert/zsh \
     && HOME=/home/jlrickert dots install jlrickert/python \
+    && HOME=/home/jlrickert dots install jlrickert/clone \
     && HOME=/home/jlrickert dots install jlrickert/zellij \
     && HOME=/home/jlrickert dots install jlrickert/go \
     && chown -R jlrickert:jlrickert /home/jlrickert

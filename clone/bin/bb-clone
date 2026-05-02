@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+"""Clone a Bitbucket repo into $REPOS/bitbucket.org/<workspace>/<repo> and
+run the post-clone supply-chain gate."""
+
+import argparse
+import os
+import subprocess
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+import _clone_lib as lib  # noqa: E402
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        prog="bb-clone",
+        description="Clone a Bitbucket repo and run a post-clone gate.",
+    )
+    parser.add_argument(
+        "repo",
+        help="<workspace>/<repo>, full URL (ssh/https), or bare <repo> "
+             "(requires $BB_WORKSPACE).",
+    )
+    args = parser.parse_args(argv)
+
+    spec = args.repo
+    repos_root = lib.repos_root()
+
+    if spec.startswith("file://"):
+        owner, name = lib.parse_file_url(spec)
+        clone_url = spec
+    else:
+        try:
+            owner, name, clone_url = lib.parse_bitbucket(spec)
+        except ValueError as exc:
+            print(f"bb-clone: {exc}", file=sys.stderr)
+            return 2
+
+    target = repos_root / "bitbucket.org" / owner / name
+    if target.exists():
+        print(f"bb-clone: already cloned at {target}", file=sys.stderr)
+        return 0
+    target.parent.mkdir(parents=True, exist_ok=True)
+
+    # No `gh` equivalent on Bitbucket; just `git clone`. No auth precheck —
+    # if the user's SSH key isn't loaded, git surfaces the failure directly.
+    cmd = ["git", "clone", "--recurse-submodules", clone_url, str(target)]
+    rc = subprocess.call(cmd)
+    if rc != 0:
+        return rc
+
+    return lib.run_post_clone_gate(target, owner, name, repos_root)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

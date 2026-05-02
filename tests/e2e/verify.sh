@@ -31,7 +31,7 @@ assert_file "${HOME}/.config/dots/config.yaml"
 # to verify runtime side effects. Add runtime assertions here once the
 # image installs them.
 DOTFILES_SRC="${DOTFILES_SRC:-/opt/dotfiles-src}"
-for pkg in claude codex editor knut rust homebrew bun python; do
+for pkg in claude codex editor knut rust homebrew bun python clone; do
 	assert_file "${DOTFILES_SRC}/${pkg}/Dotfile.yaml"
 done
 assert_file "${HOME}/.config/starship.toml"
@@ -111,6 +111,78 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_cmd pip3
 	assert_cmd uv
 
+	# clone package ships gh-clone / bb-clone (Python). Depends on python
+	# (uv, python3 >= 3.11), so the runtime asserts live in the full profile
+	# block. The shared library _clone_lib.py is imported by both
+	# entry-points, so we don't assert it as a command -- only the
+	# entry-points are exec'd.
+	assert_cmd gh-clone
+	assert_cmd bb-clone
+	# Legacy cleanup: clone/hooks/install-clone.sh removes the pre-dots
+	# `clone` helper.
+	if [ ! -e "${HOME}/.local/state/dotfiles/pkg/00_shell/bin/clone" ]; then
+		pass "legacy clone helper absent"
+	else
+		fail "legacy clone helper still present at ${HOME}/.local/state/dotfiles/pkg/00_shell/bin/clone"
+	fi
+
+	# Exercise the post-clone gate end-to-end with a local fixture. Using
+	# file:// keeps this hermetic — no network, no real GitHub. _clone_lib
+	# treats file:// URLs as owner='local'.
+	CLONE_TEST_TMP="$(mktemp -d)"
+	export REPOS="${CLONE_TEST_TMP}/repos"
+	mkdir -p "${REPOS}"
+
+	# Clean fixture: empty git repo with a single README.
+	CLEAN_SRC="${CLONE_TEST_TMP}/clean-repo"
+	mkdir -p "${CLEAN_SRC}"
+	(
+		cd "${CLEAN_SRC}"
+		git init -q
+		git config user.email "verify@example.invalid"
+		git config user.name "verify"
+		echo "clean" >README
+		git add README
+		git commit -q -m "init"
+	)
+	if gh-clone "file://${CLEAN_SRC}" >/dev/null 2>&1; then
+		pass "gh-clone succeeded on clean fixture"
+	else
+		fail "gh-clone failed on clean fixture"
+	fi
+	assert_file "${REPOS}/github.com/local/clean-repo/README"
+
+	# Dirty fixture: same shape but with a .claude/settings.json (block-set
+	# detector). Must be quarantined and gh-clone must exit non-zero.
+	DIRTY_SRC="${CLONE_TEST_TMP}/dirty-repo"
+	mkdir -p "${DIRTY_SRC}/.claude"
+	(
+		cd "${DIRTY_SRC}"
+		git init -q
+		git config user.email "verify@example.invalid"
+		git config user.name "verify"
+		echo "{}" >.claude/settings.json
+		echo "dirty" >README
+		git add .
+		git commit -q -m "init"
+	)
+	if gh-clone "file://${DIRTY_SRC}" >/dev/null 2>&1; then
+		fail "gh-clone exited 0 on dirty fixture (expected non-zero)"
+	else
+		pass "gh-clone exited non-zero on dirty fixture"
+	fi
+	if [ -d "${REPOS}/.untrusted/local/dirty-repo" ]; then
+		pass "dirty fixture quarantined under .untrusted/local/dirty-repo"
+	else
+		fail "dirty fixture not at ${REPOS}/.untrusted/local/dirty-repo"
+	fi
+	if [ ! -e "${REPOS}/github.com/local/dirty-repo" ]; then
+		pass "dirty fixture absent from canonical github.com path"
+	else
+		fail "dirty fixture still at canonical github.com/local/dirty-repo"
+	fi
+	unset REPOS
+	rm -rf "${CLONE_TEST_TMP}"
 fi
 
 assert_shell_loads bash
