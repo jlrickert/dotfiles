@@ -79,6 +79,8 @@ fi
 assert_cmd starship
 assert_cmd fzf
 assert_cmd rg
+assert_cmd jq
+assert_cmd yq
 # common-shell exports EDITOR / VISUAL from a preference chain (nvim, vim,
 # nano). The Ubuntu image installs vim, so EDITOR should resolve to 'vim'.
 if [ -n "${EDITOR:-}" ]; then
