@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## v0.18.0 - 2026-05-02
+
+
+
+### 🚀 Features
+- migrate dotfiles to dots packages and remove legacy installer trees
+- add python dots package with python3 + uv runtime
+- **clone:** add gh-clone/bb-clone with supply-chain safety gate
+- add jq and yq to common-shell toolkit
+- add wezterm dots package with GUI terminal config
+
+
 ## v0.17.0 - 2026-04-30
 
 
