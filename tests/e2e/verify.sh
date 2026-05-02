@@ -31,7 +31,7 @@ assert_file "${HOME}/.config/dots/config.yaml"
 # to verify runtime side effects. Add runtime assertions here once the
 # image installs them.
 DOTFILES_SRC="${DOTFILES_SRC:-/opt/dotfiles-src}"
-for pkg in claude codex editor knut rust homebrew bun python clone; do
+for pkg in claude codex editor knut rust homebrew bun wezterm python clone; do
 	assert_file "${DOTFILES_SRC}/${pkg}/Dotfile.yaml"
 done
 assert_file "${HOME}/.config/starship.toml"

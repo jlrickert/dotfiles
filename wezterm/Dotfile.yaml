@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: wezterm
+  description: WezTerm GUI terminal config + brew install on darwin
+  version: 0.1.0
+  tags:
+    - terminal
+    - wezterm
+  platforms:
+    - darwin
+    - linux
+links:
+  wezterm.lua: "@config/wezterm/wezterm.lua"
+hooks:
+  post_install: hooks/install-wezterm.sh
