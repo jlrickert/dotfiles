@@ -8,7 +8,7 @@ This repo is being migrated from two legacy layouts to the `dots` package manage
 
 | Status | Directories | Notes |
 | --- | --- | --- |
-| **Current** (dots packages) | `dots-config/`, `bash/`, `zsh/`, `common-shell/`, `zellij/`, `go/`, `claude/`, `codex/`, `editor/`, `knut/`, `rust/`, `homebrew/`, `bun/`, `wezterm/` | Each has a `Dotfile.yaml` manifest plus config files |
+| **Current** (dots packages) | `dots-config/`, `bash/`, `zsh/`, `common-shell/`, `zellij/`, `go/`, `claude/`, `codex/`, `editor/`, `knut/`, `rust/`, `homebrew/`, `javascript/`, `wezterm/` | Each has a `Dotfile.yaml` manifest plus config files |
 
 When adding new functionality, create a new top-level `<name>/` package directory with a `Dotfile.yaml`.
 

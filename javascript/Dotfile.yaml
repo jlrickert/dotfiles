@@ -1,18 +1,23 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
 package:
-  name: bun
-  description: Bun JS runtime (brew on darwin, curl installer on linux)
-  version: 0.2.0
+  name: javascript
+  description: JavaScript/TypeScript runtimes (bun, fnm-managed node, deno)
+  version: 0.1.0
   requires:
     - "@self/common-shell"
   tags:
     - language
     - javascript
+    - typescript
+    - node
     - bun
+    - deno
   platforms:
     - darwin
     - linux
 links:
   profile.d/bun.sh: "@config/dots/user/profile.d/bun.sh"
+  profile.d/node.sh: "@config/dots/user/profile.d/node.sh"
+  profile.d/deno.sh: "@config/dots/user/profile.d/deno.sh"
 hooks:
-  post_install: hooks/install-bun.sh
+  post_install: hooks/install-javascript.sh

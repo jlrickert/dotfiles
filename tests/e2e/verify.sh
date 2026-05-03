@@ -25,13 +25,13 @@ assert_file "${HOME}/.bash_profile"
 assert_file "${HOME}/.profile"
 assert_file "${HOME}/.config/dots/config.yaml"
 # Phase-3 dev/889 migrations: claude/, codex/, editor/, knut/, rust/,
-# homebrew/, bun/. The Ubuntu test images don't install these packages
+# homebrew/, javascript/. The Ubuntu test images don't install these packages
 # yet (see docker/ubuntu/Dockerfile), so we only assert the manifests
 # exist in the source tree — proof the migration landed without trying
 # to verify runtime side effects. Add runtime assertions here once the
 # image installs them.
 DOTFILES_SRC="${DOTFILES_SRC:-/opt/dotfiles-src}"
-for pkg in claude codex editor knut rust homebrew bun wezterm python clone; do
+for pkg in claude codex editor knut rust homebrew javascript wezterm python clone; do
 	assert_file "${DOTFILES_SRC}/${pkg}/Dotfile.yaml"
 done
 assert_file "${HOME}/.config/starship.toml"
@@ -156,6 +156,8 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_file "${HOME}/.config/go/env"
 	assert_file "${HOME}/.config/dots/user/profile.d/go.sh"
 	assert_file "${HOME}/.config/dots/user/profile.d/bun.sh"
+	assert_file "${HOME}/.config/dots/user/profile.d/node.sh"
+	assert_file "${HOME}/.config/dots/user/profile.d/deno.sh"
 	assert_file "${HOME}/.config/dots/user/profile.d/rust.sh"
 	# homebrew.sh is darwin-only; skip on linux test image.
 	if [ "$(uname -s)" = Darwin ]; then
@@ -171,6 +173,14 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	fi
 	assert_cmd pip3
 	assert_cmd uv
+
+	# javascript package: bun + fnm + deno. fnm is the version manager;
+	# node itself is installed via `fnm install` once a default version is
+	# selected, so we don't assert `node` here -- only the runtimes the
+	# package directly installs.
+	assert_cmd bun
+	assert_cmd fnm
+	assert_cmd deno
 
 	# editor package: cmd-edit (binary name `ed`). darwin uses the brew tap
 	# formula; linux pulls the upstream tarball release. The bare assert_cmd
