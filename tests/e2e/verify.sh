@@ -173,8 +173,17 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_cmd uv
 
 	# editor package: cmd-edit (binary name `ed`). darwin uses the brew tap
-	# formula; linux pulls the upstream tarball release.
+	# formula; linux pulls the upstream tarball release. The bare assert_cmd
+	# only confirms an `ed` binary is on PATH -- both cmd-edit and the GNU
+	# line editor satisfy that. The follow-up `--version` probe distinguishes
+	# the two: cmd-edit implements --version; GNU ed does not. If the probe
+	# fails, the wrong `ed` is winning the PATH lookup.
 	assert_cmd ed
+	if ed --version >/dev/null 2>&1; then
+		pass "ed --version succeeds (cmd-edit, not GNU ed)"
+	else
+		fail "ed --version failed (GNU ed shadowing cmd-edit on PATH?)"
+	fi
 
 	# clone package ships gh-clone / bb-clone (Python). Depends on python
 	# (uv, python3 >= 3.11), so the runtime asserts live in the full profile
