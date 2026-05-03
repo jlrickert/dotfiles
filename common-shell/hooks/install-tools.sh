@@ -64,7 +64,7 @@ Linux)
 		run_as_root apt-get update
 		# Debian/Ubuntu renames bat -> batcat and fd -> fdfind. Users can
 		# symlink or alias in their rc files if they want the short names.
-		run_as_root apt-get install -y bat fd-find fzf ripgrep curl jq
+		run_as_root apt-get install -y bat fd-find fzf ripgrep curl jq unzip
 		install_starship_curl
 		install_yq_curl
 		;;
