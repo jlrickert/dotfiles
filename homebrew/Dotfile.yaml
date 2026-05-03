@@ -2,12 +2,11 @@
 package:
   name: homebrew
   description: Homebrew package manager (darwin only) + brew shellenv loader
-  version: 0.2.0
+  version: 0.2.1
   tags:
     - package-manager
   platforms:
     - darwin
-links: {}
 # Links and hooks live under platform.darwin so installers on linux silently
 # noop instead of failing. Mirrors the launchd-plist pattern in zellij/.
 platform:
