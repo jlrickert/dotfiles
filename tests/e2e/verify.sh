@@ -64,6 +64,59 @@ assert_grep "${HOME}/.config/zsh/completions/_dots" "#compdef dots"
 # a marker block that sources ~/.config/zsh/. Verify the block is present.
 assert_grep "${HOME}/.zshrc" "BEGIN dotfiles-zsh"
 assert_grep "${HOME}/.zshenv" "BEGIN dotfiles-zsh"
+# Layer-1 marker pattern: ~/.profile must contain the dotfiles-profile block.
+assert_grep "${HOME}/.profile" "BEGIN dotfiles-profile"
+# Real Layer-1 file lives under ~/.config/dots/user/.
+assert_file "${HOME}/.config/dots/user/profile"
+# Layering contract: Layer-1 and Layer-2 files must NOT source another
+# shell's interactive rc. The detector sweeps every Layer-1/Layer-2 file
+# (~/.profile, ~/.config/dots/user/profile, and every drop-in under
+# ~/.config/dots/user/profile.d/*.sh) for actual sourcing forms — `.` or
+# `source` at line start (after optional whitespace) followed by something
+# ending in .bashrc or .zshrc. Comment mentions and incidental string
+# matches are excluded by the leading-anchor and the (\.|source) form.
+LAYERING_FILES="${HOME}/.profile ${HOME}/.config/dots/user/profile"
+LAYERING_HIT=0
+LAYERING_HIT_FILES=""
+for layering_file in ${LAYERING_FILES}; do
+	[ -f "${layering_file}" ] || continue
+	if grep -E '^[[:space:]]*(\.|source)[[:space:]]+.*(\.bashrc|\.zshrc)' "${layering_file}" >/dev/null 2>&1; then
+		LAYERING_HIT=1
+		LAYERING_HIT_FILES="${LAYERING_HIT_FILES} ${layering_file}"
+	fi
+done
+# POSIX no-glob-match guard: if the glob matches nothing, "$1" expands to
+# the literal pattern, so the [ -e "$1" ] check ensures we only iterate
+# real files.
+set -- "${HOME}/.config/dots/user/profile.d/"*.sh
+if [ -e "$1" ]; then
+	for layering_file in "$@"; do
+		if grep -E '^[[:space:]]*(\.|source)[[:space:]]+.*(\.bashrc|\.zshrc)' "${layering_file}" >/dev/null 2>&1; then
+			LAYERING_HIT=1
+			LAYERING_HIT_FILES="${LAYERING_HIT_FILES} ${layering_file}"
+		fi
+	done
+fi
+if [ "${LAYERING_HIT}" -eq 0 ]; then
+	pass "layering contract: no Layer-1/2 file sources an interactive rc"
+else
+	fail "layering contract violated; cross-sourcing in:${LAYERING_HIT_FILES}"
+fi
+# Layer-1 env must reach non-interactive bash and zsh. ${HOME}/.local/bin
+# is the canonical test target — common-shell/profile prepends it.
+for sh in bash zsh; do
+	if "${sh}" -c 'case ":$PATH:" in *":'"${HOME}"'/.local/bin:"*) exit 0 ;; esac; exit 1'; then
+		pass "${sh} non-interactive PATH contains ${HOME}/.local/bin"
+	else
+		fail "${sh} non-interactive PATH missing ${HOME}/.local/bin"
+	fi
+done
+# zshenv-tier HISTFILE: must export to non-interactive zsh subshells.
+if zsh -c '[ -n "${HISTFILE:-}" ]' 2>/dev/null; then
+	pass "HISTFILE visible to non-interactive zsh"
+else
+	fail "HISTFILE not exported from zshenv"
+fi
 # History reliability under terminal multiplexers: per-command writes via
 # inc_append_history_time, with SAVEHIST matching HISTSIZE so saves aren't
 # silently truncated. The mkdir in zshrc must create the HISTFILE parent.
@@ -101,7 +154,13 @@ assert_cmd fdfind
 if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_cmd go
 	assert_file "${HOME}/.config/go/env"
-	assert_file "${HOME}/.config/dots/profile.d/go.sh"
+	assert_file "${HOME}/.config/dots/user/profile.d/go.sh"
+	assert_file "${HOME}/.config/dots/user/profile.d/bun.sh"
+	assert_file "${HOME}/.config/dots/user/profile.d/rust.sh"
+	# homebrew.sh is darwin-only; skip on linux test image.
+	if [ "$(uname -s)" = Darwin ]; then
+		assert_file "${HOME}/.config/dots/user/profile.d/homebrew.sh"
+	fi
 	# python package: python3 (>=3.11 floor) and pip3 on PATH. The package
 	# has no user config to link, so only runtime assertions are exercised.
 	assert_cmd python3
@@ -112,6 +171,10 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	fi
 	assert_cmd pip3
 	assert_cmd uv
+
+	# editor package: cmd-edit (binary name `ed`). darwin uses the brew tap
+	# formula; linux pulls the upstream tarball release.
+	assert_cmd ed
 
 	# clone package ships gh-clone / bb-clone (Python). Depends on python
 	# (uv, python3 >= 3.11), so the runtime asserts live in the full profile

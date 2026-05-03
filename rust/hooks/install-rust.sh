@@ -26,7 +26,8 @@ echo "rust: downloading rustup-init from https://sh.rustup.rs"
 curl --proto '=https' --tlsv1.2 -fsSL https://sh.rustup.rs -o "${tmp}/rustup-init.sh"
 
 # -y: non-interactive defaults. --no-modify-path: don't append to ~/.profile;
-# we manage PATH via dots-config/profile.d so the install stays idempotent.
+# we manage PATH via the rust package's profile.d/rust.sh fragment, sourced
+# from common-shell's profile, so the install stays idempotent.
 echo "rust: running rustup-init -y --no-modify-path"
 bash "${tmp}/rustup-init.sh" -y --no-modify-path
 

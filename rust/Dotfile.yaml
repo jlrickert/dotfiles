@@ -2,7 +2,7 @@
 package:
   name: rust
   description: Rust toolchain via rustup, with CARGO_HOME/RUSTUP_HOME under XDG_DATA_HOME
-  version: 0.1.0
+  version: 0.2.0
   requires:
     - "@self/common-shell"
   tags:
@@ -12,6 +12,6 @@ package:
     - darwin
     - linux
 links:
-  profile.d/rust.sh: "@config/dots/profile.d/rust.sh"
+  profile.d/rust.sh: "@config/dots/user/profile.d/rust.sh"
 hooks:
   post_install: hooks/install-rust.sh

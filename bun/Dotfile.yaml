@@ -2,7 +2,7 @@
 package:
   name: bun
   description: Bun JS runtime (brew on darwin, curl installer on linux)
-  version: 0.1.0
+  version: 0.2.0
   requires:
     - "@self/common-shell"
   tags:
@@ -13,6 +13,6 @@ package:
     - darwin
     - linux
 links:
-  profile.d/bun.sh: "@config/dots/profile.d/bun.sh"
+  profile.d/bun.sh: "@config/dots/user/profile.d/bun.sh"
 hooks:
   post_install: hooks/install-bun.sh

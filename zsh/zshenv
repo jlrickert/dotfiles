@@ -2,3 +2,10 @@
 # Keep this lightweight -- shared env only.
 
 [ -r "$HOME/.profile" ] && . "$HOME/.profile"
+
+#--- History (env tier; needed by atuin and any non-interactive reader) ----
+HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
+HISTSIZE=50000
+SAVEHIST=50000
+mkdir -p "${HISTFILE%/*}"
+export HISTFILE HISTSIZE SAVEHIST

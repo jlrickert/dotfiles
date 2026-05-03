@@ -7,11 +7,8 @@ ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 mkdir -p "${ZSH_CACHE_DIR}"
 
 #--- History -----------------------------------------------------------------
-HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
-HISTSIZE=50000
-SAVEHIST=50000
-mkdir -p "${HISTFILE%/*}"
-
+# HISTFILE / HISTSIZE / SAVEHIST live in zshenv so atuin and any non-
+# interactive zsh subshell see them. Interactive-only setopts stay here.
 setopt extended_history
 setopt hist_expire_dups_first
 setopt hist_ignore_dups
@@ -33,6 +30,7 @@ alias -- -='cd -'
 alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
+alias -g ......='../../../../..'
 
 #--- ls aliases --------------------------------------------------------------
 alias ls='ls --color=auto 2>/dev/null || ls'
@@ -72,6 +70,8 @@ zstyle ':completion:*' special-dirs true
 zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+zstyle ':completion:*:*:*:*:processes' command "ps -u $USERNAME -o pid,user,comm -w -w"
+zstyle ':completion:*' format '%F{yellow}%d%f'
 zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
 zstyle ':completion:*:*:*:users' ignored-patterns \
 	adm amanda apache at avahi avahi-autoipd beaglidx bin cacti canna \
@@ -99,6 +99,18 @@ bindkey '^k' up-line-or-history
 bindkey '^j' down-line-or-history
 bindkey '^r' history-incremental-search-backward
 bindkey ' ' magic-space
+
+# Show red dots while Tab completion is computing. Disable line-wrap around
+# the dot sequence so it doesn't push the prompt onto the next row.
+expand-or-complete-with-dots() {
+	printf '\e[?7l%s\e[?7h' $'\e[31m…\e[0m'
+	zle expand-or-complete
+	zle redisplay
+}
+zle -N expand-or-complete-with-dots
+bindkey -M emacs "^I" expand-or-complete-with-dots
+bindkey -M viins "^I" expand-or-complete-with-dots
+bindkey -M vicmd "^I" expand-or-complete-with-dots
 
 # Backspace + delete-forward across keymaps.
 bindkey -M emacs '^?' backward-delete-char

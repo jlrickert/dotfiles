@@ -77,3 +77,74 @@ Linux)
 	echo "common-shell: unsupported OS '$(uname -s)'; skipping." >&2
 	;;
 esac
+
+#--- ~/.profile marker injection -------------------------------------------
+# ~/.profile is NOT in `links:` for the same reason ~/.zshrc isn't: third-
+# party installers (rustup, nvm, deno, conda, etc.) append to it, and a
+# replacing copy would clobber those appends. Instead the real POSIX env
+# lives at ~/.config/dots/user/profile and a marker block in ~/.profile
+# sources it.
+
+PROFILE_BEGIN_MARKER="# BEGIN dotfiles-profile"
+PROFILE_END_MARKER="# END dotfiles-profile"
+
+render_profile_block() {
+	cat <<'EOF'
+# BEGIN dotfiles-profile
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/dots/user/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/dots/user/profile"
+# END dotfiles-profile
+EOF
+}
+
+inject_profile_stub() {
+	local target="${HOME}/.profile"
+	local block
+	block="$(render_profile_block)"
+
+	if [ ! -f "${target}" ]; then
+		printf '%s\n' "${block}" >"${target}"
+		echo "common-shell: created ${target} with dotfiles marker"
+		return 0
+	fi
+
+	# Pre-scan for marker corruption before any rewrite. Two failure modes
+	# the awk splice cannot handle safely:
+	#   1) Multiple BEGIN/END markers — the awk would rewrite each block
+	#      and produce duplicates, so the Layer-1 file gets sourced twice.
+	#   2) Mismatched BEGIN/END counts — implies an unterminated BEGIN
+	#      whose tail (often third-party installer appends) would be
+	#      silently dropped. Refuse and let the user reconcile by hand.
+	# `|| true` keeps the count assignment alive when grep finds zero
+	# matches under `set -o errexit`.
+	local begin_count end_count
+	begin_count=$(grep -cF "${PROFILE_BEGIN_MARKER}" "${target}" || true)
+	end_count=$(grep -cF "${PROFILE_END_MARKER}" "${target}" || true)
+
+	if [ "${begin_count}" -gt 1 ] || [ "${end_count}" -gt 1 ]; then
+		echo "common-shell: ${target} contains multiple dotfiles-profile markers (${begin_count} BEGIN, ${end_count} END); refusing to splice. Clean up by hand and re-run." >&2
+		return 1
+	fi
+	if [ "${begin_count}" != "${end_count}" ]; then
+		echo "common-shell: ${target} has unmatched dotfiles-profile markers (${begin_count} BEGIN, ${end_count} END); refusing to splice. Clean up by hand and re-run." >&2
+		return 1
+	fi
+
+	if grep -qF "${PROFILE_BEGIN_MARKER}" "${target}"; then
+		local tmp
+		tmp="$(mktemp)"
+		BLOCK="${block}" awk \
+			-v begin="${PROFILE_BEGIN_MARKER}" \
+			-v end="${PROFILE_END_MARKER}" '
+			$0 == begin { print ENVIRON["BLOCK"]; in_block=1; next }
+			$0 == end && in_block { in_block=0; next }
+			!in_block { print }
+		' "${target}" >"${tmp}"
+		mv "${tmp}" "${target}"
+		echo "common-shell: refreshed dotfiles marker in ${target}"
+	else
+		printf '\n%s\n' "${block}" >>"${target}"
+		echo "common-shell: appended dotfiles marker to ${target}"
+	fi
+}
+
+inject_profile_stub

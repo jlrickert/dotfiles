@@ -2,7 +2,7 @@
 package:
   name: common-shell
   description: Shared POSIX shell environment (PATH, XDG, locale, EDITOR, profile.d drop dir)
-  version: 0.4.0
+  version: 0.5.0
   tags:
     - shell
     - common
@@ -11,7 +11,7 @@ package:
     - linux
 
 links:
-  profile: "@home/.profile"
+  profile: "@config/dots/user/profile"
   starship.toml: "@config/starship.toml"
 
 hooks:

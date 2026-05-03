@@ -2,7 +2,7 @@
 package:
   name: go
   description: Go toolchain (go env config + PATH bits, brew on darwin, tarball on linux)
-  version: 0.1.0
+  version: 0.2.0
   requires:
     - "@self/common-shell"
   tags:
@@ -14,7 +14,7 @@ package:
 
 links:
   env: "@config/go/env"
-  profile.d/go.sh: "@config/dots/profile.d/go.sh"
+  profile.d/go.sh: "@config/dots/user/profile.d/go.sh"
 
 hooks:
   post_install: hooks/install-go.sh

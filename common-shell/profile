@@ -1,3 +1,25 @@
+# ---------------------------------------------------------------------------
+# Layering contract (architectural; do not source across layers):
+#
+#   Layer 1 — POSIX env. THIS FILE (installed at ~/.config/dots/user/profile,
+#             sourced via marker block in ~/.profile). Sourced by every login
+#             shell, by zsh's .zshenv, and by non-interactive POSIX subshells.
+#             MUST be POSIX sh. MUST be idempotent on PATH.
+#
+#   Layer 2 — Per-package POSIX env fragments. ~/.config/dots/user/profile.d/*.sh
+#             is sourced from the bottom of this file. Packages drop env
+#             fragments here via their Dotfile.yaml `links:` entries.
+#
+#   Layer 3 — Per-shell interactive rc. bash/bashrc and zsh/zshrc own their
+#             own interactive setup. NEVER source another shell's rc from
+#             this layer or from Layer 2.
+#
+# Forbidden: a Layer-1 or Layer-2 file sourcing ~/.bashrc, ~/.zshrc, or any
+# interactive rc. Doing so leaks bash-only completions into zsh and vice
+# versa. Cross-shell exec (e.g. bash_profile -> zsh as login shell) is fine
+# — that is policy, not sourcing.
+# ---------------------------------------------------------------------------
+
 # Shared POSIX login profile. Sourced by bash (via .bash_profile) and by
 # any other POSIX shell started as a login shell. zsh does not source this
 # directly -- zsh reads .zshenv/.zprofile instead.
@@ -84,13 +106,13 @@ unset _ed
 [ -n "${EDITOR:-}" ] && export EDITOR
 [ -n "${VISUAL:-}" ] && export VISUAL
 
-# Per-package env fragments. Packages drop *.sh files here via their
-# Dotfile.yaml links: entries. Must be POSIX-portable. Runs last so
-# fragments can react to brew/bun PATH already being set. Fragments that
-# want to override EDITOR/VISUAL must use plain assignment, not the
-# `: "${VAR:=...}"` idiom, since the EDITOR block above already populated
-# them.
-_profile_d="${XDG_CONFIG_HOME:-$HOME/.config}/dots/profile.d"
+# Per-package env fragments (Layer 2). Packages drop *.sh files at
+# ~/.config/dots/user/profile.d/ via their Dotfile.yaml links: entries.
+# Must be POSIX-portable. Runs last so fragments can react to brew/bun
+# PATH already being set. Fragments that want to override EDITOR/VISUAL
+# must use plain assignment, not the `: "${VAR:=...}"` idiom, since the
+# EDITOR block above already populated them.
+_profile_d="${XDG_CONFIG_HOME:-$HOME/.config}/dots/user/profile.d"
 if [ -d "$_profile_d" ]; then
 	for _f in "$_profile_d"/*.sh; do
 		[ -r "$_f" ] && . "$_f"

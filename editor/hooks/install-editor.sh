@@ -43,6 +43,8 @@ else
 		case "${ID:-}" in
 		debian | ubuntu)
 			echo "editor: installing neovim via PPA on ${ID}"
+			run_as_root apt-get update
+			run_as_root apt-get install -y software-properties-common
 			run_as_root add-apt-repository ppa:neovim-ppa/unstable -y
 			run_as_root apt-get update
 			run_as_root apt-get install -y neovim
@@ -81,22 +83,58 @@ else
 	echo "editor: ${KICKSTART_DIR} exists but is not a git checkout; leaving alone."
 fi
 
-# --- 3. cmd-edit (jlrickert/formulae/edit) ---
-# Provided as a brew formula. Linux release pipeline is broken upstream;
-# warn and skip rather than fail so the rest of the install completes.
+# --- 3. cmd-edit (jlrickert/cmd-edit, binary name `ed`) ---
+# darwin → brew tap formula (also installs shell completions).
+# linux  → upstream tarball release; binary lands at /usr/local/bin/ed.
+# Path-based idempotent skip on linux because the system ships a /usr/bin/ed
+# (classic line editor) that would shadow a `command -v ed` check.
+CMD_EDIT_REPO="jlrickert/cmd-edit"
+
 case "$(uname -s)" in
 Darwin)
-	if command -v edit >/dev/null 2>&1; then
-		echo "editor: cmd-edit already installed at $(command -v edit)."
+	if command -v ed >/dev/null 2>&1 && ed --version >/dev/null 2>&1; then
+		echo "editor: cmd-edit already installed at $(command -v ed)."
 	elif ! command -v brew >/dev/null 2>&1; then
 		echo "editor: brew missing; skipping cmd-edit." >&2
 	else
-		echo "editor: installing jlrickert/formulae/edit via brew"
-		brew install jlrickert/formulae/edit
+		echo "editor: installing jlrickert/formulae/cmd-edit via brew"
+		brew install jlrickert/formulae/cmd-edit
 	fi
 	;;
 Linux)
-	echo "editor: cmd-edit linux release pipeline is currently broken; skipping."
+	if [ -x /usr/local/bin/ed ] && /usr/local/bin/ed --version >/dev/null 2>&1; then
+		echo "editor: cmd-edit already installed at /usr/local/bin/ed."
+	else
+		ed_arch=""
+		case "$(uname -m)" in
+		x86_64) ed_arch=amd64 ;;
+		aarch64 | arm64) ed_arch=arm64 ;;
+		*)
+			echo "editor: unsupported arch '$(uname -m)' for cmd-edit; skipping." >&2
+			;;
+		esac
+		if [ -n "${ed_arch}" ]; then
+			# Resolve the latest release tag via the redirect target of
+			# /releases/latest. Pure curl + sed; no jq dependency.
+			ed_version=$(curl -fsSLI -o /dev/null -w '%{url_effective}' \
+				"https://github.com/${CMD_EDIT_REPO}/releases/latest" |
+				sed 's|.*/tag/v||' | tr -d '\r\n')
+			if [ -z "${ed_version}" ]; then
+				echo "editor: could not resolve latest cmd-edit version; skipping." >&2
+			else
+				ed_tmp=$(mktemp -d)
+				ed_url="https://github.com/${CMD_EDIT_REPO}/releases/download/v${ed_version}/ed_${ed_version}_linux_${ed_arch}.tar.gz"
+				echo "editor: downloading cmd-edit v${ed_version} (${ed_arch})"
+				if curl -fsSL "${ed_url}" -o "${ed_tmp}/ed.tar.gz"; then
+					tar -xzf "${ed_tmp}/ed.tar.gz" -C "${ed_tmp}"
+					run_as_root install -m 0755 "${ed_tmp}/ed" /usr/local/bin/ed
+				else
+					echo "editor: cmd-edit download failed; skipping." >&2
+				fi
+				rm -rf "${ed_tmp}"
+			fi
+		fi
+	fi
 	;;
 *)
 	echo "editor: cmd-edit unsupported on '$(uname -s)'; skipping."
