@@ -2,6 +2,28 @@
 
 All notable changes to this project are documented in this file.
 
+## v0.19.0 - 2026-05-04
+
+
+
+### 🐛 Bug Fixes
+- add unzip to common-shell apt install list
+- install neovim from upstream tarball pinned to a recent release
+
+
+### 🚀 Features
+- harden dots package installs across fresh and full-image bootstraps
+- replace bun package with a unified javascript runtime package
+
+
+### 🚜 Refactor
+- drop empty top-level links stub from homebrew manifest
+
+
+### 🧪 Testing
+- probe ed --version to confirm cmd-edit owns the PATH
+
+
 ## v0.18.0 - 2026-05-02
 
 
