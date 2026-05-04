@@ -93,12 +93,14 @@ if [ -d "$HOME/.bun" ]; then
 	export PATH
 fi
 
-# Default editor: prefer nvim, then vim, then nano. Pre-existing EDITOR /
-# VISUAL win so per-machine overrides stay intact.
+# Default editor: prefer nvim, then vim, then nano. Force-assign rather
+# than `:=` because nix-darwin's /etc/zshenv hard-exports EDITOR=nano
+# before ~/.zshenv runs, and the "set if unset" idiom couldn't displace
+# it. Per-machine overrides go in profile.d/ (see Layer 2 below).
 for _ed in nvim vim nano; do
 	if command -v "$_ed" >/dev/null 2>&1; then
-		: "${EDITOR:=$_ed}"
-		: "${VISUAL:=$_ed}"
+		EDITOR="$_ed"
+		VISUAL="$_ed"
 		break
 	fi
 done
