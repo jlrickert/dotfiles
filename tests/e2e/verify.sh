@@ -195,6 +195,35 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 		fail "ed --version failed (GNU ed shadowing cmd-edit on PATH?)"
 	fi
 
+	# editor package: nvim. We install upstream tarball v0.12.x on Linux
+	# (jlrickert/kickstart.nvim targets 0.12+ APIs); the PPA build is too
+	# old. Floor at major=0, minor>=12. Same shape as the python3 >= 3.11
+	# probe above: capture (major, minor), bail with informative fail if the
+	# version line doesn't parse, otherwise compare with shell arithmetic.
+	assert_cmd nvim
+	nvim_version_line="$(nvim --version 2>/dev/null | head -n1)"
+	# "NVIM v0.12.2" → "0.12.2" → major=0 minor=12.
+	nvim_dotted="$(printf '%s' "${nvim_version_line}" | awk '{print $2}' | sed 's/^v//')"
+	nvim_major="$(printf '%s' "${nvim_dotted}" | cut -d. -f1)"
+	nvim_minor="$(printf '%s' "${nvim_dotted}" | cut -d. -f2)"
+	if [ -n "${nvim_major}" ] && [ -n "${nvim_minor}" ] &&
+		[ "${nvim_major}" -eq 0 ] 2>/dev/null && [ "${nvim_minor}" -ge 12 ] 2>/dev/null; then
+		pass "nvim >= 0.12 (${nvim_dotted})"
+	elif [ -n "${nvim_major}" ] && [ "${nvim_major}" -ge 1 ] 2>/dev/null; then
+		# Future-proofing: any 1.x release is also >= 0.12.
+		pass "nvim >= 0.12 (${nvim_dotted})"
+	else
+		fail "nvim below 0.12 floor (${nvim_version_line:-unparseable})"
+	fi
+	# Headless smoke: load lua, print, quit. Catches a broken runtime tree
+	# (e.g. tarball cp that missed share/nvim/runtime/) that --version alone
+	# wouldn't notice.
+	if nvim --headless "+lua print('ok')" +qall >/dev/null 2>&1; then
+		pass "nvim --headless lua smoke"
+	else
+		fail "nvim --headless lua smoke failed"
+	fi
+
 	# clone package ships gh-clone / bb-clone (Python). Depends on python
 	# (uv, python3 >= 3.11), so the runtime asserts live in the full profile
 	# block. The shared library _clone_lib.py is imported by both

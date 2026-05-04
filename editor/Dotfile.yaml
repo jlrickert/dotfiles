@@ -2,7 +2,7 @@
 package:
   name: editor
   description: Neovim (kickstart.nvim) plus the cmd-edit launcher (ed)
-  version: 0.2.0
+  version: 0.3.0
   tags:
     - editor
     - neovim

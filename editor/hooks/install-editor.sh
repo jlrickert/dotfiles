@@ -19,11 +19,36 @@ run_as_root() {
 
 # --- 1. Ensure neovim is installed ---
 # darwin → brew (assumed present, hard-fail if not).
-# debian/ubuntu → neovim-ppa/unstable for a recent enough nvim for kickstart.
+# debian/ubuntu → upstream release tarball pinned to NVIM_VERSION. The PPA
+# (neovim-ppa/unstable) ships builds older than what jlrickert/kickstart.nvim
+# targets, so we bypass apt entirely on Linux and install the static binary
+# under /usr/local. Pin matches the user's macOS Homebrew nvim so kickstart
+# behaves identically across hosts.
 # everything else → warn and skip; user can install manually.
+NVIM_VERSION="0.12.2"
+
+# Compare two dotted version strings ("0.12.2"). Returns 0 iff $1 >= $2.
+# Pure shell — sort -V is GNU coreutils and present on every supported host
+# (macOS ships a BSD sort that lacks -V; we only call this on Linux).
+nvim_version_ge() {
+	[ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
+}
+
+nvim_needs_install=1
 if command -v nvim >/dev/null 2>&1; then
-	echo "editor: nvim already installed at $(command -v nvim)."
-else
+	# nvim --version → "NVIM v0.9.5\n..." on the PPA build, "NVIM v0.12.2\n..."
+	# on upstream. Strip the leading "v" so nvim_version_ge gets a clean
+	# dotted triple to compare against NVIM_VERSION.
+	nvim_current="$(nvim --version 2>/dev/null | head -n1 | awk '{print $2}' | sed 's/^v//')"
+	if [ -n "${nvim_current}" ] && nvim_version_ge "${nvim_current}" "${NVIM_VERSION}"; then
+		echo "editor: nvim ${nvim_current} already installed at $(command -v nvim) (>= ${NVIM_VERSION})."
+		nvim_needs_install=0
+	else
+		echo "editor: nvim ${nvim_current:-unknown} below floor ${NVIM_VERSION}; reinstalling."
+	fi
+fi
+
+if [ "${nvim_needs_install}" -eq 1 ]; then
 	case "$(uname -s)" in
 	Darwin)
 		if ! command -v brew >/dev/null 2>&1; then
@@ -42,12 +67,41 @@ else
 		fi
 		case "${ID:-}" in
 		debian | ubuntu)
-			echo "editor: installing neovim via PPA on ${ID}"
-			run_as_root apt-get update
-			run_as_root apt-get install -y software-properties-common
-			run_as_root add-apt-repository ppa:neovim-ppa/unstable -y
-			run_as_root apt-get update
-			run_as_root apt-get install -y neovim
+			nvim_arch=""
+			case "$(uname -m)" in
+			x86_64) nvim_arch=x86_64 ;;
+			aarch64 | arm64) nvim_arch=arm64 ;;
+			*)
+				echo "editor: unsupported arch '$(uname -m)' for upstream nvim tarball; skipping." >&2
+				;;
+			esac
+			if [ -n "${nvim_arch}" ]; then
+				# Best-effort uninstall of any apt-managed nvim (PPA leftover
+				# from older bootstraps). Don't fail the hook if the package
+				# isn't installed -- that's the steady state on fresh images.
+				run_as_root apt-get -y remove neovim neovim-runtime >/dev/null 2>&1 || true
+				nvim_tmp="$(mktemp -d)"
+				nvim_tarball="nvim-linux-${nvim_arch}.tar.gz"
+				nvim_url="https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/${nvim_tarball}"
+				echo "editor: downloading neovim v${NVIM_VERSION} (${nvim_arch})"
+				if curl -fsSL "${nvim_url}" -o "${nvim_tmp}/${nvim_tarball}"; then
+					tar -xzf "${nvim_tmp}/${nvim_tarball}" -C "${nvim_tmp}"
+					# Tarball top-level is nvim-linux-<arch>/; copy bin/, lib/,
+					# share/ contents into /usr/local so the runtime tree
+					# (parser libs, doc, plugin/) lands next to the binary.
+					nvim_extracted="${nvim_tmp}/nvim-linux-${nvim_arch}"
+					if [ -d "${nvim_extracted}" ]; then
+						run_as_root cp -R "${nvim_extracted}/bin/." /usr/local/bin/
+						[ -d "${nvim_extracted}/lib" ] && run_as_root cp -R "${nvim_extracted}/lib/." /usr/local/lib/
+						[ -d "${nvim_extracted}/share" ] && run_as_root cp -R "${nvim_extracted}/share/." /usr/local/share/
+					else
+						echo "editor: unexpected tarball layout (no ${nvim_extracted}); skipping." >&2
+					fi
+				else
+					echo "editor: neovim download failed; skipping." >&2
+				fi
+				rm -rf "${nvim_tmp}"
+			fi
 			;;
 		*)
 			echo "editor: no automatic neovim install path on '${ID:-unknown}'; install manually." >&2
