@@ -1,0 +1,24 @@
+#!/bin/sh
+# la = ls -lAh with color-when-tty.
+# CRITICAL: never invoke `ls` by name — ~/.local/bin is ahead of /bin
+# on PATH, so a bare `ls` could recurse if this script is ever renamed.
+# Always use $_real_ls.
+set -eu
+
+_real_ls=
+for cand in /opt/homebrew/bin/gls /usr/local/bin/gls /bin/ls /usr/bin/ls; do
+	[ -x "$cand" ] && _real_ls=$cand && break
+done
+[ -z "$_real_ls" ] && _real_ls=$(command -pv ls 2>/dev/null) || true
+[ -z "$_real_ls" ] && {
+	echo "la: no real ls found on PATH" >&2
+	exit 127
+}
+
+if "$_real_ls" --version >/dev/null 2>&1; then
+	_color=--color=auto
+else
+	_color=-G
+fi
+
+exec "$_real_ls" "$_color" -lAh "$@"

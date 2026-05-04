@@ -2,7 +2,7 @@
 package:
   name: common-shell
   description: Shared POSIX shell environment (PATH, XDG, locale, EDITOR, profile.d drop dir)
-  version: 0.5.1
+  version: 0.5.2
   tags:
     - shell
     - common
@@ -13,6 +13,9 @@ package:
 links:
   profile: "@config/dots/user/profile"
   starship.toml: "@config/starship.toml"
+  bin/la: "@home/.local/bin/la"
+  completions/la.bash: "@config/bash/completions/la.bash"
+  completions/_la: "@config/zsh/completions/_la"
 
 hooks:
   post_install: hooks/install-tools.sh

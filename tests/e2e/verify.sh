@@ -60,6 +60,35 @@ assert_file "${HOME}/.config/bash/completions/dots.bash"
 assert_file "${HOME}/.config/zsh/completions/_dots"
 assert_grep "${HOME}/.config/bash/completions/dots.bash" "bash completion V2 for dots"
 assert_grep "${HOME}/.config/zsh/completions/_dots" "#compdef dots"
+# common-shell ships a `la` script under ~/.local/bin so `la` works
+# identically across bash/zsh/POSIX shells without alias expansion. The
+# script must be executable (link_strategy=copy preserves the mode bit),
+# behave like `ls -lAh` (header line "total NN"), and the legacy `alias la=`
+# lines must be gone from the rc files so the script wins on PATH.
+assert_file "${HOME}/.local/bin/la"
+if [ -x "${HOME}/.local/bin/la" ]; then
+	pass "${HOME}/.local/bin/la is executable"
+else
+	fail "${HOME}/.local/bin/la is not executable"
+fi
+if "${HOME}/.local/bin/la" "${HOME}" 2>/dev/null | head -n1 | grep -q '^total '; then
+	pass "la behavioral smoke (\"total NN\" header)"
+else
+	fail "la behavioral smoke failed (no \"total NN\" header)"
+fi
+assert_file "${HOME}/.config/bash/completions/la.bash"
+assert_file "${HOME}/.config/zsh/completions/_la"
+# Regression guard: the script on PATH must not be shadowed by an alias.
+if grep -qE "^alias la=" "${HOME}/.bashrc"; then
+	fail "${HOME}/.bashrc still defines 'alias la='"
+else
+	pass "${HOME}/.bashrc has no 'alias la=' line"
+fi
+if grep -qE "^alias la=" "${HOME}/.config/zsh/zshrc"; then
+	fail "${HOME}/.config/zsh/zshrc still defines 'alias la='"
+else
+	pass "${HOME}/.config/zsh/zshrc has no 'alias la=' line"
+fi
 # ~/.zshrc and ~/.zshenv are NOT package files -- the install hook injects
 # a marker block that sources ~/.config/zsh/. Verify the block is present.
 assert_grep "${HOME}/.zshrc" "BEGIN dotfiles-zsh"

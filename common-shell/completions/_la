@@ -1,0 +1,4 @@
+#compdef la
+# la is "ls -lAh"; reuse zsh's built-in ls completion. Calling _ls from
+# _la is not recursion (different function names).
+_ls "$@"

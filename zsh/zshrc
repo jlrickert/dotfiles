@@ -35,7 +35,6 @@ alias -g ......='../../../../..'
 #--- ls aliases --------------------------------------------------------------
 alias ls='ls --color=auto 2>/dev/null || ls'
 alias l='ls -lah'
-alias la='ls -lAh'
 alias ll='ls -lh'
 alias lsa='ls -lah'
 
