@@ -102,6 +102,7 @@ inject_stub() {
 ensure_zsh_installed
 inject_stub "${HOME}/.zshenv" "zsh/zshenv"
 inject_stub "${HOME}/.zshrc" "zsh/zshrc"
+inject_stub "${HOME}/.zprofile" "zsh/zprofile"
 
 # Generate dots completion into the shared completions dir that zsh's
 # fpath/compinit setup already discovers. Mirrors the install pattern used

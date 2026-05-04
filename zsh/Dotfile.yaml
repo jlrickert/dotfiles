@@ -2,7 +2,7 @@
 package:
   name: zsh
   description: Zsh shell configuration (installs zsh if missing)
-  version: 0.2.3
+  version: 0.2.4
   requires:
     - "@self/common-shell"
   tags:
@@ -14,11 +14,13 @@ package:
 links:
   zshenv: "@config/zsh/zshenv"
   zshrc: "@config/zsh/zshrc"
+  zprofile: "@config/zsh/zprofile"
   lib/termsupport.zsh: "@config/zsh/lib/termsupport.zsh"
   lib/zsh-vi-mode.zsh: "@config/zsh/lib/zsh-vi-mode.zsh"
-# ~/.zshrc and ~/.zshenv are NOT in `links:`. Replacing them on install would
-# clobber installer-appends from bun, fnm, conda, Egnyte egcli, etc. Instead
-# the post_install hook injects a marker block that sources the real config.
+# ~/.zshrc, ~/.zshenv, and ~/.zprofile are NOT in `links:`. Replacing them on
+# install would clobber installer-appends from bun, fnm, conda, Egnyte egcli,
+# etc. Instead the post_install hook injects a marker block that sources the
+# real config.
 hooks:
   post_install: hooks/install-zsh.sh
   pre_remove: hooks/uninstall-zsh.sh

@@ -25,3 +25,4 @@ strip_stub() {
 
 strip_stub "${HOME}/.zshrc"
 strip_stub "${HOME}/.zshenv"
+strip_stub "${HOME}/.zprofile"

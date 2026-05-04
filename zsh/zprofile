@@ -1,0 +1,9 @@
+# zsh sources .zprofile after .zshenv for login shells.
+#
+# On macOS, /etc/zprofile runs `path_helper`, which rewrites PATH and demotes
+# Homebrew (and other Layer-1 prepends) below /bin and /usr/bin. Re-source
+# ~/.profile here so Layer-1 PATH-prependers (brew, bun, fnm, deno, rust, go,
+# nix, etc.) win again. ~/.profile guards its prepends with case-PATH checks,
+# so this stays idempotent.
+
+[ -r "$HOME/.profile" ] && . "$HOME/.profile"

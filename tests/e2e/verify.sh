@@ -44,6 +44,7 @@ fi
 # Real zsh configs live under ~/.config/zsh/.
 assert_file "${HOME}/.config/zsh/zshenv"
 assert_file "${HOME}/.config/zsh/zshrc"
+assert_file "${HOME}/.config/zsh/zprofile"
 assert_file "${HOME}/.config/zsh/lib/termsupport.zsh"
 assert_file "${HOME}/.config/zsh/lib/zsh-vi-mode.zsh"
 # Per-tool completions are installed by their packages into shared dirs that
@@ -222,6 +223,24 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 		pass "ed --version succeeds (cmd-edit, not GNU ed)"
 	else
 		fail "ed --version failed (GNU ed shadowing cmd-edit on PATH?)"
+	fi
+	# Darwin-only regression guard: /etc/zprofile runs `path_helper`, which
+	# demotes /opt/homebrew/bin (and other Layer-1 prepends) below /bin and
+	# /usr/bin. Login zsh shells (wezterm, Terminal.app) hit this; the non-
+	# login `ed --version` probe above does not. The fix re-sources ~/.profile
+	# from ~/.zprofile -- this assertion proves the fix lands by checking that
+	# `command -v ed` from a login zsh resolves under a Homebrew prefix.
+	# Skipped on Linux because there is no path_helper there.
+	if [ "$(uname -s)" = Darwin ]; then
+		login_ed="$(zsh -l -c 'command -v ed' 2>/dev/null || true)"
+		case "${login_ed}" in
+		/opt/homebrew/bin/ed | /usr/local/bin/ed)
+			pass "login zsh resolves ed to Homebrew (${login_ed})"
+			;;
+		*)
+			fail "login zsh resolves ed to '${login_ed:-<unset>}' (expected Homebrew prefix; path_helper demotion not corrected)"
+			;;
+		esac
 	fi
 
 	# editor package: nvim. We install upstream tarball v0.12.x on Linux
