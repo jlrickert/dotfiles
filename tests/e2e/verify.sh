@@ -98,6 +98,21 @@ assert_grep "${HOME}/.zshenv" "BEGIN dotfiles-zsh"
 assert_grep "${HOME}/.profile" "BEGIN dotfiles-profile"
 # Real Layer-1 file lives under ~/.config/dots/user/.
 assert_file "${HOME}/.config/dots/user/profile"
+# Startup-perf guard: brew shellenv must be inlined, not eval'd. The eval
+# form spawns brew (Ruby, ~50-80ms) on every shell init and re-invokes
+# path_helper, which would re-trigger the login-shell PATH demotion fixed
+# in commit af6c1ec.
+if grep -qE 'eval "\$\(/opt/homebrew/bin/brew shellenv\)"' "${HOME}/.config/dots/user/profile"; then
+	fail "brew shellenv eval form found (should be inlined)"
+else
+	pass "brew shellenv inlined (no eval spawn)"
+fi
+# Darwin-only positive assertion: the inlined Apple-Silicon prefix block
+# must be present in the profile source. Skipped on Linux because the
+# block is darwin-only env material.
+if [ "$(uname -s)" = Darwin ]; then
+	assert_grep "${HOME}/.config/dots/user/profile" 'HOMEBREW_PREFIX="/opt/homebrew"'
+fi
 # Layering contract: Layer-1 and Layer-2 files must NOT source another
 # shell's interactive rc. The detector sweeps every Layer-1/Layer-2 file
 # (~/.profile, ~/.config/dots/user/profile, and every drop-in under
@@ -152,6 +167,10 @@ fi
 # silently truncated. The mkdir in zshrc must create the HISTFILE parent.
 assert_grep "${HOME}/.config/zsh/zshrc" "inc_append_history"
 assert_grep "${HOME}/.config/zsh/zshrc" "SAVEHIST=50000"
+# Startup-perf guard: the cached compinit fast path must be present, so
+# warm interactive shells skip the ~250ms zcompdump rebuild + security
+# check (the (#qNmh-24) glob qualifier rebuilds at most once per 24h).
+assert_grep "${HOME}/.config/zsh/zshrc" "compinit -C -d"
 zsh -i -c 'echo ok' >/dev/null 2>&1 || true
 if [ -d "${HOME}/.local/state/zsh" ]; then
 	pass "${HOME}/.local/state/zsh exists (HISTFILE parent)"
@@ -241,6 +260,42 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 			fail "login zsh resolves ed to '${login_ed:-<unset>}' (expected Homebrew prefix; path_helper demotion not corrected)"
 			;;
 		esac
+		# Generalized front-of-PATH guard: the af6c1ec fix only covered brew
+		# because `ed` collides with /bin/ed. The same path_helper demotion
+		# silently affected every Layer-1 prepend (~/.local/bin, ~/.bun/bin,
+		# etc.) — they sat ~25 entries deep behind /bin in login zsh. The
+		# 0.5.5 fix narrowed all guards from "anywhere in PATH" to "at the
+		# front of PATH" so the re-source from ~/.zprofile re-promotes them.
+		# Assertion: in a login zsh, each guarded dir must appear EARLIER in
+		# PATH than /bin. Skipped on Linux because there is no path_helper.
+		login_path="$(zsh -l -c 'echo $PATH' 2>/dev/null || echo)"
+		local_idx=-1
+		bun_idx=-1
+		bin_idx=-1
+		i=0
+		IFS=:
+		for entry in ${login_path}; do
+			case "${entry}" in
+			"${HOME}/.local/bin") [ ${local_idx} -lt 0 ] && local_idx=${i} ;;
+			"${HOME}/.bun/bin") [ ${bun_idx} -lt 0 ] && bun_idx=${i} ;;
+			/bin) [ ${bin_idx} -lt 0 ] && bin_idx=${i} ;;
+			esac
+			i=$((i + 1))
+		done
+		unset IFS
+		if [ ${local_idx} -ge 0 ] && [ ${bin_idx} -ge 0 ] && [ ${local_idx} -lt ${bin_idx} ]; then
+			pass "login zsh PATH: ~/.local/bin (idx ${local_idx}) precedes /bin (idx ${bin_idx})"
+		else
+			fail "login zsh PATH: ~/.local/bin (idx ${local_idx}) not before /bin (idx ${bin_idx}); path_helper demotion not corrected"
+		fi
+		# Bun is optional — only assert if ~/.bun exists on the host.
+		if [ -d "${HOME}/.bun" ]; then
+			if [ ${bun_idx} -ge 0 ] && [ ${bin_idx} -ge 0 ] && [ ${bun_idx} -lt ${bin_idx} ]; then
+				pass "login zsh PATH: ~/.bun/bin (idx ${bun_idx}) precedes /bin (idx ${bin_idx})"
+			else
+				fail "login zsh PATH: ~/.bun/bin (idx ${bun_idx}) not before /bin (idx ${bin_idx}); path_helper demotion not corrected"
+			fi
+		fi
 	fi
 
 	# editor package: nvim. We install upstream tarball v0.12.x on Linux

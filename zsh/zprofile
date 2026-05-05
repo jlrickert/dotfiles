@@ -3,7 +3,10 @@
 # On macOS, /etc/zprofile runs `path_helper`, which rewrites PATH and demotes
 # Homebrew (and other Layer-1 prepends) below /bin and /usr/bin. Re-source
 # ~/.profile here so Layer-1 PATH-prependers (brew, bun, fnm, deno, rust, go,
-# nix, etc.) win again. ~/.profile guards its prepends with case-PATH checks,
-# so this stays idempotent.
+# nix, etc.) win again. ~/.profile guards its prepends on FRONT-of-PATH: a
+# dir that path_helper demoted is no longer at the front, so the second pass
+# re-prepends it. A dir that's already at the front is left alone. One
+# duplicate entry per re-promoted dir may land on the second pass — cosmetic,
+# harmless, and bounded (no unbounded growth across re-sources).
 
 [ -r "$HOME/.profile" ] && . "$HOME/.profile"
