@@ -40,6 +40,16 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_cmd zellij
 	assert_cmd mux
 	assert_cmd set-zellij-colorscheme
+	# Theme contract: zellij/config.kdl must vendor the tokyonight (dark) block
+	# and the active `theme "..."` line must resolve to one of the two
+	# tokyonight variants. set-zellij-colorscheme rewrites the active line
+	# from get_zellij_theme(), so both names are valid steady states.
+	assert_grep "${HOME}/.config/zellij/config.kdl" "tokyonight {"
+	if grep -qE '^theme "(tokyonight|tokyonight-day)"' "${HOME}/.config/zellij/config.kdl"; then
+		pass "zellij active theme resolves to tokyonight or tokyonight-day"
+	else
+		fail "zellij active theme not tokyonight/tokyonight-day"
+	fi
 fi
 # Real zsh configs live under ~/.config/zsh/.
 assert_file "${HOME}/.config/zsh/zshenv"

@@ -36,9 +36,9 @@ get_zellij_theme() {
 	system_theme=$(detect_system_theme)
 
 	if [[ "$system_theme" == "dark" ]]; then
-		echo "gruvbox-dark"
+		echo "tokyonight"
 	else
-		echo "gruvbox-light"
+		echo "tokyonight-day"
 	fi
 }
 
