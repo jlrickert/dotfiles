@@ -258,7 +258,8 @@ themes {
 // choose the theme that is specified in the themes section.
 // default: default
 //
-theme "tokyonight"
+// theme "tokyonight"
+theme "kanagawa"
 
 // Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
 // eg. when terminal window with an active zellij session is closed
