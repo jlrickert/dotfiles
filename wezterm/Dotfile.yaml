@@ -2,7 +2,7 @@
 package:
   name: wezterm
   description: WezTerm GUI terminal config + brew install on darwin
-  version: 0.1.0
+  version: 0.2.0
   tags:
     - terminal
     - wezterm
