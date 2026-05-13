@@ -78,6 +78,17 @@ Linux)
 	;;
 esac
 
+# Rebuild bat's syntax/theme cache so the freshly-linked Kanagawa +
+# tokyonight themes under ~/.config/bat/themes/ are picked up. Both
+# binary names handled: Debian/Ubuntu rename `bat` to `batcat`. `|| true`
+# because cache rebuild isn't critical to install correctness — the theme
+# files themselves are already on disk.
+if command -v bat >/dev/null 2>&1; then
+	bat cache --build || true
+elif command -v batcat >/dev/null 2>&1; then
+	batcat cache --build || true
+fi
+
 #--- ~/.profile marker injection -------------------------------------------
 # ~/.profile is NOT in `links:` for the same reason ~/.zshrc isn't: third-
 # party installers (rustup, nvm, deno, conda, etc.) append to it, and a

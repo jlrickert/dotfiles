@@ -57,7 +57,7 @@ esac
 export CDPATH
 
 # bat (modern cat) theme.
-: "${BAT_THEME:=gruvbox-dark}"
+: "${BAT_THEME:=kanagawa_dragon}"
 export BAT_THEME
 
 # fzf defaults. The Debian/Ubuntu binary for fd is fdfind; on darwin/brew

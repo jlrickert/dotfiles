@@ -2,7 +2,7 @@
 package:
   name: common-shell
   description: Shared POSIX shell environment (PATH, XDG, locale, EDITOR, profile.d drop dir)
-  version: 0.5.5
+  version: 0.6.0
   tags:
     - shell
     - common
@@ -16,6 +16,12 @@ links:
   bin/la: "@home/.local/bin/la"
   completions/la.bash: "@config/bash/completions/la.bash"
   completions/_la: "@config/zsh/completions/_la"
+  bat/themes/tokyonight_night.tmTheme: "@config/bat/themes/tokyonight_night.tmTheme"
+  bat/themes/tokyonight_day.tmTheme: "@config/bat/themes/tokyonight_day.tmTheme"
+  bat/themes/LICENSE.tokyonight: "@config/bat/themes/LICENSE.tokyonight"
+  bat/themes/kanagawa_dragon.tmTheme: "@config/bat/themes/kanagawa_dragon.tmTheme"
+  bat/themes/kanagawa_lotus.tmTheme: "@config/bat/themes/kanagawa_lotus.tmTheme"
+  bat/themes/LICENSE.kanagawa: "@config/bat/themes/LICENSE.kanagawa"
 
 hooks:
   post_install: hooks/install-tools.sh
