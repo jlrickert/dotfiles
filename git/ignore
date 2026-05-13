@@ -1,0 +1,17 @@
+# OS / editor scratch
+.DS_Store
+*.swp
+*~
+Thumbs.db
+
+# Editor config dirs
+.idea/
+.vscode/
+
+# Build / lang
+*.pyc
+__pycache__/
+node_modules/
+
+# Claude Code per-project local settings (preserved from prior ~/.config/git/ignore)
+**/.claude/settings.local.json
