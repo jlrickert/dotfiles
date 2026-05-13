@@ -24,7 +24,7 @@ assert_file "${HOME}/.bashrc"
 assert_file "${HOME}/.bash_profile"
 assert_file "${HOME}/.profile"
 assert_file "${HOME}/.config/dots/config.yaml"
-# Phase-3 dev/889 migrations: claude/, codex/, editor/, knut/, rust/,
+# Phase-3 migrations: claude/, codex/, editor/, knut/, rust/,
 # homebrew/, javascript/. The Ubuntu test images don't install these packages
 # yet (see docker/ubuntu/Dockerfile), so we only assert the manifests
 # exist in the source tree — proof the migration landed without trying

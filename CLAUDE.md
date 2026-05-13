@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repo status: mid-migration to `dots`
 
-This repo is being migrated from two legacy layouts to the `dots` package manager (https://github.com/jlrickert/dots, tracked as keg:dev/141). The migration is in progress — both old and new layouts coexist. **Don't add new content to the legacy directories.**
+This repo is being migrated from two legacy layouts to the `dots` package manager (https://github.com/jlrickert/dots). The migration is in progress — both old and new layouts coexist. **Don't add new content to the legacy directories.**
 
 | Status | Directories | Notes |
 | --- | --- | --- |
-| **Current** (dots packages) | `dots-config/`, `bash/`, `zsh/`, `common-shell/`, `zellij/`, `go/`, `claude/`, `codex/`, `editor/`, `knut/`, `rust/`, `homebrew/`, `javascript/`, `wezterm/` | Each has a `Dotfile.yaml` manifest plus config files |
+| **Current** (dots packages) | `dots-config/`, `bash/`, `zsh/`, `common-shell/`, `zellij/`, `go/`, `claude/`, `codex/`, `editor/`, `intellij/`, `knut/`, `rust/`, `git/`, `javascript/`, `wezterm/` | Each has a `Dotfile.yaml` manifest plus config files |
 
 When adding new functionality, create a new top-level `<name>/` package directory with a `Dotfile.yaml`.
 
@@ -65,14 +65,4 @@ End-to-end testing uses two images, both built from `docker/ubuntu/`:
 
 ## Pending rename
 
-`dots` → `dottap` is a pending rename (keg:dev/270 decision, keg:dev/271 task — both still open). The binary, schema URLs, and KEG notes still say `dots`. Don't pre-emptively rename anything.
-
-## Working with KEG context
-
-This repo's working directory resolves to keg alias `dev`. The migration plan and design background live in keg:dev — relevant nodes:
-
-- dev/141 — Project: dots (full design, CLI table, data model)
-- dev/273 — Project: dotfiles (this repo)
-- dev/888 / dev/889 — Task + Plan: Modernize dotfiles (the migration checklist)
-- dev/1011 — Decision: `--name`, copy-default, work-mode symlinks (v0.4.0 UX)
-- dev/1091 — Issue: `dots init --from file://` doesn't see uncommitted files (Docker bootstrap workaround: snapshot-commit before init)
+`dots` → `dottap` is a pending rename. The binary, schema URLs, and notes still say `dots`. Don't pre-emptively rename anything.
