@@ -31,7 +31,7 @@ assert_file "${HOME}/.config/dots/config.yaml"
 # to verify runtime side effects. Add runtime assertions here once the
 # image installs them.
 DOTFILES_SRC="${DOTFILES_SRC:-/opt/dotfiles-src}"
-for pkg in claude codex editor knut rust javascript wezterm python clone; do
+for pkg in claude codex editor knut rust javascript wezterm python clone podman; do
 	assert_file "${DOTFILES_SRC}/${pkg}/Dotfile.yaml"
 done
 assert_file "${HOME}/.config/starship.toml"
@@ -218,6 +218,23 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_file "${HOME}/.config/dots/user/profile.d/node.sh"
 	assert_file "${HOME}/.config/dots/user/profile.d/deno.sh"
 	assert_file "${HOME}/.config/dots/user/profile.d/rust.sh"
+	# podman package: darwin-only. The fragment must land regardless of
+	# whether Podman Desktop's .dmg has been installed (the fragment
+	# self-guards on `[ -d /opt/podman/bin ]`). The runtime probe
+	# (`podman --version`) only fires when the bundle is actually present,
+	# so fresh runners without the .dmg stay silent.
+	if [ "$(uname -s)" = Darwin ]; then
+		assert_file "${HOME}/.config/dots/user/profile.d/podman.sh"
+		assert_grep "${HOME}/.config/dots/user/profile.d/podman.sh" "/opt/podman/bin"
+		if [ -d /opt/podman/bin ]; then
+			assert_cmd podman
+			if podman --version >/dev/null 2>&1; then
+				pass "podman --version succeeds"
+			else
+				fail "podman --version failed"
+			fi
+		fi
+	fi
 	# python package: python3 (>=3.11 floor) and pip3 on PATH. The package
 	# has no user config to link, so only runtime assertions are exercised.
 	assert_cmd python3
@@ -277,6 +294,7 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 		login_path="$(zsh -l -c 'echo $PATH' 2>/dev/null || echo)"
 		local_idx=-1
 		bun_idx=-1
+		podman_idx=-1
 		bin_idx=-1
 		i=0
 		IFS=:
@@ -284,6 +302,7 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 			case "${entry}" in
 			"${HOME}/.local/bin") [ ${local_idx} -lt 0 ] && local_idx=${i} ;;
 			"${HOME}/.bun/bin") [ ${bun_idx} -lt 0 ] && bun_idx=${i} ;;
+			/opt/podman/bin) [ ${podman_idx} -lt 0 ] && podman_idx=${i} ;;
 			/bin) [ ${bin_idx} -lt 0 ] && bin_idx=${i} ;;
 			esac
 			i=$((i + 1))
@@ -300,6 +319,17 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 				pass "login zsh PATH: ~/.bun/bin (idx ${bun_idx}) precedes /bin (idx ${bin_idx})"
 			else
 				fail "login zsh PATH: ~/.bun/bin (idx ${bun_idx}) not before /bin (idx ${bin_idx}); path_helper demotion not corrected"
+			fi
+		fi
+		# Podman Desktop's bundle is optional — only assert if /opt/podman/bin
+		# exists on the host. profile.d/podman.sh self-guards on the same
+		# directory check, so fresh runners without the .dmg installed
+		# legitimately have no /opt/podman/bin entry on PATH.
+		if [ -d /opt/podman/bin ]; then
+			if [ ${podman_idx} -ge 0 ] && [ ${bin_idx} -ge 0 ] && [ ${podman_idx} -lt ${bin_idx} ]; then
+				pass "login zsh PATH: /opt/podman/bin (idx ${podman_idx}) precedes /bin (idx ${bin_idx})"
+			else
+				fail "login zsh PATH: /opt/podman/bin (idx ${podman_idx}) not before /bin (idx ${bin_idx}); path_helper demotion not corrected"
 			fi
 		fi
 	fi

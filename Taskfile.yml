@@ -17,54 +17,54 @@ tasks:
   build:
     desc: Build all prebuilt images
     cmds:
-      - docker compose build
+      - podman compose build
 
   build:ubuntu:
     desc: Build the Ubuntu prebuilt image (slim — common-shell, bash, zsh)
     cmds:
-      - docker compose build ubuntu
+      - podman compose build ubuntu
 
   build:ubuntu:full:
     desc: Build the Ubuntu prebuilt image (full — slim + zellij + go)
     cmds:
-      - docker compose build ubuntu-full
+      - podman compose build ubuntu-full
 
   test:
     desc: Build and run end-to-end verification for all variants
     deps: [build]
     cmds:
-      - docker compose run --rm ubuntu-test
-      - docker compose run --rm ubuntu-full-test
+      - podman compose run --rm ubuntu-test
+      - podman compose run --rm ubuntu-full-test
 
   test:ubuntu:
     desc: Run end-to-end verification for the Ubuntu slim variant
     deps: [build:ubuntu]
     cmds:
-      - docker compose run --rm ubuntu-test
+      - podman compose run --rm ubuntu-test
 
   test:ubuntu:full:
     desc: Run end-to-end verification for the Ubuntu full variant
     deps: [build:ubuntu:full]
     cmds:
-      - docker compose run --rm ubuntu-full-test
+      - podman compose run --rm ubuntu-full-test
 
   shell:ubuntu:
     desc: Drop into an interactive shell in the Ubuntu slim image
     deps: [build:ubuntu]
     cmds:
-      - docker compose run --rm ubuntu
+      - podman compose run --rm ubuntu
 
   shell:ubuntu:full:
     desc: Drop into an interactive shell in the Ubuntu full image
     deps: [build:ubuntu:full]
     cmds:
-      - docker compose run --rm ubuntu-full
+      - podman compose run --rm ubuntu-full
 
   login:
     desc: Log in to ghcr.io (requires a PAT with write:packages scope)
     cmds:
       - echo "Use a GitHub Personal Access Token with write:packages scope."
-      - docker login ghcr.io
+      - podman login ghcr.io
 
   push:
     desc: Push all built variants to ghcr.io (gated on test passing and clean tree)
@@ -80,24 +80,24 @@ tasks:
     # CI owns :latest, :vX.Y.Z, :X.Y — do not push them from here
     cmds:
       - task: _check-clean
-      - docker push {{.REGISTRY}}:ubuntu
-      - docker push {{.REGISTRY}}:ubuntu-{{.DOTFILES_REF}}
+      - podman push {{.REGISTRY}}:ubuntu
+      - podman push {{.REGISTRY}}:ubuntu-{{.DOTFILES_REF}}
 
   push:ubuntu:full:
     desc: Push the Ubuntu full variant tags (:ubuntu-full, :ubuntu-full-<sha>) to ghcr.io for local pre-release validation
     deps: [build:ubuntu:full]
     cmds:
       - task: _check-clean
-      - docker push {{.REGISTRY}}:ubuntu-full
-      - docker push {{.REGISTRY}}:ubuntu-full-{{.DOTFILES_REF}}
+      - podman push {{.REGISTRY}}:ubuntu-full
+      - podman push {{.REGISTRY}}:ubuntu-full-{{.DOTFILES_REF}}
 
   clean:
     desc: Remove images, compose state, and BuildKit cache (next build is from scratch)
     cmds:
-      - docker compose down --rmi local --volumes --remove-orphans
+      - podman compose down --rmi local --volumes --remove-orphans
       # BuildKit's layer cache lives outside images. Without this prune,
       # `clean` followed by `build` still hits cache from the prior build.
-      - docker builder prune --force --all
+      - podman builder prune --force --all
 
   _check-clean:
     internal: true

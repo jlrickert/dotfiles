@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: podman
+  description: |
+    Podman PATH wiring for darwin (Podman Desktop .dmg install).
+
+    This package does NOT install Podman. Install Podman Desktop from the
+    official .dmg at https://podman-desktop.io — that bundle ships the full
+    toolchain (podman, krunkit, gvproxy, vfkit, podman-mac-helper) under
+    /opt/podman/bin/. This package only puts that bundled bin dir on PATH.
+    Do not `brew install podman` or `brew install --cask podman-desktop`;
+    see README.md for why.
+  version: 0.1.0
+  requires:
+    - "@self/common-shell"
+  tags:
+    - container-runtime
+    - podman
+  platforms:
+    - darwin
+# Links and hooks live under platform.darwin so installs on linux silently
+# noop instead of failing. Mirrors the homebrew/ pattern.
+platform:
+  darwin:
+    links:
+      profile.d/podman.sh: "@config/dots/user/profile.d/podman.sh"
+    hooks:
+      post_install: hooks/install-podman.sh
