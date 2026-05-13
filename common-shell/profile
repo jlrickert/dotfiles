@@ -111,16 +111,6 @@ elif [ -x /usr/local/bin/brew ]; then
 	export INFOPATH="/usr/local/share/info${INFOPATH:+:$INFOPATH}"
 fi
 
-# Bun runtime, when installed.
-if [ -d "$HOME/.bun" ]; then
-	export BUN_INSTALL="$HOME/.bun"
-	case "$PATH" in
-		"$BUN_INSTALL/bin":*|"$BUN_INSTALL/bin") ;;
-		*) PATH="$BUN_INSTALL/bin:$PATH" ;;
-	esac
-	export PATH
-fi
-
 # Default editor: prefer nvim, then vim, then nano. Force-assign rather
 # than `:=` because nix-darwin's /etc/zshenv hard-exports EDITOR=nano
 # before ~/.zshenv runs, and the "set if unset" idiom couldn't displace

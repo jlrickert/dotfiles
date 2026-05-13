@@ -16,7 +16,7 @@ shopt -s checkwinsize
 
 PS1='\u@\h:\w\$ '
 
-alias ls='ls --color=auto 2>/dev/null || ls'
+alias ls='ls --color=auto'
 alias ll='ls -lh'
 alias l='ls -lah'
 
