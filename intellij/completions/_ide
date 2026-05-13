@@ -1,0 +1,24 @@
+#compdef ide
+# zsh completion for ide (IntelliJ IDEA launcher).
+#
+# Autoloaded when this file lives on $fpath as `_ide` and `compinit` has run.
+
+_ide_keywords() {
+	local -a kws
+	kws=(
+		'help:show help'
+		'-h:show help'
+		'--help:show help'
+	)
+	_describe -t keywords 'keyword' kws
+}
+
+_ide() {
+	if (( CURRENT == 2 )); then
+		_alternative \
+			'keywords:keyword:_ide_keywords' \
+			'paths:path:_files'
+	fi
+}
+
+_ide "$@"

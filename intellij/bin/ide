@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# ide — JetBrains IntelliJ IDEA launcher.
+#
+# Override the launcher with IDE_BIN=<path>.
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+PROG="${0##*/}"
+
+usage() {
+	cat <<EOF
+${PROG} — open files or directories in IntelliJ IDEA.
+
+Usage:
+  ${PROG}                      open current directory
+  ${PROG} <path>               open path
+  ${PROG} help | -h | --help   show this help
+
+Environment:
+  IDE_BIN                      override IntelliJ launcher path
+EOF
+}
+
+# Spawn detached so the IDE survives the shell's exit and doesn't capture the tty.
+# Used for the IDE_BIN override and the Linux Toolbox `idea` shim. The macOS
+# default path uses `open -a` instead, which routes through LaunchServices and
+# fully reparents to launchd (no FD inheritance, no tty capture).
+launch_detached() {
+	bin="$1"
+	path="$2"
+	( "${bin}" "${path}" </dev/null >/dev/null 2>&1 & disown ) 2>/dev/null
+}
+
+# dispatch_ide opens the given path in IntelliJ. Resolution order:
+#   1. IDE_BIN override (any host) → launch_detached
+#   2. macOS /Applications/IntelliJ IDEA.app → `open -a` (LaunchServices)
+#   3. Toolbox `idea` shim on PATH → launch_detached
+# Returns 1 with the standard error message if nothing resolves.
+dispatch_ide() {
+	path="$1"
+	if [ -n "${IDE_BIN:-}" ] && [ -x "${IDE_BIN}" ]; then
+		launch_detached "${IDE_BIN}" "${path}"
+		return 0
+	fi
+	if [ -d "/Applications/IntelliJ IDEA.app" ]; then
+		open -a "IntelliJ IDEA" "${path}"
+		return 0
+	fi
+	if command -v idea >/dev/null 2>&1; then
+		launch_detached "$(command -v idea)" "${path}"
+		return 0
+	fi
+	printf '%s: IntelliJ not found. Install via JetBrains Toolbox: https://www.jetbrains.com/toolbox-app/\n' "${PROG}" >&2
+	return 1
+}
+
+case "${1:-}" in
+"")
+	dispatch_ide "${PWD}" || exit 1
+	;;
+-h | --help | help)
+	usage
+	;;
+-*)
+	printf "%s: unknown flag '%s'\n" "${PROG}" "$1" >&2
+	usage >&2
+	exit 1
+	;;
+*)
+	if [ -e "$1" ]; then
+		dispatch_ide "$1" || exit 1
+	else
+		printf "%s: path does not exist: '%s'\n" "${PROG}" "$1" >&2
+		exit 2
+	fi
+	;;
+esac

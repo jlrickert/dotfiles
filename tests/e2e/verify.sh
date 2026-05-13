@@ -34,6 +34,37 @@ DOTFILES_SRC="${DOTFILES_SRC:-/opt/dotfiles-src}"
 for pkg in claude codex editor knut rust javascript wezterm python clone podman; do
 	assert_file "${DOTFILES_SRC}/${pkg}/Dotfile.yaml"
 done
+
+# intellij package — runtime assertions, gated on the package having been
+# installed. The package's `links:` deposits ~/.ideavimrc, so its presence is
+# a reliable "did the package install?" probe. The Ubuntu test images don't
+# install intellij/ yet, so this skips silently in CI.
+if [ -f "${HOME}/.ideavimrc" ]; then
+	assert_file "${HOME}/.ideavimrc"
+	[ -s "${HOME}/.ideavimrc" ] || fail "ideavimrc empty"
+
+	assert_file "${HOME}/.local/bin/ide"
+	[ -x "${HOME}/.local/bin/ide" ] || fail "ide not executable"
+	assert_cmd ide
+
+	ide --help >/dev/null 2>&1 || fail "ide --help failed"
+	ide help >/dev/null 2>&1 || fail "ide help failed"
+
+	# Regression guard: the launcher must spawn the IDE detached, not exec it.
+	# `exec "${bin}"` would replace the parent shell with the IntelliJ process,
+	# attaching it to the tty (ctrl-c kills the IDE, closing the terminal kills
+	# it, stdout/stderr are captured). The fix replaces both exec sites with a
+	# launch_detached helper.
+	if grep -qE 'exec "\$\{bin\}"' "${HOME}/.local/bin/ide"; then
+		fail "ide still exec's launcher (regression: parent shell will be replaced)"
+	else
+		pass "ide does not exec launcher (spawn-and-return preserved)"
+	fi
+
+	assert_file "${HOME}/.config/bash/completions/ide.bash"
+	assert_file "${HOME}/.config/zsh/completions/_ide"
+fi
+
 assert_file "${HOME}/.config/starship.toml"
 if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_file "${HOME}/.config/zellij/config.kdl"
