@@ -71,15 +71,18 @@ if [ "${VERIFY_PROFILE}" = full ]; then
 	assert_cmd zellij
 	assert_cmd mux
 	assert_cmd set-zellij-colorscheme
-	# Theme contract: zellij/config.kdl must vendor the tokyonight (dark) block
-	# and the active `theme "..."` line must resolve to one of the two
-	# tokyonight variants. set-zellij-colorscheme rewrites the active line
-	# from get_zellij_theme(), so both names are valid steady states.
-	assert_grep "${HOME}/.config/zellij/config.kdl" "tokyonight {"
-	if grep -qE '^theme "(tokyonight|tokyonight-day)"' "${HOME}/.config/zellij/config.kdl"; then
-		pass "zellij active theme resolves to tokyonight or tokyonight-day"
+	# Theme contract: config.kdl vendors both `kanagawa-wave` and
+	# `kanagawa-lotus`. The active `theme "..."` line is rewritten at runtime
+	# by set-zellij-colorscheme; prefix match accepts either variant.
+	assert_grep "${HOME}/.config/zellij/config.kdl" 'theme "kanagawa'
+	# Launch smoke: `assert_cmd zellij` only checks PATH, which would pass
+	# even when zellij can't start (e.g. config references an undefined
+	# theme). `setup --check` parses config and validates themes — the cheap
+	# guard against breaking interactive launches without noticing.
+	if zellij setup --check >/dev/null 2>&1; then
+		pass "zellij setup --check passes"
 	else
-		fail "zellij active theme not tokyonight/tokyonight-day"
+		fail "zellij setup --check failed (config or theme issue)"
 	fi
 fi
 # Real zsh configs live under ~/.config/zsh/.
@@ -154,6 +157,12 @@ fi
 if [ "$(uname -s)" = Darwin ]; then
 	assert_grep "${HOME}/.config/dots/user/profile" 'HOMEBREW_PREFIX="/opt/homebrew"'
 fi
+# bat theme: common-shell ships hand-derived kanagawa tmThemes and defaults
+# BAT_THEME to kanagawa_wave. The theme file must land at the bat user-config
+# path (link_strategy=copy → real file, not symlink), and the installed profile
+# must export the default.
+assert_file "${HOME}/.config/bat/themes/kanagawa_wave.tmTheme"
+assert_grep "${HOME}/.config/dots/user/profile" 'BAT_THEME:=kanagawa_wave'
 # Layering contract: Layer-1 and Layer-2 files must NOT source another
 # shell's interactive rc. The detector sweeps every Layer-1/Layer-2 file
 # (~/.profile, ~/.config/dots/user/profile, and every drop-in under

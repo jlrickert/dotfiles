@@ -2,7 +2,7 @@
 package:
   name: common-shell
   description: Shared POSIX shell environment (PATH, XDG, locale, EDITOR, profile.d drop dir)
-  version: 0.6.0
+  version: 0.6.1
   tags:
     - shell
     - common
@@ -21,6 +21,7 @@ links:
   bat/themes/LICENSE.tokyonight: "@config/bat/themes/LICENSE.tokyonight"
   bat/themes/kanagawa_dragon.tmTheme: "@config/bat/themes/kanagawa_dragon.tmTheme"
   bat/themes/kanagawa_lotus.tmTheme: "@config/bat/themes/kanagawa_lotus.tmTheme"
+  bat/themes/kanagawa_wave.tmTheme: "@config/bat/themes/kanagawa_wave.tmTheme"
   bat/themes/LICENSE.kanagawa: "@config/bat/themes/LICENSE.kanagawa"
 
 hooks:

@@ -224,42 +224,41 @@ plugins {
     }
 }
 
+// Vendor both Kanagawa variants. Upstream zellij ships a built-in `kanagawa`
+// (Wave palette) but no Lotus light variant, and relying on the built-in alone
+// has been brittle across versions — vendoring keeps wave/lotus available
+// regardless of which zellij release is installed. set-zellij-colorscheme
+// rewrites the active `theme "..."` line at runtime to swap between them.
 themes {
-    // from folke/tokyonight.nvim night.lua
-    tokyonight {
-        fg "#c0caf5"
-        bg "#1a1b26"
-        black "#15161e"
-        red "#f7768e"
-        green "#9ece6a"
-        yellow "#e0af68"
-        blue "#7aa2f7"
-        magenta "#bb9af7"
-        cyan "#7dcfff"
-        white "#a9b1d6"
-        orange "#ff9e64"
+    kanagawa-wave {
+        fg "#dcd7ba"
+        bg "#1f1f28"
+        black "#16161d"
+        red "#c34043"
+        green "#76946a"
+        yellow "#c0a36e"
+        blue "#7e9cd8"
+        magenta "#957fb8"
+        cyan "#6a9589"
+        white "#c8c093"
+        orange "#ffa066"
     }
-    // from folke/tokyonight.nvim day.lua
-    tokyonight-day {
-        fg "#3760bf"
-        bg "#e1e2e7"
-        black "#b4b5b9"
-        red "#f52a65"
-        green "#587539"
-        yellow "#8c6c3e"
-        blue "#2e7de9"
-        magenta "#9854f1"
-        cyan "#007197"
-        white "#6172b0"
-        orange "#b15c00"
+    kanagawa-lotus {
+        fg "#545464"
+        bg "#f2ecbc"
+        black "#1f1f28"
+        red "#c84053"
+        green "#6f894e"
+        yellow "#77713f"
+        blue "#4d699b"
+        magenta "#b35b79"
+        cyan "#597b75"
+        white "#545464"
+        orange "#cc6d00"
     }
 }
 
-// choose the theme that is specified in the themes section.
-// default: default
-//
-// theme "tokyonight"
-theme "kanagawa"
+theme "kanagawa-wave"
 
 // Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
 // eg. when terminal window with an active zellij session is closed

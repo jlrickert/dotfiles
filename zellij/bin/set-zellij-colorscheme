@@ -30,15 +30,16 @@ detect_system_theme() {
 	fi
 }
 
-# Get appropriate zellij theme
+# Get appropriate zellij theme. Both palettes are vendored in config.kdl
+# (upstream zellij ships no Lotus variant), so we can use distinct names here.
 get_zellij_theme() {
 	local system_theme
 	system_theme=$(detect_system_theme)
 
 	if [[ "$system_theme" == "dark" ]]; then
-		echo "tokyonight"
+		echo "kanagawa-wave"
 	else
-		echo "tokyonight-day"
+		echo "kanagawa-lotus"
 	fi
 }
 

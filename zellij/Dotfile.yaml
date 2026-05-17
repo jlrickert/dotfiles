@@ -2,7 +2,7 @@
 package:
   name: zellij
   description: Zellij terminal multiplexer with system-theme-aware colorscheme
-  version: 0.2.1
+  version: 0.2.2
   tags:
     - terminal
     - multiplexer
