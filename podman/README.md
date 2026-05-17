@@ -64,7 +64,18 @@ podman machine start
 
 `podman machine init` prompts for VM resource sizing, so it stays manual.
 
-## Future work
+## Runtime config (`containers.conf`)
 
-A `containers.conf` is intentionally not shipped in this 0.1.0. If
-container runtime defaults need to be pinned, that lands in 0.2.0.
+0.2.0 ships a `containers.conf` that lands at
+`~/.config/containers/containers.conf` on darwin. System defaults at
+`/etc/containers/containers.conf` and `/opt/podman/etc/containers/containers.conf`
+(shipped by Podman Desktop) are still inherited; this file only overrides
+two keys under `[engine]`:
+
+- Silences the `>>>> Executing external compose provider ...` banner that
+  podman prints on every `podman compose ...` / `docker compose ...`
+  invocation. The reminder is noise once the compose-provider choice has
+  been made deliberately.
+- Pins `podman-compose` as the compose provider so PATH ordering can't
+  accidentally route to a brew or Docker Desktop `docker-compose` shim
+  when `/usr/local/bin` ends up ahead of `~/.local/bin`.

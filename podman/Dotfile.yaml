@@ -10,7 +10,7 @@ package:
     /opt/podman/bin/. This package only puts that bundled bin dir on PATH.
     Do not `brew install podman` or `brew install --cask podman-desktop`;
     see README.md for why.
-  version: 0.1.0
+  version: 0.2.0
   requires:
     - "@self/common-shell"
   tags:
@@ -24,5 +24,6 @@ platform:
   darwin:
     links:
       profile.d/podman.sh: "@config/dots/user/profile.d/podman.sh"
+      containers.conf: "@config/containers/containers.conf"
     hooks:
       post_install: hooks/install-podman.sh
