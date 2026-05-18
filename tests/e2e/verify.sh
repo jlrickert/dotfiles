@@ -480,4 +480,14 @@ fi
 assert_shell_loads bash
 assert_shell_loads zsh
 
+# Bash recursion guard: bashrc must not re-enter via ~/.profile (Ubuntu's
+# default skel sources ~/.bashrc when BASH_VERSION is set). Stack overflow
+# segfaults bash. The heredoc pattern below reproduces the original
+# reported failure mode; `assert_shell_loads` alone has missed it.
+if bash -i <<< 'exit' >/dev/null 2>&1; then
+	pass "interactive bash (heredoc stdin) starts without crashing"
+else
+	fail "interactive bash crashed (likely bashrc <-> profile recursion)"
+fi
+
 summary

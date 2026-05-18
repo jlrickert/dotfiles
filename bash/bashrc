@@ -5,8 +5,13 @@ case $- in
 esac
 
 # Pull shared env in. .bashrc is sourced for non-login interactive shells
-# where .bash_profile does not run.
-[ -r "$HOME/.profile" ] && . "$HOME/.profile"
+# where .bash_profile does not run. Source the dots common-shell profile
+# directly instead of ~/.profile — Ubuntu's default skel ~/.profile
+# re-sources ~/.bashrc when BASH_VERSION is set, which creates an infinite
+# bashrc → profile → bashrc loop that segfaults bash via stack overflow.
+_dots_profile="${XDG_CONFIG_HOME:-$HOME/.config}/dots/user/profile"
+[ -r "$_dots_profile" ] && . "$_dots_profile"
+unset _dots_profile
 
 HISTCONTROL=ignoredups:erasedups
 HISTSIZE=50000
