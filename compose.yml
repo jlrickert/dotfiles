@@ -6,7 +6,7 @@ services:
     image: dotfiles:ubuntu
     build:
       context: .
-      dockerfile: docker/ubuntu/Dockerfile
+      dockerfile: containers/ubuntu/Dockerfile
       tags:
         - dotfiles:ubuntu
         - ghcr.io/jlrickert/dotfiles:ubuntu
@@ -21,7 +21,7 @@ services:
     image: dotfiles:ubuntu-full
     build:
       context: .
-      dockerfile: docker/ubuntu/Dockerfile.full
+      dockerfile: containers/ubuntu/Dockerfile.full
       tags:
         - dotfiles:ubuntu-full
         - ghcr.io/jlrickert/dotfiles:ubuntu-full

@@ -8,7 +8,7 @@ This repo is being migrated from two legacy layouts to the `dots` package manage
 
 | Status | Directories | Notes |
 | --- | --- | --- |
-| **Current** (dots packages) | `dots-config/`, `bash/`, `zsh/`, `common-shell/`, `zellij/`, `go/`, `claude/`, `codex/`, `editor/`, `intellij/`, `knut/`, `rust/`, `git/`, `javascript/`, `wezterm/` | Each has a `Dotfile.yaml` manifest plus config files |
+| **Current** (dots packages) | `dots-config/`, `bash/`, `zsh/`, `common-shell/`, `zellij/`, `go/`, `claude/`, `codex/`, `editor/`, `intellij/`, `rust/`, `git/`, `javascript/`, `wezterm/` | Each has a `Dotfile.yaml` manifest plus config files |
 
 When adding new functionality, create a new top-level `<name>/` package directory with a `Dotfile.yaml`.
 
@@ -40,10 +40,10 @@ dots init --from git@github.com:jlrickert/dotfiles.git --path dots-config --name
 
 ## Build / test / run
 
-End-to-end installs run inside Ubuntu containers via [Task](https://taskfile.dev) + Docker Compose. From repo root:
+End-to-end installs run inside Ubuntu containers via [Task](https://taskfile.dev) + Podman Compose. From repo root:
 
 ```bash
-task build:ubuntu      # build the prebuilt image (docker/ubuntu/Dockerfile)
+task build:ubuntu      # build the prebuilt image (containers/ubuntu/Dockerfile)
 task test              # build + run tests/e2e/verify.sh in-container
 task shell:ubuntu      # interactive shell in the image
 task push:ubuntu       # publish to ghcr.io/jlrickert/dotfiles:ubuntu (gated on clean tree)
@@ -54,14 +54,14 @@ task clean             # remove images + BuildKit cache (next build is from scra
 
 The verify script (`tests/e2e/verify.sh`) is the source of truth for "did the install succeed" — it asserts symlinks/files land at expected paths, CLI tools resolve, both bash and zsh load cleanly, and the zsh marker block is in place. When you add a new package, extend `verify.sh` with assertions for its outputs.
 
-## Docker layout
+## Container layout
 
-End-to-end testing uses two images, both built from `docker/ubuntu/`:
+End-to-end testing uses two images, both built from `containers/ubuntu/`:
 
-- `docker/ubuntu/Dockerfile` — slim image (common-shell + bash + zsh)
-- `docker/ubuntu/Dockerfile.full` — full image (slim + zellij + go)
+- `containers/ubuntu/Dockerfile` — slim image (common-shell + bash + zsh)
+- `containers/ubuntu/Dockerfile.full` — full image (slim + zellij + go)
 
-`docker-compose.yml` and `Taskfile.yml` reference these directly. There are no root-level Dockerfiles.
+`compose.yml` and `Taskfile.yml` reference these directly. There are no root-level Dockerfiles.
 
 ## Pending rename
 

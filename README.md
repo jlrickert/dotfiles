@@ -13,12 +13,12 @@ dots init --from git@github.com:jlrickert/dotfiles.git --path dots-config --name
 Or skip the local install entirely and try the prebuilt container:
 
 ```bash
-docker run -it --rm ghcr.io/jlrickert/dotfiles:ubuntu
+podman run -it --rm ghcr.io/jlrickert/dotfiles:ubuntu
 ```
 
 ## Testing
 
-End-to-end installs are exercised in containers via [Task](https://taskfile.dev), Docker, and Docker Compose. From the repo root:
+End-to-end installs are exercised in containers via [Task](https://taskfile.dev), Podman, and Podman Compose. From the repo root:
 
 ```bash
 task build:ubuntu     # build the prebuilt image

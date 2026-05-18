@@ -24,14 +24,14 @@ assert_file "${HOME}/.bashrc"
 assert_file "${HOME}/.bash_profile"
 assert_file "${HOME}/.profile"
 assert_file "${HOME}/.config/dots/config.yaml"
-# Phase-3 migrations: claude/, codex/, editor/, knut/, rust/,
+# Phase-3 migrations: claude/, codex/, editor/, rust/,
 # javascript/. The Ubuntu test images don't install these packages
-# yet (see docker/ubuntu/Dockerfile), so we only assert the manifests
+# yet (see containers/ubuntu/Dockerfile), so we only assert the manifests
 # exist in the source tree — proof the migration landed without trying
 # to verify runtime side effects. Add runtime assertions here once the
 # image installs them.
 DOTFILES_SRC="${DOTFILES_SRC:-/opt/dotfiles-src}"
-for pkg in claude codex editor knut rust javascript wezterm python clone podman; do
+for pkg in claude codex editor rust javascript wezterm python clone podman; do
 	assert_file "${DOTFILES_SRC}/${pkg}/Dotfile.yaml"
 done
 

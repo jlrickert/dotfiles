@@ -132,7 +132,7 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          file: docker/ubuntu/Dockerfile
+          file: containers/ubuntu/Dockerfile
           push: true
           tags: |
             ghcr.io/jlrickert/dotfiles:${{ steps.version.outputs.version }}
@@ -144,7 +144,7 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          file: docker/ubuntu/Dockerfile.full
+          file: containers/ubuntu/Dockerfile.full
           push: true
           tags: |
             ghcr.io/jlrickert/dotfiles:${{ steps.version.outputs.version }}-full

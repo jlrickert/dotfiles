@@ -1,7 +1,7 @@
 node_modules/
 tmp/
 pkg.bak/
-docker/
+containers/
 Dockerfile
 Dockerfile.base
 .dockerignore
