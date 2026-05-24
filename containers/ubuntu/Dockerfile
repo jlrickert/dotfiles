@@ -82,6 +82,7 @@ RUN git config --system --add safe.directory '*' \
     && HOME=/home/jlrickert dots install jlrickert/common-shell \
     && HOME=/home/jlrickert dots install jlrickert/bash \
     && HOME=/home/jlrickert dots install jlrickert/zsh \
+    && HOME=/home/jlrickert dots install jlrickert/ssh \
     && chown -R jlrickert:jlrickert /home/jlrickert
 
 USER jlrickert

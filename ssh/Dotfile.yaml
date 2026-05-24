@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jlrickert/dots/main/schemas/dotfile.json
+package:
+  name: ssh
+  description: SSH client defaults (UseKeychain on macOS, AddKeysToAgent everywhere)
+  version: 0.1.0
+  tags:
+    - ssh
+    - network
+  platforms:
+    - darwin
+    - linux
+links:
+  managed.conf: "@config/ssh/managed.conf"
+# ~/.ssh/config is NOT in `links:` — it's user-maintained (host entries,
+# IdentityFile paths). The post_install hook injects a marker block that
+# `Include`s the managed.conf above. Mirrors the zsh marker-block pattern.
+hooks:
+  post_install: hooks/install-ssh.sh
+  pre_remove: hooks/uninstall-ssh.sh

@@ -133,20 +133,6 @@ if [[ -n "${terminfo[kcbt]}" ]]; then
 	bindkey -M vicmd "${terminfo[kcbt]}" reverse-menu-complete
 fi
 
-#--- ssh-agent ---------------------------------------------------------------
-# macOS launchd already wires up SSH_AUTH_SOCK; this is the Linux fallback.
-# Reuses a cached agent across shell sessions instead of spawning a new one
-# per terminal.
-if [ -z "${SSH_AUTH_SOCK:-}" ] && command -v ssh-agent >/dev/null 2>&1; then
-	SSH_AGENT_ENV="${XDG_RUNTIME_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}}/ssh-agent.env"
-	[ -r "${SSH_AGENT_ENV}" ] && . "${SSH_AGENT_ENV}" >/dev/null
-	if ! ssh-add -l >/dev/null 2>&1; then
-		mkdir -p "$(dirname "${SSH_AGENT_ENV}")"
-		ssh-agent -s >"${SSH_AGENT_ENV}"
-		. "${SSH_AGENT_ENV}" >/dev/null
-	fi
-fi
-
 #--- Prompt + integrations ---------------------------------------------------
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 

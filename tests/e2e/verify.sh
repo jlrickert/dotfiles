@@ -142,6 +142,39 @@ assert_grep "${HOME}/.zshenv" "BEGIN dotfiles-zsh"
 assert_grep "${HOME}/.profile" "BEGIN dotfiles-profile"
 # Real Layer-1 file lives under ~/.config/dots/user/.
 assert_file "${HOME}/.config/dots/user/profile"
+# ssh package: marker block in ~/.ssh/config + managed.conf installed.
+# Mirrors the zsh marker-block pattern -- ~/.ssh/config is user-maintained
+# (host entries, IdentityFile paths) and the package owns only the block
+# that Includes the managed defaults.
+assert_file "${HOME}/.config/ssh/managed.conf"
+assert_grep "${HOME}/.config/ssh/managed.conf" "IgnoreUnknown UseKeychain"
+assert_grep "${HOME}/.ssh/config" "BEGIN dotfiles-ssh"
+assert_grep "${HOME}/.ssh/config" "Include ~/.config/ssh/managed.conf"
+# Permissions: ~/.ssh must be 700 and config 600 or SSH refuses to read them.
+# GNU stat uses -c '%a'; BSD/macOS stat uses -f '%A'. Try both.
+ssh_dir_mode="$(stat -c '%a' "${HOME}/.ssh" 2>/dev/null || stat -f '%A' "${HOME}/.ssh" 2>/dev/null || echo unknown)"
+if [ "${ssh_dir_mode}" = 700 ]; then
+	pass "${HOME}/.ssh is mode 700"
+else
+	fail "${HOME}/.ssh is mode ${ssh_dir_mode} (expected 700)"
+fi
+ssh_cfg_mode="$(stat -c '%a' "${HOME}/.ssh/config" 2>/dev/null || stat -f '%A' "${HOME}/.ssh/config" 2>/dev/null || echo unknown)"
+if [ "${ssh_cfg_mode}" = 600 ]; then
+	pass "${HOME}/.ssh/config is mode 600"
+else
+	fail "${HOME}/.ssh/config is mode ${ssh_cfg_mode} (expected 600)"
+fi
+# Agent fallback relocated from zsh/zshrc to a common-shell profile.d drop-in
+# so bash also picks it up. macOS launchd already provides SSH_AUTH_SOCK, so
+# the snippet self-guards as a no-op there; on Linux it spawns a cached agent.
+assert_file "${HOME}/.config/dots/user/profile.d/ssh-agent.sh"
+assert_grep "${HOME}/.config/dots/user/profile.d/ssh-agent.sh" "ssh-agent -s"
+# Regression guard: the old zsh-only block must be gone from zshrc.
+if grep -qE '^#--- ssh-agent' "${HOME}/.config/zsh/zshrc"; then
+	fail "zshrc still contains ssh-agent block (should be in profile.d)"
+else
+	pass "zshrc ssh-agent block migrated to profile.d"
+fi
 # Startup-perf guard: brew shellenv must be inlined, not eval'd. The eval
 # form spawns brew (Ruby, ~50-80ms) on every shell init and re-invokes
 # path_helper, which would re-trigger the login-shell PATH demotion fixed
