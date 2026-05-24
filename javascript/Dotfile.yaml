@@ -2,7 +2,7 @@
 package:
   name: javascript
   description: JavaScript/TypeScript runtimes (bun, fnm-managed node, deno)
-  version: 0.1.0
+  version: 0.2.0
   requires:
     - "@self/common-shell"
   tags:

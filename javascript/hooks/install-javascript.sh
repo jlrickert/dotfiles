@@ -47,9 +47,8 @@ fi
 # --- 2. fnm (Fast Node Manager) ---
 # darwin → brew fnm. linux → upstream installer pinned to
 # $HOME/.local/share/fnm with --skip-shell so we don't double up on the
-# shellenv eval — profile.d/node.sh handles that. fnm itself manages node
-# versions; we don't install node directly. `fnm install --lts` could be
-# added later if a default version is desired.
+# shellenv eval — profile.d/node.sh handles that. Section 2b below uses
+# fnm to install + pin the latest LTS as the default node.
 if command -v fnm >/dev/null 2>&1; then
 	echo "javascript: fnm already installed at $(command -v fnm); skipping."
 else
@@ -74,6 +73,27 @@ else
 	if ! command -v fnm >/dev/null 2>&1 && [ ! -x "$HOME/.local/share/fnm/fnm" ]; then
 		echo "javascript: warning -- fnm still not visible after install attempt." >&2
 	fi
+fi
+
+# --- 2b. node LTS via fnm ---
+# Resolve fnm from PATH or the Linux install dir (the hook runs before
+# profile.d is sourced, so $PATH may not yet include the curl-installer
+# location). `fnm install --lts` is idempotent — it no-ops if the current
+# latest LTS is already installed. `fnm default lts-latest` writes an alias
+# that resolves to whichever version satisfies `lts-latest` at lookup time.
+FNM_BIN=""
+if command -v fnm >/dev/null 2>&1; then
+	FNM_BIN="$(command -v fnm)"
+elif [ -x "$HOME/.local/share/fnm/fnm" ]; then
+	FNM_BIN="$HOME/.local/share/fnm/fnm"
+fi
+
+if [ -z "${FNM_BIN}" ]; then
+	echo "javascript: fnm not available; skipping node LTS bootstrap." >&2
+else
+	echo "javascript: installing latest LTS node via ${FNM_BIN}"
+	"${FNM_BIN}" install --lts || true
+	"${FNM_BIN}" default lts-latest || true
 fi
 
 # --- 3. deno ---
