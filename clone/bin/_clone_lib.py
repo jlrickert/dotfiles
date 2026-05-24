@@ -34,11 +34,15 @@ def _strip_git(s):
 def parse_github(spec):
     """Return (owner, name, clone_url) from a GitHub spec.
 
+    Shorthand and bare-name forms default to SSH so they pick up the user's
+    SSH key + Keychain integration. Explicit https://github.com/... URLs are
+    echoed back as-is — opt-in HTTPS for tokenless auth via `gh`.
+
     Accepts:
-        owner/name              -> https://github.com/owner/name.git
+        owner/name              -> git@github.com:owner/name.git
         https://github.com/owner/name(.git)?
         git@github.com:owner/name(.git)?
-        bare-name               -> ($GITUSER || $USER) / bare-name
+        bare-name               -> ($GITUSER || $USER) / bare-name (SSH)
         file://...              -> handled by parse_file_url; caller must
                                    dispatch on scheme before calling here.
     """
@@ -48,7 +52,8 @@ def parse_github(spec):
     if m:
         owner, name = m.group(1), m.group(2)
         return owner, name, f"git@github.com:{owner}/{name}.git"
-    # HTTPS: https://github.com/owner/name
+    # HTTPS: https://github.com/owner/name -- echoed as-is. Use when SSH
+    # is unavailable (no key, blocked port 22) and you want gh token auth.
     m = re.match(r"^https://github\.com/([^/]+)/(.+?)(?:\.git)?/?$", s)
     if m:
         owner, name = m.group(1), m.group(2)
@@ -58,7 +63,7 @@ def parse_github(spec):
         owner, _, name = s.partition("/")
         name = _strip_git(name)
         if owner and name:
-            return owner, name, f"https://github.com/{owner}/{name}.git"
+            return owner, name, f"git@github.com:{owner}/{name}.git"
     # Bare name -> $GITUSER, fall back to $USER.
     if s and "/" not in s and "://" not in s:
         owner = os.environ.get("GITUSER") or os.environ.get("USER") or ""
@@ -67,7 +72,7 @@ def parse_github(spec):
                 f"bare repo name '{s}' requires $GITUSER or $USER to be set"
             )
         name = _strip_git(s)
-        return owner, name, f"https://github.com/{owner}/{name}.git"
+        return owner, name, f"git@github.com:{owner}/{name}.git"
     raise ValueError(f"unrecognized github spec: {spec!r}")
 
 

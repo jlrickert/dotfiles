@@ -44,14 +44,15 @@ def main(argv=None):
         return 0
     target.parent.mkdir(parents=True, exist_ok=True)
 
-    # Prefer `gh repo clone` when available — it picks up GitHub auth from the
-    # user's gh session. The legacy shell `clone` script passed
-    # `--recurse-submodule` (singular), which `git clone` silently ignored;
-    # we use the correct plural here. See
-    # ~/.local/state/dotfiles/pkg/00_shell/bin/clone for the legacy reference.
-    if shutil.which("gh") and not spec.startswith("file://"):
+    # Use `gh repo clone` only when the clone URL is HTTPS — gh's value-add is
+    # picking up the user's GitHub token for HTTPS auth. SSH URLs already
+    # authenticate via the user's key + agent, so plain `git clone` is faster
+    # and avoids gh's git_protocol=https default overriding our SSH choice.
+    # The legacy shell `clone` script passed `--recurse-submodule` (singular),
+    # which `git clone` silently ignored; we use the correct plural here.
+    if shutil.which("gh") and clone_url.startswith("https://"):
         cmd = [
-            "gh", "repo", "clone", f"{owner}/{name}", str(target),
+            "gh", "repo", "clone", clone_url, str(target),
             "--", "--recurse-submodules",
         ]
     else:
