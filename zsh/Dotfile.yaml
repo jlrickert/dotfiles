@@ -2,7 +2,7 @@
 package:
   name: zsh
   description: Zsh shell configuration (installs zsh if missing)
-  version: 0.2.6
+  version: 0.3.0
   requires:
     - "@self/common-shell"
   tags:
@@ -17,6 +17,7 @@ links:
   zprofile: "@config/zsh/zprofile"
   lib/termsupport.zsh: "@config/zsh/lib/termsupport.zsh"
   lib/zsh-vi-mode.zsh: "@config/zsh/lib/zsh-vi-mode.zsh"
+  bin/zsh-reset-completions: "@bin/zsh-reset-completions"
 # ~/.zshrc, ~/.zshenv, and ~/.zprofile are NOT in `links:`. Replacing them on
 # install would clobber installer-appends from bun, fnm, conda, Egnyte egcli,
 # etc. Instead the post_install hook injects a marker block that sources the

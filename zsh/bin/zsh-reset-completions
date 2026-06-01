@@ -1,0 +1,12 @@
+#!/bin/sh
+# Wipe the zsh completion cache so the next interactive zsh runs a full
+# compinit fpath scan. Use this after `brew install`-ing a new CLI whose
+# completion doesn't appear at <TAB> -- compinit's 24h freshness check
+# (zsh/zshrc:54) otherwise skips the rescan.
+set -eu
+
+zsh_cache="${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh}"
+rm -rf -- "${zsh_cache}"
+mkdir -p -- "${zsh_cache}"
+printf 'zsh-reset-completions: cleared %s\n' "${zsh_cache}"
+printf 'zsh-reset-completions: run `exec zsh` to rebuild.\n'
